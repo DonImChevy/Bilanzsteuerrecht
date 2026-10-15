@@ -1,100 +1,78 @@
 # BSR-Trainer – Bilanzsteuerrecht GS I
 
-iOS-App (SwiftUI, iOS 17+) zur Klausurvorbereitung im **Bilanzsteuerrecht, Grundstudium I – Teil I (Buchführung)**.
+Lern-App zur Klausurvorbereitung im **Bilanzsteuerrecht, Grundstudium I – Teil I (Buchführung)**.
 Inhaltlich orientiert am Skript und an den Übungen bzw. Lösungshinweisen des Grundstudiums.
+
+**Kostenlos, ohne App Store, offline nutzbar:** Die App ist eine Web-App (PWA). Man öffnet sie einmal im
+Browser und legt sie auf den Home-Bildschirm – danach startet sie wie eine normale App, auch ohne Internet.
+
+➡️ **App öffnen:** `https://donimchevy.github.io/Bilanzsteuerrecht/` (nach der Einrichtung unten)
+
+## Installation auf dem iPhone (für alle Nutzer:innen)
+
+1. Link oben in **Safari** öffnen (nicht in Chrome oder in der Instagram-/WhatsApp-Vorschau).
+2. Unten auf **Teilen** ⬆️ tippen → **„Zum Home-Bildschirm“** → **Hinzufügen**.
+3. App über das neue Icon starten. Ab jetzt funktioniert alles offline, der Lernfortschritt bleibt auf dem Gerät.
+
+Android: Link in Chrome öffnen → Menü ⋮ → **„App installieren“**.
+
+## Einmalige Einrichtung (Repository-Inhaber)
+
+1. Den Branch mit der App in `main` mergen (Pull Request auf GitHub → **Merge**).
+2. Auf GitHub: **Settings → Pages → Build and deployment → Source: „GitHub Actions“** auswählen.
+3. **Actions → „Web-App veröffentlichen (GitHub Pages)“ → Run workflow** (oder einfach etwas in `web/` ändern und pushen).
+4. Nach ca. 1 Minute ist die App unter der Adresse oben erreichbar.
+
+Jede Änderung an `web/` auf `main` wird automatisch getestet und veröffentlicht. Installierte Apps
+laden das Update beim nächsten Start mit Internet automatisch.
 
 ## Funktionen
 
 | Bereich | Inhalt |
 |---|---|
-| **Üben** | 14 Themen aus Skript Teil I, je 10 Aufgaben pro Runde, sofortige Auswertung mit Erklärung und Fundstelle |
-| **Buchungssätze** | Eingabe wie in der Klausur: Soll-Positionen „an“ Haben-Positionen, Konten aus dem Kontenplan des Skripts, zusammengesetzte Buchungssätze, Summenkontrolle Soll = Haben |
-| **Generatoren** | ca. 80 Aufgabentypen erzeugen bei jedem Aufruf **neue Beträge** (inkl. USt 19 %/7 %, Skonto, Boni, Rabatte …) – man kann beliebig oft üben |
-| **Klausurmodus** | Wählbare Anzahl und Zeitlimit, ca. 60 % Buchungssätze, Auswertung erst nach Abgabe, Verlauf der Ergebnisse |
-| **Lernkarten** | Merksätze, Definitionen, Fristen und Formeln zum Umdrehen |
-| **Kontenplan** | Alle Konten des Skripts (Klassen 0–5 + EBK/SBK/GuV) mit Kontoart, T-Konto und Buchungsregel |
+| **Üben** | 14 Themen aus Skript Teil I, 10 Aufgaben pro Runde, sofortige Auswertung mit Erklärung und Fundstelle |
+| **Buchungssätze** | Eingabe wie in der Klausur: Soll-Positionen „an“ Haben-Positionen, Konten aus dem Kontenplan des Skripts (mit Suche), zusammengesetzte Buchungssätze, Summenkontrolle |
+| **Generatoren** | rund 80 Aufgabentypen erzeugen bei jedem Aufruf **neue Beträge** (USt 19 %/7 %, Skonto, Boni, Rabatte, Rücksendungen …) |
+| **Feste Fragen** | rund 90 Theorie- und Fallfragen, viele direkt aus den Übungen |
+| **Klausurmodus** | Anzahl und Zeitlimit wählbar, ca. 60 % Buchungssätze, Auswertung erst nach Abgabe |
+| **Lernkarten** | 47 Karten mit Merksätzen, Definitionen, Fristen und Formeln |
+| **Kontenplan** | Alle Konten mit Kontoart, T-Konto und Buchungsregel |
 | **Fortschritt** | Quote je Thema, schwächstes Thema direkt üben |
-
-### Themen
-
-Buchführungspflicht · Inventur, Inventar & Bilanz · Bilanzveränderungen · Bestandskonten · Erfolgskonten ·
-Privatkonten · Viergeteiltes Warenkonto · Rabatte, Skonti, Boni & Co. · Umsatzsteuer & Vorsteuer ·
-Eröffnung & Abschluss · Kalkulation · Gewinnermittlung & GuV/BVV · Grundbegriffe · Grund-, Haupt- & Nebenbücher
 
 ## Projektstruktur
 
 ```
-BSRTrainer.xcodeproj        Xcode-Projekt (Xcode 16+, Ordner werden automatisch synchronisiert)
-BSRTrainer/
-  Core/                     Plattformunabhängige Logik (nur Foundation)
-    Konto.swift             Kontenplan laut Skript
-    Buchungssatz.swift      Buchungssatz + Prüfung der Eingabe
-    Frage.swift             Themen, Aufgabentypen, Bewertung, Zufallsgenerator
-    Vorlagen.swift          Aufgabengeneratoren mit Zufallsbeträgen
-    FesteFragen.swift       Theorie- und Fallfragen aus den Übungen
-    Lernkarten.swift        Lernkarten
-    Katalog.swift           Auswahl für Übung und Klausur
-  Modell/                   App-Zustand (Sitzung, Lernstand)
-  Views/                    SwiftUI-Oberfläche
-Config/Info.plist           Zusätzliche Info.plist-Schlüssel (Export-Compliance)
-Package.swift + Tests/      `swift test` für die Kernlogik
+web/                     Die Web-App (wird veröffentlicht)
+  index.html             Einstieg
+  manifest.webmanifest   App-Name, Icons (Home-Bildschirm)
+  sw.js                  Service Worker → Offline-Funktion
+  css/style.css          Gestaltung (hell/dunkel)
+  js/geld.js             Beträge in Cent, deutsches Zahlenformat
+  js/konten.js           Kontenplan laut Skript
+  js/kern.js             Themen, Buchungssatz-Prüfung, Bewertung
+  js/vorlagen.js         Aufgabengeneratoren mit Zufallsbeträgen
+  js/feste.js            Feste Fragen aus Skript und Übungen
+  js/lernkarten.js       Lernkarten
+  js/katalog.js          Auswahl für Übung und Klausur
+  js/app.js              Oberfläche
+  tests/                 node --test web/tests/kern.test.mjs
+
+BSRTrainer/, BSRTrainer.xcodeproj, Package.swift, Tests/
+                         Native iOS-Version (SwiftUI) mit denselben Inhalten –
+                         nur relevant mit Apple Developer Program (99 €/Jahr) für TestFlight/App Store.
 ```
 
-Neue Aufgaben ergänzt man in `Core/Vorlagen.swift` (generiert) oder `Core/FesteFragen.swift` (fest).
+Neue Aufgaben ergänzt man in `web/js/vorlagen.js` (generiert) oder `web/js/feste.js` (fest).
 Die Tests prüfen automatisch für jede Aufgabe, dass Soll = Haben gilt und die Musterlösung akzeptiert wird.
 
-## Entwickeln
+Lokal ausprobieren: `cd web && python3 -m http.server 8000` → <http://localhost:8000>
 
-```bash
-open BSRTrainer.xcodeproj   # nur mit Mac: Schema „BSRTrainer“, Simulator wählen, ⌘R
-swift test                  # Tests der Kernlogik (macOS oder Linux)
-```
+## Native iOS-Version (optional)
 
-Jeder Push baut die App und führt die Tests per GitHub Actions aus (`.github/workflows/ios.yml`).
-
-## Auf TestFlight bringen – ohne Mac
-
-Gebaut, signiert und hochgeladen wird auf einem macOS-Runner von GitHub Actions
-(`.github/workflows/testflight.yml`). Alles Übrige geht im Browser (oder auf dem iPhone).
-
-**Einmalig einrichten**
-
-1. **Apple Developer Program** beitreten (99 €/Jahr): <https://developer.apple.com/programs/enroll/>
-   – geht auch über die App „Apple Developer“ auf dem iPhone.
-2. **Team-ID** notieren: <https://developer.apple.com/account> → *Mitgliedschaftsdetails* → *Team-ID* (10 Zeichen).
-3. **Bundle-ID festlegen**, z. B. `de.deinname.bsrtrainer` (muss weltweit eindeutig sein).
-4. **App anlegen** in <https://appstoreconnect.apple.com> → *Apps* → *+* → *Neue App*:
-   Plattform iOS, Name „BSR-Trainer“ (oder ähnlich, Name muss im Store frei sein), Sprache Deutsch,
-   Bundle-ID: falls sie in der Liste noch nicht auftaucht, vorher unter
-   <https://developer.apple.com/account/resources/identifiers/list> → *+* → *App IDs* → *App* registrieren.
-5. **API-Schlüssel erstellen:** App Store Connect → *Benutzer und Zugriff* → *Integrationen* →
-   *App Store Connect API* → *Team-Schlüssel* → *+*, Zugriff **Admin** (nötig, damit das
-   Verteilungszertifikat automatisch in der Cloud erstellt werden darf).
-   *Issuer-ID* und *Schlüssel-ID* notieren und die `.p8`-Datei herunterladen (geht nur einmal!).
-6. **In GitHub hinterlegen:** Repository → *Settings* → *Secrets and variables* → *Actions*
-   - Tab *Secrets* → *New repository secret*:
-     - `ASC_KEY_ID` – Schlüssel-ID
-     - `ASC_ISSUER_ID` – Issuer-ID
-     - `ASC_KEY_P8` – kompletter Inhalt der `.p8`-Datei (mit `-----BEGIN PRIVATE KEY-----`-Zeilen; Datei mit einem Texteditor öffnen und kopieren)
-     - `APPLE_TEAM_ID` – Team-ID
-   - Tab *Variables* → *New repository variable*: `BUNDLE_ID` – deine Bundle-ID
-
-**Build hochladen**
-
-1. GitHub → *Actions* → *TestFlight-Upload* → *Run workflow* (Branch wählen) → grün starten.
-2. Nach ca. 5–10 Minuten ist der Build hochgeladen; Apple verarbeitet ihn danach noch ca. 10–30 Minuten.
-   Die Build-Nummer wird automatisch hochgezählt.
-3. App Store Connect → deine App → *TestFlight*:
-   - *Interne Tests*: Gruppe anlegen, dich selbst hinzufügen → Einladung per E-Mail.
-   - *Externe Tests* (Kommiliton:innen, bis 10.000, öffentlicher Link möglich): Gruppe anlegen,
-     Build hinzufügen, Beta-Beschreibung und Feedback-E-Mail ausfüllen → einmalige Beta-Prüfung durch Apple (meist < 1 Tag).
-4. Auf dem iPhone die App **TestFlight** aus dem App Store installieren und die Einladung annehmen.
-
-Für eine neue Version reicht es, Änderungen zu pushen und den Workflow erneut zu starten.
-Bei größeren Änderungen `MARKETING_VERSION` im Xcode-Projekt erhöhen.
-
-Die App speichert nur den Lernfortschritt lokal auf dem Gerät (UserDefaults), sammelt keine Daten
-und braucht keine Netzwerkverbindung – im App-Datenschutz-Fragebogen also „Keine Daten erfasst“.
+Die Ordner `BSRTrainer/` usw. enthalten dieselbe App als SwiftUI-Projekt (iOS 17+). Sie wird bei jedem Push per
+GitHub Actions gebaut und getestet. Für die Verteilung über TestFlight ist das kostenpflichtige
+Apple Developer Program nötig; der Workflow `.github/workflows/testflight.yml` lädt die App dann ohne eigenen Mac hoch
+(benötigte Secrets: `ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8`, `APPLE_TEAM_ID`, Variable `BUNDLE_ID`).
 
 ## Hinweis
 

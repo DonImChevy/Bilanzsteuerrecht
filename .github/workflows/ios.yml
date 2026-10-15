@@ -6,6 +6,16 @@ on:
   workflow_dispatch:
 
 jobs:
+  web-tests:
+    name: Web-App testen
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test web/tests/kern.test.mjs
+
   core-tests:
     name: Kernlogik testen (swift test)
     runs-on: macos-15

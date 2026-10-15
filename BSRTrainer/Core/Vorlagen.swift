@@ -144,7 +144,7 @@ enum Vorfaelle {
                 satz: { Buchungssatz(.bank, an: .zinsertraege, $0) },
                 wirkung: .ertrag,
                 erklaerung: "Bank nimmt zu → Soll. Zinserträge sind Ertrag → Haben.",
-                von: 20, bis: 800),
+                von: 100, bis: 800),
         Vorfall(id: "barentnahme",
                 text: { "Der Inhaber entnimmt der Geschäftskasse \(H.eur($0)) für private Zwecke." },
                 satz: { Buchungssatz(.privatentnahmen, an: .kasse, $0) },
