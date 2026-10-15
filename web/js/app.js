@@ -159,7 +159,8 @@ function tabUeben() {
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
   return `
     <div class="kopfzeile"><h1 class="titel">BSR-Trainer</h1><button class="icon-btn" data-a="info" aria-label="Info">ⓘ</button></div>
-    ${!istStandalone() ? `<div class="hinweis-box"><span>📲</span><div><b>Als App installieren:</b> ${ios ? "In Safari unten auf <b>Teilen</b> ⬆️ tippen → <b>„Zum Home-Bildschirm“</b>." : "Im Browser-Menü <b>„App installieren“</b> bzw. „Zum Startbildschirm hinzufügen“ wählen."} Danach funktioniert alles auch offline.</div></div>` : ""}
+    ${!istStandalone() ? `<div class="hinweis-box"><span>📲</span><div><b>Als App installieren:</b> ${ios ? "In Safari unten auf <b>Teilen</b> ⬆️ tippen → <b>„Zum Home-Bildschirm“</b>." : installEvent ? "Ein Tipp genügt:" : "In Chrome oben rechts auf <b>⋮</b> tippen → <b>„Zum Startbildschirm hinzufügen“</b> bzw. <b>„App installieren“</b> → <b>„Installieren“</b>."} Danach funktioniert alles auch offline.
+      ${!ios && installEvent ? `<button class="knopf" style="margin-top:10px" data-a="installieren">⬇ App installieren</button>` : ""}</div></div>` : ""}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="liste">
       ${schnell("buchung", "✍️", "Buchungssätze trainieren", "10 zufällige Geschäftsvorfälle aus allen Themen – jedes Mal mit neuen Beträgen.")}
       ${schnell("alles", "🔀", "Alles gemischt", "Buchungssätze, Theorie- und Rechenaufgaben quer durch das Skript.")}
@@ -481,6 +482,7 @@ function sheetView() {
           ["⏱️", "Im Klausurmodus gibt es die Auswertung erst nach Abgabe."],
           ["€", "USt-Regelsatz 19 %, ermäßigt 7 %. Kontenbezeichnungen nach dem Kontenplan des Skripts."],
           ["✈️", "Funktioniert offline. Der Lernfortschritt wird nur auf diesem Gerät gespeichert."],
+          ["📊", "Beim Start wird anonym gezählt, ob die App im Browser oder vom Home-Bildschirm geöffnet wurde (GoatCounter, ohne Cookies). Lernergebnisse werden nie übertragen."],
         ].map(([i, t]) => `<div class="zeile"><span>${i}</span><span class="grow" style="font-size:15px">${t}</span></div>`).join("")}
       </div></div>
       <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Inoffizielle Lernhilfe. Die Aufgaben sind inhaltlich am Skript „Bilanzsteuerrecht Grundstudium I, Teil I“ und den zugehörigen Übungen orientiert. Für die Richtigkeit wird keine Gewähr übernommen – maßgeblich sind Skript, Gesetz und Lehrveranstaltung.</span></div>
@@ -700,9 +702,45 @@ function aktualisierePruefen() {
   if (k) k.disabled = istLeer(aktFrage(), aktAntwort());
 }
 
+// ======================= Installation (Android/Chrome) =======================
+let installEvent = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  installEvent = e;
+  if (!state.sitzung) render();
+});
+window.addEventListener("appinstalled", () => { installEvent = null; render(); toast("App installiert – du findest sie auf dem Startbildschirm."); });
+AKTIONEN.installieren = async () => {
+  if (!installEvent) return;
+  installEvent.prompt();
+  await installEvent.userChoice.catch(() => null);
+  installEvent = null;
+  render();
+};
+
+// ======================= Anonyme Zählung (GoatCounter) =======================
+// Gezählt werden nur App-Starts (Browser bzw. Home-Bildschirm) und einmalig pro Gerät
+// die erste Nutzung als installierte App. Keine Cookies, keine Lernergebnisse.
+function zaehleStart() {
+  const app = istStandalone();
+  const ereignisse = [app ? "start-app" : "start-browser"];
+  try {
+    if (app && !localStorage.getItem("bsr.installiert")) {
+      ereignisse.push("installiert");
+      localStorage.setItem("bsr.installiert", "1");
+    }
+  } catch (_) { /* privat-Modus */ }
+  const senden = () => {
+    for (const e of ereignisse) window.goatcounter.count({ path: e, title: e, event: true });
+  };
+  if (window.goatcounter?.count) senden();
+  else document.querySelector("script[data-goatcounter]")?.addEventListener("load", () => window.goatcounter?.count && senden());
+}
+
 // ======================= Start =======================
-const VERSION = "0.1.0";
+const VERSION = "0.1.2";
 render();
+zaehleStart();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
