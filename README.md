@@ -46,29 +46,52 @@ Die Tests prüfen automatisch für jede Aufgabe, dass Soll = Haben gilt und die 
 ## Entwickeln
 
 ```bash
-open BSRTrainer.xcodeproj   # Schema „BSRTrainer“, Simulator wählen, ⌘R
+open BSRTrainer.xcodeproj   # nur mit Mac: Schema „BSRTrainer“, Simulator wählen, ⌘R
 swift test                  # Tests der Kernlogik (macOS oder Linux)
 ```
 
 Jeder Push baut die App und führt die Tests per GitHub Actions aus (`.github/workflows/ios.yml`).
 
-## Auf TestFlight bringen
+## Auf TestFlight bringen – ohne Mac
 
-Voraussetzung: Mitgliedschaft im Apple Developer Program und ein Mac mit Xcode 16 oder neuer.
+Gebaut, signiert und hochgeladen wird auf einem macOS-Runner von GitHub Actions
+(`.github/workflows/testflight.yml`). Alles Übrige geht im Browser (oder auf dem iPhone).
 
-1. **Bundle-ID anpassen:** In Xcode Target *BSRTrainer* → *Signing & Capabilities* → Team auswählen und
-   den Bundle Identifier auf eine eigene, eindeutige ID ändern (aktuell Platzhalter `de.bsrtrainer.app`).
-2. **App in App Store Connect anlegen:** <https://appstoreconnect.apple.com> → *Meine Apps* → *+* → *Neue App*,
-   Plattform iOS, gleiche Bundle-ID, Name z. B. „BSR-Trainer“.
-3. **Archivieren:** In Xcode als Ziel *Any iOS Device (arm64)* wählen → *Product* → *Archive*.
-4. **Hochladen:** Im Organizer *Distribute App* → *App Store Connect* → *Upload*.
-   Die Export-Compliance-Frage ist bereits beantwortet (`ITSAppUsesNonExemptEncryption = NO`).
-5. **Testen lassen:** In App Store Connect unter *TestFlight* den Build einer Gruppe zuweisen.
-   - *Interne Tester* (bis 100, Mitglieder des Teams): sofort verfügbar.
-   - *Externe Tester* (bis 10.000, z. B. Kommiliton:innen per öffentlichem Link): einmalige Beta-Review durch Apple nötig.
-     Dafür in TestFlight „Beta-App-Beschreibung“, Feedback-E-Mail und ggf. Datenschutz-URL ausfüllen.
-6. **Neue Builds:** Vor jedem weiteren Upload `CURRENT_PROJECT_VERSION` (Build-Nummer) erhöhen,
-   bei größeren Änderungen auch `MARKETING_VERSION`.
+**Einmalig einrichten**
+
+1. **Apple Developer Program** beitreten (99 €/Jahr): <https://developer.apple.com/programs/enroll/>
+   – geht auch über die App „Apple Developer“ auf dem iPhone.
+2. **Team-ID** notieren: <https://developer.apple.com/account> → *Mitgliedschaftsdetails* → *Team-ID* (10 Zeichen).
+3. **Bundle-ID festlegen**, z. B. `de.deinname.bsrtrainer` (muss weltweit eindeutig sein).
+4. **App anlegen** in <https://appstoreconnect.apple.com> → *Apps* → *+* → *Neue App*:
+   Plattform iOS, Name „BSR-Trainer“ (oder ähnlich, Name muss im Store frei sein), Sprache Deutsch,
+   Bundle-ID: falls sie in der Liste noch nicht auftaucht, vorher unter
+   <https://developer.apple.com/account/resources/identifiers/list> → *+* → *App IDs* → *App* registrieren.
+5. **API-Schlüssel erstellen:** App Store Connect → *Benutzer und Zugriff* → *Integrationen* →
+   *App Store Connect API* → *Team-Schlüssel* → *+*, Zugriff **Admin** (nötig, damit das
+   Verteilungszertifikat automatisch in der Cloud erstellt werden darf).
+   *Issuer-ID* und *Schlüssel-ID* notieren und die `.p8`-Datei herunterladen (geht nur einmal!).
+6. **In GitHub hinterlegen:** Repository → *Settings* → *Secrets and variables* → *Actions*
+   - Tab *Secrets* → *New repository secret*:
+     - `ASC_KEY_ID` – Schlüssel-ID
+     - `ASC_ISSUER_ID` – Issuer-ID
+     - `ASC_KEY_P8` – kompletter Inhalt der `.p8`-Datei (mit `-----BEGIN PRIVATE KEY-----`-Zeilen; Datei mit einem Texteditor öffnen und kopieren)
+     - `APPLE_TEAM_ID` – Team-ID
+   - Tab *Variables* → *New repository variable*: `BUNDLE_ID` – deine Bundle-ID
+
+**Build hochladen**
+
+1. GitHub → *Actions* → *TestFlight-Upload* → *Run workflow* (Branch wählen) → grün starten.
+2. Nach ca. 5–10 Minuten ist der Build hochgeladen; Apple verarbeitet ihn danach noch ca. 10–30 Minuten.
+   Die Build-Nummer wird automatisch hochgezählt.
+3. App Store Connect → deine App → *TestFlight*:
+   - *Interne Tests*: Gruppe anlegen, dich selbst hinzufügen → Einladung per E-Mail.
+   - *Externe Tests* (Kommiliton:innen, bis 10.000, öffentlicher Link möglich): Gruppe anlegen,
+     Build hinzufügen, Beta-Beschreibung und Feedback-E-Mail ausfüllen → einmalige Beta-Prüfung durch Apple (meist < 1 Tag).
+4. Auf dem iPhone die App **TestFlight** aus dem App Store installieren und die Einladung annehmen.
+
+Für eine neue Version reicht es, Änderungen zu pushen und den Workflow erneut zu starten.
+Bei größeren Änderungen `MARKETING_VERSION` im Xcode-Projekt erhöhen.
 
 Die App speichert nur den Lernfortschritt lokal auf dem Gerät (UserDefaults), sammelt keine Daten
 und braucht keine Netzwerkverbindung – im App-Datenschutz-Fragebogen also „Keine Daten erfasst“.
