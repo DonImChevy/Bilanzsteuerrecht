@@ -159,7 +159,8 @@ function tabUeben() {
   const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
   return `
     <div class="kopfzeile"><h1 class="titel">BSR-Trainer</h1><button class="icon-btn" data-a="info" aria-label="Info">ⓘ</button></div>
-    ${!istStandalone() ? `<div class="hinweis-box"><span>📲</span><div><b>Als App installieren:</b> ${ios ? "In Safari unten auf <b>Teilen</b> ⬆️ tippen → <b>„Zum Home-Bildschirm“</b>." : "Im Browser-Menü <b>„App installieren“</b> bzw. „Zum Startbildschirm hinzufügen“ wählen."} Danach funktioniert alles auch offline.</div></div>` : ""}
+    ${!istStandalone() ? `<div class="hinweis-box"><span>📲</span><div><b>Als App installieren:</b> ${ios ? "In Safari unten auf <b>Teilen</b> ⬆️ tippen → <b>„Zum Home-Bildschirm“</b>." : installEvent ? "Ein Tipp genügt:" : "In Chrome oben rechts auf <b>⋮</b> tippen → <b>„Zum Startbildschirm hinzufügen“</b> bzw. <b>„App installieren“</b> → <b>„Installieren“</b>."} Danach funktioniert alles auch offline.
+      ${!ios && installEvent ? `<button class="knopf" style="margin-top:10px" data-a="installieren">⬇ App installieren</button>` : ""}</div></div>` : ""}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="liste">
       ${schnell("buchung", "✍️", "Buchungssätze trainieren", "10 zufällige Geschäftsvorfälle aus allen Themen – jedes Mal mit neuen Beträgen.")}
       ${schnell("alles", "🔀", "Alles gemischt", "Buchungssätze, Theorie- und Rechenaufgaben quer durch das Skript.")}
@@ -700,8 +701,24 @@ function aktualisierePruefen() {
   if (k) k.disabled = istLeer(aktFrage(), aktAntwort());
 }
 
+// ======================= Installation (Android/Chrome) =======================
+let installEvent = null;
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  installEvent = e;
+  if (!state.sitzung) render();
+});
+window.addEventListener("appinstalled", () => { installEvent = null; render(); toast("App installiert – du findest sie auf dem Startbildschirm."); });
+AKTIONEN.installieren = async () => {
+  if (!installEvent) return;
+  installEvent.prompt();
+  await installEvent.userChoice.catch(() => null);
+  installEvent = null;
+  render();
+};
+
 // ======================= Start =======================
-const VERSION = "0.1.0";
+const VERSION = "0.1.1";
 render();
 
 if ("serviceWorker" in navigator) {
