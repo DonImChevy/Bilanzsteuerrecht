@@ -721,24 +721,37 @@ AKTIONEN.installieren = async () => {
 // ======================= Anonyme Zählung (GoatCounter) =======================
 // Gezählt werden nur App-Starts (Browser bzw. Home-Bildschirm) und einmalig pro Gerät
 // die erste Nutzung als installierte App. Keine Cookies, keine Lernergebnisse.
-function zaehleStart() {
-  const app = istStandalone();
-  const ereignisse = [app ? "start-app" : "start-browser"];
-  try {
-    if (app && !localStorage.getItem("bsr.installiert")) {
-      ereignisse.push("installiert");
-      localStorage.setItem("bsr.installiert", "1");
-    }
-  } catch (_) { /* privat-Modus */ }
-  const senden = () => {
-    for (const e of ereignisse) window.goatcounter.count({ path: e, title: e, event: true });
-  };
-  if (window.goatcounter?.count) senden();
-  else document.querySelector("script[data-goatcounter]")?.addEventListener("load", () => window.goatcounter?.count && senden());
+// Direkter Zählaufruf (Pixel) statt fremdem Skript – funktioniert auch, wenn gc.zgo.at blockiert ist.
+const ZAEHLER = "https://bsrtrainer.goatcounter.com/count";
+const INSTALL_FLAG = "bsr.installiert.v2";
+
+function zaehle(ereignis, fertig) {
+  if (!navigator.onLine || /^(localhost|127\.)/.test(location.hostname)) return;
+  const url = `${ZAEHLER}?p=${encodeURIComponent("/" + ereignis)}&t=${encodeURIComponent(ereignis)}&e=true` +
+    `&s=${screen.width},${screen.height},${Math.round(devicePixelRatio || 1)}&rnd=${Math.random().toString(36).slice(2)}`;
+  // no-cors: Antwort ist nicht lesbar, aber das Promise erfüllt sich nur, wenn die Anfrage angekommen ist
+  fetch(url, { mode: "no-cors", keepalive: true, cache: "no-store" }).then(() => fertig?.()).catch(() => {});
 }
 
+let letzterStart = 0;
+function zaehleStart() {
+  letzterStart = Date.now();
+  const app = istStandalone();
+  zaehle(app ? "start-app" : "start-browser");
+  try {
+    if (app && !localStorage.getItem(INSTALL_FLAG)) {
+      // Merker erst setzen, wenn die Zählung wirklich angekommen ist
+      zaehle("installiert", () => { try { localStorage.setItem(INSTALL_FLAG, "1"); } catch (_) { /* egal */ } });
+    }
+  } catch (_) { /* privat-Modus */ }
+}
+// iOS hält Home-Bildschirm-Apps oft im Speicher: Rückkehr nach > 30 min zählt als neuer Start
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && Date.now() - letzterStart > 30 * 60 * 1000) zaehleStart();
+});
+
 // ======================= Start =======================
-const VERSION = "0.1.2";
+const VERSION = "0.1.3";
 render();
 zaehleStart();
 
