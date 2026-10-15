@@ -20,7 +20,12 @@ const DATEIEN = [
 ];
 
 self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(DATEIEN)).then(() => self.skipWaiting()));
+  // cache: "reload" umgeht den HTTP-Cache, damit wirklich die neue Version gespeichert wird
+  e.waitUntil(
+    caches.open(VERSION)
+      .then((c) => c.addAll(DATEIEN.map((u) => new Request(u, { cache: "reload" }))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener("activate", (e) => {
@@ -31,19 +36,25 @@ self.addEventListener("activate", (e) => {
   );
 });
 
-// Cache zuerst (schnell und offline), im Hintergrund aktualisieren.
+// Netz zuerst (immer die aktuelle Version, wenn online), bei Offline oder nach 3 s der Speicher.
 self.addEventListener("fetch", (e) => {
-  if (e.request.method !== "GET" || new URL(e.request.url).origin !== location.origin) return;
-  e.respondWith(
-    caches.open(VERSION).then(async (cache) => {
-      const treffer = await cache.match(e.request, { ignoreSearch: true });
-      const netz = fetch(e.request)
-        .then((antwort) => {
-          if (antwort.ok) cache.put(e.request, antwort.clone());
-          return antwort;
-        })
-        .catch(() => treffer);
-      return treffer || netz;
-    })
-  );
+  const url = new URL(e.request.url);
+  if (e.request.method !== "GET" || url.origin !== location.origin) return;
+  e.respondWith((async () => {
+    const cache = await caches.open(VERSION);
+    const ausCache = () => cache.match(e.request, { ignoreSearch: true })
+      .then((t) => t || (e.request.mode === "navigate" ? cache.match("./index.html") : undefined));
+    const netz = fetch(e.request.url, { cache: "no-cache", credentials: "same-origin" }).then((antwort) => {
+      if (antwort.ok) cache.put(e.request, antwort.clone());
+      return antwort;
+    });
+    netz.catch(() => {});
+    const zeitlimit = new Promise((ok) => setTimeout(ok, 3000)).then(ausCache);
+    try {
+      const sieger = await Promise.race([netz, zeitlimit]);
+      return sieger || (await netz);
+    } catch (_) {
+      return (await ausCache()) || Response.error();
+    }
+  })());
 });
