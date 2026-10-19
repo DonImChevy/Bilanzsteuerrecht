@@ -257,3 +257,4 @@ details.norm summary { cursor: pointer; font-weight: 700; font-size: 14.5px; col
 details.norm p { font-size: 14.5px; margin: 8px 0 2px; line-height: 1.5; }
 .karte .frage-gross { font-size: 21px; font-weight: 700; }
 .karte .mittel-t.links { text-align: left; font-size: 16px; }
+.segment.modus { position: static; box-shadow: none; margin: 0; }

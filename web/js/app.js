@@ -3,6 +3,7 @@ import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
 import { THEMEN, THEMA, FAECHER, themenFuer, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
 import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer } from "./katalog.js";
 import { norm, NORMEN } from "./oer/normtext.js";
+import { alsMultipleChoice } from "./oer/mc.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
@@ -34,8 +35,12 @@ function schwaechstesThema() {
 function fachLaden() {
   try { return localStorage.getItem("bsr.fach") === "oer" ? "oer" : "bsr"; } catch (_) { return "bsr"; }
 }
+function oerModusLaden() {
+  try { return localStorage.getItem("bsr.oerModus") === "mc" ? "mc" : "qa"; } catch (_) { return "qa"; }
+}
 const state = {
   fach: fachLaden(),
+  oerModus: oerModusLaden(), // "qa" = selbst formulieren, "mc" = Multiple Choice
   normSuche: "",
   tab: "ueben",
   sitzung: null,
@@ -54,9 +59,10 @@ const farbklasse = (q) => (q >= 0.8 ? "gut" : q >= 0.5 ? "mittel" : "schlecht");
 // ======================= Sitzung =======================
 function neueSitzung(opt) {
   const r = new Zufall();
-  const fr = opt.modus === "klausur"
+  let fr = opt.modus === "klausur"
     ? klausur(opt.anzahl, r, opt.fach)
     : fragen(opt.themen, opt.anzahl || 10, r, opt.filter ?? opt.nurBuchung);
+  if (state.oerModus === "mc") fr = fr.map((f) => alsMultipleChoice(f, r));
   return {
     ...opt, fragen: fr, antworten: fr.map(leereAntwort), bewertungen: fr.map(() => null), aufgedeckt: fr.map(() => false),
     index: 0, beendet: false, start: Date.now(), ende: null, review: null,
@@ -75,7 +81,7 @@ function sitzungTitel(x) {
   if (x.modus === "klausur") return "Klausur " + FAECHER[x.fach || "bsr"].kurz;
   if (x.nurBuchung) return "Buchungssätze";
   if (x.filter === "uebertragung") return "Übertragungsaufgaben";
-  if (x.filter === "qa") return "Frage – Antwort";
+  if (x.filter === "qa") return state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort";
   if (x.themen.length === 1) return THEMA[x.themen[0]].titel;
   return "Gemischte Übung";
 }
@@ -166,6 +172,17 @@ const tabs = () => [
   ["fortschritt", "📊", "Fortschritt"],
 ];
 
+/** Umschalter Frage-Antwort / Multiple Choice (nur ÖR). */
+function modusSchalter() {
+  if (state.fach !== "oer") return "";
+  const m = [["qa", "✍️ Frage – Antwort"], ["mc", "☑️ Multiple Choice"]];
+  return `<div class="gruppe"><div class="gruppe-titel">Antwortmodus</div><div class="segment modus">${m.map(([id, t]) =>
+    `<button data-a="oerModus" data-v="${id}" class="${state.oerModus === id ? "aktiv" : ""}">${t}</button>`).join("")}</div>
+    <div class="gruppe-fuss">${state.oerModus === "mc"
+      ? "Ankreuzen statt formulieren – oft sind mehrere Antworten richtig. Ideal, wenn du das Gesetz gerade nicht dabei hast."
+      : "Antwort selbst formulieren, Musterantwort mit Normzitat aufdecken und selbst bewerten – wie in der Klausur."}</div></div>`;
+}
+
 /** Reiter zur Wahl des Fachs (oben auf jeder Seite). */
 function fachReiter() {
   return `<div class="segment" role="tablist">${Object.values(FAECHER).map((f) =>
@@ -198,9 +215,12 @@ function tabUeben() {
     <div class="kopfzeile"><h1 class="titel">BSR-Trainer</h1><button class="icon-btn" data-a="info" aria-label="Info">ⓘ</button></div>
     ${!istStandalone() ? `<div class="hinweis-box"><span>📲</span><div><b>Als App installieren:</b> ${ios ? "In Safari unten auf <b>Teilen</b> ⬆️ tippen → <b>„Zum Home-Bildschirm“</b>." : installEvent ? "Ein Tipp genügt:" : "In Chrome oben rechts auf <b>⋮</b> tippen → <b>„Zum Startbildschirm hinzufügen“</b> bzw. <b>„App installieren“</b> → <b>„Installieren“</b>."} Danach funktioniert alles auch offline.
       ${!ios && installEvent ? `<button class="knopf" style="margin-top:10px" data-a="installieren">⬇ App installieren</button>` : ""}</div></div>` : ""}
+    ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="liste">
       ${state.fach === "oer" ? `
-      ${schnell("qa", "💬", "Frage – Antwort (75 %)", "Wie in der Klausur: Frage beantworten, Musterantwort mit Normzitat aufdecken, selbst bewerten.")}
+      ${state.oerModus === "mc"
+        ? schnell("qa", "☑️", "Multiple Choice (75 %)", "Die Frage-Antwort-Aufgaben zum Ankreuzen – mit Musterantwort und Normzitat in der Auswertung.")
+        : schnell("qa", "💬", "Frage – Antwort (75 %)", "Wie in der Klausur: Frage beantworten, Musterantwort mit Normzitat aufdecken, selbst bewerten.")}
       ${schnell("uebertragung", "📊", "Übertragungsaufgaben (25 %)", "Grafiken auswerten: Mehrheiten, Sitze, Stimmzettel, Fristen – jedes Mal neue Zahlen.")}
       ${schnell("alles", "🔀", "Alles gemischt", "Frage-Antwort und Übertragungsaufgaben quer durch den Lehrplan.")}` : `
       ${schnell("buchung", "✍️", "Buchungssätze trainieren", "10 zufällige Geschäftsvorfälle aus allen Themen – jedes Mal mit neuen Beträgen.")}
@@ -228,8 +248,11 @@ function tabKlausur() {
     <h1 class="titel">Klausur</h1>
     <div class="liste"><div class="zeile"><span class="symbol">🎓</span><span class="grow"><div><b>Klausursimulation ${FAECHER[state.fach].titel}</b></div>
       <div class="sub">${state.fach === "oer"
-        ? "Wie in der Klausur: ca. 75 % Frage-Antwort und 25 % Übertragungsaufgaben mit Grafiken. Nach der Abgabe vergleichst du deine Antworten mit den Musterantworten und bewertest dich selbst."
+        ? (state.oerModus === "mc"
+          ? "Ca. 75 % Frage-Antwort-Aufgaben als Multiple Choice und 25 % Übertragungsaufgaben mit Grafiken. Wird nach der Abgabe automatisch ausgewertet."
+          : "Wie in der Klausur: ca. 75 % Frage-Antwort und 25 % Übertragungsaufgaben mit Grafiken. Nach der Abgabe vergleichst du deine Antworten mit den Musterantworten und bewertest dich selbst.")
         : "Gemischte Aufgaben aus allen Themen, Schwerpunkt Buchungssätze (ca. 60 %). Die Auswertung gibt es erst nach Abgabe – wie in der echten Klausur."}</div></span></div></div>
+    ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Einstellungen</div><div class="liste">
       <div class="zeile"><span class="grow">Aufgaben</span>
         <button class="badge art-abschluss" style="font-size:18px;padding:4px 14px" data-a="anzahl" data-v="-5">−</button>
@@ -473,7 +496,7 @@ function auswertungView(f, b) {
   return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt ? "" : "nein"}">
     <div class="urteil ${b.korrekt ? "ja" : "nein"}">${b.korrekt ? "✓ Richtig!" : "✗ Leider nicht richtig"}</div>
     ${extra}
-    <div class="erkl">${esc(f.erklaerung)}</div>
+    ${f.antwort ? `<div class="erkl muster">${esc(f.antwort)}</div>${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}` : `<div class="erkl">${esc(f.erklaerung)}</div>`}
     ${normBlock(f.normen)}
     ${f.quelle ? `<div class="quelle">📖 ${esc(f.quelle)}</div>` : ""}
   </div></div>`;
@@ -681,6 +704,11 @@ const AKTIONEN = {
     try { localStorage.setItem("bsr.fach", state.fach); } catch (_) { /* egal */ }
     render();
   },
+  oerModus: (v) => {
+    state.oerModus = v === "mc" ? "mc" : "qa";
+    try { localStorage.setItem("bsr.oerModus", state.oerModus); } catch (_) { /* egal */ }
+    render();
+  },
   schnell: (v, el) => {
     const alle = themenFuer(state.fach).map((t) => t.id);
     if (v === "buchung") starte({ modus: "uebung", themen: alle, nurBuchung: true });
@@ -881,7 +909,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 // ======================= Start =======================
-const VERSION = "0.2.0";
+const VERSION = "0.3.0";
 render();
 zaehleStart();
 
