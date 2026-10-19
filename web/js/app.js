@@ -1,8 +1,8 @@
 import * as G from "./geld.js";
 import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
-import { THEMEN, THEMA, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
-import { fragen, klausur, vorlagenFuer, ALLE } from "./katalog.js";
-import { LERNKARTEN } from "./lernkarten.js";
+import { THEMEN, THEMA, FAECHER, themenFuer, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
+import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer } from "./katalog.js";
+import { norm, NORMEN } from "./oer/normtext.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
@@ -27,11 +27,16 @@ function erfasse(frage, korrekt) {
   speichern();
 }
 function schwaechstesThema() {
-  return THEMEN.filter((t) => zaehler(t.id).b >= 3).sort((a, b) => quote(zaehler(a.id)) - quote(zaehler(b.id)))[0];
+  return themenFuer(state.fach).filter((t) => zaehler(t.id).b >= 3).sort((a, b) => quote(zaehler(a.id)) - quote(zaehler(b.id)))[0];
 }
 
 // ======================= Zustand =======================
+function fachLaden() {
+  try { return localStorage.getItem("bsr.fach") === "oer" ? "oer" : "bsr"; } catch (_) { return "bsr"; }
+}
 const state = {
+  fach: fachLaden(),
+  normSuche: "",
   tab: "ueben",
   sitzung: null,
   sheet: null, // {art: "konto"|"kontoDetail"|"info"|"raster", ...}
@@ -50,10 +55,10 @@ const farbklasse = (q) => (q >= 0.8 ? "gut" : q >= 0.5 ? "mittel" : "schlecht");
 function neueSitzung(opt) {
   const r = new Zufall();
   const fr = opt.modus === "klausur"
-    ? klausur(opt.anzahl, r)
-    : fragen(opt.themen, opt.anzahl || 10, r, opt.nurBuchung);
+    ? klausur(opt.anzahl, r, opt.fach)
+    : fragen(opt.themen, opt.anzahl || 10, r, opt.filter ?? opt.nurBuchung);
   return {
-    ...opt, fragen: fr, antworten: fr.map(leereAntwort), bewertungen: fr.map(() => null),
+    ...opt, fragen: fr, antworten: fr.map(leereAntwort), bewertungen: fr.map(() => null), aufgedeckt: fr.map(() => false),
     index: 0, beendet: false, start: Date.now(), ende: null, review: null,
   };
 }
@@ -67,8 +72,10 @@ const aktFrage = () => s().fragen[s().index];
 const aktAntwort = () => s().antworten[s().index];
 
 function sitzungTitel(x) {
-  if (x.modus === "klausur") return "Klausur";
+  if (x.modus === "klausur") return "Klausur " + FAECHER[x.fach || "bsr"].kurz;
   if (x.nurBuchung) return "Buchungssätze";
+  if (x.filter === "uebertragung") return "Übertragungsaufgaben";
+  if (x.filter === "qa") return "Frage – Antwort";
   if (x.themen.length === 1) return THEMA[x.themen[0]].titel;
   return "Gemischte Übung";
 }
@@ -76,6 +83,13 @@ function sitzungTitel(x) {
 function pruefen() {
   const x = s();
   if (x.bewertungen[x.index]) return;
+  if (aktFrage().typ === "offen") {
+    // Offene Frage: Musterantwort aufdecken, danach Selbstbewertung
+    x.aufgedeckt[x.index] = true;
+    render();
+    setTimeout(() => document.getElementById("auswertung")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+    return;
+  }
   const b = bewerte(aktFrage(), aktAntwort());
   x.bewertungen[x.index] = b;
   erfasse(aktFrage(), b.korrekt);
@@ -83,6 +97,21 @@ function pruefen() {
   render();
   setTimeout(() => document.getElementById("auswertung")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
 }
+/** Selbstbewertung einer offenen Frage (Übung oder Klausur-Rückschau). */
+function selbstBewerten(i, korrekt) {
+  const x = s(), f = x.fragen[i];
+  const vorher = x.bewertungen[i];
+  if (vorher && vorher.korrekt !== null) return;
+  x.bewertungen[i] = { korrekt, offen: true };
+  erfasse(f, korrekt);
+  if (x.klausurEintrag != null) {
+    const k = stat.klausuren[x.klausurEintrag];
+    if (k) { k.richtig = x.bewertungen.filter((b) => b?.korrekt === true).length; k.offen = x.bewertungen.filter((b) => b?.korrekt === null).length; speichern(); }
+  }
+  if (navigator.vibrate) navigator.vibrate(korrekt ? 20 : [30, 40, 30]);
+  render();
+}
+
 function weiter() {
   const x = s();
   if (x.index < x.fragen.length - 1) { x.index += 1; render(); scrollOben(); return; }
@@ -94,13 +123,15 @@ function abgeben() {
   x.fragen.forEach((f, i) => {
     if (!x.bewertungen[i]) {
       x.bewertungen[i] = bewerte(f, x.antworten[i]);
-      erfasse(f, x.bewertungen[i].korrekt);
+      if (x.bewertungen[i].korrekt !== null) erfasse(f, x.bewertungen[i].korrekt);
     }
   });
   x.beendet = true;
   x.ende = Date.now();
-  const richtig = x.bewertungen.filter((b) => b.korrekt).length;
-  stat.klausuren.push({ datum: x.start, richtig, gesamt: x.fragen.length, sek: Math.round((x.ende - x.start) / 1000) });
+  const richtig = x.bewertungen.filter((b) => b.korrekt === true).length;
+  const offen = x.bewertungen.filter((b) => b.korrekt === null).length;
+  stat.klausuren.push({ datum: x.start, richtig, offen, gesamt: x.fragen.length, sek: Math.round((x.ende - x.start) / 1000), fach: x.fach || "bsr" });
+  x.klausurEintrag = stat.klausuren.length - 1;
   speichern();
   state.sheet = null;
   render();
@@ -127,21 +158,27 @@ function scrollOben() {
 }
 
 // ======================= Render: Tabs =======================
-const TABS = [
+const tabs = () => [
   ["ueben", "✏️", "Üben"],
   ["klausur", "⏱️", "Klausur"],
   ["karten", "🗂️", "Karten"],
-  ["konten", "📒", "Konten"],
+  ["konten", state.fach === "oer" ? "§" : "📒", state.fach === "oer" ? "Normen" : "Konten"],
   ["fortschritt", "📊", "Fortschritt"],
 ];
+
+/** Reiter zur Wahl des Fachs (oben auf jeder Seite). */
+function fachReiter() {
+  return `<div class="segment" role="tablist">${Object.values(FAECHER).map((f) =>
+    `<button role="tab" data-a="fach" data-v="${f.id}" class="${state.fach === f.id ? "aktiv" : ""}" aria-selected="${state.fach === f.id}">${f.titel}</button>`).join("")}</div>`;
+}
 
 function render() {
   const aktiv = document.activeElement;
   const fokusId = aktiv && aktiv.dataset ? aktiv.dataset.fokus : null;
   let html = "";
-  const tab = { ueben: tabUeben, klausur: tabKlausur, karten: tabKarten, konten: tabKonten, fortschritt: tabFortschritt }[state.tab]();
-  html += `<main class="screen">${tab}</main>`;
-  html += `<nav class="tabbar">${TABS.map(([id, i, t]) => `<button data-a="tab" data-v="${id}" class="${state.tab === id ? "aktiv" : ""}"><span class="ti">${i}</span>${t}</button>`).join("")}</nav>`;
+  const tab = { ueben: tabUeben, klausur: tabKlausur, karten: tabKarten, konten: state.fach === "oer" ? tabNormen : tabKonten, fortschritt: tabFortschritt }[state.tab]();
+  html += `<main class="screen">${fachReiter()}${tab}</main>`;
+  html += `<nav class="tabbar">${tabs().map(([id, i, t]) => `<button data-a="tab" data-v="${id}" class="${state.tab === id ? "aktiv" : ""}"><span class="ti">${i}</span>${t}</button>`).join("")}</nav>`;
   if (state.sitzung) html += sitzungView();
   if (state.deck) html += deckView();
   if (state.sheet) html += sheetView();
@@ -162,12 +199,16 @@ function tabUeben() {
     ${!istStandalone() ? `<div class="hinweis-box"><span>📲</span><div><b>Als App installieren:</b> ${ios ? "In Safari unten auf <b>Teilen</b> ⬆️ tippen → <b>„Zum Home-Bildschirm“</b>." : installEvent ? "Ein Tipp genügt:" : "In Chrome oben rechts auf <b>⋮</b> tippen → <b>„Zum Startbildschirm hinzufügen“</b> bzw. <b>„App installieren“</b> → <b>„Installieren“</b>."} Danach funktioniert alles auch offline.
       ${!ios && installEvent ? `<button class="knopf" style="margin-top:10px" data-a="installieren">⬇ App installieren</button>` : ""}</div></div>` : ""}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="liste">
+      ${state.fach === "oer" ? `
+      ${schnell("qa", "💬", "Frage – Antwort (75 %)", "Wie in der Klausur: Frage beantworten, Musterantwort mit Normzitat aufdecken, selbst bewerten.")}
+      ${schnell("uebertragung", "📊", "Übertragungsaufgaben (25 %)", "Grafiken auswerten: Mehrheiten, Sitze, Stimmzettel, Fristen – jedes Mal neue Zahlen.")}
+      ${schnell("alles", "🔀", "Alles gemischt", "Frage-Antwort und Übertragungsaufgaben quer durch den Lehrplan.")}` : `
       ${schnell("buchung", "✍️", "Buchungssätze trainieren", "10 zufällige Geschäftsvorfälle aus allen Themen – jedes Mal mit neuen Beträgen.")}
-      ${schnell("alles", "🔀", "Alles gemischt", "Buchungssätze, Theorie- und Rechenaufgaben quer durch das Skript.")}
+      ${schnell("alles", "🔀", "Alles gemischt", "Buchungssätze, Theorie- und Rechenaufgaben quer durch das Skript.")}`}
       ${schwach && quote(zaehler(schwach.id)) < 0.8 ? schnell("schwach", "🎯", "Schwächstes Thema", `${schwach.titel} – bisher ${Math.round(quote(zaehler(schwach.id)) * 100)} % richtig.`, schwach.id) : ""}
     </div></div>
-    <div class="gruppe"><div class="gruppe-titel">Themen (Skript Teil I)</div><div class="liste">
-      ${THEMEN.map((t) => {
+    <div class="gruppe"><div class="gruppe-titel">${state.fach === "oer" ? "Themen (Lehrplan 1.1 – 1.3.4)" : "Themen (Skript Teil I)"}</div><div class="liste">
+      ${themenFuer(state.fach).map((t) => {
         const z = zaehler(t.id), q = quote(z);
         return `<button class="zeile" data-a="thema" data-v="${t.id}">
           <span class="symbol">${t.icon}</span>
@@ -179,12 +220,16 @@ function tabUeben() {
 }
 const schnell = (a, icon, titel, text, v = "") => `<button class="zeile" data-a="schnell" data-v="${a}" data-t="${v}"><span class="symbol">${icon}</span><span class="grow"><div><b>${titel}</b></div><div class="sub">${esc(text)}</div></span><span class="chev">›</span></button>`;
 
+const klausurenFach = () => stat.klausuren.filter((k) => (k.fach || "bsr") === state.fach);
+
 function tabKlausur() {
   const zeiten = [0, 30, 45, 60, 90];
   return `
     <h1 class="titel">Klausur</h1>
-    <div class="liste"><div class="zeile"><span class="symbol">🎓</span><span class="grow"><div><b>Klausursimulation</b></div>
-      <div class="sub">Gemischte Aufgaben aus allen Themen, Schwerpunkt Buchungssätze (ca. 60 %). Die Auswertung gibt es erst nach Abgabe – wie in der echten Klausur.</div></span></div></div>
+    <div class="liste"><div class="zeile"><span class="symbol">🎓</span><span class="grow"><div><b>Klausursimulation ${FAECHER[state.fach].titel}</b></div>
+      <div class="sub">${state.fach === "oer"
+        ? "Wie in der Klausur: ca. 75 % Frage-Antwort und 25 % Übertragungsaufgaben mit Grafiken. Nach der Abgabe vergleichst du deine Antworten mit den Musterantworten und bewertest dich selbst."
+        : "Gemischte Aufgaben aus allen Themen, Schwerpunkt Buchungssätze (ca. 60 %). Die Auswertung gibt es erst nach Abgabe – wie in der echten Klausur."}</div></span></div></div>
     <div class="gruppe"><div class="gruppe-titel">Einstellungen</div><div class="liste">
       <div class="zeile"><span class="grow">Aufgaben</span>
         <button class="badge art-abschluss" style="font-size:18px;padding:4px 14px" data-a="anzahl" data-v="-5">−</button>
@@ -194,16 +239,17 @@ function tabKlausur() {
         ${zeiten.map((m) => `<button class="badge ${state.klausurMinuten === m ? "art-aktiv" : "art-abschluss"}" style="font-size:13px;padding:5px 9px" data-a="minuten" data-v="${m}">${m ? m + " min" : "ohne"}</button>`).join("")}</div>
     </div></div>
     <button class="knopf" data-a="klausurStart">▶ Klausur starten</button>
-    ${stat.klausuren.length ? `<div class="gruppe"><div class="gruppe-titel">Bisherige Klausuren</div><div class="liste">
-      ${[...stat.klausuren].reverse().slice(0, 30).map((k) => `<div class="zeile"><span class="grow"><div>${new Date(k.datum).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" })}</div><div class="sub">${Math.round(k.sek / 60)} min</div></span>
+    ${klausurenFach().length ? `<div class="gruppe"><div class="gruppe-titel">Bisherige Klausuren</div><div class="liste">
+      ${[...klausurenFach()].reverse().slice(0, 30).map((k) => `<div class="zeile"><span class="grow"><div>${new Date(k.datum).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" })}</div><div class="sub">${Math.round(k.sek / 60)} min${k.offen ? ` · ${k.offen} nicht selbst bewertet` : ""}</div></span>
         <b class="mono" style="color:${k.richtig / k.gesamt >= 0.5 ? "var(--ok)" : "var(--err)"}">${k.richtig}/${k.gesamt}</b></div>`).join("")}
     </div></div>` : ""}`;
 }
 
 function tabKarten() {
+  const LERNKARTEN = kartenFuer(state.fach);
   const gewusst = new Set(stat.karten);
   const offen = LERNKARTEN.filter((k) => !gewusst.has(k.id));
-  const themen = THEMEN.filter((t) => LERNKARTEN.some((k) => k.thema === t.id));
+  const themen = themenFuer(state.fach).filter((t) => LERNKARTEN.some((k) => k.thema === t.id));
   return `
     <h1 class="titel">Lernkarten</h1>
     <div class="liste">
@@ -216,7 +262,7 @@ function tabKarten() {
         return `<button class="zeile" data-a="kartenThema" data-v="${t.id}"><span style="font-size:20px;color:${an ? "var(--accent)" : "var(--text3)"}">${an ? "●" : "○"}</span>
           <span class="grow">${esc(t.titel)}</span><span class="sub mono">${ks.filter((k) => gewusst.has(k.id)).length}/${ks.length}</span></button>`;
       }).join("")}
-    </div><div class="gruppe-fuss">Die Karten fassen Merksätze, Definitionen, Fristen und Formeln aus dem Skript zusammen.</div></div>
+    </div><div class="gruppe-fuss">${state.fach === "oer" ? "Jede Frage-Antwort-Aufgabe gibt es auch als Karte – Rückseite mit Musterantwort und Normzitat." : "Die Karten fassen Merksätze, Definitionen, Fristen und Formeln aus dem Skript zusammen."}</div></div>
     ${state.kartenThemen.size ? `<button class="knopf" data-a="deck" data-v="auswahl">▶ Auswahl lernen</button>` : ""}`;
 }
 
@@ -229,17 +275,48 @@ function tabKonten() {
     </div></div>`).join("")}`;
 }
 
+function normenListe() {
+  const q = state.normSuche.trim().toLowerCase();
+  const gruppen = [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"]];
+  const html = gruppen.map(([g, titel]) => {
+    const liste = NORMEN.filter((n) => n.g === g).filter((n) => !q || `${n.nr} ${n.titel} ${n.abs.map((a) => a.text).join(" ")}`.toLowerCase().includes(q)
+      || (g === "GG" ? `art ${n.nr}` : `§ ${n.nr}`).toLowerCase() === q);
+    if (!liste.length) return "";
+    return `<div class="gruppe"><div class="gruppe-titel">${titel}</div><div class="liste">
+      ${liste.map((n) => `<button class="zeile" data-a="normDetail" data-v="${n.g} ${n.nr}"><span class="grow"><b>${g === "GG" ? (n.nr === "Präambel" ? "Präambel" : "Art. " + n.nr) : "§ " + n.nr}</b> <span class="sub">${esc(n.titel || n.abs[0]?.text.slice(0, 70) + "…")}</span></span><span class="chev">›</span></button>`).join("")}
+    </div></div>`;
+  }).join("");
+  return html || `<p class="zentriert sub" style="color:var(--text2);margin-top:30px">Keine Vorschrift gefunden.</p>`;
+}
+
+function tabNormen() {
+  return `
+    <h1 class="titel">Normen</h1>
+    <div class="suche" style="padding:0 0 4px"><input type="search" id="normSuche" placeholder="Suchen, z. B. Bundesrat, 63, Wahlrecht" autocomplete="off" value="${esc(state.normSuche)}"></div>
+    <div class="gruppe-fuss" style="margin:4px 4px 0">Alle für den Lehrplan relevanten Vorschriften im Wortlaut – auch offline.</div>
+    <div id="normListe">${normenListe()}</div>`;
+}
+
+function normBlock(refs) {
+  const ns = (refs || []).map(norm).filter(Boolean);
+  if (!ns.length) return "";
+  return `<div class="normen"><div class="sub" style="margin-bottom:4px">Gesetzestext</div>${ns.map((n) => `<details class="norm"${ns.length <= 2 ? " open" : ""}><summary>${esc(n.label)}${n.titel ? ` <span class="sub">– ${esc(n.titel)}</span>` : ""}</summary>
+    ${n.absaetze.map((a) => `<p>${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</details>`).join("")}</div>`;
+}
+
 function tabFortschritt() {
-  const ges = Object.values(stat.proThema).reduce((a, z) => ({ b: a.b + z.b, r: a.r + z.r }), { b: 0, r: 0 });
+  const LERNKARTEN = kartenFuer(state.fach);
+  const ges = themenFuer(state.fach).map((t) => zaehler(t.id)).reduce((a, z) => ({ b: a.b + z.b, r: a.r + z.r }), { b: 0, r: 0 });
+  const gewusst = new Set(stat.karten);
   const q = quote(ges);
   return `
     <h1 class="titel">Fortschritt</h1>
     <div class="liste"><div class="zeile" style="gap:18px">
       <div class="ring" style="--p:${Math.round(q * 100)};width:84px;height:84px;margin:0"><div style="width:66px;height:66px;font-size:18px">${Math.round(q * 100)} %</div></div>
-      <div class="grow"><div><b>${ges.r} von ${ges.b} richtig</b></div><div class="sub">${stat.klausuren.length} Klausuren · ${stat.karten.length}/${LERNKARTEN.length} Lernkarten gewusst</div></div>
+      <div class="grow"><div><b>${ges.r} von ${ges.b} richtig</b></div><div class="sub">${klausurenFach().length} Klausuren · ${LERNKARTEN.filter((k) => gewusst.has(k.id)).length}/${LERNKARTEN.length} Lernkarten gewusst</div></div>
     </div></div>
     <div class="gruppe"><div class="gruppe-titel">Nach Thema</div><div class="liste">
-      ${THEMEN.map((t) => {
+      ${themenFuer(state.fach).map((t) => {
         const z = zaehler(t.id), qq = quote(z);
         return `<div class="zeile"><span class="grow"><div style="display:flex;justify-content:space-between"><span>${t.icon} ${esc(t.titel)}</span><span class="sub mono">${z.b ? Math.round(qq * 100) + " %" : "–"}</span></div>
           <div class="balken"><span class="${z.b ? farbklasse(qq) : ""}" style="width:${Math.round(qq * 100)}%"></span></div>
@@ -272,6 +349,10 @@ function sitzungView() {
   if (x.modus === "klausur") {
     fuss = `<button class="knopf zweit" data-a="zurueck" ${x.index === 0 ? "disabled" : ""}>‹ Zurück</button>` +
       (x.index === n - 1 ? `<button class="knopf" data-a="abgeben">✓ Abgeben</button>` : `<button class="knopf" data-a="weiter">Weiter ›</button>`);
+  } else if (f.typ === "offen" && !b && !x.aufgedeckt[x.index]) {
+    fuss = `<button class="knopf" data-a="pruefen">Antwort zeigen</button>`;
+  } else if (f.typ === "offen" && !b) {
+    fuss = `<button class="knopf orange" data-a="selbst" data-v="0">✗ Nicht gewusst</button><button class="knopf gruen" data-a="selbst" data-v="1">✓ Gewusst</button>`;
   } else if (!b) {
     fuss = `<button class="knopf" id="pruefen" data-a="pruefen" ${istLeer(f, aktAntwort()) ? "disabled" : ""}>Prüfen</button>`;
   } else {
@@ -283,23 +364,32 @@ function sitzungView() {
     <div class="fortschritt"><span style="width:${((x.index + 1) / n) * 100}%"></span></div>
     <div class="vb-inhalt">
       <div class="nr">Aufgabe ${x.index + 1} von ${n}</div>
-      ${frageView(f, aktAntwort(), b, false)}
+      ${frageView(f, aktAntwort(), b, false, x.modus !== "klausur" && x.aufgedeckt[x.index])}
     </div>
     <div class="vb-fuss"><div class="reihe">${fuss}</div></div>
   </div>`;
 }
 
-function frageView(f, antwort, b, gesperrt) {
-  const lock = gesperrt || !!b;
+function frageView(f, antwort, b, gesperrt, aufgedeckt = false) {
+  const lock = gesperrt || !!b || aufgedeckt;
   let eingabe = "";
   if (f.typ === "buchung") eingabe = buchungView(antwort, b?.buchung, lock);
   else if (f.typ === "auswahl") eingabe = auswahlView(f, antwort, !!b, lock);
+  else if (f.typ === "offen") eingabe = offenView(antwort, lock);
   else eingabe = zahlView(f, antwort, b, lock);
+  const zeigeAuswertung = b || (f.typ === "offen" && (aufgedeckt || gesperrt));
   return `
-    <div class="aufgabe"><div class="meta"><span>${THEMA[f.thema].icon} ${esc(THEMA[f.thema].titel)}</span><span class="typ">${typBezeichnung(f)}</span></div>
-      <div class="text">${esc(f.text)}</div></div>
+    <div class="aufgabe"><div class="meta"><span>${THEMA[f.thema].icon} ${esc(THEMA[f.thema].titel)}</span><span class="typ">${f.uebertragung ? "Übertragung · " : ""}${typBezeichnung(f)}</span></div>
+      <div class="text">${esc(f.text)}</div>
+      ${f.grafik ? `<div class="grafik-box">${f.grafik}</div>` : ""}</div>
     ${eingabe}
-    ${b ? auswertungView(f, b) : ""}`;
+    ${zeigeAuswertung ? auswertungView(f, b || { korrekt: null, offen: true }) : ""}`;
+}
+
+function offenView(antwort, lock) {
+  return `<div class="gruppe"><div class="gruppe-titel">Deine Antwort ${lock ? "" : "(Stichpunkte, optional)"}</div>
+    <textarea id="offen" class="offen-eingabe" rows="5" data-fokus="offen" placeholder="Antwort mit Normen notieren – z. B. „Art. 51 Abs. 2 GG: …“" ${lock ? "readonly" : ""}>${esc(antwort.text)}</textarea>
+    ${lock ? "" : `<div class="gruppe-fuss">Formuliere deine Antwort wie in der Klausur und decke dann die Musterantwort auf.</div>`}</div>`;
 }
 
 function buchungView(antwort, bb, lock) {
@@ -350,12 +440,12 @@ function auswahlView(f, antwort, zeige, lock) {
 function zahlView(f, antwort, b, lock) {
   return `<div class="gruppe"><div class="gruppe-titel">Deine Lösung</div>
     <div class="zahl-eingabe">
-      ${lock ? "" : `<button class="vz" data-a="vorzeichen" aria-label="Vorzeichen wechseln">±</button>`}
+      ${lock || f.ganz ? "" : `<button class="vz" data-a="vorzeichen" aria-label="Vorzeichen wechseln">±</button>`}
       <input id="zahl" inputmode="decimal" autocomplete="off" placeholder="Ergebnis" data-fokus="zahl" value="${esc(antwort.text)}" ${lock ? "disabled" : ""}>
       <span class="einheit">${f.einheit}</span>
       ${b ? `<span style="font-size:22px;color:${b.korrekt ? "var(--ok)" : "var(--err)"}">${b.korrekt ? "✓" : "✗"}</span>` : ""}
     </div>
-    <div class="gruppe-fuss">Format z. B. 1.234,56 – negative Werte mit ±. Toleranz ± ${G.text(f.toleranz)}.</div></div>`;
+    <div class="gruppe-fuss">${f.ganz ? "Ganze Zahl eingeben." : `Format z. B. 1.234,56 – negative Werte mit ±. Toleranz ± ${G.text(f.toleranz)}.`}</div></div>`;
 }
 
 function auswertungView(f, b) {
@@ -370,16 +460,28 @@ function auswertungView(f, b) {
       ${l.haben.map(([k, c]) => `<div class="loesung-zeile haben"><span>an ${esc(K(k).name)}</span><span>${G.text(c)}</span></div>`).join("")}</div>
       ${!b.korrekt && b.buchung.fehlend.length ? `<div class="fehlt"><b>In deiner Lösung fehlt:</b><br>${b.buchung.fehlend.map(([sd, k, c]) => `• ${sd === "soll" ? "Soll" : "Haben"}: ${esc(K(k).kurz)} ${G.text(c)}`).join("<br>")}</div>` : ""}`;
   }
+  if (f.typ === "offen") {
+    const urteil = b.korrekt === true ? `<div class="urteil ja">✓ Gewusst</div>` : b.korrekt === false ? `<div class="urteil nein">✗ Nicht gewusst</div>` : `<div class="urteil">Musterantwort</div>`;
+    return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt === false ? "nein" : b.korrekt === null ? "neutral" : ""}">
+      ${urteil}
+      <div class="erkl muster">${esc(f.antwort)}</div>
+      ${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}
+      ${normBlock(f.normen)}
+      ${b.korrekt === null ? `<div class="gruppe-fuss" style="margin:10px 0 0">Vergleiche mit deiner Antwort: Hast du die wesentlichen Punkte und die richtige Norm genannt?</div>` : ""}
+    </div></div>`;
+  }
   return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt ? "" : "nein"}">
     <div class="urteil ${b.korrekt ? "ja" : "nein"}">${b.korrekt ? "✓ Richtig!" : "✗ Leider nicht richtig"}</div>
     ${extra}
     <div class="erkl">${esc(f.erklaerung)}</div>
+    ${normBlock(f.normen)}
     ${f.quelle ? `<div class="quelle">📖 ${esc(f.quelle)}</div>` : ""}
   </div></div>`;
 }
 
 function ergebnisView() {
-  const x = s(), n = x.fragen.length, richtig = x.bewertungen.filter((b) => b?.korrekt).length, q = richtig / n;
+  const x = s(), n = x.fragen.length, richtig = x.bewertungen.filter((b) => b?.korrekt === true).length, q = richtig / n;
+  const unbewertet = x.bewertungen.filter((b) => b?.korrekt === null).length;
   const lob = q >= 0.9 ? "Hervorragend – klausurreif!" : q >= 0.7 ? "Gut! Sieh dir die falschen Aufgaben noch einmal an."
     : q >= 0.5 ? "Solide Basis – hier lohnt sich noch eine Runde." : "Dranbleiben! Lies die Erklärungen zu den falschen Aufgaben.";
   const farbe = q >= 0.8 ? "var(--ok)" : q >= 0.5 ? "var(--warn)" : "var(--err)";
@@ -390,13 +492,15 @@ function ergebnisView() {
       <div class="zentriert">
         <div class="ring" style="--p:${Math.round(q * 100)};--farbe:${farbe}"><div>${Math.round(q * 100)} %</div></div>
         <h2 style="margin:8px 0 4px">${richtig} von ${n} richtig</h2>
+        ${unbewertet ? `<div class="hinweis-box" style="margin:10px 0;text-align:left"><span>✍️</span><div><b>${unbewertet} Frage-Antwort-Aufgabe${unbewertet > 1 ? "n" : ""} noch selbst bewerten:</b> Antippen, mit der Musterantwort vergleichen und „Gewusst“ oder „Nicht gewusst“ wählen.</div></div>` : ""}
         <div class="sub" style="color:var(--text2)">${lob}</div>
         ${x.modus === "klausur" ? `<div class="sub" style="color:var(--text2);margin-top:4px">Bearbeitungszeit: ${Math.floor(dauer / 60)} min ${dauer % 60} s</div>` : ""}
       </div>
       <div class="gruppe"><div class="gruppe-titel">Aufgaben – antippen für Lösung</div><div class="liste">
         ${x.fragen.map((f, i) => {
           const ok = x.bewertungen[i]?.korrekt;
-          return `<button class="zeile" data-a="review" data-v="${i}"><span style="font-size:20px;color:${ok ? "var(--ok)" : "var(--err)"}">${ok ? "✓" : "✗"}</span>
+          const zeichen = ok === null ? "?" : ok ? "✓" : "✗", farbe = ok === null ? "var(--warn)" : ok ? "var(--ok)" : "var(--err)";
+          return `<button class="zeile" data-a="review" data-v="${i}"><span style="font-size:20px;font-weight:700;color:${farbe}">${zeichen}</span>
             <span class="grow"><div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px">${esc(f.text)}</div>
             <div class="sub">${esc(THEMA[f.thema].titel)} · ${typBezeichnung(f)}</div></span><span class="chev">›</span></button>`;
         }).join("")}
@@ -414,7 +518,9 @@ function reviewView() {
   return `<div class="vollbild">
     <div class="vb-kopf"><button class="link" data-a="reviewZurueck">‹ Übersicht</button><div class="mitte">Aufgabe ${i + 1}</div><span class="link"></span></div>
     <div class="vb-inhalt">${frageView(x.fragen[i], x.antworten[i], x.bewertungen[i], true)}</div>
-    <div class="vb-fuss"><div class="reihe">
+    <div class="vb-fuss">
+    ${x.bewertungen[i]?.korrekt === null ? `<div class="reihe" style="margin-bottom:10px"><button class="knopf orange" data-a="selbstReview" data-v="0">✗ Nicht gewusst</button><button class="knopf gruen" data-a="selbstReview" data-v="1">✓ Gewusst</button></div>` : ""}
+    <div class="reihe">
       <button class="knopf zweit" data-a="reviewNav" data-v="-1" ${i === 0 ? "disabled" : ""}>‹ Vorherige</button>
       <button class="knopf zweit" data-a="reviewNav" data-v="1" ${i === x.fragen.length - 1 ? "disabled" : ""}>Nächste ›</button>
     </div></div></div>`;
@@ -435,8 +541,9 @@ function deckView() {
     <div class="fortschritt"><span style="width:${(d.index / d.karten.length) * 100}%"></span></div>
     <div class="vb-inhalt" style="display:flex;flex-direction:column">
       <div class="karte-buehne"><div class="karte ${d.um ? "um" : ""}" data-a="umdrehen">
-        <div class="seite"><div class="klein">${esc(THEMA[k.thema].titel)}</div><div class="gross">${esc(k.vorne)}</div><div class="sub" style="color:var(--text3);margin-top:24px">Tippen zum Umdrehen</div></div>
-        <div class="seite rueck"><div class="klein">${esc(k.vorne)}</div><div class="mittel-t">${esc(k.hinten)}</div></div>
+        <div class="seite"><div class="klein">${esc(THEMA[k.thema].titel)}</div><div class="${k.normen ? "frage-gross" : "gross"}">${esc(k.vorne)}</div><div class="sub" style="color:var(--text3);margin-top:24px">Tippen zum Umdrehen</div></div>
+        <div class="seite rueck"><div class="klein">${esc(k.vorne)}</div><div class="mittel-t ${k.normen ? "links" : ""}">${esc(k.hinten)}</div>
+          ${k.normen?.length ? `<div class="sub" style="margin-top:12px">${k.normen.map((r) => norm(r)?.label).filter(Boolean).map(esc).join(" · ")}</div>` : ""}</div>
       </div></div>
     </div>
     <div class="vb-fuss"><div class="reihe">
@@ -463,6 +570,12 @@ function sheetView() {
         <div class="zeile"><span class="grow">Kontoart</span><span class="badge art-${k.art}">${esc(k.artName)}</span></div></div>
       <div class="gruppe"><div class="gruppe-titel">T-Konto</div><div class="liste">${tKonto(k)}</div></div>
       <div class="gruppe"><div class="gruppe-titel">Buchungsregel</div><div class="liste"><div class="zeile"><span class="grow">${esc(k.regel)}${k.hinweis ? `<div class="sub" style="margin-top:6px">${esc(k.hinweis)}</div>` : ""}</span></div></div></div>`;
+  } else if (sh.art === "norm") {
+    const n = norm(sh.ref);
+    titel = n.label;
+    inhalt = `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
+      ${n.absaetze.map((a) => `<p style="margin:8px 0">${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</span></div></div>
+      <div class="gruppe-fuss">Quelle: www.gesetze-im-internet.de</div>`;
   } else if (sh.art === "merksaetze") {
     titel = "Merksätze";
     inhalt = `<div class="liste">${MERKSAETZE.map(([t, x]) => `<div class="zeile"><span class="grow"><b>${esc(t)}</b><div class="sub">${esc(x)}</div></span></div>`).join("")}</div>`;
@@ -473,7 +586,7 @@ function sheetView() {
       <div class="gruppe-fuss" style="padding-bottom:16px">${x.antworten.filter((a, i) => !istLeer(x.fragen[i], a)).length} von ${x.fragen.length} bearbeitet</div>`;
   } else if (sh.art === "info") {
     titel = "Info";
-    inhalt = `<div class="liste"><div class="zeile"><span class="grow"><b style="font-size:20px">BSR-Trainer</b><div class="sub">Lern-App zur Klausurvorbereitung im Bilanzsteuerrecht, Grundstudium I – Buchführung (Teil I).</div></span></div></div>
+    inhalt = `<div class="liste"><div class="zeile"><span class="grow"><b style="font-size:20px">BSR-Trainer</b><div class="sub">Lern-App zur Klausurvorbereitung im Grundstudium I: Bilanzsteuerrecht (Buchführung, Teil I) und Öffentliches Recht (Staatsrecht, Lehrplan 1.1 bis 1.3.4.5).</div></span></div></div>
       <div class="gruppe"><div class="gruppe-titel">So funktioniert's</div><div class="liste">
         ${[
           ["✍️", "Buchungssätze: Konten über „Konto wählen“ aus dem Kontenplan suchen, Betrag eintippen. Zusammengesetzte Buchungssätze über „Position hinzufügen“."],
@@ -481,11 +594,12 @@ function sheetView() {
           ["🎲", `Generierte Aufgaben haben bei jedem Durchlauf neue Beträge – insgesamt ${ALLE.length} Aufgabentypen.`],
           ["⏱️", "Im Klausurmodus gibt es die Auswertung erst nach Abgabe."],
           ["€", "USt-Regelsatz 19 %, ermäßigt 7 %. Kontenbezeichnungen nach dem Kontenplan des Skripts."],
+          ["§", "Öffentliches Recht: Frage-Antwort-Aufgaben deckst du auf und bewertest sie selbst. Gesetzestexte (GG, BWahlG, PartG) stehen im Reiter „Normen“."],
           ["✈️", "Funktioniert offline. Der Lernfortschritt wird nur auf diesem Gerät gespeichert."],
           ["📊", "Beim Start wird anonym gezählt, ob die App im Browser oder vom Home-Bildschirm geöffnet wurde (GoatCounter, ohne Cookies). Lernergebnisse werden nie übertragen."],
         ].map(([i, t]) => `<div class="zeile"><span>${i}</span><span class="grow" style="font-size:15px">${t}</span></div>`).join("")}
       </div></div>
-      <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Inoffizielle Lernhilfe. Die Aufgaben sind inhaltlich am Skript „Bilanzsteuerrecht Grundstudium I, Teil I“ und den zugehörigen Übungen orientiert. Für die Richtigkeit wird keine Gewähr übernommen – maßgeblich sind Skript, Gesetz und Lehrveranstaltung.</span></div>
+      <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Inoffizielle Lernhilfe. Die Aufgaben sind inhaltlich am Skript „Bilanzsteuerrecht Grundstudium I, Teil I“ mit Übungen sowie am Lehrplan Öffentliches Recht und den Gesetzestexten (Stand GG 22.03.2025, BWahlG 03.07.2026) orientiert. Für die Richtigkeit wird keine Gewähr übernommen – maßgeblich sind Skript, Gesetz und Lehrveranstaltung.</span></div>
       <div class="zeile"><span class="grow">Version</span><span class="sub">${VERSION}</span></div></div></div>`;
   }
   return `<div class="sheet-hg" data-a="sheetZu"><div class="sheet ${halb ? "halb" : ""}" data-stop="1">
@@ -561,9 +675,16 @@ function zeile(id) {
 const AKTIONEN = {
   tab: (v) => { state.tab = v; render(); window.scrollTo(0, 0); },
   info: () => { state.sheet = { art: "info" }; render(); },
+  fach: (v) => {
+    state.fach = v === "oer" ? "oer" : "bsr";
+    state.kartenThemen = new Set();
+    try { localStorage.setItem("bsr.fach", state.fach); } catch (_) { /* egal */ }
+    render();
+  },
   schnell: (v, el) => {
-    const alle = THEMEN.map((t) => t.id);
+    const alle = themenFuer(state.fach).map((t) => t.id);
     if (v === "buchung") starte({ modus: "uebung", themen: alle, nurBuchung: true });
+    else if (v === "qa" || v === "uebertragung") starte({ modus: "uebung", themen: alle, filter: v });
     else if (v === "alles") starte({ modus: "uebung", themen: alle });
     else starte({ modus: "uebung", themen: [el.dataset.t] });
   },
@@ -583,7 +704,10 @@ const AKTIONEN = {
     const x = s(), offen = x.antworten.filter((a, i) => istLeer(x.fragen[i], a)).length;
     if (confirm(`Klausur abgeben?${offen ? `\n${offen} Aufgabe(n) noch unbearbeitet.` : ""}`)) abgeben();
   },
-  nochmal: () => { const x = s(); starte({ modus: x.modus, themen: x.themen, nurBuchung: x.nurBuchung, anzahl: x.fragen.length, minuten: x.minuten }); },
+  nochmal: () => { const x = s(); starte({ modus: x.modus, fach: x.fach, themen: x.themen, nurBuchung: x.nurBuchung, filter: x.filter, anzahl: x.fragen.length, minuten: x.minuten }); },
+  selbst: (v) => selbstBewerten(s().index, v === "1"),
+  selbstReview: (v) => selbstBewerten(s().review, v === "1"),
+  normDetail: (v) => { state.sheet = { art: "norm", ref: v }; render(); },
   review: (v) => { s().review = Number(v); render(); scrollOben(); },
   reviewZurueck: () => { s().review = null; render(); },
   reviewNav: (v) => { s().review += Number(v); render(); scrollOben(); },
@@ -628,10 +752,11 @@ const AKTIONEN = {
   merksaetze: () => { state.sheet = { art: "merksaetze" }; render(); },
   anzahl: (v) => { state.klausurAnzahl = Math.min(60, Math.max(5, state.klausurAnzahl + Number(v))); render(); },
   minuten: (v) => { state.klausurMinuten = Number(v); render(); },
-  klausurStart: () => starte({ modus: "klausur", anzahl: state.klausurAnzahl, minuten: state.klausurMinuten || null }),
+  klausurStart: () => starte({ modus: "klausur", fach: state.fach, anzahl: state.klausurAnzahl, minuten: state.klausurMinuten || null }),
   kartenThema: (v) => { state.kartenThemen.has(v) ? state.kartenThemen.delete(v) : state.kartenThemen.add(v); render(); },
   deck: (v) => {
     const r = new Zufall(), gew = new Set(stat.karten);
+    const LERNKARTEN = kartenFuer(state.fach);
     const karten = v === "alle" ? LERNKARTEN : v === "offen" ? LERNKARTEN.filter((k) => !gew.has(k.id)) : LERNKARTEN.filter((k) => state.kartenThemen.has(k.thema));
     state.deck = { karten: r.mischen(karten), index: 0, um: false, gewusst: 0 };
     render();
@@ -678,6 +803,11 @@ app.addEventListener("input", (e) => {
   } else if (t.id === "zahl") {
     aktAntwort().text = t.value;
     aktualisierePruefen();
+  } else if (t.id === "offen") {
+    aktAntwort().text = t.value;
+  } else if (t.id === "normSuche") {
+    state.normSuche = t.value;
+    document.getElementById("normListe").innerHTML = normenListe();
   } else if (t.id === "kontoSuche") {
     state.kontoSuche = t.value;
     document.getElementById("kontoListe").innerHTML = kontoListe();
@@ -751,7 +881,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 // ======================= Start =======================
-const VERSION = "0.1.3";
+const VERSION = "0.2.0";
 render();
 zaehleStart();
 

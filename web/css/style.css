@@ -210,3 +210,50 @@ button.zeile:active { background: var(--card2); }
 
 .toast { position: fixed; left: 50%; bottom: calc(90px + var(--safe-b)); transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 14px; z-index: 50; box-shadow: 0 4px 18px rgba(0,0,0,.2); max-width: 90%; }
 .versteckt { display: none !important; }
+
+/* ---------- Fach-Reiter ---------- */
+.segment { display: flex; gap: 2px; background: var(--card2); border-radius: 10px; padding: 2px; margin: 6px 0 0; position: sticky; top: calc(var(--safe-t) + 4px); z-index: 5; box-shadow: var(--shadow); }
+.segment button { flex: 1; padding: 8px 6px; border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--text2); }
+.segment button.aktiv { background: var(--card); color: var(--text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); }
+
+/* ---------- Grafiken ---------- */
+.grafik-box { margin-top: 12px; }
+svg.grafik { width: 100%; height: auto; display: block; font-family: inherit; }
+.g-titel { font-size: 13px; font-weight: 700; fill: var(--text); }
+.g-text { font-size: 12px; fill: var(--text); }
+.g-wert { font-size: 12px; font-weight: 700; fill: var(--text); font-variant-numeric: tabular-nums; }
+.g-klein { font-size: 10.5px; fill: var(--text2); }
+.g-gross { font-size: 26px; font-weight: 800; fill: var(--text); }
+.g-linie { stroke: var(--err); stroke-width: 2; stroke-dasharray: 5 4; }
+.g-trenn { stroke: var(--line); stroke-width: 1.5; }
+.g-papier { fill: #fdfcf7; stroke: #c9c3a8; }
+.stimmzettel .g-text, .stimmzettel .g-titel { fill: #222; }
+.stimmzettel .g-klein { fill: #666; }
+.g-erst { font-size: 12px; font-weight: 700; fill: #111; }
+.g-zweit { font-size: 12px; font-weight: 700; fill: #1d4ed8; }
+.g-kreis { fill: none; stroke: #333; stroke-width: 1.3; }
+.g-kreuz { stroke: #1d4ed8; stroke-width: 2.6; stroke-linecap: round; fill: none; }
+.g-hand { font-size: 15px; fill: #b91c1c; font-style: italic; }
+.legende { display: flex; flex-wrap: wrap; gap: 6px 14px; justify-content: center; font-size: 13px; margin-top: 6px; }
+.legende .leg { display: inline-flex; align-items: center; gap: 6px; }
+.legende i { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+.tab-wrap { overflow-x: auto; margin-top: 4px; }
+.tab-titel { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+table.gtab { width: 100%; border-collapse: collapse; font-size: 14px; }
+.gtab th, .gtab td { padding: 7px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+.gtab th { font-size: 12px; text-transform: uppercase; color: var(--text2); letter-spacing: 0.2px; }
+.gtab .r { text-align: right; font-variant-numeric: tabular-nums; }
+.gtab tr.hervor td { background: var(--accent-weak); font-weight: 600; }
+
+/* ---------- Frage – Antwort ---------- */
+.offen-eingabe { width: 100%; min-height: 110px; resize: vertical; padding: 12px 14px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--card); font: inherit; font-size: 16px; line-height: 1.45; outline: none; box-shadow: var(--shadow); }
+.offen-eingabe:focus { border-color: var(--accent); }
+.auswertung.neutral { border-left-color: var(--accent); }
+.auswertung .urteil:not(.ja):not(.nein) { color: var(--accent); }
+.erkl.muster { background: var(--card2); border-radius: 10px; padding: 10px 12px; }
+.normen { margin-top: 12px; }
+details.norm { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; margin-top: 6px; background: var(--card); }
+details.norm summary { cursor: pointer; font-weight: 700; font-size: 14.5px; color: var(--accent); }
+details.norm p { font-size: 14.5px; margin: 8px 0 2px; line-height: 1.5; }
+.karte .frage-gross { font-size: 21px; font-weight: 700; }
+.karte .mittel-t.links { text-align: left; font-size: 16px; }
