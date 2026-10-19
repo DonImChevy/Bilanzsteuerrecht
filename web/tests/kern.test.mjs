@@ -169,3 +169,20 @@ test("Multiple-Choice-Fassung für jede ÖR-Frage-Antwort-Aufgabe", () => {
     assert.ok(m.antwort && m.normen);
   }
 });
+
+test("Wiederholung nach Lernintervallen", async () => {
+  const { planen, faellige, naechste, tagPlus } = await import("../js/wiederholung.js");
+  const t0 = new Date(2026, 9, 19, 15, 30).getTime();
+  let e = planen(undefined, true, t0);
+  assert.deepEqual(e, { fach: 1, faellig: tagPlus(t0, 1) });
+  assert.equal(new Date(e.faellig).getDate(), 20);
+  assert.equal(new Date(e.faellig).getHours(), 0);
+  const tage = [];
+  for (let i = 0; i < 6; i++) { e = planen(e, true, t0); tage.push(e.fach); }
+  assert.deepEqual(tage, [2, 3, 4, 5, 5, 5]);
+  assert.equal(new Date(e.faellig).getMonth(), 10); // 35 Tage später → November
+  assert.deepEqual(planen(e, false, t0), { fach: 1, faellig: tagPlus(t0, 1) });
+  const lern = { a: { fach: 1, faellig: t0 - 10 }, b: { fach: 2, faellig: t0 - 99 }, c: { fach: 3, faellig: t0 + 5 } };
+  assert.deepEqual(faellige(lern, ["a", "b", "c", "d"], t0), ["b", "a"]);
+  assert.equal(naechste(lern, ["a", "b", "c"], t0), t0 + 5);
+});

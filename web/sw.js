@@ -20,6 +20,7 @@ const DATEIEN = [
   "./js/oer/grafik.js",
   "./js/oer/uebertragung.js",
   "./js/oer/mc.js",
+  "./js/wiederholung.js",
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png",
