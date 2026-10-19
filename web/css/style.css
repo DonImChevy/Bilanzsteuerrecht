@@ -258,3 +258,7 @@ details.norm p { font-size: 14.5px; margin: 8px 0 2px; line-height: 1.5; }
 .karte .frage-gross { font-size: 21px; font-weight: 700; }
 .karte .mittel-t.links { text-align: left; font-size: 16px; }
 .segment.modus { position: static; box-shadow: none; margin: 0; }
+.kartei { display: flex; gap: 8px; align-items: flex-end; }
+.kartei-fach { flex: 1; text-align: center; }
+.kartei-saeule { height: 64px; background: var(--card2); border-radius: 6px; display: flex; align-items: flex-end; overflow: hidden; margin-bottom: 4px; }
+.kartei-saeule span { display: block; width: 100%; background: var(--accent, #2563eb); border-radius: 6px 6px 0 0; min-height: 2px; }

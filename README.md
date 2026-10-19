@@ -44,7 +44,8 @@ laden das Update beim nächsten Start mit Internet automatisch.
 | **Klausurmodus** | Anzahl und Zeitlimit wählbar, ca. 60 % Buchungssätze, Auswertung erst nach Abgabe |
 | **Lernkarten** | 47 Karten mit Merksätzen, Definitionen, Fristen und Formeln |
 | **Kontenplan** | Alle Konten mit Kontoart, T-Konto und Buchungsregel |
-| **Fortschritt** | Quote je Thema, schwächstes Thema direkt üben |
+| **Wiederholung** | Lernkartei mit 5 Fächern: jede beantwortete Aufgabe kommt nach 1, 3, 7, 16 und 35 Tagen wieder, Fehler am nächsten Tag (verteiltes Lernen) |
+| **Fortschritt** | Quote je Thema, Lernkartei, schwächstes Thema direkt üben |
 
 ## Projektstruktur
 
@@ -61,6 +62,7 @@ web/                     Die Web-App (wird veröffentlicht)
   js/feste.js            Feste Fragen aus Skript und Übungen
   js/lernkarten.js       Lernkarten
   js/katalog.js          Auswahl für Übung und Klausur
+  js/wiederholung.js     Lernintervalle (Leitner-Lernkartei)
   js/oer/normen.js       Gesetzestexte GG/BWahlG/PartG (erzeugt mit tools/normen_extrahieren.py)
   js/oer/fragen.js       ÖR Frage-Antwort-Aufgaben
   js/oer/mc.js           Multiple-Choice-Fassungen dieser Aufgaben (richtige/falsche Aussagen)

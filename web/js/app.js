@@ -4,15 +4,16 @@ import { THEMEN, THEMA, FAECHER, themenFuer, Zufall, bewerte, leereAntwort, neue
 import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer } from "./katalog.js";
 import { norm, NORMEN } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
+import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
 function laden() {
   try {
     const s = JSON.parse(localStorage.getItem(SPEICHER));
-    if (s && s.proThema) return { klausuren: [], karten: [], ...s };
+    if (s && s.proThema) return { klausuren: [], karten: [], lern: {}, ...s };
   } catch (_) { /* leer */ }
-  return { proThema: {}, klausuren: [], karten: [] };
+  return { proThema: {}, klausuren: [], karten: [], lern: {} };
 }
 let stat = laden();
 function speichern() {
@@ -25,6 +26,7 @@ function erfasse(frage, korrekt) {
   z.b += 1;
   if (korrekt) z.r += 1;
   stat.proThema[frage.thema] = z;
+  if (korrekt !== null && korrekt !== undefined) stat.lern[frage.id] = planen(stat.lern[frage.id], korrekt);
   speichern();
 }
 function schwaechstesThema() {
@@ -59,7 +61,9 @@ const farbklasse = (q) => (q >= 0.8 ? "gut" : q >= 0.5 ? "mittel" : "schlecht");
 // ======================= Sitzung =======================
 function neueSitzung(opt) {
   const r = new Zufall();
-  let fr = opt.modus === "klausur"
+  let fr = opt.ids
+    ? r.mischen(opt.ids.map((id) => ALLE.find((v) => v.id === id).erzeugen(r)))
+    : opt.modus === "klausur"
     ? klausur(opt.anzahl, r, opt.fach)
     : fragen(opt.themen, opt.anzahl || 10, r, opt.filter ?? opt.nurBuchung);
   if (state.oerModus === "mc") fr = fr.map((f) => alsMultipleChoice(f, r));
@@ -79,6 +83,7 @@ const aktAntwort = () => s().antworten[s().index];
 
 function sitzungTitel(x) {
   if (x.modus === "klausur") return "Klausur " + FAECHER[x.fach || "bsr"].kurz;
+  if (x.wiederholung) return "Wiederholung";
   if (x.nurBuchung) return "Buchungssätze";
   if (x.filter === "uebertragung") return "Übertragungsaufgaben";
   if (x.filter === "qa") return state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort";
@@ -215,6 +220,7 @@ function tabUeben() {
     <div class="kopfzeile"><h1 class="titel">BSR-Trainer</h1><button class="icon-btn" data-a="info" aria-label="Info">ⓘ</button></div>
     ${!istStandalone() ? `<div class="hinweis-box"><span>📲</span><div><b>Als App installieren:</b> ${ios ? "In Safari unten auf <b>Teilen</b> ⬆️ tippen → <b>„Zum Home-Bildschirm“</b>." : installEvent ? "Ein Tipp genügt:" : "In Chrome oben rechts auf <b>⋮</b> tippen → <b>„Zum Startbildschirm hinzufügen“</b> bzw. <b>„App installieren“</b> → <b>„Installieren“</b>."} Danach funktioniert alles auch offline.
       ${!ios && installEvent ? `<button class="knopf" style="margin-top:10px" data-a="installieren">⬇ App installieren</button>` : ""}</div></div>` : ""}
+    ${wiederholungBlock()}
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="liste">
       ${state.fach === "oer" ? `
@@ -238,6 +244,35 @@ function tabUeben() {
       }).join("")}
     </div></div>`;
 }
+const idsFach = () => ALLE.filter((v) => THEMA[v.thema].fach === state.fach).map((v) => v.id);
+const faelligFach = () => faellige(stat.lern, idsFach());
+const PRO_WIEDERHOLUNG = 20;
+
+function inTagen(t) {
+  const tage = Math.round((t - new Date().setHours(0, 0, 0, 0)) / 864e5);
+  return tage <= 1 ? "morgen" : `in ${tage} Tagen`;
+}
+
+/** Block „Heute wiederholen“ im Üben-Tab. */
+function wiederholungBlock() {
+  const ids = idsFach(), due = faelligFach();
+  const gelernt = ids.filter((id) => stat.lern[id]).length;
+  let inhalt;
+  if (due.length) {
+    const n = Math.min(due.length, PRO_WIEDERHOLUNG);
+    inhalt = `<button class="zeile" data-a="wiederholen"><span class="symbol">🧠</span><span class="grow"><div><b>Jetzt wiederholen: ${due.length} fällig</b></div>
+      <div class="sub">${due.length > n ? `Die ${n} ältesten zuerst. ` : ""}Genau im richtigen Abstand – bevor du es vergisst.</div></span><span class="chev">›</span></button>`;
+  } else if (gelernt) {
+    const n = naechste(stat.lern, ids);
+    inhalt = `<div class="zeile"><span class="symbol">✅</span><span class="grow"><div><b>Heute ist nichts fällig</b></div>
+      <div class="sub">Nächste Wiederholung ${n ? inTagen(n) : "bald"}. Neue Aufgaben üben füllt deine Lernkartei.</div></span></div>`;
+  } else {
+    inhalt = `<div class="zeile"><span class="symbol">🧠</span><span class="grow"><div><b>Lernkartei</b></div>
+      <div class="sub">Jede beantwortete Aufgabe kommt nach 1, 3, 7, 16 und 35 Tagen wieder – so wandert der Stoff ins Langzeitgedächtnis.</div></span></div>`;
+  }
+  return `<div class="gruppe"><div class="gruppe-titel">Heute wiederholen</div><div class="liste">${inhalt}</div></div>`;
+}
+
 const schnell = (a, icon, titel, text, v = "") => `<button class="zeile" data-a="schnell" data-v="${a}" data-t="${v}"><span class="symbol">${icon}</span><span class="grow"><div><b>${titel}</b></div><div class="sub">${esc(text)}</div></span><span class="chev">›</span></button>`;
 
 const klausurenFach = () => stat.klausuren.filter((k) => (k.fach || "bsr") === state.fach);
@@ -338,6 +373,7 @@ function tabFortschritt() {
       <div class="ring" style="--p:${Math.round(q * 100)};width:84px;height:84px;margin:0"><div style="width:66px;height:66px;font-size:18px">${Math.round(q * 100)} %</div></div>
       <div class="grow"><div><b>${ges.r} von ${ges.b} richtig</b></div><div class="sub">${klausurenFach().length} Klausuren · ${LERNKARTEN.filter((k) => gewusst.has(k.id)).length}/${LERNKARTEN.length} Lernkarten gewusst</div></div>
     </div></div>
+    ${lernkarteiView()}
     <div class="gruppe"><div class="gruppe-titel">Nach Thema</div><div class="liste">
       ${themenFuer(state.fach).map((t) => {
         const z = zaehler(t.id), qq = quote(z);
@@ -347,6 +383,20 @@ function tabFortschritt() {
       }).join("")}
     </div></div>
     <div class="liste"><button class="zeile" data-a="reset" style="color:var(--err);justify-content:center">Fortschritt zurücksetzen</button></div>`;
+}
+
+/** Verteilung der Aufgaben auf die Fächer der Lernkartei. */
+function lernkarteiView() {
+  const ids = idsFach();
+  const n = Array(FAECHER_MAX + 1).fill(0);
+  ids.forEach((id) => { n[stat.lern[id]?.fach || 0] += 1; });
+  const max = Math.max(1, ...n.slice(1));
+  const name = ["", "Fach 1", "Fach 2", "Fach 3", "Fach 4", "Fach 5"];
+  return `<div class="gruppe"><div class="gruppe-titel">Lernkartei (Langzeitgedächtnis)</div><div class="liste"><div class="zeile"><div class="grow">
+    <div class="kartei">${n.slice(1).map((k, i) => `<div class="kartei-fach"><div class="kartei-saeule"><span style="height:${Math.round((k / max) * 100)}%"></span></div>
+      <b class="mono">${k}</b><div class="sub">${name[i + 1]}</div><div class="sub">${INTERVALLE[i + 1]} T.</div></div>`).join("")}</div>
+    <div class="sub" style="margin-top:8px">${n[0]} von ${ids.length} Aufgaben noch nie beantwortet · ${faelligFach().length} heute fällig</div></div></div></div>
+    <div class="gruppe-fuss">Richtig → ein Fach weiter, längere Pause. Falsch → zurück in Fach 1, morgen wieder dran. Aufgaben in Fach 5 sitzen meist dauerhaft.</div></div>`;
 }
 
 // ======================= Render: Sitzung =======================
@@ -732,7 +782,12 @@ const AKTIONEN = {
     const x = s(), offen = x.antworten.filter((a, i) => istLeer(x.fragen[i], a)).length;
     if (confirm(`Klausur abgeben?${offen ? `\n${offen} Aufgabe(n) noch unbearbeitet.` : ""}`)) abgeben();
   },
-  nochmal: () => { const x = s(); starte({ modus: x.modus, fach: x.fach, themen: x.themen, nurBuchung: x.nurBuchung, filter: x.filter, anzahl: x.fragen.length, minuten: x.minuten }); },
+  wiederholen: () => {
+    const ids = faelligFach().slice(0, PRO_WIEDERHOLUNG);
+    if (!ids.length) { state.sitzung = null; render(); return; }
+    starte({ modus: "uebung", fach: state.fach, themen: themenFuer(state.fach).map((t) => t.id), ids, wiederholung: true });
+  },
+  nochmal: () => { const x = s(); if (x.wiederholung) return AKTIONEN.wiederholen(); starte({ modus: x.modus, fach: x.fach, themen: x.themen, nurBuchung: x.nurBuchung, filter: x.filter, anzahl: x.fragen.length, minuten: x.minuten }); },
   selbst: (v) => selbstBewerten(s().index, v === "1"),
   selbstReview: (v) => selbstBewerten(s().review, v === "1"),
   normDetail: (v) => { state.sheet = { art: "norm", ref: v }; render(); },
@@ -807,7 +862,7 @@ const AKTIONEN = {
   },
   deckZu: () => { state.deck = null; render(); },
   reset: () => {
-    if (confirm("Gesamten Fortschritt löschen?")) { stat = { proThema: {}, klausuren: [], karten: [] }; speichern(); render(); }
+    if (confirm("Gesamten Fortschritt löschen?")) { stat = { proThema: {}, klausuren: [], karten: [], lern: {} }; speichern(); render(); }
   },
 };
 
@@ -909,7 +964,7 @@ document.addEventListener("visibilitychange", () => {
 });
 
 // ======================= Start =======================
-const VERSION = "0.3.0";
+const VERSION = "0.4.0";
 render();
 zaehleStart();
 
