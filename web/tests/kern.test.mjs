@@ -7,6 +7,7 @@ import { ALLE, fragen, klausur, vorlagenFuer, LERNKARTEN, kartenFuer } from "../
 import { norm } from "../js/oer/normtext.js";
 import { NORMEN } from "../js/oer/normen.js";
 import { KONTEN } from "../js/konten.js";
+import { MC, alsMultipleChoice } from "../js/oer/mc.js";
 
 test("Geld lesen", () => {
   assert.equal(G.lesen("1.234,56"), 123456);
@@ -146,5 +147,25 @@ test("Mehrheiten in Übertragungsaufgaben", () => {
     const M = Number((f.text.match(/(\d{3}) Mitglieder/) || [])[1]);
     const erlaubt = [Math.ceil(M / 4), Math.ceil(M / 3), Math.ceil(M / 10), Math.ceil((2 * M) / 3), Math.floor(M / 2) + 1];
     assert.ok(erlaubt.includes(f.loesung / 100), f.text + " → " + f.loesung);
+  }
+});
+
+test("Multiple-Choice-Fassung für jede ÖR-Frage-Antwort-Aufgabe", () => {
+  const offen = ALLE.map((v) => v.erzeugen(new Zufall(1))).filter((f) => f.typ === "offen");
+  const ids = new Set(offen.map((f) => f.id));
+  for (const id of Object.keys(MC)) assert.ok(ids.has(id), "MC ohne Aufgabe: " + id);
+  for (const f of offen) {
+    const d = MC[f.id];
+    assert.ok(d, "Keine MC-Fassung: " + f.id);
+    assert.ok(d.r.length >= 1 && d.f.length >= 3, f.id);
+    const alle = [...d.r, ...d.f];
+    assert.ok(alle.length >= 5 && alle.length <= 8, f.id + " hat " + alle.length + " Optionen");
+    assert.equal(new Set(alle).size, alle.length, "Doppelte Option: " + f.id);
+    const m = alsMultipleChoice(f, new Zufall(3));
+    assert.equal(m.typ, "auswahl");
+    assert.equal(m.richtig.length, d.r.length);
+    assert.equal(bewerte(m, { gewaehlt: [...m.richtig] }).korrekt, true, f.id);
+    assert.equal(bewerte(m, { gewaehlt: [m.optionen.findIndex((_, i) => !m.richtig.includes(i))] }).korrekt, false, f.id);
+    assert.ok(m.antwort && m.normen);
   }
 });

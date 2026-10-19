@@ -7,6 +7,8 @@ Lern-App zur Klausurvorbereitung im Grundstudium I mit zwei Reitern:
   Quellen: Grundgesetz, Bundeswahlgesetz, Parteiengesetz. Aufbau wie in der Klausur: ca. 75 % Frage-Antwort
   (Musterantwort mit wörtlichem Normzitat, Selbstbewertung) und 25 % Übertragungsaufgaben mit Grafiken
   (Kanzlerwahl, Misstrauensvotum, Bundesrat-Abstimmungen, Sitzverteilung, Zweitstimmendeckung, Stimmzettel, Fristen …).
+  Zwei Antwortmodi: **Frage – Antwort** (selbst formulieren) oder **Multiple Choice** (jede Frage mit plausiblen
+  Falschantworten aus benachbarten Normen, oft mehrere richtig) – umschaltbar im Reiter Üben und Klausur.
 
 **Kostenlos, ohne App Store, offline nutzbar:** Die App ist eine Web-App (PWA). Man öffnet sie einmal im
 Browser und legt sie auf den Home-Bildschirm – danach startet sie wie eine normale App, auch ohne Internet.
@@ -61,6 +63,7 @@ web/                     Die Web-App (wird veröffentlicht)
   js/katalog.js          Auswahl für Übung und Klausur
   js/oer/normen.js       Gesetzestexte GG/BWahlG/PartG (erzeugt mit tools/normen_extrahieren.py)
   js/oer/fragen.js       ÖR Frage-Antwort-Aufgaben
+  js/oer/mc.js           Multiple-Choice-Fassungen dieser Aufgaben (richtige/falsche Aussagen)
   js/oer/uebertragung.js ÖR Übertragungsaufgaben (Generatoren mit Grafiken)
   js/oer/grafik.js       SVG-Diagramme, Sitzverteilung, Stimmzettel, Tabellen
   js/app.js              Oberfläche
