@@ -2,22 +2,40 @@ import { K } from "./konten.js";
 import * as G from "./geld.js";
 
 export const THEMEN = [
-  { id: "buchfuehrungspflicht", titel: "Buchführungspflicht", unter: "§§ 238, 241a HGB, §§ 140, 141 AO", icon: "📕" },
-  { id: "inventurBilanz", titel: "Inventur, Inventar & Bilanz", unter: "§§ 240, 242, 247, 257 HGB", icon: "📋" },
-  { id: "bilanzveraenderungen", titel: "Bilanzveränderungen", unter: "Aktivtausch, Passivtausch, Mehrung, Minderung", icon: "⇄" },
-  { id: "bestandskonten", titel: "Bestandskonten", unter: "Aktiv- und Passivkonten buchen", icon: "🗂️" },
-  { id: "erfolgskonten", titel: "Erfolgskonten", unter: "Aufwand und Ertrag", icon: "📈" },
-  { id: "privatkonten", titel: "Privatkonten", unter: "Entnahmen und Einlagen", icon: "👤" },
-  { id: "warenkonten", titel: "Viergeteiltes Warenkonto", unter: "WBK, WEK, BVK, WVK", icon: "📦" },
-  { id: "warenunterkonten", titel: "Rabatte, Skonti, Boni & Co.", unter: "Bezugskosten, Rücksendungen, Nachlässe", icon: "％" },
-  { id: "umsatzsteuer", titel: "Umsatzsteuer & Vorsteuer", unter: "Nettomethode, Entgeltsminderung, Abschluss", icon: "€" },
-  { id: "abschluss", titel: "Eröffnung & Abschluss", unter: "EBK, SBK, GuV, vorbereitende Buchungen", icon: "✅" },
-  { id: "kalkulation", titel: "Kalkulation", unter: "Rohgewinn, Aufschlagsätze, Einstandspreis", icon: "🧮" },
-  { id: "gewinnermittlung", titel: "Gewinnermittlung & GuV/BVV", unter: "§ 4 I 1 EStG, Mehr- und Weniger-Rechnung", icon: "Σ" },
-  { id: "grundbegriffe", titel: "Grundbegriffe", unter: "Auszahlung, Ausgabe, Aufwand, Kosten", icon: "📖" },
-  { id: "buecher", titel: "Grund-, Haupt- & Nebenbücher", unter: "Journal, Kassenbericht, Belege", icon: "📚" },
+  { id: "buchfuehrungspflicht", titel: "Buchführungspflicht", unter: "§§ 238, 241a HGB, §§ 140, 141 AO", icon: "📕", fach: "bsr" },
+  { id: "inventurBilanz", titel: "Inventur, Inventar & Bilanz", unter: "§§ 240, 242, 247, 257 HGB", icon: "📋", fach: "bsr" },
+  { id: "bilanzveraenderungen", titel: "Bilanzveränderungen", unter: "Aktivtausch, Passivtausch, Mehrung, Minderung", icon: "⇄", fach: "bsr" },
+  { id: "bestandskonten", titel: "Bestandskonten", unter: "Aktiv- und Passivkonten buchen", icon: "🗂️", fach: "bsr" },
+  { id: "erfolgskonten", titel: "Erfolgskonten", unter: "Aufwand und Ertrag", icon: "📈", fach: "bsr" },
+  { id: "privatkonten", titel: "Privatkonten", unter: "Entnahmen und Einlagen", icon: "👤", fach: "bsr" },
+  { id: "warenkonten", titel: "Viergeteiltes Warenkonto", unter: "WBK, WEK, BVK, WVK", icon: "📦", fach: "bsr" },
+  { id: "warenunterkonten", titel: "Rabatte, Skonti, Boni & Co.", unter: "Bezugskosten, Rücksendungen, Nachlässe", icon: "％", fach: "bsr" },
+  { id: "umsatzsteuer", titel: "Umsatzsteuer & Vorsteuer", unter: "Nettomethode, Entgeltsminderung, Abschluss", icon: "€", fach: "bsr" },
+  { id: "abschluss", titel: "Eröffnung & Abschluss", unter: "EBK, SBK, GuV, vorbereitende Buchungen", icon: "✅", fach: "bsr" },
+  { id: "kalkulation", titel: "Kalkulation", unter: "Rohgewinn, Aufschlagsätze, Einstandspreis", icon: "🧮", fach: "bsr" },
+  { id: "gewinnermittlung", titel: "Gewinnermittlung & GuV/BVV", unter: "§ 4 I 1 EStG, Mehr- und Weniger-Rechnung", icon: "Σ", fach: "bsr" },
+  { id: "grundbegriffe", titel: "Grundbegriffe", unter: "Auszahlung, Ausgabe, Aufwand, Kosten", icon: "📖", fach: "bsr" },
+  { id: "buecher", titel: "Grund-, Haupt- & Nebenbücher", unter: "Journal, Kassenbericht, Belege", icon: "📚", fach: "bsr" },
+  // Öffentliches Recht (Lehrplan GS I, 1.1 bis 1.3.4.5)
+  { id: "oer-staatsziele", titel: "Staatsziele & Geschichte des GG", unter: "1.1.1 · Präambel, Art. 20, 20a, 79, 145, 146 GG", icon: "📜", fach: "oer" },
+  { id: "oer-republik", titel: "Republik & Sozialstaat", unter: "1.1.2 · Art. 20 I, 28 I, 54 GG", icon: "🏛️", fach: "oer" },
+  { id: "oer-demokratie", titel: "Demokratie", unter: "1.1.3 · Art. 20 II, 38 GG", icon: "🗳️", fach: "oer" },
+  { id: "oer-rechtsstaat", titel: "Rechtsstaat", unter: "1.1.4 · Art. 1 III, 19 IV, 20 III, 97, 103 GG", icon: "⚖️", fach: "oer" },
+  { id: "oer-bundesstaat", titel: "Bundesstaat", unter: "1.1.5 · Art. 30, 31, 37, 70, 83 GG", icon: "🗺️", fach: "oer" },
+  { id: "oer-parteien", titel: "Die Parteien", unter: "1.2 · Art. 21 GG, PartG", icon: "🎗️", fach: "oer" },
+  { id: "oer-bundestag", titel: "Bundestag", unter: "1.3.1 · Art. 38–48 GG", icon: "🏢", fach: "oer" },
+  { id: "oer-wahl", titel: "Wahl zum Bundestag", unter: "1.3.1.2 · BWahlG", icon: "✉️", fach: "oer" },
+  { id: "oer-bundesrat", titel: "Bundesrat", unter: "1.3.2 · Art. 50–53 GG", icon: "🤝", fach: "oer" },
+  { id: "oer-bundespraesident", titel: "Bundespräsident", unter: "1.3.3 · Art. 54–61 GG", icon: "🎖️", fach: "oer" },
+  { id: "oer-bundesregierung", titel: "Bundesregierung", unter: "1.3.4 · Art. 62–69 GG", icon: "👥", fach: "oer" },
 ];
 export const THEMA = Object.fromEntries(THEMEN.map((t) => [t.id, t]));
+
+export const FAECHER = {
+  bsr: { id: "bsr", titel: "Bilanzsteuerrecht", kurz: "BSR" },
+  oer: { id: "oer", titel: "Öffentliches Recht", kurz: "ÖR" },
+};
+export const themenFuer = (fach) => THEMEN.filter((t) => t.fach === fach);
 
 // ---------- Zufall (mulberry32, reproduzierbar) ----------
 export class Zufall {
@@ -127,6 +145,9 @@ export function leereAntwort(frage) {
   return { text: "" };
 }
 
+/** Offene Fragen werden selbst bewertet: korrekt = true/false, null = noch nicht bewertet. */
+export const istOffen = (frage) => frage.typ === "offen";
+
 let zeilenZaehler = 0;
 export function neueZeile(seite) {
   return { id: "z" + ++zeilenZaehler, seite, konto: null, betrag: "" };
@@ -135,6 +156,7 @@ export function neueZeile(seite) {
 export function istLeer(frage, antwort) {
   if (frage.typ === "buchung") return antwort.zeilen.every((z) => !z.konto && !z.betrag.trim());
   if (frage.typ === "auswahl") return antwort.gewaehlt.length === 0;
+  if (frage.typ === "offen") return false;
   return !antwort.text.trim();
 }
 
@@ -148,18 +170,21 @@ export function bewerte(frage, antwort) {
     const r = [...frage.richtig].sort();
     return { korrekt: g.length === r.length && g.every((v, i) => v === r[i]) };
   }
+  if (frage.typ === "offen") return { korrekt: null, offen: true };
   const wert = G.lesen(antwort.text);
   if (wert == null) return { korrekt: false, lesbar: false };
   return { korrekt: Math.abs(wert - frage.loesung) <= frage.toleranz, lesbar: true };
 }
 
 export function loesungText(frage) {
+  if (frage.ganz) return String(frage.loesung / 100).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + " " + frage.einheit;
   return frage.einheit === "%" ? G.prozentText(frage.loesung) : G.text(frage.loesung) + " " + frage.einheit;
 }
 
 export function typBezeichnung(frage) {
   if (frage.typ === "buchung") return "Buchungssatz";
   if (frage.typ === "auswahl") return frage.richtig.length > 1 ? "Mehrfachauswahl" : "Auswahl";
+  if (frage.typ === "offen") return "Frage – Antwort";
   return "Berechnung";
 }
 
@@ -167,8 +192,8 @@ export function typBezeichnung(frage) {
 export function buchung(id, thema, text, loesung, erklaerung, { alternativen = [], quelle = null } = {}) {
   return { id, thema, typ: "buchung", text, loesungen: [loesung, ...alternativen], erklaerung, quelle };
 }
-export function zahl(id, thema, text, loesung, erklaerung, { einheit = "€", toleranz = 1, quelle = null } = {}) {
-  return { id, thema, typ: "zahl", text, loesung, einheit, toleranz, erklaerung, quelle };
+export function zahl(id, thema, text, loesung, erklaerung, { einheit = "€", toleranz = 1, quelle = null, ganz = false } = {}) {
+  return { id, thema, typ: "zahl", text, loesung, einheit, toleranz, erklaerung, quelle, ganz };
 }
 export function auswahl(id, thema, text, optionen, richtig, erklaerung, r, { quelle = null } = {}) {
   const reihenfolge = r.mischen(optionen.map((_, i) => i));

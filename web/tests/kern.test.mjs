@@ -3,8 +3,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import * as G from "../js/geld.js";
 import { Zufall, pruefeBuchung, bewerte, satz, summe, THEMEN, loesungText } from "../js/kern.js";
-import { ALLE, fragen, klausur, vorlagenFuer } from "../js/katalog.js";
-import { LERNKARTEN } from "../js/lernkarten.js";
+import { ALLE, fragen, klausur, vorlagenFuer, LERNKARTEN, kartenFuer } from "../js/katalog.js";
+import { norm } from "../js/oer/normtext.js";
+import { NORMEN } from "../js/oer/normen.js";
 import { KONTEN } from "../js/konten.js";
 
 test("Geld lesen", () => {
@@ -66,7 +67,10 @@ test("Alle Vorlagen erzeugen lösbare Aufgaben", () => {
       const f = v.erzeugen(new Zufall(seed));
       const ctx = `${v.id} seed ${seed}`;
       assert.equal(f.thema, v.thema, ctx);
-      assert.ok(f.text && f.erklaerung, ctx);
+      assert.ok(f.text && (f.erklaerung || f.typ === "offen"), ctx);
+      for (const ref of f.normen || []) assert.ok(norm(ref), `Normverweis nicht auflösbar: ${ref} in ${ctx}`);
+      if (f.grafik) assert.ok(!/undefined|NaN/.test(f.grafik), "Grafik fehlerhaft: " + ctx);
+      assert.ok(!/undefined|NaN/.test(f.text + (f.erklaerung || "")), "Text fehlerhaft: " + ctx);
       if (f.typ === "buchung") {
         for (const l of f.loesungen) {
           assert.equal(summe(l.soll), summe(l.haben), "Soll ≠ Haben: " + ctx);
@@ -86,6 +90,9 @@ test("Alle Vorlagen erzeugen lösbare Aufgaben", () => {
         assert.ok(bewerte(f, { gewaehlt: f.richtig }).korrekt, ctx);
         const falsch = f.optionen.map((_, i) => i).filter((i) => !f.richtig.includes(i));
         if (falsch.length) assert.equal(bewerte(f, { gewaehlt: falsch }).korrekt, false, ctx);
+      } else if (f.typ === "offen") {
+        assert.ok(f.antwort && f.antwort.length > 20, "Musterantwort fehlt: " + ctx);
+        assert.equal(bewerte(f, { text: "" }).korrekt, null, ctx);
       } else {
         assert.ok(Number.isInteger(f.loesung), ctx);
         assert.ok(bewerte(f, { text: G.text(f.loesung) }).korrekt, "Lösung nicht akzeptiert: " + ctx + " " + loesungText(f));
@@ -101,4 +108,43 @@ test("Klausur und Übung", () => {
   assert.ok(k.filter((f) => f.typ === "buchung").length >= 12);
   const n = vorlagenFuer("buchfuehrungspflicht").length;
   assert.equal(new Set(fragen(["buchfuehrungspflicht"], n, new Zufall(7)).map((f) => f.id)).size, n);
+});
+
+test("Öffentliches Recht: Struktur", () => {
+  const oer = ALLE.filter((v) => v.thema.startsWith("oer-"));
+  const ue = oer.filter((v) => v.kategorie === "uebertragung");
+  assert.ok(oer.length >= 120, "ÖR-Aufgaben: " + oer.length);
+  assert.ok(ue.length >= 15, "Übertragungsaufgaben: " + ue.length);
+  const k = klausur(20, new Zufall(5), "oer");
+  assert.equal(k.length, 20);
+  assert.equal(k.filter((f) => f.uebertragung).length, 5);
+  assert.ok(k.every((f) => f.thema.startsWith("oer-")));
+  assert.ok(klausur(20, new Zufall(5), "bsr").every((f) => !f.thema.startsWith("oer-")));
+  assert.ok(kartenFuer("oer").length >= 80);
+  assert.ok(NORMEN.length >= 80);
+});
+
+test("Normtext", () => {
+  const n = norm("GG 51 2");
+  assert.equal(n.label, "Art. 51 Abs. 2 GG");
+  assert.match(n.absaetze[0].text, /mindestens drei Stimmen/);
+  assert.equal(norm("BWahlG 12 1").label, "§ 12 Abs. 1 BWahlG");
+  assert.equal(norm("GG 999"), null);
+  assert.equal(norm("GG 51 9"), null);
+  assert.match(norm("GG Präambel").absaetze[0].text, /Nordrhein-Westfalen/);
+});
+
+test("Mehrheiten in Übertragungsaufgaben", () => {
+  // Kanzlerwahl: Erklärung nennt 316
+  for (let seed = 0; seed < 50; seed++) {
+    const f = ALLE.find((v) => v.id === "u-kanzlerwahl").erzeugen(new Zufall(seed));
+    assert.match(f.erklaerung, /316/);
+  }
+  const q = ALLE.find((v) => v.id === "u-quorum");
+  for (let seed = 0; seed < 100; seed++) {
+    const f = q.erzeugen(new Zufall(seed));
+    const M = Number((f.text.match(/(\d{3}) Mitglieder/) || [])[1]);
+    const erlaubt = [Math.ceil(M / 4), Math.ceil(M / 3), Math.ceil(M / 10), Math.ceil((2 * M) / 3), Math.floor(M / 2) + 1];
+    assert.ok(erlaubt.includes(f.loesung / 100), f.text + " → " + f.loesung);
+  }
 });

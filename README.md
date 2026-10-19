@@ -1,7 +1,12 @@
-# BSR-Trainer – Bilanzsteuerrecht GS I
+# BSR-Trainer – Bilanzsteuerrecht & Öffentliches Recht GS I
 
-Lern-App zur Klausurvorbereitung im **Bilanzsteuerrecht, Grundstudium I – Teil I (Buchführung)**.
-Inhaltlich orientiert am Skript und an den Übungen bzw. Lösungshinweisen des Grundstudiums.
+Lern-App zur Klausurvorbereitung im Grundstudium I mit zwei Reitern:
+
+- **Bilanzsteuerrecht** – Teil I (Buchführung), orientiert am Skript und an den Übungen bzw. Lösungshinweisen.
+- **Öffentliches Recht** – Staatsrecht nach Lehrplan 1.1 bis 1.3.4.5 (Staatsziele bis Bundesregierung).
+  Quellen: Grundgesetz, Bundeswahlgesetz, Parteiengesetz. Aufbau wie in der Klausur: ca. 75 % Frage-Antwort
+  (Musterantwort mit wörtlichem Normzitat, Selbstbewertung) und 25 % Übertragungsaufgaben mit Grafiken
+  (Kanzlerwahl, Misstrauensvotum, Bundesrat-Abstimmungen, Sitzverteilung, Zweitstimmendeckung, Stimmzettel, Fristen …).
 
 **Kostenlos, ohne App Store, offline nutzbar:** Die App ist eine Web-App (PWA). Man öffnet sie einmal im
 Browser und legt sie auf den Home-Bildschirm – danach startet sie wie eine normale App, auch ohne Internet.
@@ -54,6 +59,10 @@ web/                     Die Web-App (wird veröffentlicht)
   js/feste.js            Feste Fragen aus Skript und Übungen
   js/lernkarten.js       Lernkarten
   js/katalog.js          Auswahl für Übung und Klausur
+  js/oer/normen.js       Gesetzestexte GG/BWahlG/PartG (erzeugt mit tools/normen_extrahieren.py)
+  js/oer/fragen.js       ÖR Frage-Antwort-Aufgaben
+  js/oer/uebertragung.js ÖR Übertragungsaufgaben (Generatoren mit Grafiken)
+  js/oer/grafik.js       SVG-Diagramme, Sitzverteilung, Stimmzettel, Tabellen
   js/app.js              Oberfläche
   tests/                 node --test web/tests/kern.test.mjs
 
