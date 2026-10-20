@@ -8,19 +8,28 @@ import { normenAusText } from "./oer/normtext.js";
 
 // Bilanzrecht: Gesetzestexte zu jeder Aufgabe – aus den Zitaten in Text/Erklärung/Fundstelle
 // und ergänzend dort, wo die Aufgabe inhaltlich auf eine Vorschrift zielt, sie aber nicht nennt.
-const ZUSATZ_NORMEN = {
-  "wu-einkauf-fracht": ["UStG 15 1"], "wu-anlage-nebenkosten": ["UStG 15 1"],
-  "wu-skonto-lieferant": ["UStG 17 1"], "wu-skonto-kunde": ["UStG 17 1"], "wu-bonus-gewaehrt": ["UStG 17 1"],
-  "us-skonto-einzelhaendler": ["UStG 17 1"], "us-skonto-grosshaendler": ["UStG 17 1"], "us-skonto-r": ["UStG 17 1"],
-  "us-herausrechnen": ["UStG 12 1", "UStG 12 2"],
+const ZUSATZ_ZITATE = {
+  "wu-einkauf-fracht": "§ 15 Abs. 1 Nr. 1 UStG", "wu-anlage-nebenkosten": "§ 15 Abs. 1 Nr. 1 UStG",
+  // Skonto/Bonus: beim leistenden Unternehmer USt-Berichtigung (Satz 1), beim Empfänger Vorsteuer-Berichtigung (Satz 2)
+  "wu-skonto-lieferant": "§ 17 Abs. 1 Satz 2 UStG", "wu-skonto-kunde": "§ 17 Abs. 1 Satz 1 UStG",
+  "wu-bonus-gewaehrt": "§ 17 Abs. 1 Satz 1 UStG", "us-skonto-einzelhaendler": "§ 17 Abs. 1 Satz 2 UStG",
+  "us-skonto-grosshaendler": "§ 17 Abs. 1 Satz 1 UStG", "us-skonto-r": "§ 17 Abs. 1 Satz 2 UStG",
+  "wu-ruecksendung-lieferant": "§ 17 Abs. 1 Satz 2 UStG", "wu-ruecksendung-kunde": "§ 17 Abs. 1 Satz 1 UStG",
+  "wu-nachlass-lieferant": "§ 17 Abs. 1 Satz 2 UStG", "wu-nachlass-kunde": "§ 17 Abs. 1 Satz 1 UStG",
+  "wu-bonus-erhalten": "§ 17 Abs. 1 Satz 2 UStG",
+  "us-herausrechnen": "§ 12 Abs. 1 UStG, § 12 Abs. 2 Nr. 1 UStG",
+  // § 141 AO gilt nur für gewerbliche Unternehmer sowie Land- und Forstwirte (Satz 1)
+  "bf-aerzte": "§ 141 Abs. 1 Satz 1 AO, § 18 Abs. 1 Nr. 1 EStG", "ge-freiberufler": "§ 141 Abs. 1 Satz 1 AO, § 18 Abs. 1 Nr. 1 EStG",
+  "bf-kiosk": "§ 141 Abs. 1 Satz 1 Nr. 1, 4 AO", "ge-5-1": "§ 5 Abs. 1 Satz 1 EStG, § 18 Abs. 1 Nr. 1 EStG",
 };
 const mitNormen = (v) => {
   if (THEMA[v.thema].fach !== "bsr") return v;
   return { ...v, erzeugen: (r) => {
     const f = v.erzeugen(r);
     if (f.normen?.length) return f;
-    const refs = [...normenAusText([f.text, f.erklaerung, f.quelle].join(" ")), ...(ZUSATZ_NORMEN[v.id] || [])];
-    return refs.length ? { ...f, normen: [...new Set(refs)] } : f;
+    const zusatz = ZUSATZ_ZITATE[v.id] || "";
+    const refs = normenAusText([f.text, f.erklaerung, f.quelle, zusatz].join(" "));
+    return refs.length ? { ...f, normen: refs, zusatzZitate: zusatz } : f;
   } };
 };
 

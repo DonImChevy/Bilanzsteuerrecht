@@ -475,3 +475,5 @@ details.norm p { font-size: 14.5px; margin: 8px 0 2px; line-height: 1.55; }
 .modul-kachel .m-unten.erledigt { color: var(--ok); }
 .modul-kachel .m-unten.leer { color: var(--text3); font-weight: 600; }
 .modul-kachel.bald .m-unten { border-top: 1.5px dashed var(--line); }
+mark.norm-hl { background: color-mix(in srgb, var(--gold) 32%, transparent); color: inherit; border-radius: 4px; padding: 1px 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; font-weight: 550; }
+.hl-legende { font-weight: 500; margin-left: 6px; padding: 1px 6px; border-radius: 6px; background: color-mix(in srgb, var(--gold) 32%, transparent); color: var(--text); font-size: 11.5px; }

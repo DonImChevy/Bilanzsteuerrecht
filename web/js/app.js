@@ -2,7 +2,7 @@ import * as G from "./geld.js";
 import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
 import { THEMEN, THEMA, themenFuer, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
 import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer } from "./katalog.js";
-import { norm, NORMEN } from "./oer/normtext.js";
+import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
@@ -636,11 +636,56 @@ function tabNormen() {
     <div id="normListe">${normenListe()}</div>`;
 }
 
-function normBlock(refs) {
+/** Text eines Absatzes; die in der Aufgabe zitierten Sätze bzw. Nummern werden hervorgehoben. */
+function absatzHtml(n, a, zs) {
+  const g = n.ref.split(" ")[0], nr = n.ref.split(" ")[1];
+  const passend = zs.filter((z) => z.g === g && z.nr === nr && (z.abs ? z.abs === a.abs : a.abs === "" || n.absaetze.length === 1));
+  const nummern = passend.flatMap((z) => z.nummern), satzNr = passend.map((z) => z.satz).filter(Boolean);
+  const text = a.text, html = (t) => esc(t).replace(/\n/g, "<br>");
+  const mark = (t) => `<mark class="norm-hl">${html(t)}</mark>`;
+  let inhalt = html(text), treffer = false;
+  if (nummern.length) {
+    // Aufzählung: Zeilen der zitierten Nummern (bei „9a“ nur Buchstabe a der Nr. 9)
+    let aktuell = null;
+    const zeilen = text.split("\n").map((l) => {
+      const m = l.match(/^(\d+[a-z]?)\.\s/);
+      if (m) aktuell = m[1]; else if (l.startsWith("…")) aktuell = null;
+      const buchst = l.match(/^(?:\d+[a-z]?\.\s)?([a-z])\)/)?.[1];
+      const an = nummern.some((x) => {
+        const [, basis, b] = x.match(/^(\d+)([a-z]?)$/) || [];
+        return aktuell === x || (b && aktuell === basis && buchst === b);
+      });
+      if (an) treffer = true;
+      return an ? mark(l) : html(l);
+    });
+    inhalt = zeilen.join("<br>");
+  } else if (satzNr.length) {
+    const teile = saetze(text);
+    let pos = 0, out = "";
+    teile.forEach(([s0, e0], i) => {
+      out += html(text.slice(pos, s0));
+      out += satzNr.includes(String(i + 1)) ? ((treffer = true), mark(text.slice(s0, e0))) : html(text.slice(s0, e0));
+      pos = e0;
+    });
+    inhalt = out + html(text.slice(pos));
+  } else if (passend.length && n.absaetze.length > 1) {
+    inhalt = mark(text); treffer = true;
+  }
+  return { html: `<p>${a.abs ? `<b>(${a.abs})</b> ` : ""}${inhalt}</p>`, treffer };
+}
+
+function normBlock(refs, kontext = "") {
   const ns = (refs || []).map(norm).filter(Boolean);
   if (!ns.length) return "";
-  return `<div class="normen"><div class="sub" style="margin-bottom:4px;font-weight:600">Gesetzestext</div>${ns.map((n) => `<details class="norm"${ns.length <= 2 ? " open" : ""}><summary>${esc(n.label)}${n.titel ? ` <span class="sub">– ${esc(n.titel)}</span>` : ""}</summary>
-    ${n.absaetze.map((a) => `<p>${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}${n.auszug ? `<p class="sub">Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt.</p>` : ""}</details>`).join("")}</div>`;
+  const zs = zitate(kontext);
+  const bloecke = ns.map((n) => {
+    const teile = n.absaetze.map((a) => absatzHtml(n, a, zs));
+    const treffer = teile.some((t) => t.treffer);
+    return { treffer, html: `<details class="norm"${ns.length <= 2 || treffer ? " open" : ""}><summary>${esc(n.label)}${n.titel ? ` <span class="sub">– ${esc(n.titel)}</span>` : ""}</summary>
+    ${teile.map((t) => t.html).join("")}${n.auszug ? `<p class="sub">Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt.</p>` : ""}</details>` };
+  });
+  const legende = bloecke.some((x) => x.treffer) ? ` <span class="hl-legende">markiert = in der Aufgabe zitiert</span>` : "";
+  return `<div class="normen"><div class="sub" style="margin-bottom:4px;font-weight:600">Gesetzestext${legende}</div>${bloecke.map((x) => x.html).join("")}</div>`;
 }
 
 // ======================= Render: Sitzung =======================
@@ -799,7 +844,7 @@ function auswertungView(f, b) {
       ${urteil}
       <div class="erkl muster">${esc(f.antwort)}</div>
       ${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}
-      ${normBlock(f.normen)}
+      ${normBlock(f.normen, [f.text, f.antwort, f.erklaerung, f.quelle, f.zusatzZitate].join(" "))}
       ${b.korrekt === null ? `<div class="gruppe-fuss" style="margin:10px 0 0">Vergleiche mit deiner Antwort: Hast du die wesentlichen Punkte und die richtige Norm genannt?</div>` : ""}
     </div></div>`;
   }
@@ -807,7 +852,7 @@ function auswertungView(f, b) {
     <div class="urteil ${b.korrekt ? "ja" : "nein"}">${b.korrekt ? "✓ Richtig!" : "✗ Leider nicht richtig"}</div>
     ${extra}
     ${f.antwort ? `<div class="erkl muster">${esc(f.antwort)}</div>${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}` : `<div class="erkl">${esc(f.erklaerung)}</div>`}
-    ${normBlock(f.normen)}
+    ${normBlock(f.normen, [f.text, f.antwort, f.erklaerung, f.quelle, f.zusatzZitate].join(" "))}
     ${f.quelle ? `<div class="quelle">📖 ${esc(f.quelle)}</div>` : ""}
   </div></div>`;
 }

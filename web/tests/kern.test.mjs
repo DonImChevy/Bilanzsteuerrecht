@@ -239,3 +239,18 @@ test("Bilanzrecht: Gesetzestexte zu den Aufgaben", async () => {
   const grenzen = ALLE.find((v) => v.id === "bf-141-grenzen").erzeugen(new Zufall(1));
   assert.ok(grenzen.richtig.every((i) => !/Wirtschaftswert/.test(grenzen.optionen[i])), "Wirtschaftswert-Grenze ist weggefallen");
 });
+
+test("Hervorhebung: Zitate und Satzgrenzen", async () => {
+  const { norm, zitate, saetze } = await import("../js/oer/normtext.js");
+  assert.deepEqual(zitate("§ 141 I 1 Nr. 1, 4 AO")[0], { g: "AO", nr: "141", abs: "1", satz: "1", nummern: ["1", "4"] });
+  assert.deepEqual(zitate("Art. 21 Abs. 1 Satz 1 GG: …")[0], { g: "GG", nr: "21", abs: "1", satz: "1", nummern: [] });
+  assert.deepEqual(zitate("§ 4 Nr. 9a UStG")[0].nummern, ["9a"]);
+  assert.deepEqual(zitate("Umsatz 800.000 € (§ 141 AO)"), []);
+  const t141 = norm("AO 141 1").absaetze[0].text, s141 = saetze(t141);
+  assert.equal(s141.length, 2);
+  assert.match(t141.slice(...s141[1]), /^Die §§ 238, 240, 241/);
+  const t17 = norm("UStG 17 1").absaetze[0].text;
+  assert.match(t17.slice(...saetze(t17)[1]), /^Ebenfalls ist der Vorsteuerabzug/);
+  const t21 = norm("GG 21 1").absaetze[0].text;
+  assert.equal(t21.slice(...saetze(t21)[0]), "Die Parteien wirken bei der politischen Willensbildung des Volkes mit.");
+});
