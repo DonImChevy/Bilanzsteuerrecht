@@ -5,31 +5,22 @@ import { OER_UEBERTRAGUNG } from "./oer/uebertragung.js";
 import { LERNKARTEN as BSR_KARTEN } from "./lernkarten.js";
 import { THEMA, themenFuer, Zufall } from "./kern.js";
 import { normenAusText } from "./oer/normtext.js";
+import { MARKIERUNG } from "./markierungen.js";
 
-// Bilanzrecht: Gesetzestexte zu jeder Aufgabe – aus den Zitaten in Text/Erklärung/Fundstelle
-// und ergänzend dort, wo die Aufgabe inhaltlich auf eine Vorschrift zielt, sie aber nicht nennt.
-const ZUSATZ_ZITATE = {
-  "wu-einkauf-fracht": "§ 15 Abs. 1 Nr. 1 UStG", "wu-anlage-nebenkosten": "§ 15 Abs. 1 Nr. 1 UStG",
-  // Skonto/Bonus: beim leistenden Unternehmer USt-Berichtigung (Satz 1), beim Empfänger Vorsteuer-Berichtigung (Satz 2)
-  "wu-skonto-lieferant": "§ 17 Abs. 1 Satz 2 UStG", "wu-skonto-kunde": "§ 17 Abs. 1 Satz 1 UStG",
-  "wu-bonus-gewaehrt": "§ 17 Abs. 1 Satz 1 UStG", "us-skonto-einzelhaendler": "§ 17 Abs. 1 Satz 2 UStG",
-  "us-skonto-grosshaendler": "§ 17 Abs. 1 Satz 1 UStG", "us-skonto-r": "§ 17 Abs. 1 Satz 2 UStG",
-  "wu-ruecksendung-lieferant": "§ 17 Abs. 1 Satz 2 UStG", "wu-ruecksendung-kunde": "§ 17 Abs. 1 Satz 1 UStG",
-  "wu-nachlass-lieferant": "§ 17 Abs. 1 Satz 2 UStG", "wu-nachlass-kunde": "§ 17 Abs. 1 Satz 1 UStG",
-  "wu-bonus-erhalten": "§ 17 Abs. 1 Satz 2 UStG",
-  "us-herausrechnen": "§ 12 Abs. 1 UStG, § 12 Abs. 2 Nr. 1 UStG",
-  // § 141 AO gilt nur für gewerbliche Unternehmer sowie Land- und Forstwirte (Satz 1)
-  "bf-aerzte": "§ 141 Abs. 1 Satz 1 AO, § 18 Abs. 1 Nr. 1 EStG", "ge-freiberufler": "§ 141 Abs. 1 Satz 1 AO, § 18 Abs. 1 Nr. 1 EStG",
-  "bf-kiosk": "§ 141 Abs. 1 Satz 1 Nr. 1, 4 AO", "ge-5-1": "§ 5 Abs. 1 Satz 1 EStG, § 18 Abs. 1 Nr. 1 EStG",
-};
+// Gesetzestexte zu jeder Aufgabe: Bilanzrecht aus den Zitaten in Text/Erklärung/Fundstelle, beide Module
+// ergänzt um die maßgeblichen Fundstellen aus markierungen.js (die dort genannten Sätze werden hervorgehoben).
 const mitNormen = (v) => {
-  if (THEMA[v.thema].fach !== "bsr") return v;
+  const zusatz = MARKIERUNG[v.id] || "";
+  const bsr = THEMA[v.thema].fach === "bsr";
+  if (!bsr && !zusatz) return v;
   return { ...v, erzeugen: (r) => {
     const f = v.erzeugen(r);
-    if (f.normen?.length) return f;
-    const zusatz = ZUSATZ_ZITATE[v.id] || "";
-    const refs = normenAusText([f.text, f.erklaerung, f.quelle, zusatz].join(" "));
-    return refs.length ? { ...f, normen: refs, zusatzZitate: zusatz } : f;
+    const vorhanden = f.normen || [];
+    const kopf = (ref) => ref.split(" ").slice(0, 2).join(" ");
+    const neu = normenAusText(bsr && !vorhanden.length ? [f.text, f.erklaerung, f.quelle, zusatz].join(" ") : zusatz)
+      .filter((ref) => !vorhanden.some((x) => x === ref || x === kopf(ref))); // ganzer Paragraf schon da → nichts ergänzen
+    const normen = [...vorhanden, ...neu];
+    return normen.length ? { ...f, normen, zusatzZitate: zusatz } : f;
   } };
 };
 

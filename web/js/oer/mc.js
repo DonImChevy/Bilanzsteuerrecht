@@ -466,5 +466,5 @@ export function alsMultipleChoice(f, r) {
   if (!d || f.typ !== "offen") return f;
   const optionen = [...d.r, ...d.f];
   const richtig = d.r.map((_, i) => i);
-  return { ...auswahl(f.id, f.thema, d.frage || f.text, optionen, richtig, f.erklaerung, r), normen: f.normen, antwort: f.antwort };
+  return { ...auswahl(f.id, f.thema, d.frage || f.text, optionen, richtig, f.erklaerung, r), normen: f.normen, antwort: f.antwort, zusatzZitate: f.zusatzZitate };
 }

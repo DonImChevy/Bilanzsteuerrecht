@@ -27,7 +27,13 @@ const ROEMISCH = { I: "1", II: "2", III: "3", IV: "4", V: "5", VI: "6", VII: "7"
  */
 export function normenAusText(text) {
   const refs = [];
-  for (const m of String(text).matchAll(/§§?[\s ]*([^§]*?)[\s ](HGB|AO|EStG|UStG)\b/g)) {
+  for (const m of String(text).matchAll(/Art\.\s*(\d+[a-z]?)(?:\s+Abs\.\s*(\d+[a-z]?))?[^§]*?\bGG\b|Präambel[^§]*?\bGG\b/g)) {
+    const nr = m[1] || "Präambel";
+    if (!INDEX.has(`GG ${nr}`)) continue;
+    const ref = m[2] && norm(`GG ${nr} ${m[2]}`) ? `GG ${nr} ${m[2]}` : `GG ${nr}`;
+    if (!refs.includes(ref) && !refs.includes(`GG ${nr}`)) refs.push(ref);
+  }
+  for (const m of String(text).matchAll(/§§?[\s\u00a0]*([^§]*?)[\s\u00a0](HGB|AO|EStG|UStG|BWahlG|PartG)\b/g)) {
     const g = m[2];
     let vorher = null;
     for (const teil of m[1].split(/,|\bi\.\s?V\.\s?m\.|\bund\b/)) {
@@ -66,6 +72,7 @@ export function zitate(text) {
     if (z.abs || z.satz || z.nummern.length) erg.push(z);
   };
   const s = String(text);
+  for (const m of s.matchAll(/Präambel\s+(?:Satz|S\.)\s*(\d+)/g)) erg.push({ g: "GG", nr: "Präambel", abs: null, satz: m[1], nummern: [] });
   for (const m of s.matchAll(new RegExp(String.raw`Art\.\s*(\d+[a-z]?)` + MODS, "g"))) lesen("GG", m[1], m[2]);
   for (const m of s.matchAll(new RegExp(String.raw`§\s*(\d+[a-z]?)` + MODS + String.raw`\s*(?:des\s+)?(HGB|AO|EStG|UStG|BWahlG|PartG|GG)\b`, "g"))) lesen(m[3], m[1], m[2]);
   return erg;
@@ -75,10 +82,12 @@ const ABKUERZUNG = /^(?:Abs|Nr|Nrn|Art|S|Buchst|bzw|vgl|ggf|Ziff|z|B|u|a|d|h|m|i
 /** Teilt einen Absatz in Sätze: [[start, ende], …] – Aufzählungsnummern und Abkürzungen sind keine Satzenden. */
 export function saetze(text) {
   const grenzen = [];
-  for (const m of text.matchAll(/\.(?=\s+[A-ZÄÖÜ„])/g)) {
+  for (const m of text.matchAll(/\.["“]?(?=\s+[A-ZÄÖÜ„])/g)) {
     const davor = text.slice(0, m.index).match(/(\S+)$/)?.[1] || "";
+    // Innerhalb wörtlich zitierter Texte (z. B. Eidesformel in Art. 56 GG) endet kein Satz
+    if (((text.slice(0, m.index + m[0].length).match(/["„“]/g) || []).length % 2) === 1) continue;
     if (ABKUERZUNG.test(davor) || /^\d+[a-z]?$/.test(davor) || /^\d+\.$/.test(davor)) continue;
-    grenzen.push(m.index + 1);
+    grenzen.push(m.index + m[0].length);
   }
   const teile = [];
   let start = 0;

@@ -254,3 +254,22 @@ test("Hervorhebung: Zitate und Satzgrenzen", async () => {
   const t21 = norm("GG 21 1").absaetze[0].text;
   assert.equal(t21.slice(...saetze(t21)[0]), "Die Parteien wirken bei der politischen Willensbildung des Volkes mit.");
 });
+
+test("Markierungen: jede Fundstelle trifft einen angezeigten Satz bzw. eine Nummer", async () => {
+  const { norm, zitate, saetze } = await import("../js/oer/normtext.js");
+  const { MARKIERUNG } = await import("../js/markierungen.js");
+  for (const [id, z] of Object.entries(MARKIERUNG)) {
+    const v = ALLE.find((x) => x.id === id);
+    assert.ok(v, "unbekannte Aufgabe " + id);
+    const f = v.erzeugen(new Zufall(1));
+    for (const zz of zitate(z)) {
+      const absaetze = f.normen.filter((r) => r.split(" ")[0] === zz.g && r.split(" ")[1] === zz.nr).flatMap((r) => norm(r).absaetze);
+      const a = absaetze.find((x) => (zz.abs ? x.abs === zz.abs : x.abs === "" || absaetze.length === 1));
+      assert.ok(a, `${id}: ${zz.g} ${zz.nr} Abs. ${zz.abs} wird nicht angezeigt`);
+      if (zz.satz) assert.ok(saetze(a.text).length >= +zz.satz, `${id}: ${zz.g} ${zz.nr} Satz ${zz.satz} fehlt`);
+      for (const nr of zz.nummern) assert.ok(new RegExp(`(^|\\n)${nr.replace(/[a-z]$/, "")}\\.\\s`).test(a.text), `${id}: Nr. ${nr} fehlt`);
+    }
+  }
+  const t = norm("GG 56").absaetze[0].text;
+  assert.equal(saetze(t).length, 2, "Eidesformel in Anführungszeichen zählt nicht als eigene Sätze");
+});

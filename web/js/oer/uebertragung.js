@@ -418,8 +418,8 @@ const grundsaetze = U("u-grundsaetze", "oer-wahl", (r) => {
 const STIMMZETTEL_FAELLE = [
   { kE: [1], kZ: [2], erg: 0, erkl: "Je ein eindeutiges Kreuz – beide Stimmen sind gültig." },
   { kE: [0], kZ: [0, 3], erg: 1, erkl: "Zwei Kreuze bei der Zweitstimme: Der Wille ist nicht zweifelsfrei erkennbar (§ 39 Abs. 1 Satz 1 Nr. 4) → Zweitstimme ungültig; die Erststimme bleibt gültig." },
-  { kE: [2], kZ: [], erg: 1, erkl: "Nur eine Stimme abgegeben: Die nicht abgegebene Zweitstimme ist ungültig (§ 39 Abs. 1 Satz 3); die Erststimme ist gültig." },
-  { kE: [], kZ: [1], erg: 2, erkl: "Nur die Zweitstimme ist gekennzeichnet → Zweitstimme gültig, die nicht abgegebene Erststimme ungültig (§ 39 Abs. 1 Satz 3)." },
+  { kE: [2], kZ: [], erg: 1, erkl: "Nur eine Stimme abgegeben: Die nicht abgegebene Zweitstimme ist ungültig (§ 39 Abs. 1 Satz 4); die Erststimme ist gültig." },
+  { kE: [], kZ: [1], erg: 2, erkl: "Nur die Zweitstimme ist gekennzeichnet → Zweitstimme gültig, die nicht abgegebene Erststimme ungültig (§ 39 Abs. 1 Satz 4)." },
   { kE: [], kZ: [], erg: 3, erkl: "Der Stimmzettel enthält keine Kennzeichnung (§ 39 Abs. 1 Satz 1 Nr. 2) → beide Stimmen ungültig (Satz 2)." },
   { kE: [0, 1], kZ: [3], erg: 2, erkl: "Zwei Kreuze bei der Erststimme → Erststimme ungültig (Wille nicht zweifelsfrei, Nr. 4); die Zweitstimme ist gültig." },
 ];
