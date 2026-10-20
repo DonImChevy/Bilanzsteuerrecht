@@ -42,7 +42,7 @@ laden das Update beim nächsten Start mit Internet automatisch.
 | Bereich | Inhalt |
 |---|---|
 | **Start** | Tagesziel-Ring, Lernserie, „Wiederholen“/„Weiterlernen“, Suche (Themen, Aufgaben, Normen, Konten), Module, Wochenverlauf |
-| **Lernen** | Modulseite: Schnellstart, filterbare Themen mit Trefferquote, Lernkartei |
+| **Modul** | Jedes Modul ist in sich geschlossen (untere Leiste: Übersicht, Klausur, Karten, Normen/Konten; „‹ Alle Module“ zurück). Übersicht: Schnellstart, filterbare Themen mit Trefferquote, Lernkartei |
 | **Üben** | 10 Aufgaben pro Runde, sofortiges Feedback mit Erklärung und Fundstelle, Tastatursteuerung am PC |
 | **Buchungssätze** | Eingabe wie in der Klausur: Soll-Positionen „an“ Haben-Positionen, Konten aus dem Kontenplan des Skripts (mit Suche), zusammengesetzte Buchungssätze, Summenkontrolle |
 | **Generatoren** | rund 80 Aufgabentypen erzeugen bei jedem Aufruf **neue Beträge** (USt 19 %/7 %, Skonto, Boni, Rabatte, Rücksendungen …) |

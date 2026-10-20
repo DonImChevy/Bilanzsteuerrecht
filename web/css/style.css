@@ -175,7 +175,6 @@ button.zeile:active, button.karte-btn:active { background: var(--card2); }
 .modul-kachel .balken { margin-top: 0; flex: 1; }
 .modul-kachel .balken > span { background: var(--mc); }
 .modul-kachel.gewaehlt { box-shadow: 0 0 0 2px var(--mc), var(--shadow); }
-.modul-kachel .faellig-punkt { position: absolute; top: 12px; right: 12px; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 99px; background: var(--err); color: #fff; font-size: 12px; font-weight: 800; display: grid; place-items: center; }
 .modul-kachel.bald { background: color-mix(in srgb, var(--card) 60%, transparent); box-shadow: none; border: 1.5px dashed var(--line); }
 .modul-kachel.bald .m-icon { background: var(--card2); color: var(--mc); box-shadow: none; }
 .modul-kachel.bald .m-titel { color: var(--text2); }
@@ -460,3 +459,19 @@ details.norm p { font-size: 14.5px; margin: 8px 0 2px; line-height: 1.55; }
 .haekchen .ic { stroke-width: 3; }
 .zurueck-link { display: inline-flex; align-items: center; gap: 4px; color: var(--accent); font-weight: 650; font-size: 15px; padding: 8px 10px 8px 4px; margin: 4px 0 -6px -4px; border-radius: 10px; }
 .zurueck-link:active { background: var(--accent-weak); }
+.screen.ohne-leiste { padding-bottom: calc(28px + var(--safe-b)); }
+.modul-leiste { margin-top: 2px; }
+.modul-leiste .zurueck-link { margin: 0 0 0 -4px; }
+/* Modul-Kachel mit Wiederholungsstreifen */
+.modul-kachel.geteilt { padding: 0; gap: 0; min-height: 0; }
+.modul-kachel.geteilt:active { transform: none; }
+.modul-kachel .m-oben { display: flex; flex-direction: column; gap: 10px; padding: 14px; text-align: left; flex: 1; min-height: 132px; transition: background 0.12s; }
+.modul-kachel .m-oben:active { background: var(--card2); }
+.modul-kachel .m-unten { display: flex; align-items: center; gap: 6px; width: 100%; padding: 10px 14px; font-size: 13px; font-weight: 650; border-top: 1px solid var(--line); text-align: left; min-height: 46px; white-space: nowrap; }
+.modul-kachel .m-unten .grow { flex: 1; }
+.modul-kachel .m-unten.faellig { background: color-mix(in srgb, var(--mc) 12%, var(--card)); color: color-mix(in srgb, var(--mc) 85%, var(--text)); border-top-color: transparent; }
+.modul-kachel .m-unten.faellig b { font-size: 17px; margin-right: 2px; }
+.modul-kachel .m-unten.faellig:active { filter: brightness(0.95); }
+.modul-kachel .m-unten.erledigt { color: var(--ok); }
+.modul-kachel .m-unten.leer { color: var(--text3); font-weight: 600; }
+.modul-kachel.bald .m-unten { border-top: 1.5px dashed var(--line); }
