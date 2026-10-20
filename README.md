@@ -1,9 +1,9 @@
-# BSR-Trainer – Klausurtraining Grundstudium I
+# Finanzwirt-Trainer – Lern-App zum Diplom-Finanzwirt
 
 Lern-App zur Klausurvorbereitung im Grundstudium I. Startseite mit Tagesziel, Lernserie, Wiederholungen,
 Suche über alle Inhalte und Modul-Kacheln. Verfügbar:
 
-- **Bilanzsteuerrecht** – Teil I (Buchführung), orientiert am Skript und an den Übungen bzw. Lösungshinweisen.
+- **Bilanzrecht (BilR)** – Bilanzsteuerrecht Teil I (Buchführung), orientiert am Skript und an den Übungen bzw. Lösungshinweisen.
 - **Öffentliches Recht** – Staatsrecht nach Lehrplan 1.1 bis 1.3.4.5 (Staatsziele bis Bundesregierung).
   Quellen: Grundgesetz, Bundeswahlgesetz, Parteiengesetz. Aufbau wie in der Klausur: ca. 75 % Frage-Antwort
   (Musterantwort mit wörtlichem Normzitat, Selbstbewertung) und 25 % Übertragungsaufgaben mit Grafiken
@@ -11,8 +11,8 @@ Suche über alle Inhalte und Modul-Kacheln. Verfügbar:
   Zwei Antwortmodi: **Frage – Antwort** (selbst formulieren) oder **Multiple Choice** (jede Frage mit plausiblen
   Falschantworten aus benachbarten Normen, oft mehrere richtig) – umschaltbar im Reiter Üben und Klausur.
 
-In Vorbereitung (als „Bald verfügbar“ sichtbar): Einkommensteuer (ESt), Umsatzsteuerrecht (UStR),
-Abgabenordnung (AO), Bewertungsrecht (BewR), Privatrecht. Neue Module werden in `web/js/module.js` eingetragen.
+In Vorbereitung (als „Bald verfügbar“ sichtbar): Einkommensteuer (ESt), Umsatzsteuer (USt),
+Abgabenordnung (AO), Bewertungsrecht (BewR), Privatrecht (PrivR), ASV. Neue Module werden in `web/js/module.js` eingetragen.
 
 **Kostenlos, ohne App Store, offline nutzbar:** Die App ist eine Web-App (PWA). Man öffnet sie einmal im
 Browser und legt sie auf den Home-Bildschirm – danach startet sie wie eine normale App, auch ohne Internet.

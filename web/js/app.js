@@ -235,12 +235,38 @@ function render() {
   app.innerHTML = html;
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
+  verlaufAbgleichen();
   document.body.style.overflow = state.sitzung || state.deck || state.sheet ? "hidden" : "";
   if (fokusId) {
     const el = document.querySelector(`[data-fokus="${fokusId}"]`);
     if (el) { el.focus(); if (pos && el.setSelectionRange) try { el.setSelectionRange(...pos); } catch (_) { /* egal */ } }
   }
 }
+
+// ======================= Zurück-Taste / Zurück-Geste =======================
+// Jede geöffnete Ebene (Unterseite, Übung, Rückschau, Lernkarten, Menü) bekommt einen Eintrag im Browserverlauf.
+// So schließt die Zurück-Geste (Android) bzw. Zurück-Taste die oberste Ebene, statt die App zu verlassen.
+let verlaufTiefe = 0, popIgnorieren = 0;
+const ansichtTiefe = () => (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.sheet ? 1 : 0);
+function verlaufAbgleichen() {
+  const t = ansichtTiefe();
+  while (verlaufTiefe < t) { verlaufTiefe += 1; history.pushState({ tiefe: verlaufTiefe }, ""); }
+  if (verlaufTiefe > t) { popIgnorieren += 1; history.go(t - verlaufTiefe); verlaufTiefe = t; }
+}
+/** Oberste Ebene schließen (Zurück-Geste, Escape-Taste). */
+function ebeneZurueck() {
+  if (state.sheet) AKTIONEN.sheetZu();
+  else if (state.deck) AKTIONEN.deckZu();
+  else if (state.sitzung?.review != null) AKTIONEN.reviewZurueck();
+  else if (state.sitzung) AKTIONEN.beenden();
+  else if (state.tab !== "start") AKTIONEN.tab("start");
+  else render();
+}
+window.addEventListener("popstate", () => {
+  if (popIgnorieren) { popIgnorieren -= 1; return; }
+  verlaufTiefe = Math.max(0, verlaufTiefe - 1);
+  ebeneZurueck(); // bei abgebrochener Rückfrage legt render() den Eintrag wieder an
+});
 
 const ansicht = {};
 const schluessel = {
@@ -254,9 +280,10 @@ function istStandalone() {
 }
 
 /** Kopf einer Unterseite mit Modul-Chip zum Wechseln. */
+const zurueckStart = () => `<button class="zurueck-link" data-a="tab" data-v="start">${ic("zurueck", "klein")} Start</button>`;
 function seitenKopf(titel, untertitel = "") {
   const m = MODUL[state.fach];
-  return `<div class="kopfzeile"><h1 class="titel">${titel}</h1>
+  return `${zurueckStart()}<div class="kopfzeile"><h1 class="titel">${titel}</h1>
       <button class="modul-chip" data-a="modulWahl" aria-label="Modul wechseln"><span class="punkt">${ic(m.icon)}</span>${m.kurz}${ic("pfeil", "klein")}</button></div>
     ${untertitel ? `<p class="untertitel">${untertitel}</p>` : ""}`;
 }
@@ -440,10 +467,11 @@ function tabLernen() {
     : `<button class="kachel${breit}" data-a="tab" data-v="klausur"><span class="k-icon">${ic("klausur")}</span><span class="k-text"><b>Klausur</b><span class="sub">Unter Echtbedingungen</span></span></button>`;
 
   return `
+    <div class="kopfzeile" style="margin-top:2px">${zurueckStart()}
+      <button class="modul-chip" data-a="modulWahl" aria-label="Modul wechseln"><span class="punkt">${ic(m.icon)}</span>${m.kurz}${ic("pfeil", "klein")}</button></div>
     <section class="modul-banner">
       <div class="reihe1"><span class="m-icon">${ic(m.icon, "gross")}</span>
-        <div style="min-width:0"><h1>${m.titel}</h1><div class="unter">${esc(m.unter)}</div></div>
-        <button class="wechsel" data-a="modulWahl" aria-label="Modul wechseln" title="Modul wechseln">${ic("wechsel")}</button></div>
+        <div style="min-width:0"><h1>${m.titel}</h1><div class="unter">${esc(m.unter)}</div></div></div>
       <div class="zahlen">
         <div><b>${ids.length}</b><span>Aufgabentypen</span></div>
         <div><b>${z.b ? Math.round(quote(z) * 100) + " %" : "–"}</b><span>richtig</span></div>
@@ -806,7 +834,7 @@ function ergebnisView() {
 function reviewView() {
   const x = s(), i = x.review;
   return `<div class="vollbild">
-    <div class="vb-kopf"><button class="link" data-a="reviewZurueck">‹ Übersicht</button><div class="mitte">Aufgabe ${i + 1} von ${x.fragen.length}</div><span class="zaehler"></span></div>
+    <div class="vb-kopf"><button class="link" data-a="reviewZurueck" style="display:inline-flex;align-items:center;gap:2px">${ic("zurueck", "klein")} Übersicht</button><div class="mitte">Aufgabe ${i + 1} von ${x.fragen.length}</div><span class="zaehler"></span></div>
     <div class="vb-inhalt">${frageView(x.fragen[i], x.antworten[i], x.bewertungen[i], true)}</div>
     <div class="vb-fuss">
     ${x.bewertungen[i]?.korrekt === null ? `<div class="reihe" style="margin-bottom:10px"><button class="knopf rot" data-a="selbstReview" data-v="0">${ic("kreuz")} Nicht gewusst</button><button class="knopf gruen" data-a="selbstReview" data-v="1">${ic("haken")} Gewusst</button></div>` : ""}
@@ -900,16 +928,16 @@ function sheetView() {
           ["📊", "Beim Start wird anonym gezählt, ob die App im Browser oder vom Home-Bildschirm geöffnet wurde (GoatCounter, ohne Cookies). Lernergebnisse werden nie übertragen."],
         ].map(([i, t]) => `<div class="zeile"><span style="font-size:20px">${i}</span><span class="grow" style="font-size:14.5px">${t}</span></div>`).join("")}
       </div></div>
-      <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Inoffizielle Lernhilfe. Inhalte orientiert am Skript „Bilanzsteuerrecht Grundstudium I, Teil I“ mit Übungen sowie am Lehrplan Öffentliches Recht und den Gesetzestexten (Stand GG 22.03.2025, BWahlG 03.07.2026). Ohne Gewähr – maßgeblich sind Skript, Gesetz und Lehrveranstaltung.</span></div>
+      <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Finanzwirt-Trainer – inoffizielle Lernhilfe für das Studium zum Diplom-Finanzwirt. Inhalte orientiert am Skript „Bilanzsteuerrecht Grundstudium I, Teil I“ mit Übungen sowie am Lehrplan Öffentliches Recht und den Gesetzestexten (Stand GG 22.03.2025, BWahlG 03.07.2026). Ohne Gewähr – maßgeblich sind Skript, Gesetz und Lehrveranstaltung.</span></div>
         <div class="zeile"><span class="grow">Version</span><span class="sub">${VERSION}</span></div></div></div>
       <div class="liste" style="margin-bottom:24px"><button class="zeile" data-a="willkommenZeigen" style="justify-content:center;color:var(--accent);font-weight:600">Einführung erneut anzeigen</button>
         <button class="zeile" data-a="reset" style="justify-content:center;color:var(--err);font-weight:600">Gesamten Fortschritt löschen</button></div>`;
   } else if (sh.art === "willkommen") {
     halb = true; titel = ""; links = "Später";
     inhalt = `<div class="willkommen">
-      <div class="logo">${ic("lernen")}</div>
-      <h2>Willkommen beim BSR-Trainer</h2>
-      <div class="sub" style="font-size:15px">Deine Klausurvorbereitung für das Grundstudium I – kostenlos und offline.</div>
+      <div class="logo">${ic("hut")}</div>
+      <h2>Willkommen beim Finanzwirt-Trainer</h2>
+      <div class="sub" style="font-size:15px">Deine Lern-App für das Studium zum Diplom-Finanzwirt – kostenlos und offline.</div>
       <div class="vorteile">
         <div><span class="symbol">${ic("ziel")}</span><div><b>Klausurnah üben</b><span class="sub">Buchungssätze, Frage-Antwort, Übertragungsaufgaben – mit Musterlösung.</span></div></div>
         <div><span class="symbol">${ic("gehirn")}</span><div><b>Nichts mehr vergessen</b><span class="sub">Die Lernkartei holt jede Aufgabe im richtigen Abstand zurück.</span></div></div>
@@ -1204,7 +1232,8 @@ app.addEventListener("keydown", (e) => {
 document.addEventListener("keydown", (e) => {
   const tag = e.target.tagName;
   if (tag === "INPUT" || tag === "TEXTAREA" || e.metaKey || e.ctrlKey || e.altKey) return;
-  if (state.sheet) { if (e.key === "Escape") AKTIONEN.sheetZu(); return; }
+  if (e.key === "Escape") { ebeneZurueck(); return; }
+  if (state.sheet) return;
   if (state.deck) {
     if (state.deck.index >= state.deck.karten.length) return;
     if (e.key === " " || e.key === "Enter") { e.preventDefault(); if (!state.deck.um) AKTIONEN.umdrehen(); else AKTIONEN.karte("1"); }
