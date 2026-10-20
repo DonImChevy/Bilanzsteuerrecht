@@ -56,7 +56,7 @@ const state = {
   normSuche: "",
   kontoSuche: "",
   sitzung: null,
-  sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"module"|"einstellungen"|"willkommen"|"merksaetze"}
+  sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"}
   deck: null,
   klausurAnzahl: 20,
   klausurMinuten: 45,
@@ -72,7 +72,8 @@ const zahlText = (n) => n.toLocaleString("de-DE");
 
 /** Akzentfarbe und Hell/Dunkel anwenden. */
 function designAnwenden() {
-  const m = MODUL[state.fach], root = document.documentElement;
+  // Startseite in der App-Farbe, innerhalb eines Moduls in dessen Farbe
+  const m = state.tab === "start" && !state.sitzung && !state.deck ? { farbe: "#4f46e5", farbeDunkel: "#8b8cf8" } : MODUL[state.fach], root = document.documentElement;
   root.style.setProperty("--m-hell", m.farbe);
   root.style.setProperty("--m-dunkel", m.farbeDunkel);
   if (state.design === "light" || state.design === "dark") root.dataset.theme = state.design;
@@ -210,9 +211,9 @@ function inTagen(t) {
 }
 
 // ======================= Render: Rahmen =======================
+// Untere Leiste nur innerhalb eines Moduls – jedes Modul ist in sich geschlossen
 const TABS = () => [
-  ["start", "start", "Start"],
-  ["lernen", "lernen", "Lernen"],
+  ["lernen", "start", "Übersicht"],
   ["klausur", "klausur", "Klausur"],
   ["karten", "karten", "Karten"],
   ["nachschlagen", "nachschlagen", state.fach === "oer" ? "Normen" : "Konten"],
@@ -227,8 +228,8 @@ function render() {
   const neu = (k) => { const w = ansicht[k] !== schluessel[k](); ansicht[k] = schluessel[k](); return w ? " anim" : ""; };
   const animTab = neu("tab"), animVoll = neu("voll"), animSheet = neu("sheet");
   const tab = { start: tabStart, lernen: tabLernen, klausur: tabKlausur, karten: tabKarten, nachschlagen: state.fach === "oer" ? tabNormen : tabKonten }[state.tab]();
-  let html = `<main class="screen${animTab}" data-tab="${state.tab}">${tab}</main>`;
-  html += `<nav class="tabbar">${TABS().map(([id, i, t]) => `<button data-a="tab" data-v="${id}" class="${state.tab === id ? "aktiv" : ""}" aria-label="${t}"><span class="ti">${ic(i)}</span>${t}</button>`).join("")}</nav>`;
+  let html = `<main class="screen${animTab}${state.tab === "start" ? " ohne-leiste" : ""}" data-tab="${state.tab}">${tab}</main>`;
+  if (state.tab !== "start") html += `<nav class="tabbar">${TABS().map(([id, i, t]) => `<button data-a="tab" data-v="${id}" class="${state.tab === id ? "aktiv" : ""}" aria-label="${t}"><span class="ti">${ic(i)}</span>${t}</button>`).join("")}</nav>`;
   if (state.sitzung) html += sitzungView();
   if (state.deck) html += deckView();
   if (state.sheet) html += sheetView();
@@ -280,11 +281,14 @@ function istStandalone() {
 }
 
 /** Kopf einer Unterseite mit Modul-Chip zum Wechseln. */
-const zurueckStart = () => `<button class="zurueck-link" data-a="tab" data-v="start">${ic("zurueck", "klein")} Start</button>`;
-function seitenKopf(titel, untertitel = "") {
+/** Kopfzeile innerhalb eines Moduls: zurück zur Modulauswahl, rechts das aktuelle Modul. */
+function modulLeiste() {
   const m = MODUL[state.fach];
-  return `${zurueckStart()}<div class="kopfzeile"><h1 class="titel">${titel}</h1>
-      <button class="modul-chip" data-a="modulWahl" aria-label="Modul wechseln"><span class="punkt">${ic(m.icon)}</span>${m.kurz}${ic("pfeil", "klein")}</button></div>
+  return `<div class="kopfzeile modul-leiste"><button class="zurueck-link" data-a="tab" data-v="start">${ic("zurueck", "klein")} Alle Module</button>
+    <span class="modul-chip"><span class="punkt">${ic(m.icon)}</span>${m.kurz}</span></div>`;
+}
+function seitenKopf(titel, untertitel = "") {
+  return `${modulLeiste()}<div class="kopfzeile"><h1 class="titel">${titel}</h1></div>
     ${untertitel ? `<p class="untertitel">${untertitel}</p>` : ""}`;
 }
 
@@ -304,7 +308,7 @@ function tabStart() {
   else { titel = "Bereit für heute?"; text = `Tagesziel: ${ziel} Aufgaben`; }
   if (due) knopf = `<button class="knopf" data-a="wiederholen" data-v="alle">${ic("wiederholen")} Wiederholen · ${due} fällig</button>`;
   else if (stat.zuletzt && MODUL[stat.zuletzt.fach] && !MODUL[stat.zuletzt.fach].bald) knopf = `<button class="knopf" data-a="weiterlernen">${ic("play", "fill")} Weiter: ${esc(stat.zuletzt.titel)}</button>`;
-  else knopf = `<button class="knopf" data-a="schnell" data-v="alles">${ic("play", "fill")} Erste Übung starten</button>`;
+  else knopf = `<button class="knopf" data-a="zuModulen">Modul wählen und loslegen ${ic("pfeil")}</button>`;
 
   return `
     <div class="kopfzeile">
@@ -344,7 +348,7 @@ function modulKachel(m) {
   const ids = idsVon(m.id), gelernt = ids.filter((id) => stat.lern[id]?.fach >= 3).length;
   const due = faelligVon(m.id).length, z = summeFach(m.id);
   const p = Math.round((gelernt / ids.length) * 100);
-  return `<button class="modul-kachel ${m.id === state.fach ? "gewaehlt" : ""}" style="--mc:${m.farbe}" data-a="modul" data-v="${m.id}">
+  return `<button class="modul-kachel" style="--mc:${m.farbe}" data-a="modul" data-v="${m.id}">
     ${due ? `<span class="faellig-punkt" title="${due} fällig">${due}</span>` : ""}
     <span class="m-icon">${ic(m.icon)}</span>
     <span><div class="m-titel">${m.titel}</div><div class="m-unter">${m.kurz} · ${ids.length} Aufgaben</div></span>
@@ -467,8 +471,7 @@ function tabLernen() {
     : `<button class="kachel${breit}" data-a="tab" data-v="klausur"><span class="k-icon">${ic("klausur")}</span><span class="k-text"><b>Klausur</b><span class="sub">Unter Echtbedingungen</span></span></button>`;
 
   return `
-    <div class="kopfzeile" style="margin-top:2px">${zurueckStart()}
-      <button class="modul-chip" data-a="modulWahl" aria-label="Modul wechseln"><span class="punkt">${ic(m.icon)}</span>${m.kurz}${ic("pfeil", "klein")}</button></div>
+    ${modulLeiste()}
     <section class="modul-banner">
       <div class="reihe1"><span class="m-icon">${ic(m.icon, "gross")}</span>
         <div style="min-width:0"><h1>${m.titel}</h1><div class="unter">${esc(m.unter)}</div></div></div>
@@ -902,13 +905,6 @@ function sheetView() {
     const x = s();
     inhalt = `<div class="raster">${x.fragen.map((f, i) => `<button data-a="springe" data-v="${i}" class="${istLeer(f, x.antworten[i]) ? "" : "bearbeitet"} ${i === x.index ? "aktuell" : ""}">${i + 1}</button>`).join("")}</div>
       <div class="gruppe-fuss" style="padding-bottom:16px">${x.antworten.filter((a, i) => !istLeer(x.fragen[i], a)).length} von ${x.fragen.length} bearbeitet</div>`;
-  } else if (sh.art === "module") {
-    titel = "Modul wählen"; halb = true;
-    inhalt = `<div class="liste">${MODULE.map((m) => `<button class="zeile" data-a="${m.bald ? "bald" : "modul"}" data-v="${m.id}" ${m.bald ? 'style="opacity:.6"' : ""}>
-      <span class="symbol" style="background:${m.farbe};color:#fff">${ic(m.icon)}</span>
-      <span class="grow"><div style="font-weight:650">${m.titel} <span class="sub">(${m.kurz})</span></div><div class="sub">${m.bald ? "Bald verfügbar" : `${esc(m.unter)} · ${idsVon(m.id).length} Aufgaben`}</div></span>
-      ${m.bald ? `<span class="pille">${ic("schloss", "klein")}</span>` : m.id === state.fach ? `<span style="color:var(--ok)">${ic("haken")}</span>` : `<span class="chev">${ic("pfeil", "klein")}</span>`}</button>`).join("")}</div>
-      <div class="gruppe-fuss" style="padding-bottom:16px">Weitere Module des Stundenplans folgen nach und nach.</div>`;
   } else if (sh.art === "einstellungen") {
     titel = "Einstellungen";
     inhalt = `
@@ -1030,7 +1026,6 @@ const AKTIONEN = {
   tab: (v) => { state.tab = v; state.sheet = null; render(); window.scrollTo(0, 0); },
   einstellungen: () => { state.sheet = { art: "einstellungen" }; render(); },
   info: () => { state.sheet = { art: "einstellungen" }; render(); },
-  modulWahl: () => { state.sheet = { art: "module" }; render(); },
   modul: (v) => { fachSetzen(v); state.sheet = null; state.suche = ""; state.tab = "lernen"; render(); window.scrollTo(0, 0); },
   fach: (v) => { fachSetzen(v); render(); },
   bald: (v) => toast(`${MODUL[v].titel} kommt bald – du wirst es hier als Erstes sehen.`),
@@ -1039,6 +1034,7 @@ const AKTIONEN = {
   ziel: (v) => { state.ziel = Number(v); schreib("bsr.ziel", v); render(); },
   design: (v) => { state.design = v; schreib("bsr.design", v); render(); },
   hinweisWeg: () => { state.hinweisWeg = true; schreib("bsr.hinweisWeg", "1"); render(); },
+  zuModulen: () => document.querySelector(".modul-grid")?.scrollIntoView({ behavior: "smooth", block: "start" }),
   sucheLeeren: () => { state.suche = ""; render(); document.getElementById("homeSuche")?.focus(); },
   oerModus: (v) => {
     state.oerModus = v === "mc" ? "mc" : "qa";
@@ -1046,6 +1042,7 @@ const AKTIONEN = {
     render();
   },
   schnell: (v, el) => {
+    state.tab = "lernen";
     const alle = themenFuer(state.fach).map((t) => t.id);
     const basis = { modus: "uebung", fach: state.fach };
     if (v === "buchung") starte({ ...basis, themen: alle, nurBuchung: true });
@@ -1053,9 +1050,9 @@ const AKTIONEN = {
     else if (v === "alles") starte({ ...basis, themen: alle });
     else starte({ ...basis, themen: [el.dataset.t] });
   },
-  thema: (v) => { fachSetzen(THEMA[v].fach); starte({ modus: "uebung", fach: THEMA[v].fach, themen: [v] }); },
-  einzeln: (v) => { const t = ALLE.find((x) => x.id === v).thema; fachSetzen(THEMA[t].fach); starte({ modus: "uebung", fach: THEMA[t].fach, themen: [t], ids: [v], einzeln: true }); },
-  weiterlernen: () => { const z = stat.zuletzt; fachSetzen(z.fach); starte({ modus: "uebung", fach: z.fach, themen: z.themen, nurBuchung: z.nurBuchung, filter: z.filter }); },
+  thema: (v) => { fachSetzen(THEMA[v].fach); if (state.tab === "start") { state.tab = "lernen"; state.suche = ""; } starte({ modus: "uebung", fach: THEMA[v].fach, themen: [v] }); },
+  einzeln: (v) => { const t = ALLE.find((x) => x.id === v).thema; fachSetzen(THEMA[t].fach); state.tab = "lernen"; state.suche = ""; starte({ modus: "uebung", fach: THEMA[t].fach, themen: [t], ids: [v], einzeln: true }); },
+  weiterlernen: () => { const z = stat.zuletzt; fachSetzen(z.fach); state.tab = "lernen"; starte({ modus: "uebung", fach: z.fach, themen: z.themen, nurBuchung: z.nurBuchung, filter: z.filter }); },
   beenden: () => {
     const x = s();
     if (x && !x.beendet && x.fragen.length && x.bewertungen.some((b) => !b) && (x.modus === "klausur" || x.index > 0 || x.bewertungen[0])) {

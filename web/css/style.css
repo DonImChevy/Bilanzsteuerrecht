@@ -460,3 +460,6 @@ details.norm p { font-size: 14.5px; margin: 8px 0 2px; line-height: 1.55; }
 .haekchen .ic { stroke-width: 3; }
 .zurueck-link { display: inline-flex; align-items: center; gap: 4px; color: var(--accent); font-weight: 650; font-size: 15px; padding: 8px 10px 8px 4px; margin: 4px 0 -6px -4px; border-radius: 10px; }
 .zurueck-link:active { background: var(--accent-weak); }
+.screen.ohne-leiste { padding-bottom: calc(28px + var(--safe-b)); }
+.modul-leiste { margin-top: 2px; }
+.modul-leiste .zurueck-link { margin: 0 0 0 -4px; }
