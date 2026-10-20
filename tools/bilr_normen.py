@@ -22,7 +22,7 @@ AUSWAHL = {
     "UStG": {"1": ["1"], "3": ["1", "1b", "9"], "4": [""], "9": ["1"], "10": ["1", "4"],
              "12": ["1", "2|1,11"], "15": ["1"], "17": ["1", "2"], "19": ["1"]},
 }
-START = {"HGB": "§ 1 Istkaufmann", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
+START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
          "UStG": "§ 1 Steuerbare Umsätze"}
 STAND = {}
 
@@ -42,16 +42,19 @@ def gesetz(datei, start):
     roh = roh[pos[0]:] if pos else roh
     normen, cur, letzter = {}, None, (0, "")
     for z in bereinigen(roh):
-        m = re.match(r"^§ (\d+[a-z]?)(?:\s+(.*))?$", z)
+        if re.fullmatch(r"\d{1,2}", z):
+            continue  # hochgestellte Fußnotenziffern (EStG)
+        m = re.match(r"^§ ?(\d+[a-z]?)(?:\s+(.*))?$", z)
         # Nur fortlaufende Überschriften akzeptieren – Verweise im Text („§ 108 …“) sind keine neuen Paragrafen
         titel = (m.group(2) or "") if m else ""
         # Überschriften beginnen groß („§ 18j teilnimmt.“ ist ein umbrochener Verweis im Text)
         if m and not titel.startswith(("Abs.", "Absatz ", "Satz ", "Nr.")) and not re.match(r"[a-zäöüß]", titel):
             k = schluessel(m.group(1))
-            if letzter < k and k[0] - letzter[0] <= 8 and m.group(1) not in normen:
+            if letzter < k and m.group(1) not in normen:
                 letzter = k
                 cur = normen.setdefault(m.group(1), {"titel": (m.group(2) or "").strip(), "z": []}); continue
-        if z == "Fußnote" or re.match(r"^(Erster|Zweiter|Dritter|Vierter|Fünfter|Sechster|Siebter|Achter|Neunter|Zehnter|Elfter) (Abschnitt|Buch|Teil|Unterabschnitt)", z):
+        if z == "Fußnote" or re.match(r"^(Erster|Zweiter|Dritter|Vierter|Fünfter|Sechster|Siebter|Achter|Neunter|Zehnter|Elfter) (Abschnitt|Buch|Teil|Unterabschnitt|Titel)", z) \
+                or re.match(r"^(Erstes|Zweites|Drittes|Viertes|Fünftes|Sechstes|Siebentes) Buch$", z):
             cur = None; continue
         if cur is not None:
             cur["z"].append(z)
@@ -91,7 +94,10 @@ def paragraf(n, filter_):
     titel = n["titel"]
     # Überschrift über zwei Zeilen: Rest steht im ersten, unnummerierten Absatz
     if abs_ and abs_[0]["abs"] == "" and len(abs_) > 1 and len(abs_[0]["text"]) < 90 and not abs_[0]["text"].endswith("."):
-        titel = f"{titel} {abs_[0]['text']}".strip()
+        rest = abs_[0]["text"]
+        # „Aufbewahrung von Unterlagen“ + „Aufbewahrungsfristen“ → amtlich mit Punkt; „… innergemeinschaftliche“ + „Erwerbe“ ohne
+        trenner = ". " if titel.split()[-1][:1].isupper() else " "
+        titel = f"{titel}{trenner}{rest}".strip()
         abs_ = abs_[1:]
     if filter_ is None:
         return titel, abs_, False

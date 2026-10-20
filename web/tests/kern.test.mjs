@@ -230,4 +230,12 @@ test("Bilanzrecht: Gesetzestexte zu den Aufgaben", async () => {
     for (const r of f.normen || []) assert.ok(norm(r), `${v.id}: ${r}`);
   }
   assert.deepEqual(ALLE.find((v) => v.id === "wu-skonto-kunde").erzeugen(new Zufall(2)).normen, ["UStG 17 1"]);
+  // HGB, AO, EStG: Überschriften und Inhalte stimmen
+  assert.match(norm("AO 141 1").absaetze[0].text, /§ 19 Absatz 2 Satz 1 des Umsatzsteuergesetzes von mehr als 800 000 Euro/);
+  assert.match(norm("HGB 241a").absaetze[0].text, /800 000 Euro Umsatzerlöse und jeweils 80 000 Euro Jahresüberschuss/);
+  assert.equal(norm("HGB 257").titel, "Aufbewahrung von Unterlagen. Aufbewahrungsfristen");
+  assert.match(norm("EStG 4 1").absaetze[0].text, /vermehrt um den Wert der Entnahmen/, "keine Fußnotenziffern im Text");
+  assert.equal(norm("EStG 4").titel, "Gewinnbegriff im Allgemeinen");
+  const grenzen = ALLE.find((v) => v.id === "bf-141-grenzen").erzeugen(new Zufall(1));
+  assert.ok(grenzen.richtig.every((i) => !/Wirtschaftswert/.test(grenzen.optionen[i])), "Wirtschaftswert-Grenze ist weggefallen");
 });
