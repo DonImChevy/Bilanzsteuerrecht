@@ -186,3 +186,27 @@ test("Wiederholung nach Lernintervallen", async () => {
   assert.deepEqual(faellige(lern, ["a", "b", "c", "d"], t0), ["b", "a"]);
   assert.equal(naechste(lern, ["a", "b", "c"], t0), t0 + 5);
 });
+
+test("Lernserie, Wochenverlauf und Module", async () => {
+  const { serie, woche, tagSchluessel } = await import("../js/aktivitaet.js");
+  const { MODULE, MODUL, aktiveModule } = await import("../js/module.js");
+  const { ICON_NAMEN } = await import("../js/icons.js");
+  const jetzt = new Date(2026, 9, 20, 9, 0).getTime();
+  const tag = (n) => tagSchluessel(new Date(2026, 9, 20 - n, 12).getTime());
+  assert.equal(tagSchluessel(jetzt), "2026-10-20");
+  assert.equal(serie({}, jetzt), 0);
+  assert.equal(serie({ [tag(0)]: 3, [tag(1)]: 5, [tag(2)]: 1 }, jetzt), 3);
+  assert.equal(serie({ [tag(1)]: 5, [tag(2)]: 1 }, jetzt), 2, "heute noch nichts gelernt bricht die Serie nicht");
+  assert.equal(serie({ [tag(0)]: 1, [tag(2)]: 1 }, jetzt), 1, "Lücke beendet die Serie");
+  assert.equal(serie({ [tag(2)]: 4 }, jetzt), 0);
+  const w = woche({ [tag(0)]: 7, [tag(6)]: 2 }, jetzt);
+  assert.equal(w.length, 7);
+  assert.deepEqual([w[0].n, w[6].n, w[6].heute, w[6].kurz], [2, 7, true, "Di"]);
+  // Module: aktive haben Themen und Aufgaben, kommende nicht; Icons existieren
+  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer"]);
+  assert.ok(MODULE.length >= 7 && MODUL.ust.kurz === "UStR");
+  for (const m of MODULE) {
+    assert.ok(ICON_NAMEN.includes(m.icon), m.id);
+    assert.equal(THEMEN.some((t) => t.fach === m.id), !m.bald, m.id);
+  }
+});

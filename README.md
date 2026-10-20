@@ -1,6 +1,7 @@
-# BSR-Trainer – Bilanzsteuerrecht & Öffentliches Recht GS I
+# BSR-Trainer – Klausurtraining Grundstudium I
 
-Lern-App zur Klausurvorbereitung im Grundstudium I mit zwei Reitern:
+Lern-App zur Klausurvorbereitung im Grundstudium I. Startseite mit Tagesziel, Lernserie, Wiederholungen,
+Suche über alle Inhalte und Modul-Kacheln. Verfügbar:
 
 - **Bilanzsteuerrecht** – Teil I (Buchführung), orientiert am Skript und an den Übungen bzw. Lösungshinweisen.
 - **Öffentliches Recht** – Staatsrecht nach Lehrplan 1.1 bis 1.3.4.5 (Staatsziele bis Bundesregierung).
@@ -9,6 +10,9 @@ Lern-App zur Klausurvorbereitung im Grundstudium I mit zwei Reitern:
   (Kanzlerwahl, Misstrauensvotum, Bundesrat-Abstimmungen, Sitzverteilung, Zweitstimmendeckung, Stimmzettel, Fristen …).
   Zwei Antwortmodi: **Frage – Antwort** (selbst formulieren) oder **Multiple Choice** (jede Frage mit plausiblen
   Falschantworten aus benachbarten Normen, oft mehrere richtig) – umschaltbar im Reiter Üben und Klausur.
+
+In Vorbereitung (als „Bald verfügbar“ sichtbar): Einkommensteuer (ESt), Umsatzsteuerrecht (UStR),
+Abgabenordnung (AO), Bewertungsrecht (BewR), Privatrecht. Neue Module werden in `web/js/module.js` eingetragen.
 
 **Kostenlos, ohne App Store, offline nutzbar:** Die App ist eine Web-App (PWA). Man öffnet sie einmal im
 Browser und legt sie auf den Home-Bildschirm – danach startet sie wie eine normale App, auch ohne Internet.
@@ -37,7 +41,9 @@ laden das Update beim nächsten Start mit Internet automatisch.
 
 | Bereich | Inhalt |
 |---|---|
-| **Üben** | 14 Themen aus Skript Teil I, 10 Aufgaben pro Runde, sofortige Auswertung mit Erklärung und Fundstelle |
+| **Start** | Tagesziel-Ring, Lernserie, „Wiederholen“/„Weiterlernen“, Suche (Themen, Aufgaben, Normen, Konten), Module, Wochenverlauf |
+| **Lernen** | Modulseite: Schnellstart, filterbare Themen mit Trefferquote, Lernkartei |
+| **Üben** | 10 Aufgaben pro Runde, sofortiges Feedback mit Erklärung und Fundstelle, Tastatursteuerung am PC |
 | **Buchungssätze** | Eingabe wie in der Klausur: Soll-Positionen „an“ Haben-Positionen, Konten aus dem Kontenplan des Skripts (mit Suche), zusammengesetzte Buchungssätze, Summenkontrolle |
 | **Generatoren** | rund 80 Aufgabentypen erzeugen bei jedem Aufruf **neue Beträge** (USt 19 %/7 %, Skonto, Boni, Rabatte, Rücksendungen …) |
 | **Feste Fragen** | rund 90 Theorie- und Fallfragen, viele direkt aus den Übungen |
@@ -68,6 +74,9 @@ web/                     Die Web-App (wird veröffentlicht)
   js/oer/mc.js           Multiple-Choice-Fassungen dieser Aufgaben (richtige/falsche Aussagen)
   js/oer/uebertragung.js ÖR Übertragungsaufgaben (Generatoren mit Grafiken)
   js/oer/grafik.js       SVG-Diagramme, Sitzverteilung, Stimmzettel, Tabellen
+  js/module.js           Module/Fächer (aktive und angekündigte)
+  js/aktivitaet.js       Lernserie, Tagesziel, Wochenverlauf
+  js/icons.js            Linien-Icons (SVG)
   js/app.js              Oberfläche
   tests/                 node --test web/tests/kern.test.mjs
 
