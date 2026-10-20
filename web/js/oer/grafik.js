@@ -109,12 +109,12 @@ export function zeitstrahl(ereignisse, { titel = "" } = {}) {
   const b = 340, h = 40 + ereignisse.length * 34;
   let s = `<svg viewBox="0 0 ${b} ${h}" class="grafik" role="img" aria-label="${esc(titel)}">`;
   if (titel) s += `<text x="${b / 2}" y="18" text-anchor="middle" class="g-titel">${esc(titel)}</text>`;
-  s += `<line x1="70" y1="30" x2="70" y2="${h - 10}" class="g-trenn"/>`;
+  s += `<line x1="86" y1="30" x2="86" y2="${h - 10}" class="g-trenn"/>`;
   ereignisse.forEach((e, i) => {
     const y = 44 + i * 34;
-    s += `<circle cx="70" cy="${y}" r="6" fill="${FARBEN[i % FARBEN.length]}"/>`;
-    s += `<text x="58" y="${y + 4}" text-anchor="end" class="g-wert">${esc(e.datum)}</text>`;
-    s += `<text x="84" y="${y + 4}" class="g-text">${esc(e.text)}</text>`;
+    s += `<circle cx="86" cy="${y}" r="6" fill="${FARBEN[i % FARBEN.length]}"/>`;
+    s += `<text x="74" y="${y + 4}" text-anchor="end" class="g-wert">${esc(e.datum)}</text>`;
+    s += `<text x="100" y="${y + 4}" class="g-text">${esc(e.text)}</text>`;
   });
   return s + "</svg>";
 }
