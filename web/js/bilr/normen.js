@@ -329,7 +329,7 @@ export const NORMEN_BILR = [
 "abs": [
 {
 "abs": "1",
-"text": "Die folgenden Unterlagen sind geordnet aufzubewahren:\n1. Bücher und Aufzeichnungen, Inventare, Jahresabschlüsse, Lageberichte, die Eröffnungsbilanz sowie die zu ihrem Verständnis erforderlichen Arbeitsanweisungen und sonstigen Organisationsunterlagen,\n2. die empfangenen Handels- oder Geschäftsbriefe,\n3. Wiedergaben der abgesandten Handels- oder Geschäftsbriefe,\n4. Buchungsbelege, 4a. Unterlagen nach Artikel 15 Absatz 1 und Artikel 163 des Zollkodex der Union,\n5. sonstige Unterlagen, soweit sie für die Besteuerung von Bedeutung sind."
+"text": "Die folgenden Unterlagen sind geordnet aufzubewahren:\n1. Bücher und Aufzeichnungen, Inventare, Jahresabschlüsse, Lageberichte, die Eröffnungsbilanz sowie die zu ihrem Verständnis erforderlichen Arbeitsanweisungen und sonstigen Organisationsunterlagen,\n2. die empfangenen Handels- oder Geschäftsbriefe,\n3. Wiedergaben der abgesandten Handels- oder Geschäftsbriefe,\n4. Buchungsbelege,\n4a. Unterlagen nach Artikel 15 Absatz 1 und Artikel 163 des Zollkodex der Union,\n5. sonstige Unterlagen, soweit sie für die Besteuerung von Bedeutung sind."
 },
 {
 "abs": "3",
@@ -369,7 +369,7 @@ export const NORMEN_BILR = [
 {
 "g": "EStG",
 "nr": "12",
-"titel": "",
+"titel": "Nicht abzugsfähige Ausgaben",
 "abs": [
 {
 "abs": "",

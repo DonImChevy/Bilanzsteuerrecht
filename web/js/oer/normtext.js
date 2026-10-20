@@ -1,9 +1,23 @@
 // Löst Normverweise wie "GG 51 3 2" (Art. 51 Abs. 3 Satz 2 GG) oder "UStG 17 1" in Text auf.
 import { NORMEN as NORMEN_OER } from "./normen.js";
 import { NORMEN_BILR } from "../bilr/normen.js";
+import { NORMEN_EST } from "../est/normen.js";
 
-const NORMEN = [...NORMEN_OER, ...NORMEN_BILR];
-const INDEX = new Map(NORMEN.map((n) => [`${n.g} ${n.nr}`, n]));
+// Ein Paragraf kann in mehreren Modulen vorkommen (z. B. § 12 EStG): Absätze werden vereinigt,
+// faecher nennt die Module, in deren Nachschlagen-Liste er erscheint.
+const INDEX = new Map();
+for (const [fach, liste] of [["oer", NORMEN_OER], ["bsr", NORMEN_BILR], ["est", NORMEN_EST]]) {
+  for (const n of liste) {
+    const k = `${n.g} ${n.nr}`, da = INDEX.get(k);
+    if (!da) { INDEX.set(k, { ...n, faecher: [fach] }); continue; }
+    da.faecher.push(fach);
+    const neu = n.abs.filter((a) => !da.abs.some((b) => b.abs === a.abs));
+    if (neu.length) da.abs = [...da.abs, ...neu].sort((a, b) => parseInt(a.abs || 0) - parseInt(b.abs || 0));
+    da.auszug = da.auszug && n.auszug;
+    da.titel ||= n.titel;
+  }
+}
+const NORMEN = [...INDEX.values()];
 
 export function norm(ref) {
   const [g, nr, abs, satz] = ref.split(" ");

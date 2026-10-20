@@ -205,7 +205,7 @@ test("Lernserie, Wochenverlauf und Module", async () => {
   assert.equal(w.length, 7);
   assert.deepEqual([w[0].n, w[6].n, w[6].heute, w[6].kurz], [2, 7, true, "Di"]);
   // Module: aktive haben Themen und Aufgaben, kommende nicht; Icons existieren
-  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer"]);
+  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer", "est"]);
   assert.ok(MODULE.length === 7 && !MODUL.asv && MODUL.ust.kurz === "USt" && MODUL.bsr.kurz === "BilR" && MODUL.pr.kurz === "PrivR");
   for (const m of MODULE) {
     assert.ok(ICON_NAMEN.includes(m.icon), m.id);
@@ -272,4 +272,18 @@ test("Markierungen: jede Fundstelle trifft einen angezeigten Satz bzw. eine Numm
   }
   const t = norm("GG 56").absaetze[0].text;
   assert.equal(saetze(t).length, 2, "Eidesformel in Anführungszeichen zählt nicht als eigene Sätze");
+});
+
+test("ESt: Tarif 2026, Klausurstruktur und Gesamtfälle", async () => {
+  const { grundtarif, splitting } = await import("../js/est/tarif.js");
+  const werte = { 12348: 0, 12349: 0, 14500: 343, 17799: 1034, 41673: 7744, 52000: 11257, 69878: 18213, 88900: 26202, 200000: 72864, 300000: 115529 };
+  for (const [x, st] of Object.entries(werte)) assert.equal(grundtarif(+x), st, "Grundtarif " + x);
+  assert.equal(splitting(83346), 15488);
+  assert.equal(splitting(96000), 2 * grundtarif(48000));
+  const k = klausur(20, new Zufall(7), "est");
+  assert.equal(k.length, 20);
+  assert.equal(k.filter((f) => f.typ === "zahl").length, 10);
+  const fall = (id) => ALLE.find((v) => v.id === id).erzeugen(new Zufall(1)).antwort;
+  assert.match(fall("est-fall-ehepaar"), /83\.346 €[\s\S]*15\.488 €[\s\S]*Abschlusszahlung 2\.488 €/);
+  assert.match(fall("est-fall-physio"), /96\.100 €[\s\S]*88\.900 €[\s\S]*26\.202 €[\s\S]*Abschlusszahlung: 18\.202 €/);
 });
