@@ -40,9 +40,9 @@ def absaetze(zeilen):
     for z in zeilen:
         if not z:
             continue
-        if re.match(r"^\(\d+[a-z]?\)", z) or re.match(r"^\d+\.$", z) or re.match(r"^[a-z]\)$", z):
+        if re.match(r"^\(\d+[a-z]?\)", z) or re.match(r"^\d+[a-z]?\.$", z) or re.match(r"^[a-z]\)$", z):
             text += "\n" + z
-        elif re.match(r"^\d+\.$|^[a-z]\)$", text.split("\n")[-1].strip()):
+        elif re.match(r"^\d+[a-z]?\.$|^[a-z]\)$", text.split("\n")[-1].strip()):
             text += " " + z
         else:
             text += (" " if text and not text.endswith("\n") else "") + z
@@ -53,7 +53,7 @@ def absaetze(zeilen):
     teile = re.split(r"\n(?=\(\d+[a-z]?\)\s)", text.strip())
     erg = []
     for t in teile:
-        t = re.sub(r"\n(\d+\.|[a-z]\))\s*", r"\n\1 ", t).strip()
+        t = re.sub(r"\n(\d+[a-z]?\.|[a-z]\))\s*", r"\n\1 ", t).strip()
         m = re.match(r"^\((\d+[a-z]?)\)\s*(.*)$", t, re.S)
         erg.append({"abs": m.group(1) if m else "", "text": (m.group(2) if m else t).strip()})
     return erg

@@ -31,12 +31,25 @@ export const THEMEN = [
   { id: "oer-bverfg", titel: "Verfassungsorgane & BVerfG", unter: "Skript 1.5, 1.5.5 · Art. 92–94, 100 GG", icon: "🏛", fach: "oer" },
   { id: "oer-gesetzgebung", titel: "Gesetzgebung", unter: "Skript 2 · Art. 70–82, 105, 106 GG", icon: "📝", fach: "oer" },
   { id: "oer-zusatz", titel: "Zusatzwissen", unter: "Nicht im Skript – nicht klausurrelevant", icon: "➕", fach: "oer", zusatz: true },
+  // Einkommensteuer (Skripte und Folien GS I, Rechtsstand 2026)
+  { id: "est-grundlagen", titel: "Einführung in die ESt", unter: "Steuerart, Erhebungsformen, Rechtsgrundlagen", icon: "📘", fach: "est" },
+  { id: "est-steuerpflicht", titel: "Persönliche Steuerpflicht", unter: "§ 1 EStG, §§ 8, 9 AO", icon: "🧑", fach: "est" },
+  { id: "est-einkuenfte", titel: "Einkunftsarten", unter: "§ 2 Abs. 1, 2 EStG · Dualismus", icon: "🧾", fach: "est" },
+  { id: "est-zve", titel: "Zu versteuerndes Einkommen", unter: "§ 2 Abs. 3–5 EStG · Schema", icon: "Σ", fach: "est" },
+  { id: "est-veranlagung", titel: "Veranlagung", unter: "§§ 25, 26, 26a, 26b, 46 EStG", icon: "💍", fach: "est" },
+  { id: "est-tarif", titel: "Tarif & festzusetzende ESt", unter: "§§ 32a, 2 Abs. 6, 36 EStG", icon: "📊", fach: "est" },
+  { id: "est-einnahmen", titel: "Einnahmen & Steuerbefreiungen", unter: "§§ 8, 3, 3c EStG · Übungsleiter", icon: "💶", fach: "est" },
+  { id: "est-ausgaben", titel: "Nicht abziehbare Ausgaben", unter: "§ 12 EStG · gemischte Aufwendungen", icon: "🚫", fach: "est" },
+  { id: "est-zufluss", titel: "Zu- und Abfluss", unter: "§ 11 EStG", icon: "📅", fach: "est" },
+  { id: "est-werbungskosten", titel: "Werbungskosten", unter: "§§ 9, 9a EStG · Arbeitsmittel, AfA, Home-Office", icon: "💼", fach: "est" },
+  { id: "est-entfernung", titel: "Entfernungspauschale", unter: "§ 9 Abs. 1 S. 3 Nr. 4, Abs. 2, 4 EStG", icon: "🚗", fach: "est" },
 ];
 export const THEMA = Object.fromEntries(THEMEN.map((t) => [t.id, t]));
 
 export const FAECHER = {
   bsr: { id: "bsr", titel: "Bilanzsteuerrecht", kurz: "BSR" },
   oer: { id: "oer", titel: "Öffentliches Recht", kurz: "ÖR" },
+  est: { id: "est", titel: "Einkommensteuer", kurz: "ESt" },
 };
 export const themenFuer = (fach) => THEMEN.filter((t) => t.fach === fach);
 /** Themen für Klausur und gemischte Übungen – ohne „Zusatzwissen“. */

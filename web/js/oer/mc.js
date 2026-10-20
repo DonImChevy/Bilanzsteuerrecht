@@ -1,5 +1,6 @@
 import { auswahl } from "../kern.js";
 import { MC_SKRIPT } from "./skript.js";
+import { MC_EST } from "../est/aufgaben.js";
 
 // Multiple-Choice-Fassungen der ÖR-Frage-Antwort-Aufgaben.
 // r = richtige Aussagen, f = plausible, aber falsche Aussagen (Distraktoren aus benachbarten Normen),
@@ -7,6 +8,7 @@ import { MC_SKRIPT } from "./skript.js";
 const M = (r, f, frage) => ({ r, f, frage });
 
 export const MC = {
+  ...MC_EST,
   ...MC_SKRIPT,
   // ---------------------------------------------------------------- Staatsziele, Geschichte
   "oer-gg-entstehung": M(

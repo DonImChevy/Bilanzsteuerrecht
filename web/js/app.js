@@ -45,7 +45,7 @@ const summeFach = (fach) => themenFuer(fach).map((t) => zaehler(t.id)).reduce((a
 
 // ======================= Zustand =======================
 const state = {
-  fach: lies("bsr.fach", "bsr") === "oer" ? "oer" : "bsr",
+  fach: ["oer", "est"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
   oerModus: lies("bsr.oerModus", "qa") === "mc" ? "mc" : "qa", // "qa" = selbst formulieren, "mc" = Multiple Choice
   ziel: Number(lies("bsr.ziel", "20")) || 20,
   design: lies("bsr.design", "system"),
@@ -115,6 +115,8 @@ function sitzungTitel(x) {
   if (x.einzeln) return "Einzelaufgabe";
   if (x.nurBuchung) return "Buchungssätze";
   if (x.filter === "uebertragung") return "Übertragungsaufgaben";
+  if (x.filter === "rechnen") return "Rechenaufgaben";
+  if (x.filter === "fall") return "Fälle einordnen";
   if (x.filter === "qa") return state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort";
   if (x.themen.length === 1) return THEMA[x.themen[0]].titel;
   return "Gemischte Übung";
@@ -217,7 +219,7 @@ const TABS = () => [
   ["lernen", "start", "Übersicht"],
   ["klausur", "klausur", "Klausur"],
   ["karten", "karten", "Karten"],
-  ["nachschlagen", "nachschlagen", state.fach === "oer" ? "Normen" : "Nachschlagen"],
+  ["nachschlagen", "nachschlagen", state.fach === "bsr" ? "Nachschlagen" : "Normen"],
 ];
 
 function render() {
@@ -228,7 +230,7 @@ function render() {
   // Einblend-Animationen nur, wenn sich die Ansicht wirklich ändert (nicht bei jedem Antippen)
   const neu = (k) => { const w = ansicht[k] !== schluessel[k](); ansicht[k] = schluessel[k](); return w ? " anim" : ""; };
   const animTab = neu("tab"), animVoll = neu("voll"), animSheet = neu("sheet");
-  const tab = { start: tabStart, lernen: tabLernen, klausur: tabKlausur, karten: tabKarten, nachschlagen: state.fach === "oer" ? tabNormen : tabNachschlagenBilr }[state.tab]();
+  const tab = { start: tabStart, lernen: tabLernen, klausur: tabKlausur, karten: tabKarten, nachschlagen: state.fach === "bsr" ? tabNachschlagenBilr : tabNormen }[state.tab]();
   let html = `<main class="screen${animTab}${state.tab === "start" ? " ohne-leiste" : ""}" data-tab="${state.tab}">${tab}</main>`;
   if (state.tab !== "start") html += `<nav class="tabbar">${TABS().map(([id, i, t]) => `<button data-a="tab" data-v="${id}" class="${state.tab === id ? "aktiv" : ""}" aria-label="${t}"><span class="ti">${ic(i)}</span>${t}</button>`).join("")}</nav>`;
   if (state.sitzung) html += sitzungView();
@@ -469,6 +471,11 @@ function tabLernen() {
     ? kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "75 % der Klausur") +
       kachel("uebertragung", "diagramm", "Übertragung", "Grafiken auswerten · 25 %") +
       kachel("alles", "mischen", "Gemischt", "Quer durch das Skript")
+    : state.fach === "est"
+    ? kachel("rechnen", "tkonto", "Rechnen", "Tarif, WK, Entfernungspauschale") +
+      kachel("fall", "ziel", "Fälle einordnen", "Steuerpflicht, § 11, Einkunftsart") +
+      kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Definitionen und Klausurfälle") +
+      kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen")
     : kachel("buchung", "tkonto", "Buchungssätze", "Immer neue Beträge") +
       kachel("alles", "mischen", "Gemischt", "Buchen, Rechnen, Theorie");
   const breit = state.fach === "oer" ? "" : " breit";
@@ -490,7 +497,7 @@ function tabLernen() {
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
-    <div class="gruppe"><div class="gruppe-titel">${state.fach === "oer" ? "Themen · Skript Kapitel 1–2" : "Themen · Skript Teil I"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenFuer(state.fach).length} Themen</span></div>
+    <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien" }[state.fach] || "Themen · Skript Teil I"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenFuer(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
       <div id="themenListe">${themenListe()}</div></div>
     ${lernkarteiView()}`;
@@ -509,9 +516,9 @@ function themenListe() {
   }).join("")}</div>`;
 }
 
-/** Umschalter Frage-Antwort / Multiple Choice (nur ÖR). */
+/** Umschalter Frage-Antwort / Multiple Choice (ÖR und ESt). */
 function modusSchalter() {
-  if (state.fach !== "oer") return "";
+  if (state.fach === "bsr") return "";
   const m = [["qa", "stift", "Frage – Antwort"], ["mc", "haken", "Multiple Choice"]];
   return `<div class="gruppe"><div class="gruppe-titel">Antwortmodus</div><div class="modus-karte"><div class="segment">${m.map(([id, i, t]) =>
     `<button data-a="oerModus" data-v="${id}" class="${state.oerModus === id ? "aktiv" : ""}">${ic(i, "klein")}${t}</button>`).join("")}</div>
@@ -545,6 +552,8 @@ function tabKlausur() {
       ? (state.oerModus === "mc"
         ? "Ca. 75 % Frage-Antwort als Multiple Choice und 25 % Übertragungsaufgaben. Automatische Auswertung nach der Abgabe."
         : "Wie in der Klausur: ca. 75 % Frage-Antwort und 25 % Übertragungsaufgaben. Nach der Abgabe vergleichst du mit den Musterantworten.")
+      : state.fach === "est"
+      ? "Ca. 50 % Rechenaufgaben mit immer neuen Zahlen, dazu Einordnungsfälle und Frage-Antwort. Auswertung erst nach der Abgabe."
       : "Gemischte Aufgaben aus allen Themen, Schwerpunkt Buchungssätze (ca. 60 %). Auswertung erst nach der Abgabe.")}
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Einstellungen</div><div class="liste">
@@ -570,7 +579,7 @@ function tabKarten() {
   const themen = themenFuer(state.fach).filter((t) => LERNKARTEN.some((k) => k.thema === t.id));
   const p = Math.round(((LERNKARTEN.length - offen.length) / LERNKARTEN.length) * 100);
   return `
-    ${seitenKopf("Lernkarten", state.fach === "oer" ? "Jede Frage-Antwort-Aufgabe als Karte – Rückseite mit Musterantwort und Normzitat." : "Merksätze, Definitionen, Fristen und Formeln aus dem Skript.")}
+    ${seitenKopf("Lernkarten", state.fach === "bsr" ? "Merksätze, Definitionen, Fristen und Formeln aus dem Skript." : "Jede Frage-Antwort-Aufgabe als Karte – Rückseite mit Musterantwort und Normzitat.")}
     <div class="kachel-grid">
       <button class="kachel" data-a="deck" data-v="alle"><span class="k-icon">${ic("mischen")}</span><span class="k-text"><b>Alle mischen</b><span class="sub">${LERNKARTEN.length} Karten</span></span></button>
       <button class="kachel" data-a="deck" data-v="offen" ${offen.length ? "" : "disabled"}><span class="k-icon" style="background:var(--warn-weak);color:var(--warn)">${ic("ziel")}</span><span class="k-text"><b>Noch nicht gewusst</b><span class="sub">${offen.length} Karten</span></span></button>
@@ -612,14 +621,16 @@ function kontenInhalt() {
 const GESETZE = {
   oer: [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"]],
   bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["UStG", "Umsatzsteuergesetz (UStG)"]],
+  est: [["EStG", "Einkommensteuergesetz (EStG)"], ["AO", "Abgabenordnung (AO)"]],
 };
+const normenVon = (fach) => NORMEN.filter((n) => n.faecher.includes(fach));
 /** Gesetze eines Moduls, deren Text in der App vorliegt. */
-const gesetzeFuer = (fach) => (GESETZE[fach] || []).filter(([g]) => NORMEN.some((n) => n.g === g));
+const gesetzeFuer = (fach) => (GESETZE[fach] || []).filter(([g]) => normenVon(fach).some((n) => n.g === g));
 
 function normenListe() {
   const q = norma(state.normSuche.trim());
   const html = gesetzeFuer(state.fach).map(([g, titel]) => {
-    const liste = NORMEN.filter((n) => n.g === g).filter((n) => !q || norma(`${n.nr} ${n.titel} ${n.abs.map((a) => a.text).join(" ")}`).includes(q)
+    const liste = normenVon(state.fach).filter((n) => n.g === g).filter((n) => !q || norma(`${n.nr} ${n.titel} ${n.abs.map((a) => a.text).join(" ")}`).includes(q)
       || norma(g === "GG" ? `art ${n.nr}` : `§ ${n.nr}`) === q || norma(g === "GG" ? `art. ${n.nr}` : `§${n.nr}`) === q);
     if (!liste.length) return "";
     return `<div class="gruppe"><div class="gruppe-titel">${titel}<span class="sub" style="text-transform:none;letter-spacing:0">${liste.length}</span></div><div class="liste">
@@ -632,7 +643,7 @@ function normenListe() {
 function tabNormen() {
   return `
     ${seitenKopf("Normen", "Alle lehrplanrelevanten Vorschriften im Wortlaut – auch offline.")}
-    <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="Suchen, z. B. Bundesrat, Art. 63, Wahlrecht" autocomplete="off" value="${esc(state.normSuche)}"></div>
+    <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="${state.fach === "est" ? "Suchen, z. B. Entfernungspauschale, § 11, Wohnsitz" : "Suchen, z. B. Bundesrat, Art. 63, Wahlrecht"}" autocomplete="off" value="${esc(state.normSuche)}"></div>
     <div id="normListe">${normenListe()}</div>`;
 }
 
@@ -1117,7 +1128,7 @@ const AKTIONEN = {
     const alle = pruefungsThemen(state.fach).map((t) => t.id);
     const basis = { modus: "uebung", fach: state.fach };
     if (v === "buchung") starte({ ...basis, themen: alle, nurBuchung: true });
-    else if (v === "qa" || v === "uebertragung") starte({ ...basis, themen: alle, filter: v });
+    else if (["qa", "uebertragung", "rechnen", "fall"].includes(v)) starte({ ...basis, themen: alle, filter: v });
     else if (v === "alles") starte({ ...basis, themen: alle });
     else starte({ ...basis, themen: [el.dataset.t] });
   },

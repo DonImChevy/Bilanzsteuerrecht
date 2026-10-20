@@ -22,6 +22,19 @@ AUSWAHL = {
     "UStG": {"1": ["1"], "3": ["1", "1b", "9"], "4": [""], "9": ["1"], "10": ["1", "4"],
              "12": ["1", "2|1,11"], "15": ["1"], "17": ["1", "2"], "19": ["1"]},
 }
+# Einkommensteuer (Aufruf mit --est als erstem Argument → web/js/est/normen.js, Export NORMEN_EST)
+AUSWAHL_EST = {
+    "EStG": {"1": ["1", "4"], "2": None, "3": ["|15,26,26a,51,62"], "3c": ["1"], "4": ["4", "5|6b,6c"],
+             "6": ["2"], "7": ["1"], "8": ["1"], "9": ["1", "2", "4"], "9a": None, "11": None, "12": None,
+             "25": ["1", "3"], "26": None, "26a": ["1"], "26b": None, "32a": ["1", "5", "6"], "36": ["1", "2", "4"],
+             "46": ["2", "4"]},
+    "AO": {"8": None, "9": None},
+}
+# Paragrafen ohne amtliche Überschrift: Titel des Abschnitts
+TITEL = {("EStG", "3"): "Steuerfreie Einnahmen", ("EStG", "11"): "Vereinnahmung und Verausgabung",
+         ("EStG", "12"): "Nicht abzugsfähige Ausgaben"}
+# Im PDF über einen Seitenumbruch verschobene Textteile (gehören zu § 3 Nr. 13 EStG)
+TEXT_KORREKTUR = {("EStG", "3"): [(r"Trennungsgelder\. Die als Reisekostenvergütungen .*?abziehbaren Aufwendungen nicht übersteigen; ", "")]}
 START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
          "UStG": "§ 1 Steuerbare Umsätze"}
 STAND = {}
@@ -112,7 +125,12 @@ def paragraf(n, filter_):
 
 
 def main():
-    ziel, *quellen = sys.argv[1:]
+    global AUSWAHL
+    args = sys.argv[1:]
+    name = "NORMEN_BILR"
+    if args[0] == "--est":
+        AUSWAHL, name, args = AUSWAHL_EST, "NORMEN_EST", args[1:]
+    ziel, *quellen = args
     aus, staende = [], []
     for q in quellen:
         g, datei = q.split("=", 1)
@@ -124,13 +142,17 @@ def main():
             titel, abs_, auszug = paragraf(normen[nr], filter_)
             if (g, nr) == ("UStG", "4"):
                 abs_ = ustg_4(open(datei, encoding="utf-8").read())
+            titel = titel or TITEL.get((g, nr), "")
+            for muster, ersatz in TEXT_KORREKTUR.get((g, nr), []):
+                for a in abs_:
+                    a["text"] = re.sub(muster, ersatz, a["text"], flags=re.S)
             aus.append({"g": g, "nr": nr, "titel": titel, "abs": abs_, **({"auszug": True} if auszug else {})})
     for n in aus:
         for a in n["abs"]:
             a["text"] = a["text"].replace("\u200b", "")
     js = ("// Automatisch erzeugt aus den Gesetzestexten (tools/bilr_normen.py) – nicht von Hand ändern.\n"
           "// Quelle: www.gesetze-im-internet.de. " + " · ".join(staende) + "\n"
-          "export const NORMEN_BILR = " + json.dumps(aus, ensure_ascii=False, indent=0) + ";\n")
+          "export const " + name + " = " + json.dumps(aus, ensure_ascii=False, indent=0) + ";\n")
     os.makedirs(os.path.dirname(ziel), exist_ok=True)
     open(ziel, "w", encoding="utf-8").write(js)
     print(len(aus), "Normen geschrieben")

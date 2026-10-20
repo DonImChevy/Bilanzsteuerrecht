@@ -5,6 +5,7 @@ Suche über alle Inhalte und Modul-Kacheln. Verfügbar:
 
 - **Bilanzrecht (BilR)** – Bilanzsteuerrecht Teil I (Buchführung), orientiert am Skript und an den Übungen bzw. Lösungshinweisen.
 - **Öffentliches Recht** – Staatsrecht und Gesetzgebung nach dem Unterrichtsskript ÖR GS I (Kapitel 1–2), abgeglichen mit den Altklausuren 2020–2025: Klausurfälle im Gutachtenstil, häufige Klausurthemen doppelt gewichtet, nicht klausurrelevante Fragen unter „Zusatzwissen“.
+- **Einkommensteuer** – Grundstudium I nach den Skripten und Folien, Rechtsstand 2026 (Grundfreibetrag 12.348 €, Entfernungspauschale 0,38 € ab km 1, Übungsleiter 3.300 €): Rechenaufgaben mit immer neuen Zahlen (Tarif/Splitting, Werbungskosten, Entfernungspauschale, § 11, AfA/GWG), Einordnungsfälle, Frage-Antwort mit Multiple-Choice-Fassung und zwei Gesamtfälle.
   Quellen: Grundgesetz, Bundeswahlgesetz, Parteiengesetz. Aufbau wie in der Klausur: ca. 75 % Frage-Antwort
   (Musterantwort mit wörtlichem Normzitat, Selbstbewertung) und 25 % Übertragungsaufgaben mit Grafiken
   (Kanzlerwahl, Misstrauensvotum, Bundesrat-Abstimmungen, Sitzverteilung, Zweitstimmendeckung, Stimmzettel, Fristen …).
@@ -74,6 +75,9 @@ web/                     Die Web-App (wird veröffentlicht)
   js/oer/fragen.js       ÖR Frage-Antwort-Aufgaben
   js/oer/mc.js           Multiple-Choice-Fassungen dieser Aufgaben (richtige/falsche Aussagen)
   js/oer/uebertragung.js ÖR Übertragungsaufgaben (Generatoren mit Grafiken)
+  js/est/aufgaben.js     ESt-Aufgaben (Rechengeneratoren, Fälle, Frage-Antwort mit MC)
+  js/est/tarif.js        Einkommensteuertarif 2026 (§ 32a EStG, Grund- und Splittingtarif)
+  js/est/normen.js       Gesetzestexte EStG/AO für das ESt-Modul (tools/bilr_normen.py --est)
   js/oer/grafik.js       SVG-Diagramme, Sitzverteilung, Stimmzettel, Tabellen
   js/module.js           Module/Fächer (aktive und angekündigte)
   js/aktivitaet.js       Lernserie, Tagesziel, Wochenverlauf
