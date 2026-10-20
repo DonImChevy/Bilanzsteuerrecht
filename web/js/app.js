@@ -55,6 +55,7 @@ const state = {
   themenFilter: "",
   normSuche: "",
   kontoSuche: "",
+  bilrAnsicht: "konten", // Bilanzrecht-Nachschlagen: "konten" | "gesetze"
   sitzung: null,
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"}
   deck: null,
@@ -216,7 +217,7 @@ const TABS = () => [
   ["lernen", "start", "Übersicht"],
   ["klausur", "klausur", "Klausur"],
   ["karten", "karten", "Karten"],
-  ["nachschlagen", "nachschlagen", state.fach === "oer" ? "Normen" : "Konten"],
+  ["nachschlagen", "nachschlagen", state.fach === "oer" ? "Normen" : "Nachschlagen"],
 ];
 
 function render() {
@@ -227,7 +228,7 @@ function render() {
   // Einblend-Animationen nur, wenn sich die Ansicht wirklich ändert (nicht bei jedem Antippen)
   const neu = (k) => { const w = ansicht[k] !== schluessel[k](); ansicht[k] = schluessel[k](); return w ? " anim" : ""; };
   const animTab = neu("tab"), animVoll = neu("voll"), animSheet = neu("sheet");
-  const tab = { start: tabStart, lernen: tabLernen, klausur: tabKlausur, karten: tabKarten, nachschlagen: state.fach === "oer" ? tabNormen : tabKonten }[state.tab]();
+  const tab = { start: tabStart, lernen: tabLernen, klausur: tabKlausur, karten: tabKarten, nachschlagen: state.fach === "oer" ? tabNormen : tabNachschlagenBilr }[state.tab]();
   let html = `<main class="screen${animTab}${state.tab === "start" ? " ohne-leiste" : ""}" data-tab="${state.tab}">${tab}</main>`;
   if (state.tab !== "start") html += `<nav class="tabbar">${TABS().map(([id, i, t]) => `<button data-a="tab" data-v="${id}" class="${state.tab === id ? "aktiv" : ""}" aria-label="${t}"><span class="ti">${ic(i)}</span>${t}</button>`).join("")}</nav>`;
   if (state.sitzung) html += sitzungView();
@@ -587,23 +588,42 @@ function tabKarten() {
 }
 
 // ======================= Tab: Nachschlagen =======================
-function tabKonten() {
+/** Bilanzrecht: Kontenplan und Gesetzestexte in einem Reiter. */
+function tabNachschlagenBilr() {
+  const ansicht = gesetzeFuer("bsr").length ? state.bilrAnsicht : "konten";
+  const segment = gesetzeFuer("bsr").length ? `<div class="modus-karte" style="margin:4px 0 12px"><div class="segment">${[["konten", "tkonto", "Kontenplan"], ["gesetze", "waage", "Gesetze"]].map(([id, i, t]) =>
+    `<button data-a="bilrAnsicht" data-v="${id}" class="${ansicht === id ? "aktiv" : ""}">${ic(i, "klein")}${t}</button>`).join("")}</div></div>` : "";
+  if (ansicht === "gesetze") {
+    return `${seitenKopf("Nachschlagen")}${segment}
+      <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="Suchen, z. B. Vorsteuer, § 17, Skonto" autocomplete="off" value="${esc(state.normSuche)}"></div>
+      <div class="gruppe-fuss" style="margin:0 4px 4px">Die in den Aufgaben zitierten Vorschriften im Wortlaut – lange Paragrafen als Auszug.</div>
+      <div id="normListe">${normenListe()}</div>`;
+  }
+  return `${seitenKopf("Nachschlagen")}${segment}${kontenInhalt()}`;
+}
+
+function kontenInhalt() {
   return `
-    ${seitenKopf("Kontenplan", "Alle Konten mit Kontoart, T-Konto und Buchungsregel.")}
     <div class="filter-suche"><input type="search" id="kontoTabSuche" data-fokus="kontoTabSuche" placeholder="Konto suchen, z. B. Vorsteuer" autocomplete="off" value="${esc(state.kontoSuche)}"></div>
     <div class="liste"><button class="zeile" data-a="merksaetze"><span class="symbol">💡</span><span class="grow"><b>Merksätze zum Buchen</b><div class="sub">Soll an Haben, Aktiv/Passiv, Nettomethode …</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div>
     <div id="kontoTabListe">${kontoListe("kontoDetail")}</div>`;
 }
 
+const GESETZE = {
+  oer: [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"]],
+  bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["UStG", "Umsatzsteuergesetz (UStG)"]],
+};
+/** Gesetze eines Moduls, deren Text in der App vorliegt. */
+const gesetzeFuer = (fach) => (GESETZE[fach] || []).filter(([g]) => NORMEN.some((n) => n.g === g));
+
 function normenListe() {
   const q = norma(state.normSuche.trim());
-  const gruppen = [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"]];
-  const html = gruppen.map(([g, titel]) => {
+  const html = gesetzeFuer(state.fach).map(([g, titel]) => {
     const liste = NORMEN.filter((n) => n.g === g).filter((n) => !q || norma(`${n.nr} ${n.titel} ${n.abs.map((a) => a.text).join(" ")}`).includes(q)
       || norma(g === "GG" ? `art ${n.nr}` : `§ ${n.nr}`) === q || norma(g === "GG" ? `art. ${n.nr}` : `§${n.nr}`) === q);
     if (!liste.length) return "";
     return `<div class="gruppe"><div class="gruppe-titel">${titel}<span class="sub" style="text-transform:none;letter-spacing:0">${liste.length}</span></div><div class="liste">
-      ${liste.map((n) => `<button class="zeile" data-a="normDetail" data-v="${n.g} ${n.nr}"><span class="symbol" style="font-size:14px;width:46px">${g === "GG" ? (n.nr === "Präambel" ? "Pr." : n.nr) : "§ " + n.nr}</span><span class="grow"><div style="font-weight:600">${g === "GG" ? (n.nr === "Präambel" ? "Präambel" : "Art. " + n.nr) : "§ " + n.nr}</div><div class="sub">${esc(n.titel && n.titel !== "Präambel" ? n.titel : n.abs[0]?.text.slice(0, 70) + " …")}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join("")}
+      ${liste.map((n) => `<button class="zeile" data-a="normDetail" data-v="${n.g} ${n.nr}"><span class="symbol" style="font-size:14px;width:46px">${g === "GG" ? (n.nr === "Präambel" ? "Pr." : n.nr) : "§ " + n.nr}</span><span class="grow"><div style="font-weight:600">${g === "GG" ? (n.nr === "Präambel" ? "Präambel" : "Art. " + n.nr) : "§ " + n.nr}</div><div class="sub">${esc(n.titel && n.titel !== "Präambel" ? n.titel : n.abs[0]?.text.slice(0, 70) + " …")}${n.auszug ? " · Auszug" : ""}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join("")}
     </div></div>`;
   }).join("");
   return html || `<div class="leer-zustand">${ic("suche")}<div><b>Keine Vorschrift gefunden</b></div></div>`;
@@ -620,7 +640,7 @@ function normBlock(refs) {
   const ns = (refs || []).map(norm).filter(Boolean);
   if (!ns.length) return "";
   return `<div class="normen"><div class="sub" style="margin-bottom:4px;font-weight:600">Gesetzestext</div>${ns.map((n) => `<details class="norm"${ns.length <= 2 ? " open" : ""}><summary>${esc(n.label)}${n.titel ? ` <span class="sub">– ${esc(n.titel)}</span>` : ""}</summary>
-    ${n.absaetze.map((a) => `<p>${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</details>`).join("")}</div>`;
+    ${n.absaetze.map((a) => `<p>${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}${n.auszug ? `<p class="sub">Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt.</p>` : ""}</details>`).join("")}</div>`;
 }
 
 // ======================= Render: Sitzung =======================
@@ -901,7 +921,7 @@ function sheetView() {
     titel = n.label;
     inhalt = `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
       ${n.absaetze.map((a) => `<p style="margin:8px 0;line-height:1.55">${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</span></div></div>
-      <div class="gruppe-fuss">Quelle: www.gesetze-im-internet.de</div>`;
+      <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: www.gesetze-im-internet.de</div>`;
   } else if (sh.art === "merksaetze") {
     titel = "Merksätze";
     inhalt = `<div class="liste">${MERKSAETZE.map(([t, x]) => `<div class="zeile"><span class="grow"><b>${esc(t)}</b><div class="sub">${esc(x)}</div></span></div>`).join("")}</div>`;
@@ -1041,6 +1061,7 @@ const AKTIONEN = {
   hinweisWeg: () => { state.hinweisWeg = true; schreib("bsr.hinweisWeg", "1"); render(); },
   zuModulen: () => document.querySelector(".modul-grid")?.scrollIntoView({ behavior: "smooth", block: "start" }),
   sucheLeeren: () => { state.suche = ""; render(); document.getElementById("homeSuche")?.focus(); },
+  bilrAnsicht: (v) => { state.bilrAnsicht = v === "gesetze" ? "gesetze" : "konten"; render(); },
   oerModus: (v) => {
     state.oerModus = v === "mc" ? "mc" : "qa";
     schreib("bsr.oerModus", state.oerModus);

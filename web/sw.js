@@ -20,6 +20,7 @@ const DATEIEN = [
   "./js/oer/grafik.js",
   "./js/oer/uebertragung.js",
   "./js/oer/mc.js",
+  "./js/bilr/normen.js",
   "./js/wiederholung.js",
   "./js/module.js",
   "./js/icons.js",

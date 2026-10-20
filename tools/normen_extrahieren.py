@@ -45,7 +45,8 @@ def absaetze(zeilen):
             text += " " + z
         else:
             text += (" " if text and not text.endswith("\n") else "") + z
-    text = re.sub(r"(\S)-\s(?=[a-zäöüß])", r"\1", text)  # Silbentrennung
+    # Silbentrennung zusammenfügen – aber nicht bei Ergänzungsstrichen wie „Wohn- und Schlafräume“
+    text = re.sub(r"(\S)-\s(?!(?:und|oder|sowie|bis|bzw\.|noch)\b)(?=[a-zäöüß])", r"\1", text)
     for falsch, richtig in KORREKTUR.items():
         text = text.replace(falsch, richtig)
     teile = re.split(r"\n(?=\(\d+[a-z]?\)\s)", text.strip())
@@ -119,4 +120,5 @@ def main():
     print(len(aus), "Normen geschrieben")
 
 
-main()
+if __name__ == "__main__":
+    main()

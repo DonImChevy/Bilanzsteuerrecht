@@ -70,6 +70,7 @@ web/                     Die Web-App (wird veröffentlicht)
   js/katalog.js          Auswahl für Übung und Klausur
   js/wiederholung.js     Lernintervalle (Leitner-Lernkartei)
   js/oer/normen.js       Gesetzestexte GG/BWahlG/PartG (erzeugt mit tools/normen_extrahieren.py)
+  js/bilr/normen.js      Gesetzestexte Bilanzrecht – HGB/AO/EStG/UStG, Auszüge (erzeugt mit tools/bilr_normen.py aus den PDFs von gesetze-im-internet.de)
   js/oer/fragen.js       ÖR Frage-Antwort-Aufgaben
   js/oer/mc.js           Multiple-Choice-Fassungen dieser Aufgaben (richtige/falsche Aussagen)
   js/oer/uebertragung.js ÖR Übertragungsaufgaben (Generatoren mit Grafiken)
