@@ -300,14 +300,13 @@ function gruss() {
 
 function tabStart() {
   const heute = stat.tage[tagSchluessel()] || 0, ziel = state.ziel, p = Math.min(100, Math.round((heute / ziel) * 100));
-  const tageSerie = serie(stat.tage), due = faelligVon(null).length;
+  const tageSerie = serie(stat.tage);
   const datum = new Date().toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long" });
   let titel, text, knopf;
   if (heute >= ziel) { titel = "Tagesziel geschafft!"; text = "Stark. Alles darüber hinaus ist Bonus."; }
   else if (heute) { titel = `Noch ${ziel - heute} bis zum Tagesziel`; text = "Du bist auf einem guten Weg."; }
   else { titel = "Bereit für heute?"; text = `Tagesziel: ${ziel} Aufgaben`; }
-  if (due) knopf = `<button class="knopf" data-a="wiederholen" data-v="alle">${ic("wiederholen")} Wiederholen · ${due} fällig</button>`;
-  else if (stat.zuletzt && MODUL[stat.zuletzt.fach] && !MODUL[stat.zuletzt.fach].bald) knopf = `<button class="knopf" data-a="weiterlernen">${ic("play", "fill")} Weiter: ${esc(stat.zuletzt.titel)}</button>`;
+  if (stat.zuletzt && MODUL[stat.zuletzt.fach] && !MODUL[stat.zuletzt.fach].bald) knopf = `<button class="knopf" data-a="weiterlernen">${ic("play", "fill")} Weiter: ${esc(stat.zuletzt.titel)}</button>`;
   else knopf = `<button class="knopf" data-a="zuModulen">Modul wählen und loslegen ${ic("pfeil")}</button>`;
 
   return `
@@ -321,7 +320,6 @@ function tabStart() {
         <div class="grow"><h2>${titel}</h2><div class="zeile-klein">${text}</div>
           <div class="werte">
             <span class="wert-pille"><span class="${tageSerie ? "flamme-an" : ""}">${ic("flamme")}</span>${tageSerie} ${tageSerie === 1 ? "Tag" : "Tage"} in Folge</span>
-            ${due ? `<span class="wert-pille">${ic("gehirn")}${due} fällig</span>` : ""}
           </div></div>
       </div>
       ${knopf}
@@ -338,21 +336,28 @@ function tabStart() {
     </div>`;
 }
 
+/** Modul-Kachel: oben öffnen (ca. drei Viertel), unten Streifen mit den heutigen Wiederholungen. */
 function modulKachel(m) {
   if (m.bald) {
-    return `<button class="modul-kachel bald" style="--mc:${m.farbe}" data-a="bald" data-v="${m.id}">
-      <span class="m-icon">${ic(m.icon)}</span>
-      <span><div class="m-titel">${m.titel}</div><div class="m-unter">${m.kurz} · ${m.unter}</div></span>
-      <span class="m-fuss"><span class="pille">${ic("schloss", "klein")} Bald verfügbar</span></span></button>`;
+    return `<div class="modul-kachel geteilt bald" style="--mc:${m.farbe}">
+      <button class="m-oben" data-a="bald" data-v="${m.id}"><span class="m-icon">${ic(m.icon)}</span>
+        <span><div class="m-titel">${m.titel}</div><div class="m-unter">${m.kurz} · ${m.unter}</div></span></button>
+      <div class="m-unten leer">${ic("schloss", "klein")} Bald verfügbar</div></div>`;
   }
   const ids = idsVon(m.id), gelernt = ids.filter((id) => stat.lern[id]?.fach >= 3).length;
-  const due = faelligVon(m.id).length, z = summeFach(m.id);
+  const due = faelligVon(m.id).length, begonnen = ids.some((id) => stat.lern[id]);
   const p = Math.round((gelernt / ids.length) * 100);
-  return `<button class="modul-kachel" style="--mc:${m.farbe}" data-a="modul" data-v="${m.id}">
-    ${due ? `<span class="faellig-punkt" title="${due} fällig">${due}</span>` : ""}
-    <span class="m-icon">${ic(m.icon)}</span>
-    <span><div class="m-titel">${m.titel}</div><div class="m-unter">${m.kurz} · ${ids.length} Aufgaben</div></span>
-    <span class="m-fuss"><span class="balken"><span style="width:${Math.max(p, z.b ? 3 : 0)}%"></span></span><span>${p} %</span></span></button>`;
+  const unten = due
+    ? `<button class="m-unten faellig" data-a="wiederholen" data-v="${m.id}" aria-label="${due} Aufgaben heute wiederholen"><span class="grow"><b>${due}</b> heute fällig</span>${ic("pfeil", "klein")}</button>`
+    : begonnen
+    ? `<div class="m-unten erledigt">${ic("haken", "klein")} Heute erledigt</div>`
+    : `<div class="m-unten leer">Noch nicht begonnen</div>`;
+  return `<div class="modul-kachel geteilt" style="--mc:${m.farbe}">
+    <button class="m-oben" data-a="modul" data-v="${m.id}">
+      <span class="m-icon">${ic(m.icon)}</span>
+      <span><div class="m-titel">${m.titel}</div><div class="m-unter">${m.kurz} · ${ids.length} Aufgaben</div></span>
+      <span class="m-fuss"><span class="balken"><span style="width:${Math.max(p, begonnen ? 3 : 0)}%"></span></span><span>${p} %</span></span></button>
+    ${unten}</div>`;
 }
 
 function wocheView() {
@@ -1070,6 +1075,7 @@ const AKTIONEN = {
   },
   wiederholen: (v) => {
     const alle = v === "alle";
+    if (MODUL[v]) { fachSetzen(v); state.tab = "lernen"; }
     const ids = faelligVon(alle ? null : state.fach).slice(0, PRO_WIEDERHOLUNG);
     if (!ids.length) { state.sitzung = null; toast("Gerade ist nichts fällig – super!"); render(); return; }
     starte({ modus: "uebung", fach: state.fach, themen: themenFuer(state.fach).map((t) => t.id), ids, wiederholung: alle ? "alle" : "fach" });
