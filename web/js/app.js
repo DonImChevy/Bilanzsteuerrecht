@@ -265,7 +265,12 @@ function render() {
   if (state.sitzung) html += sitzungView();
   if (state.deck) html += deckView();
   if (state.sheet) html += sheetView();
+  // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
+  const scrollVoll = animVoll ? 0 : app.querySelector(".vollbild .vb-inhalt")?.scrollTop || 0;
+  const scrollSheet = animSheet ? 0 : app.querySelector(".sheet .vb-inhalt")?.scrollTop || 0;
   app.innerHTML = html;
+  if (scrollVoll) { const el = app.querySelector(".vollbild .vb-inhalt"); if (el) el.scrollTop = scrollVoll; }
+  if (scrollSheet) { const el = app.querySelector(".sheet .vb-inhalt"); if (el) el.scrollTop = scrollSheet; }
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
