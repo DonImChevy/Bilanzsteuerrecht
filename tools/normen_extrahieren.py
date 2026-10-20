@@ -8,9 +8,10 @@ AUSWAHL = {
     "GG": ["Präambel", "1", "19", "20", "20a", "21", "23", "28", "30", "31", "37", "38", "39", "40", "41", "42", "43",
            "44", "45", "45a", "45b", "45c", "45d", "46", "47", "48", "50", "51", "52", "53", "54", "55", "56", "57",
            "58", "59", "60", "61", "62", "63", "64", "65", "65a", "66", "67", "68", "69", "70", "79", "83", "97",
-           "103", "116", "121", "145", "146", "29", "76", "77", "93"],
-    "BWahlG": ["1", "4", "5", "6", "12", "13", "14", "15", "16", "18", "20", "27", "33", "34", "36", "39", "46"],
-    "PartG": ["1", "2", "3", "4", "5", "6", "10", "15", "18", "32", "33"],
+           "103", "116", "121", "145", "146", "29", "76", "77", "93",
+           "71", "72", "73", "74", "78", "80", "82", "92", "94", "100", "102", "105", "106", "137"],
+    "BWahlG": ["1", "4", "5", "6", "12", "13", "14", "15", "16", "18", "20", "27", "32", "33", "34", "36", "39", "46"],
+    "PartG": ["1", "2", "3", "4", "5", "6", "10", "15", "18", "25", "32", "33"],
 }
 
 # pdftotext entfernt Bindestriche am Zeilenende auch bei echten Bindestrich-Wörtern
@@ -112,7 +113,12 @@ def main():
             n = quellen[g].get(nr)
             if not n:
                 print("FEHLT", g, nr, file=sys.stderr); continue
-            aus.append({"g": g, "nr": nr, "titel": n["titel"], "abs": absaetze(n["z"])})
+            teile = absaetze(n["z"])
+            titel = n["titel"]
+            # Zweizeilige Überschrift: Rest steht ohne Absatznummer vor „(1)“
+            if len(teile) > 1 and not teile[0]["abs"] and teile[1]["abs"] == "1" and len(teile[0]["text"]) < 60:
+                titel = titel + " " + teile.pop(0)["text"]
+            aus.append({"g": g, "nr": nr, "titel": titel, "abs": teile})
     js = ("// Automatisch erzeugt aus den Gesetzestexten (tools/normen_extrahieren.py) – nicht von Hand ändern.\n"
           "// Quelle: www.gesetze-im-internet.de (GG Stand 22.3.2025, BWahlG Stand 3.7.2026, PartG).\n"
           "export const NORMEN = " + json.dumps(aus, ensure_ascii=False, indent=0) + ";\n")

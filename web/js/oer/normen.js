@@ -1050,6 +1050,272 @@ export const NORMEN = [
 ]
 },
 {
+"g": "GG",
+"nr": "71",
+"titel": "",
+"abs": [
+{
+"abs": "",
+"text": "Im Bereiche der ausschließlichen Gesetzgebung des Bundes haben die Länder die Befugnis zur Gesetzgebung nur, wenn und soweit sie hierzu in einem Bundesgesetze ausdrücklich ermächtigt werden."
+}
+]
+},
+{
+"g": "GG",
+"nr": "72",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Im Bereich der konkurrierenden Gesetzgebung haben die Länder die Befugnis zur Gesetzgebung, solange und soweit der Bund von seiner Gesetzgebungszuständigkeit nicht durch Gesetz Gebrauch gemacht hat."
+},
+{
+"abs": "2",
+"text": "Auf den Gebieten des Artikels 74 Abs. 1 Nr. 4, 7, 11, 13, 15, 19a, 20, 22, 25 und 26 hat der Bund das Gesetzgebungsrecht, wenn und soweit die Herstellung gleichwertiger Lebensverhältnisse im Bundesgebiet oder die Wahrung der Rechts- oder Wirtschaftseinheit im gesamtstaatlichen Interesse eine bundesgesetzliche Regelung erforderlich macht."
+},
+{
+"abs": "3",
+"text": "Hat der Bund von seiner Gesetzgebungszuständigkeit Gebrauch gemacht, können die Länder durch Gesetz hiervon abweichende Regelungen treffen über:\n1. das Jagdwesen (ohne das Recht der Jagdscheine);\n2. den Naturschutz und die Landschaftspflege (ohne die allgemeinen Grundsätze des Naturschutzes, das Recht des Artenschutzes oder des Meeresnaturschutzes);\n3. die Bodenverteilung;\n4. die Raumordnung;\n5. den Wasserhaushalt (ohne stoff- oder anlagenbezogene Regelungen);\n6. die Hochschulzulassung und die Hochschulabschlüsse;\n7. die Grundsteuer. Bundesgesetze auf diesen Gebieten treten frühestens sechs Monate nach ihrer Verkündung in Kraft, soweit nicht mit Zustimmung des Bundesrates anderes bestimmt ist. Auf den Gebieten des Satzes 1 geht im Verhältnis von Bundes- und Landesrecht das jeweils spätere Gesetz vor."
+},
+{
+"abs": "4",
+"text": "Durch Bundesgesetz kann bestimmt werden, daß eine bundesgesetzliche Regelung, für die eine Erforderlichkeit im Sinne des Absatzes 2 nicht mehr besteht, durch Landesrecht ersetzt werden kann."
+}
+]
+},
+{
+"g": "GG",
+"nr": "73",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Der Bund hat die ausschließliche Gesetzgebung über:\n1. die auswärtigen Angelegenheiten sowie die Verteidigung einschließlich des Schutzes der Zivilbevölkerung;\n2. die Staatsangehörigkeit im Bunde;\n3. die Freizügigkeit, das Paßwesen, das Melde- und Ausweiswesen, die Ein- und Auswanderung und die Auslieferung;\n4. das Währungs-, Geld- und Münzwesen, Maße und Gewichte sowie die Zeitbestimmung;\n5. die Einheit des Zoll- und Handelsgebietes, die Handels- und Schiffahrtsverträge, die Freizügigkeit des Warenverkehrs und den Waren- und Zahlungsverkehr mit dem Auslande einschließlich des Zoll- und Grenzschutzes; 5a. den Schutz deutschen Kulturgutes gegen Abwanderung ins Ausland;\n6. den Luftverkehr; 6a. den Verkehr von Eisenbahnen, die ganz oder mehrheitlich im Eigentum des Bundes stehen (Eisenbahnen des Bundes), den Bau, die Unterhaltung und das Betreiben von Schienenwegen der Eisenbahnen des Bundes sowie die Erhebung von Entgelten für die Benutzung dieser Schienenwege;\n7. das Postwesen und die Telekommunikation;\n8. die Rechtsverhältnisse der im Dienste des Bundes und der bundesunmittelbaren Körperschaften des öffentlichen Rechtes stehenden Personen;\n9. den gewerblichen Rechtsschutz, das Urheberrecht und das Verlagsrecht; 9a. die Abwehr von Gefahren des internationalen Terrorismus durch das Bundeskriminalpolizeiamt in Fällen, in denen eine länderübergreifende Gefahr vorliegt, die Zuständigkeit einer Landespolizeibehörde nicht erkennbar ist oder die oberste Landesbehörde um eine Übernahme ersucht;\n10. die Zusammenarbeit des Bundes und der Länder\na) in der Kriminalpolizei,\nb) zum Schutze der freiheitlichen demokratischen Grundordnung, des Bestandes und der Sicherheit des Bundes oder eines Landes (Verfassungsschutz) und\nc) zum Schutze gegen Bestrebungen im Bundesgebiet, die durch Anwendung von Gewalt oder darauf gerichtete Vorbereitungshandlungen auswärtige Belange der Bundesrepublik Deutschland gefährden, sowie die Einrichtung eines Bundeskriminalpolizeiamtes und die internationale Verbrechensbekämpfung;\n11. die Statistik für Bundeszwecke;\n12. das Waffen- und das Sprengstoffrecht;\n13. die Versorgung der Kriegsbeschädigten und Kriegshinterbliebenen und die Fürsorge für die ehemaligen Kriegsgefangenen;\n14. die Erzeugung und Nutzung der Kernenergie zu friedlichen Zwecken, die Errichtung und den Betrieb von Anlagen, die diesen Zwecken dienen, den Schutz gegen Gefahren, die bei Freiwerden von Kernenergie oder durch ionisierende Strahlen entstehen, und die Beseitigung radioaktiver Stoffe."
+},
+{
+"abs": "2",
+"text": "Gesetze nach Absatz 1 Nr. 9a bedürfen der Zustimmung des Bundesrates."
+}
+]
+},
+{
+"g": "GG",
+"nr": "74",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Die konkurrierende Gesetzgebung erstreckt sich auf folgende Gebiete:\n1. das bürgerliche Recht, das Strafrecht, die Gerichtsverfassung, das gerichtliche Verfahren (ohne das Recht des Untersuchungshaftvollzugs), die Rechtsanwaltschaft, das Notariat und die Rechtsberatung;\n2. das Personenstandswesen;\n3. das Vereinsrecht;\n4. das Aufenthalts- und Niederlassungsrecht der Ausländer;\n5. (weggefallen)\n6. die Angelegenheiten der Flüchtlinge und Vertriebenen;\n7. die öffentliche Fürsorge (ohne das Heimrecht);\n8. (weggefallen)\n9. die Kriegsschäden und die Wiedergutmachung;\n10. die Kriegsgräber und Gräber anderer Opfer des Krieges und Opfer von Gewaltherrschaft;\n11. das Recht der Wirtschaft (Bergbau, Industrie, Energiewirtschaft, Handwerk, Gewerbe, Handel, Bankund Börsenwesen, privatrechtliches Versicherungswesen) ohne das Recht des Ladenschlusses, der Gaststätten, der Spielhallen, der Schaustellung von Personen, der Messen, der Ausstellungen und der Märkte;\n12. das Arbeitsrecht einschließlich der Betriebsverfassung, des Arbeitsschutzes und der Arbeitsvermittlung sowie die Sozialversicherung einschließlich der Arbeitslosenversicherung;\n13. die Regelung der Ausbildungsbeihilfen und die Förderung der wissenschaftlichen Forschung;\n14. das Recht der Enteignung, soweit sie auf den Sachgebieten der Artikel 73 und 74 in Betracht kommt;\n15. die Überführung von Grund und Boden, von Naturschätzen und Produktionsmitteln in Gemeineigentum oder in andere Formen der Gemeinwirtschaft;\n16. die Verhütung des Mißbrauchs wirtschaftlicher Machtstellung;\n17. die Förderung der land- und forstwirtschaftlichen Erzeugung (ohne das Recht der Flurbereinigung), die Sicherung der Ernährung, die Ein- und Ausfuhr land- und forstwirtschaftlicher Erzeugnisse, die Hochseeund Küstenfischerei und den Küstenschutz;\n18. den städtebaulichen Grundstücksverkehr, das Bodenrecht (ohne das Recht der Erschließungsbeiträge) und das Wohngeldrecht, das Altschuldenhilferecht, das Wohnungsbauprämienrecht, das Bergarbeiterwohnungsbaurecht und das Bergmannssiedlungsrecht;\n19. Maßnahmen gegen gemeingefährliche oder übertragbare Krankheiten bei Menschen und Tieren, Zulassung zu ärztlichen und anderen Heilberufen und zum Heilgewerbe, sowie das Recht des Apothekenwesens, der Arzneien, der Medizinprodukte, der Heilmittel, der Betäubungsmittel und der Gifte; 19a. die wirtschaftliche Sicherung der Krankenhäuser und die Regelung der Krankenhauspflegesätze;\n20. das Recht der Lebensmittel einschließlich der ihrer Gewinnung dienenden Tiere, das Recht der Genussmittel, Bedarfsgegenstände und Futtermittel sowie den Schutz beim Verkehr mit land- und forstwirtschaftlichem Saat- und Pflanzgut, den Schutz der Pflanzen gegen Krankheiten und Schädlinge sowie den Tierschutz;\n21. die Hochsee- und Küstenschiffahrt sowie die Seezeichen, die Binnenschiffahrt, den Wetterdienst, die Seewasserstraßen und die dem allgemeinen Verkehr dienenden Binnenwasserstraßen;\n22. den Straßenverkehr, das Kraftfahrwesen, den Bau und die Unterhaltung von Landstraßen für den Fernverkehr sowie die Erhebung und Verteilung von Gebühren oder Entgelten für die Benutzung öffentlicher Straßen mit Fahrzeugen;\n23. die Schienenbahnen, die nicht Eisenbahnen des Bundes sind, mit Ausnahme der Bergbahnen;\n24. die Abfallwirtschaft, die Luftreinhaltung und die Lärmbekämpfung (ohne Schutz vor verhaltensbezogenem Lärm);\n25. die Staatshaftung;\n26. die medizinisch unterstützte Erzeugung menschlichen Lebens, die Untersuchung und die künstliche Veränderung von Erbinformationen sowie Regelungen zur Transplantation von Organen, Geweben und Zellen;\n27. die Statusrechte und -pflichten der Beamten der Länder, Gemeinden und anderen Körperschaften des öffentlichen Rechts sowie der Richter in den Ländern mit Ausnahme der Laufbahnen, Besoldung und Versorgung;\n28. das Jagdwesen;\n29. den Naturschutz und die Landschaftspflege;\n30. die Bodenverteilung;\n31. die Raumordnung;\n32. den Wasserhaushalt;\n33. die Hochschulzulassung und die Hochschulabschlüsse."
+},
+{
+"abs": "2",
+"text": "Gesetze nach Absatz 1 Nr. 25 und 27 bedürfen der Zustimmung des Bundesrates."
+}
+]
+},
+{
+"g": "GG",
+"nr": "78",
+"titel": "",
+"abs": [
+{
+"abs": "",
+"text": "Ein vom Bundestage beschlossenes Gesetz kommt zustande, wenn der Bundesrat zustimmt, den Antrag gemäß Artikel 77 Abs. 2 nicht stellt, innerhalb der Frist des Artikels 77 Abs. 3 keinen Einspruch einlegt oder ihn zurücknimmt oder wenn der Einspruch vom Bundestage überstimmt wird."
+}
+]
+},
+{
+"g": "GG",
+"nr": "80",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Durch Gesetz können die Bundesregierung, ein Bundesminister oder die Landesregierungen ermächtigt werden, Rechtsverordnungen zu erlassen. Dabei müssen Inhalt, Zweck und Ausmaß der erteilten Ermächtigung im Gesetze bestimmt werden. Die Rechtsgrundlage ist in der Verordnung anzugeben. Ist durch Gesetz vorgesehen, daß eine Ermächtigung weiter übertragen werden kann, so bedarf es zur Übertragung der Ermächtigung einer Rechtsverordnung."
+},
+{
+"abs": "2",
+"text": "Der Zustimmung des Bundesrates bedürfen, vorbehaltlich anderweitiger bundesgesetzlicher Regelung, Rechtsverordnungen der Bundesregierung oder eines Bundesministers über Grundsätze und Gebühren für die Benutzung der Einrichtungen des Postwesens und der Telekommunikation, über die Grundsätze der Erhebung des Entgelts für die Benutzung der Einrichtungen der Eisenbahnen des Bundes, über den Bau und Betrieb der Eisenbahnen, sowie Rechtsverordnungen auf Grund von Bundesgesetzen, die der Zustimmung des Bundesrates bedürfen oder die von den Ländern im Auftrage des Bundes oder als eigene Angelegenheit ausgeführt werden."
+},
+{
+"abs": "3",
+"text": "Der Bundesrat kann der Bundesregierung Vorlagen für den Erlaß von Rechtsverordnungen zuleiten, die seiner Zustimmung bedürfen."
+},
+{
+"abs": "4",
+"text": "Soweit durch Bundesgesetz oder auf Grund von Bundesgesetzen Landesregierungen ermächtigt werden, Rechtsverordnungen zu erlassen, sind die Länder zu einer Regelung auch durch Gesetz befugt."
+}
+]
+},
+{
+"g": "GG",
+"nr": "82",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Die nach den Vorschriften dieses Grundgesetzes zustande gekommenen Gesetze werden vom Bundespräsidenten nach Gegenzeichnung ausgefertigt und im Bundesgesetzblatt verkündet. Das Bundesgesetzblatt kann in elektronischer Form geführt werden. Rechtsverordnungen werden von der Stelle, die sie erlässt, ausgefertigt. Das Nähere zur Verkündung und zur Form von Gegenzeichnung und Ausfertigung von Gesetzen und Rechtsverordnungen regelt ein Bundesgesetz."
+},
+{
+"abs": "2",
+"text": "Jedes Gesetz und jede Rechtsverordnung soll den Tag des Inkrafttretens bestimmen. Fehlt eine solche Bestimmung, so treten sie mit dem vierzehnten Tage nach Ablauf des Tages in Kraft, an dem das Bundesgesetzblatt ausgegeben worden ist."
+}
+]
+},
+{
+"g": "GG",
+"nr": "92",
+"titel": "",
+"abs": [
+{
+"abs": "",
+"text": "Die rechtsprechende Gewalt ist den Richtern anvertraut; sie wird durch das Bundesverfassungsgericht, durch die in diesem Grundgesetze vorgesehenen Bundesgerichte und durch die Gerichte der Länder ausgeübt."
+}
+]
+},
+{
+"g": "GG",
+"nr": "94",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Das Bundesverfassungsgericht entscheidet:\n1. über die Auslegung dieses Grundgesetzes aus Anlass von Streitigkeiten über den Umfang der Rechte und Pflichten eines obersten Bundesorgans oder anderer Beteiligter, die durch dieses Grundgesetz oder in der Geschäftsordnung eines obersten Bundesorgans mit eigenen Rechten ausgestattet sind;\n2. bei Meinungsverschiedenheiten oder Zweifeln über die förmliche und sachliche Vereinbarkeit von Bundesrecht oder Landesrecht mit diesem Grundgesetz oder die Vereinbarkeit von Landesrecht mit sonstigem Bundesrecht auf Antrag der Bundesregierung, einer Landesregierung oder eines Viertels der Mitglieder des Bundestages; 2a. bei Meinungsverschiedenheiten, ob ein Gesetz den Voraussetzungen des Artikels 72 Absatz 2 entspricht, auf Antrag des Bundesrates, einer Landesregierung oder der Volksvertretung eines Landes;\n3. bei Meinungsverschiedenheiten über Rechte und Pflichten des Bundes und der Länder, insbesondere bei der Ausführung von Bundesrecht durch die Länder und bei der Ausübung der Bundesaufsicht;\n4. in anderen öffentlich-rechtlichen Streitigkeiten zwischen dem Bund und den Ländern, zwischen verschiedenen Ländern oder innerhalb eines Landes, soweit nicht ein anderer Rechtsweg gegeben ist; 4a. über Verfassungsbeschwerden, die von jedermann mit der Behauptung erhoben werden können, durch die öffentliche Gewalt in einem seiner Grundrechte oder in einem seiner in Artikel 20 Absatz 4, 33, 38, 101, 103 und 104 enthaltenen Rechte verletzt zu sein; 4b. über Verfassungsbeschwerden von Gemeinden und Gemeindeverbänden wegen Verletzung des Rechts auf Selbstverwaltung nach Artikel 28 durch ein Gesetz, bei Landesgesetzen jedoch nur, soweit nicht Beschwerde beim Landesverfassungsgericht erhoben werden kann; 4c. über Beschwerden von Vereinigungen gegen ihre Nichtanerkennung als Partei für die Wahl zum Bundestag;\n5. in den übrigen in diesem Grundgesetz vorgesehenen Fällen."
+},
+{
+"abs": "2",
+"text": "Das Bundesverfassungsgericht entscheidet außerdem auf Antrag des Bundesrates, einer Landesregierung oder der Volksvertretung eines Landes, ob im Falle des Artikels 72 Absatz 4 die Erforderlichkeit für eine bundesgesetzliche Regelung nach Artikel 72 Absatz 2 nicht mehr besteht oder Bundesrecht in den Fällen des Artikels 125a Absatz 2 Satz 1 nicht mehr erlassen werden könnte. Die Feststellung, dass die Erforderlichkeit entfallen ist oder Bundesrecht nicht mehr erlassen werden könnte, ersetzt ein Bundesgesetz nach Artikel 72 Absatz 4 oder nach Artikel 125a Absatz 2 Satz 2. Der Antrag nach Satz 1 ist nur zulässig, wenn eine Gesetzesvorlage nach Artikel 72 Absatz 4 oder nach Artikel 125a Absatz 2 Satz 2 im Bundestag abgelehnt oder über sie nicht innerhalb eines Jahres beraten und Beschluss gefasst oder wenn eine entsprechende Gesetzesvorlage im Bundesrat abgelehnt worden ist."
+},
+{
+"abs": "3",
+"text": "Das Bundesverfassungsgericht wird ferner in den ihm sonst durch Bundesgesetz zugewiesenen Fällen tätig."
+},
+{
+"abs": "4",
+"text": "Die Entscheidungen des Bundesverfassungsgerichts binden die Verfassungsorgane des Bundes und der Länder sowie alle Gerichte und Behörden. Ein Bundesgesetz bestimmt, in welchen Fällen seine Entscheidungen Gesetzeskraft haben."
+}
+]
+},
+{
+"g": "GG",
+"nr": "100",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Hält ein Gericht ein Gesetz, auf dessen Gültigkeit es bei der Entscheidung ankommt, für verfassungswidrig, so ist das Verfahren auszusetzen und, wenn es sich um die Verletzung der Verfassung eines Landes handelt, die Entscheidung des für Verfassungsstreitigkeiten zuständigen Gerichtes des Landes, wenn es sich um die Verletzung dieses Grundgesetzes handelt, die Entscheidung des Bundesverfassungsgerichtes einzuholen. Dies gilt auch, wenn es sich um die Verletzung dieses Grundgesetzes durch Landesrecht oder um die Unvereinbarkeit eines Landesgesetzes mit einem Bundesgesetze handelt."
+},
+{
+"abs": "2",
+"text": "Ist in einem Rechtsstreite zweifelhaft, ob eine Regel des Völkerrechtes Bestandteil des Bundesrechtes ist und ob sie unmittelbar Rechte und Pflichten für den Einzelnen erzeugt (Artikel 25), so hat das Gericht die Entscheidung des Bundesverfassungsgerichtes einzuholen."
+},
+{
+"abs": "3",
+"text": "Will das Verfassungsgericht eines Landes bei der Auslegung des Grundgesetzes von einer Entscheidung des Bundesverfassungsgerichtes oder des Verfassungsgerichtes eines anderen Landes abweichen, so hat das Verfassungsgericht die Entscheidung des Bundesverfassungsgerichtes einzuholen."
+}
+]
+},
+{
+"g": "GG",
+"nr": "102",
+"titel": "",
+"abs": [
+{
+"abs": "",
+"text": "Die Todesstrafe ist abgeschafft."
+}
+]
+},
+{
+"g": "GG",
+"nr": "105",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Der Bund hat die ausschließliche Gesetzgebung über die Zölle und Finanzmonopole."
+},
+{
+"abs": "2",
+"text": "Der Bund hat die konkurrierende Gesetzgebung über die Grundsteuer. Er hat die konkurrierende Gesetzgebung über die übrigen Steuern, wenn ihm das Aufkommen dieser Steuern ganz oder zum Teil zusteht oder die Voraussetzungen des Artikels 72 Abs. 2 vorliegen."
+},
+{
+"abs": "2a",
+"text": "Die Länder haben die Befugnis zur Gesetzgebung über die örtlichen Verbrauch- und Aufwandsteuern, solange und soweit sie nicht bundesgesetzlich geregelten Steuern gleichartig sind. Sie haben die Befugnis zur Bestimmung des Steuersatzes bei der Grunderwerbsteuer."
+},
+{
+"abs": "3",
+"text": "Bundesgesetze über Steuern, deren Aufkommen den Ländern oder den Gemeinden (Gemeindeverbänden) ganz oder zum Teil zufließt, bedürfen der Zustimmung des Bundesrates."
+}
+]
+},
+{
+"g": "GG",
+"nr": "106",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Der Ertrag der Finanzmonopole und das Aufkommen der folgenden Steuern stehen dem Bund zu:\n1. die Zölle,\n2. die Verbrauchsteuern, soweit sie nicht nach Absatz 2 den Ländern, nach Absatz 3 Bund und Ländern gemeinsam oder nach Absatz 6 den Gemeinden zustehen,\n3. die Straßengüterverkehrsteuer, die Kraftfahrzeugsteuer und sonstige auf motorisierte Verkehrsmittel bezogene Verkehrsteuern,\n4. die Kapitalverkehrsteuern, die Versicherungsteuer und die Wechselsteuer,\n5. die einmaligen Vermögensabgaben und die zur Durchführung des Lastenausgleichs erhobenen Ausgleichsabgaben,\n6. die Ergänzungsabgabe zur Einkommensteuer und zur Körperschaftsteuer,\n7. Abgaben im Rahmen der Europäischen Gemeinschaften."
+},
+{
+"abs": "2",
+"text": "Das Aufkommen der folgenden Steuern steht den Ländern zu:\n1. die Vermögensteuer,\n2. die Erbschaftsteuer,\n3. die Verkehrsteuern, soweit sie nicht nach Absatz 1 dem Bund oder nach Absatz 3 Bund und Ländern gemeinsam zustehen,\n4. die Biersteuer,\n5. die Abgabe von Spielbanken."
+},
+{
+"abs": "3",
+"text": "Das Aufkommen der Einkommensteuer, der Körperschaftsteuer und der Umsatzsteuer steht dem Bund und den Ländern gemeinsam zu (Gemeinschaftsteuern), soweit das Aufkommen der Einkommensteuer nicht nach Absatz 5 und das Aufkommen der Umsatzsteuer nicht nach Absatz 5a den Gemeinden zugewiesen wird. Am Aufkommen der Einkommensteuer und der Körperschaftsteuer sind der Bund und die Länder je zur Hälfte beteiligt. Die Anteile von Bund und Ländern an der Umsatzsteuer werden durch Bundesgesetz, das der Zustimmung des Bundesrates bedarf, festgesetzt. Bei der Festsetzung ist von folgenden Grundsätzen auszugehen:\n1. Im Rahmen der laufenden Einnahmen haben der Bund und die Länder gleichmäßig Anspruch auf Deckung ihrer notwendigen Ausgaben. Dabei ist der Umfang der Ausgaben unter Berücksichtigung einer mehrjährigen Finanzplanung zu ermitteln.\n2. Die Deckungsbedürfnisse des Bundes und der Länder sind so aufeinander abzustimmen, daß ein billiger Ausgleich erzielt, eine Überbelastung der Steuerpflichtigen vermieden und die Einheitlichkeit der Lebensverhältnisse im Bundesgebiet gewahrt wird. Zusätzlich werden in die Festsetzung der Anteile von Bund und Ländern an der Umsatzsteuer Steuermindereinnahmen einbezogen, die den Ländern ab 1. Januar 1996 aus der Berücksichtigung von Kindern im Einkommensteuerrecht entstehen. Das Nähere bestimmt das Bundesgesetz nach Satz 3."
+},
+{
+"abs": "4",
+"text": "Die Anteile von Bund und Ländern an der Umsatzsteuer sind neu festzusetzen, wenn sich das Verhältnis zwischen den Einnahmen und Ausgaben des Bundes und der Länder wesentlich anders entwickelt; Steuermindereinnahmen, die nach Absatz 3 Satz 5 in die Festsetzung der Umsatzsteueranteile zusätzlich einbezogen werden, bleiben hierbei unberücksichtigt. Werden den Ländern durch Bundesgesetz zusätzliche Ausgaben auferlegt oder Einnahmen entzogen, so kann die Mehrbelastung durch Bundesgesetz, das der Zustimmung des Bundesrates bedarf, auch mit Finanzzuweisungen des Bundes ausgeglichen werden, wenn sie auf einen kurzen Zeitraum begrenzt ist. In dem Gesetz sind die Grundsätze für die Bemessung dieser Finanzzuweisungen und für ihre Verteilung auf die Länder zu bestimmen."
+},
+{
+"abs": "5",
+"text": "Die Gemeinden erhalten einen Anteil an dem Aufkommen der Einkommensteuer, der von den Ländern an ihre Gemeinden auf der Grundlage der Einkommensteuerleistungen ihrer Einwohner weiterzuleiten ist. Das Nähere bestimmt ein Bundesgesetz, das der Zustimmung des Bundesrates bedarf. Es kann bestimmen, daß die Gemeinden Hebesätze für den Gemeindeanteil festsetzen."
+},
+{
+"abs": "5a",
+"text": "Die Gemeinden erhalten ab dem 1. Januar 1998 einen Anteil an dem Aufkommen der Umsatzsteuer. Er wird von den Ländern auf der Grundlage eines orts- und wirtschaftsbezogenen Schlüssels an ihre Gemeinden weitergeleitet. Das Nähere wird durch Bundesgesetz, das der Zustimmung des Bundesrates bedarf, bestimmt."
+},
+{
+"abs": "6",
+"text": "Das Aufkommen der Grundsteuer und Gewerbesteuer steht den Gemeinden, das Aufkommen der örtlichen Verbrauch- und Aufwandsteuern steht den Gemeinden oder nach Maßgabe der Landesgesetzgebung den Gemeindeverbänden zu. Den Gemeinden ist das Recht einzuräumen, die Hebesätze der Grundsteuer und Gewerbesteuer im Rahmen der Gesetze festzusetzen. Bestehen in einem Land keine Gemeinden, so steht das Aufkommen der Grundsteuer und Gewerbesteuer sowie der örtlichen Verbrauch- und Aufwandsteuern dem Land zu. Bund und Länder können durch eine Umlage an dem Aufkommen der Gewerbesteuer beteiligt werden. Das Nähere über die Umlage bestimmt ein Bundesgesetz, das der Zustimmung des Bundesrates bedarf. Nach Maßgabe der Landesgesetzgebung können die Grundsteuer und Gewerbesteuer sowie der Gemeindeanteil vom Aufkommen der Einkommensteuer und der Umsatzsteuer als Bemessungsgrundlagen für Umlagen zugrunde gelegt werden."
+},
+{
+"abs": "7",
+"text": "Von dem Länderanteil am Gesamtaufkommen der Gemeinschaftsteuern fließt den Gemeinden und Gemeindeverbänden insgesamt ein von der Landesgesetzgebung zu bestimmender Hundertsatz zu. Im übrigen bestimmt die Landesgesetzgebung, ob und inwieweit das Aufkommen der Landessteuern den Gemeinden (Gemeindeverbänden) zufließt."
+},
+{
+"abs": "8",
+"text": "Veranlaßt der Bund in einzelnen Ländern oder Gemeinden (Gemeindeverbänden) besondere Einrichtungen, die diesen Ländern oder Gemeinden (Gemeindeverbänden) unmittelbar Mehrausgaben oder Mindereinnahmen (Sonderbelastungen) verursachen, gewährt der Bund den erforderlichen Ausgleich, wenn und soweit den Ländern oder Gemeinden (Gemeindeverbänden) nicht zugemutet werden kann, die Sonderbelastungen zu tragen. Entschädigungsleistungen Dritter und finanzielle Vorteile, die diesen Ländern oder Gemeinden (Gemeindeverbänden) als Folge der Einrichtungen erwachsen, werden bei dem Ausgleich berücksichtigt."
+},
+{
+"abs": "9",
+"text": "Als Einnahmen und Ausgaben der Länder im Sinne dieses Artikels gelten auch die Einnahmen und Ausgaben der Gemeinden (Gemeindeverbände)."
+}
+]
+},
+{
+"g": "GG",
+"nr": "137",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Die Wählbarkeit von Beamten, Angestellten des öffentlichen Dienstes, Berufssoldaten, freiwilligen Soldaten auf Zeit und Richtern im Bund, in den Ländern und den Gemeinden kann gesetzlich beschränkt werden."
+},
+{
+"abs": "2",
+"text": "Für die Wahl des ersten Bundestages, der ersten Bundesversammlung und des ersten Bundespräsidenten der Bundesrepublik gilt das vom Parlamentarischen Rat zu beschließende Wahlgesetz."
+},
+{
+"abs": "3",
+"text": "Die dem Bundesverfassungsgerichte gemäß Artikel 41 Abs. 2 zustehende Befugnis wird bis zu seiner Errichtung von dem Deutschen Obergericht für das Vereinigte Wirtschaftsgebiet wahrgenommen, das nach Maßgabe seiner Verfahrensordnung entscheidet."
+}
+]
+},
+{
 "g": "BWahlG",
 "nr": "1",
 "titel": "Zusammensetzung des Deutschen Bundestages und Wahlrechtsgrundsätze",
@@ -1306,6 +1572,21 @@ export const NORMEN = [
 {
 "abs": "5",
 "text": "§ 21 Abs. 1, 3, 5 und 6 sowie die §§ 22 bis 25 gelten entsprechend mit der Maßgabe, daß die Versicherung an Eides Statt nach § 21 Abs. 6 Satz 2 sich auch darauf zu erstrecken hat, daß die Festlegung der Reihenfolge der Bewerber in der Landesliste in geheimer Abstimmung erfolgt ist."
+}
+]
+},
+{
+"g": "BWahlG",
+"nr": "32",
+"titel": "Unzulässige Wahlpropaganda und Unterschriftensammlung, unzulässige Veröffentlichung von Wählerbefragungen",
+"abs": [
+{
+"abs": "1",
+"text": "Während der Wahlzeit sind in und an dem Gebäude, in dem sich der Wahlraum befindet, sowie unmittelbar vor dem Zugang zu dem Gebäude jede Beeinflussung der Wähler durch Wort, Ton, Schrift oder Bild sowie jede Unterschriftensammlung verboten."
+},
+{
+"abs": "2",
+"text": "Die Veröffentlichung von Ergebnissen von Wählerbefragungen nach der Stimmabgabe über den Inhalt der Wahlentscheidung ist vor Ablauf der Wahlzeit unzulässig."
 }
 ]
 },
@@ -1612,6 +1893,29 @@ export const NORMEN = [
 {
 "abs": "7",
 "text": "Löst sich eine Partei auf oder wird sie verboten, scheidet sie ab dem Zeitpunkt der Auflösung aus der staatlichen Teilfinanzierung aus. Gleiches gilt bei einer Feststellung des Bundesverfassungsgerichts nach § 46a des Bundesverfassungsgerichtsgesetzes ab dem Zeitpunkt der Entscheidung."
+}
+]
+},
+{
+"g": "PartG",
+"nr": "25",
+"titel": "Spenden",
+"abs": [
+{
+"abs": "1",
+"text": "Parteien sind berechtigt, Spenden anzunehmen. Bis zu einem Betrag von 1 000 Euro kann eine Spende mittels Bargeld erfolgen. Parteimitglieder, die Empfänger von Spenden an die Partei sind, haben diese unverzüglich an ein für Finanzangelegenheiten von der Partei satzungsmäßig bestimmtes Vorstandsmitglied weiterzuleiten. Spenden sind von einer Partei erlangt, wenn sie in den Verfügungsbereich eines für die Finanzangelegenheiten zuständigen Vorstandsmitglieds oder eines hauptamtlichen Mitarbeiters der Partei gelangt sind; unverzüglich nach ihrem Eingang an den Spender zurückgeleitete Spenden gelten als nicht von der Partei erlangt."
+},
+{
+"abs": "2",
+"text": "Von der Befugnis der Parteien, Spenden anzunehmen ausgeschlossen sind:\n1. Spenden von öffentlich-rechtlichen Körperschaften, Parlamentsfraktionen und -gruppen sowie von Fraktionen und Gruppen von kommunalen Vertretungen;\n2. Spenden von politischen Stiftungen, Körperschaften, Personenvereinigungen und Vermögensmassen, die nach der Satzung, dem Stiftungsgeschäft oder der sonstigen Verfassung und nach der tatsächlichen Geschäftsführung ausschließlich und unmittelbar gemeinnützigen, mildtätigen oder kirchlichen Zwecken dienen (§§ 51 bis 68 der Abgabenordnung);\n3. Spenden von außerhalb des Geltungsbereiches dieses Gesetzes, es sei denn, dass\na) diese Spenden aus dem Vermögen eines Deutschen im Sinne des Grundgesetzes, eines Bürgers der Europäischen Union oder eines Wirtschaftsunternehmens, dessen Anteile sich zu mehr als 50 vom Hundert im Eigentum von Deutschen im Sinne des Grundgesetzes oder eines Bürgers der Europäischen Union befinden oder dessen Hauptsitz in einem Mitgliedstaat der Europäischen Union ist, unmittelbar einer Partei zufließen,\nb) es sich um Spenden an Parteien nationaler Minderheiten in ihrer angestammten Heimat handelt, die diesen aus Staaten zugewendet werden, die an die Bundesrepublik Deutschland angrenzen und in denen Angehörige ihrer Volkszugehörigkeit leben oder\nc) es sich um eine Spende eines Ausländers von nicht mehr als 1 000 Euro handelt;\n4. Spenden von Berufsverbänden, die diesen mit der Maßgabe zugewandt wurden, sie an eine politische Partei weiterzuleiten;\n5. Spenden von Unternehmen, die ganz oder teilweise im Eigentum der öffentlichen Hand stehen oder die von ihr verwaltet oder betrieben werden, sofern die direkte Beteiligung der öffentlichen Hand 25 vom Hundert übersteigt;\n6. Spenden, soweit sie im Einzelfall mehr als 500 Euro betragen und deren Spender nicht feststellbar sind, oder bei denen es sich erkennbar um die Weiterleitung einer Spende eines nicht genannten Dritten handelt;\n7. Spenden, die der Partei erkennbar in Erwartung oder als Gegenleistung eines bestimmten wirtschaftlichen oder politischen Vorteils gewährt werden;\n8. Spenden, die von einem Dritten gegen ein von der Partei zu zahlendes Entgelt eingeworben werden, das 25 vom Hundert des Wertes der eingeworbenen Spende übersteigt."
+},
+{
+"abs": "3",
+"text": "Spenden, Mitgliedsbeiträge und Mandatsträgerbeiträge an eine Partei oder einen oder mehrere ihrer Gebietsverbände, deren Gesamtwert in einem Kalenderjahr (Rechnungsjahr) 10 000 Euro übersteigt, sind unter Angabe des Namens und der Anschrift des Zuwenders oder anderer Angaben, die eine Identifikation der Person vergleichbar ermöglichen, sowie der Gesamthöhe der Zuwendung im Rechenschaftsbericht zu verzeichnen. Spenden, die im Einzelfall die Höhe von 35 000 Euro übersteigen, sind dem Präsidenten des Deutschen Bundestages unverzüglich anzuzeigen. Dieser veröffentlicht die Zuwendung unter Angabe des Zuwenders zeitnah als Bundestagsdrucksache."
+},
+{
+"abs": "4",
+"text": "Nach Absatz 2 unzulässige Spenden sind von der Partei unverzüglich, spätestens mit Einreichung des Rechenschaftsberichts für das betreffende Jahr (§ 19a Abs. 3) an den Präsidenten des Deutschen Bundestages weiterzuleiten."
 }
 ]
 },

@@ -1,4 +1,5 @@
 import { auswahl } from "../kern.js";
+import { MC_SKRIPT } from "./skript.js";
 
 // Multiple-Choice-Fassungen der ÖR-Frage-Antwort-Aufgaben.
 // r = richtige Aussagen, f = plausible, aber falsche Aussagen (Distraktoren aus benachbarten Normen),
@@ -6,6 +7,7 @@ import { auswahl } from "../kern.js";
 const M = (r, f, frage) => ({ r, f, frage });
 
 export const MC = {
+  ...MC_SKRIPT,
   // ---------------------------------------------------------------- Staatsziele, Geschichte
   "oer-gg-entstehung": M(
     ["Das GG wurde vom Parlamentarischen Rat beschlossen.", "Das GG wurde am 23. Mai 1949 ausgefertigt und verkündet.", "Das GG trat mit Ablauf des Tages der Verkündung in Kraft (Art. 145 Abs. 2 GG)."],
@@ -113,7 +115,7 @@ export const MC = {
     ["Anspruch auf einen kostenlosen Anwalt in jedem Verfahren", "Recht auf eine zweite Instanz in allen Verfahren", "Verbot jeder Rückwirkung von Steuergesetzen"],
     "Welche Garantien enthält Art. 103 GG?"),
   "oer-rueckwirkung": M(
-    ["Echte Rückwirkung knüpft belastende Rechtsfolgen an bereits abgeschlossene Sachverhalte.", "Echte Rückwirkung ist grundsätzlich unzulässig.", "Unechte Rückwirkung betrifft gegenwärtige, noch nicht abgeschlossene Sachverhalte und ist grundsätzlich zulässig.", "Im Strafrecht gilt ein absolutes Rückwirkungsverbot (Art. 103 Abs. 2 GG)."],
+    ["Echte Rückwirkung knüpft belastende Rechtsfolgen an bereits abgeschlossene Sachverhalte.", "Echte Rückwirkung ist grundsätzlich unzulässig.", "Unechte Rückwirkung betrifft begonnene, noch nicht abgeschlossene Sachverhalte und ist nicht grundsätzlich unzulässig.", "Im Strafrecht gilt ein absolutes Rückwirkungsverbot (Art. 103 Abs. 2 GG)."],
     ["Echte Rückwirkung ist immer zulässig, wenn sie im Gesetz ausdrücklich angeordnet ist.", "Unechte Rückwirkung ist stets verboten.", "Grundlage des Vertrauensschutzes ist Art. 31 GG."],
     "Welche Aussagen zur Rückwirkung von Gesetzen sind richtig?"),
   "oer-verhaeltnismaessigkeit": M(
@@ -205,13 +207,13 @@ export const MC = {
   "oer-bt-bedeutung": M(
     ["Beschluss der Bundesgesetze", "Wahl des Bundeskanzlers", "Kontrolle der Bundesregierung, z. B. durch Untersuchungsausschüsse", "Wahl der Hälfte der Bundesverfassungsrichter"],
     ["Ernennung der Bundesminister", "Ausfertigung der Bundesgesetze", "Völkerrechtliche Vertretung des Bundes"],
-    "Welche Aufgaben hat der Bundestag?"),
+    "Welche Aufgaben gehören zu den Grundfunktionen des Bundestages (Gesetzgebung, Kreation, Kontrolle)?"),
   "oer-bt-groesse": M(
     ["630 Abgeordnete", "Die Zahl kann sich nach § 4 Abs. 4 BWahlG erhöhen, wenn eine Partei mit mehr als der Hälfte der berücksichtigten Zweitstimmen sonst keine Sitzmehrheit hätte."],
     ["598 Abgeordnete", "736 Abgeordnete", "Die Zahl erhöht sich regelmäßig durch Überhang- und Ausgleichsmandate.", "299 Abgeordnete"],
     "Aus wie vielen Abgeordneten besteht der Bundestag?"),
   "oer-bt-organisation": M(
-    ["Der Bundestag wählt seinen Präsidenten, dessen Stellvertreter und die Schriftführer.", "Der Bundestag gibt sich eine Geschäftsordnung.", "Der Präsident übt Hausrecht und Polizeigewalt im Bundestag aus.", "Pflichtausschüsse sind u. a. der Petitionsausschuss und der Verteidigungsausschuss."],
+    ["Der Bundestag wählt seinen Präsidenten, dessen Stellvertreter und die Schriftführer.", "Der Bundestag gibt sich eine Geschäftsordnung.", "Der Präsident übt Hausrecht und Polizeigewalt im Bundestag aus.", "Die Geschäftsordnung des Bundestages ist eine autonome Satzung, kein Verfassungsrecht."],
     ["Der Bundestagspräsident wird vom Bundespräsidenten ernannt.", "Die Geschäftsordnung des Bundestages erlässt die Bundesregierung.", "Ausschüsse für Finanzen und Sport sind im GG vorgeschrieben."],
     "Welche Aussagen zur Organisation des Bundestages sind richtig?"),
   "oer-untersuchungsausschuss": M(
