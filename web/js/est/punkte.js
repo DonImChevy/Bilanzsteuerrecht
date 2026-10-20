@@ -3,7 +3,7 @@
 
 export const PUNKTESAMMLER = [
   {
-    titel: "Unbeschränkte Einkommensteuerpflicht",
+    titel: "Persönliche Steuerpflicht",
     satz: "Unbeschränkt einkommensteuerpflichtig (≙ Welteinkommensprinzip) ist gemäß § 1 Abs. 1 S. 1 EStG eine natürliche Person (§ 1 BGB), die im Inland (§ 1 Abs. 1 S. 2 EStG) einen Wohnsitz (§ 8 AO) oder ihren gewöhnlichen Aufenthalt (§ 9 AO) hat.",
     punkte: 4,
   },
