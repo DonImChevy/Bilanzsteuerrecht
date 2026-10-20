@@ -423,11 +423,11 @@ const STIMMZETTEL_FAELLE = [
   { kE: [], kZ: [], erg: 3, erkl: "Der Stimmzettel enthält keine Kennzeichnung (§ 39 Abs. 1 Satz 1 Nr. 2) → beide Stimmen ungültig (Satz 2)." },
   { kE: [0, 1], kZ: [3], erg: 2, erkl: "Zwei Kreuze bei der Erststimme → Erststimme ungültig (Wille nicht zweifelsfrei, Nr. 4); die Zweitstimme ist gültig." },
 ];
-const stimmzettelAufgabe = U("u-stimmzettel", "oer-wahl", (r) => {
+const stimmzettelAufgabe = U("u-stimmzettel", "oer-zusatz", (r) => {
   const f = r.wahl(STIMMZETTEL_FAELLE);
   const erst = [{ name: "Anna Albers", partei: "Partei A" }, { name: "Bernd Berger", partei: "Partei B" }, { name: "Cem Coşkun", partei: "Partei C" }, { name: "Dana Dietz", partei: "Partei D" }];
   const zweit = [{ partei: "Partei A" }, { partei: "Partei B" }, { partei: "Partei C" }, { partei: "Partei D" }];
-  return mcFrage(r, "u-stimmzettel", "oer-wahl", "Der Wahlvorstand findet bei der Auszählung den abgebildeten amtlichen Stimmzettel aus diesem Wahlkreis. Wie ist er zu werten?",
+  return mcFrage(r, "u-stimmzettel", "oer-zusatz", "Der Wahlvorstand findet bei der Auszählung den abgebildeten amtlichen Stimmzettel aus diesem Wahlkreis. Wie ist er zu werten?",
     ["Beide Stimmen gültig", "Nur die Erststimme gültig", "Nur die Zweitstimme gültig", "Beide Stimmen ungültig"], [f.erg], f.erkl,
     { grafik: stimmzettel({ erst, zweit, kreuzE: f.kE, kreuzZ: f.kZ }), normen: ["BWahlG 39 1", "BWahlG 34 2"] });
 });

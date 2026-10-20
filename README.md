@@ -4,7 +4,7 @@ Lern-App zur Klausurvorbereitung im Grundstudium I. Startseite mit Tagesziel, Le
 Suche über alle Inhalte und Modul-Kacheln. Verfügbar:
 
 - **Bilanzrecht (BilR)** – Bilanzsteuerrecht Teil I (Buchführung), orientiert am Skript und an den Übungen bzw. Lösungshinweisen.
-- **Öffentliches Recht** – Staatsrecht nach Lehrplan 1.1 bis 1.3.4.5 (Staatsziele bis Bundesregierung).
+- **Öffentliches Recht** – Staatsrecht und Gesetzgebung nach dem Unterrichtsskript ÖR GS I (Kapitel 1–2), abgeglichen mit den Altklausuren 2020–2025: Klausurfälle im Gutachtenstil, häufige Klausurthemen doppelt gewichtet, nicht klausurrelevante Fragen unter „Zusatzwissen“.
   Quellen: Grundgesetz, Bundeswahlgesetz, Parteiengesetz. Aufbau wie in der Klausur: ca. 75 % Frage-Antwort
   (Musterantwort mit wörtlichem Normzitat, Selbstbewertung) und 25 % Übertragungsaufgaben mit Grafiken
   (Kanzlerwahl, Misstrauensvotum, Bundesrat-Abstimmungen, Sitzverteilung, Zweitstimmendeckung, Stimmzettel, Fristen …).

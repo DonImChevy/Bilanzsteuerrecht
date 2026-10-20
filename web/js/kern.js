@@ -16,18 +16,21 @@ export const THEMEN = [
   { id: "gewinnermittlung", titel: "Gewinnermittlung & GuV/BVV", unter: "§ 4 I 1 EStG, Mehr- und Weniger-Rechnung", icon: "Σ", fach: "bsr" },
   { id: "grundbegriffe", titel: "Grundbegriffe", unter: "Auszahlung, Ausgabe, Aufwand, Kosten", icon: "📖", fach: "bsr" },
   { id: "buecher", titel: "Grund-, Haupt- & Nebenbücher", unter: "Journal, Kassenbericht, Belege", icon: "📚", fach: "bsr" },
-  // Öffentliches Recht (Lehrplan GS I, 1.1 bis 1.3.4.5)
-  { id: "oer-staatsziele", titel: "Staatsziele & Geschichte des GG", unter: "1.1.1 · Präambel, Art. 20, 20a, 79, 145, 146 GG", icon: "📜", fach: "oer" },
-  { id: "oer-republik", titel: "Republik & Sozialstaat", unter: "1.1.2 · Art. 20 I, 28 I, 54 GG", icon: "🏛️", fach: "oer" },
-  { id: "oer-demokratie", titel: "Demokratie", unter: "1.1.3 · Art. 20 II, 38 GG", icon: "🗳️", fach: "oer" },
-  { id: "oer-rechtsstaat", titel: "Rechtsstaat", unter: "1.1.4 · Art. 1 III, 19 IV, 20 III, 97, 103 GG", icon: "⚖️", fach: "oer" },
-  { id: "oer-bundesstaat", titel: "Bundesstaat", unter: "1.1.5 · Art. 30, 31, 37, 70, 83 GG", icon: "🗺️", fach: "oer" },
-  { id: "oer-parteien", titel: "Die Parteien", unter: "1.2 · Art. 21 GG, PartG", icon: "🎗️", fach: "oer" },
-  { id: "oer-bundestag", titel: "Bundestag", unter: "1.3.1 · Art. 38–48 GG", icon: "🏢", fach: "oer" },
-  { id: "oer-wahl", titel: "Wahl zum Bundestag", unter: "1.3.1.2 · BWahlG", icon: "✉️", fach: "oer" },
-  { id: "oer-bundesrat", titel: "Bundesrat", unter: "1.3.2 · Art. 50–53 GG", icon: "🤝", fach: "oer" },
-  { id: "oer-bundespraesident", titel: "Bundespräsident", unter: "1.3.3 · Art. 54–61 GG", icon: "🎖️", fach: "oer" },
-  { id: "oer-bundesregierung", titel: "Bundesregierung", unter: "1.3.4 · Art. 62–69 GG", icon: "👥", fach: "oer" },
+  // Öffentliches Recht (Unterrichtsskript ÖR GS I – Kapitel 1 Staatsrecht und 2 Gesetzgebung)
+  { id: "oer-staatsziele", titel: "Staat & Staatsformmerkmale", unter: "Skript 1.3–1.4.1 · Drei-Elemente-Lehre, Art. 20, 28, 79 GG", icon: "📜", fach: "oer" },
+  { id: "oer-republik", titel: "Republik, Sozialstaat & Staatsziele", unter: "Skript 1.4.2.4–1.4.2.6 · Art. 20 I, 20a GG", icon: "🏛️", fach: "oer" },
+  { id: "oer-demokratie", titel: "Demokratie", unter: "Skript 1.4.2.2 · Art. 20 II, 29, 42 GG", icon: "🗳️", fach: "oer" },
+  { id: "oer-rechtsstaat", titel: "Rechtsstaat", unter: "Skript 1.4.2.3 · Gewaltenteilung, Gesetzesvorbehalt, Verhältnismäßigkeit, Rückwirkung", icon: "⚖️", fach: "oer" },
+  { id: "oer-bundesstaat", titel: "Bundesstaat", unter: "Skript 1.4.2.1 · Art. 28, 30, 31, 37 GG", icon: "🗺️", fach: "oer" },
+  { id: "oer-parteien", titel: "Die Parteien", unter: "Skript 1.5.1.3 · Art. 21 GG, PartG", icon: "🎗️", fach: "oer" },
+  { id: "oer-bundestag", titel: "Bundestag, Abgeordnete & Fraktionen", unter: "Skript 1.5.1 · Art. 38–48 GG, GOBT", icon: "🏢", fach: "oer" },
+  { id: "oer-wahl", titel: "Wahl zum Bundestag", unter: "Skript 1.5.1.2 · Art. 38 GG, BWahlG", icon: "✉️", fach: "oer" },
+  { id: "oer-bundesrat", titel: "Bundesrat", unter: "Skript 1.5.2 · Art. 50–53 GG", icon: "🤝", fach: "oer" },
+  { id: "oer-bundespraesident", titel: "Bundespräsident", unter: "Skript 1.5.3 · Art. 54–61, 82 GG", icon: "🎖️", fach: "oer" },
+  { id: "oer-bundesregierung", titel: "Bundesregierung", unter: "Skript 1.5.4 · Art. 62–69 GG", icon: "👥", fach: "oer" },
+  { id: "oer-bverfg", titel: "Verfassungsorgane & BVerfG", unter: "Skript 1.5, 1.5.5 · Art. 92–94, 100 GG", icon: "🏛", fach: "oer" },
+  { id: "oer-gesetzgebung", titel: "Gesetzgebung", unter: "Skript 2 · Art. 70–82, 105, 106 GG", icon: "📝", fach: "oer" },
+  { id: "oer-zusatz", titel: "Zusatzwissen", unter: "Nicht im Skript – nicht klausurrelevant", icon: "➕", fach: "oer", zusatz: true },
 ];
 export const THEMA = Object.fromEntries(THEMEN.map((t) => [t.id, t]));
 
@@ -36,6 +39,8 @@ export const FAECHER = {
   oer: { id: "oer", titel: "Öffentliches Recht", kurz: "ÖR" },
 };
 export const themenFuer = (fach) => THEMEN.filter((t) => t.fach === fach);
+/** Themen für Klausur und gemischte Übungen – ohne „Zusatzwissen“. */
+export const pruefungsThemen = (fach) => themenFuer(fach).filter((t) => !t.zusatz);
 
 // ---------- Zufall (mulberry32, reproduzierbar) ----------
 export class Zufall {
@@ -184,7 +189,7 @@ export function loesungText(frage) {
 export function typBezeichnung(frage) {
   if (frage.typ === "buchung") return "Buchungssatz";
   if (frage.typ === "auswahl") return frage.richtig.length > 1 ? "Mehrfachauswahl" : "Auswahl";
-  if (frage.typ === "offen") return "Frage – Antwort";
+  if (frage.typ === "offen") return frage.fall ? "Klausurfall" : "Frage – Antwort";
   return "Berechnung";
 }
 

@@ -1,6 +1,6 @@
 import * as G from "./geld.js";
 import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
-import { THEMEN, THEMA, themenFuer, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
+import { THEMEN, THEMA, themenFuer, pruefungsThemen, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
 import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer } from "./katalog.js";
 import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
@@ -39,7 +39,7 @@ function erfasse(frage, korrekt) {
   speichern();
 }
 function schwaechstesThema() {
-  return themenFuer(state.fach).filter((t) => zaehler(t.id).b >= 3).sort((a, b) => quote(zaehler(a.id)) - quote(zaehler(b.id)))[0];
+  return pruefungsThemen(state.fach).filter((t) => zaehler(t.id).b >= 3).sort((a, b) => quote(zaehler(a.id)) - quote(zaehler(b.id)))[0];
 }
 const summeFach = (fach) => themenFuer(fach).map((t) => zaehler(t.id)).reduce((a, z) => ({ b: a.b + z.b, r: a.r + z.r }), { b: 0, r: 0 });
 
@@ -468,7 +468,7 @@ function tabLernen() {
   const schnell = state.fach === "oer"
     ? kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "75 % der Klausur") +
       kachel("uebertragung", "diagramm", "Übertragung", "Grafiken auswerten · 25 %") +
-      kachel("alles", "mischen", "Gemischt", "Quer durch den Lehrplan")
+      kachel("alles", "mischen", "Gemischt", "Quer durch das Skript")
     : kachel("buchung", "tkonto", "Buchungssätze", "Immer neue Beträge") +
       kachel("alles", "mischen", "Gemischt", "Buchen, Rechnen, Theorie");
   const breit = state.fach === "oer" ? "" : " breit";
@@ -490,7 +490,7 @@ function tabLernen() {
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
-    <div class="gruppe"><div class="gruppe-titel">${state.fach === "oer" ? "Themen · Lehrplan 1.1 – 1.3.4" : "Themen · Skript Teil I"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenFuer(state.fach).length} Themen</span></div>
+    <div class="gruppe"><div class="gruppe-titel">${state.fach === "oer" ? "Themen · Skript Kapitel 1–2" : "Themen · Skript Teil I"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenFuer(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
       <div id="themenListe">${themenListe()}</div></div>
     ${lernkarteiView()}`;
@@ -994,7 +994,7 @@ function sheetView() {
           ["📊", "Beim Start wird anonym gezählt, ob die App im Browser oder vom Home-Bildschirm geöffnet wurde (GoatCounter, ohne Cookies). Lernergebnisse werden nie übertragen."],
         ].map(([i, t]) => `<div class="zeile"><span style="font-size:20px">${i}</span><span class="grow" style="font-size:14.5px">${t}</span></div>`).join("")}
       </div></div>
-      <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Finanzwirt-Trainer – inoffizielle Lernhilfe für das Studium zum Diplom-Finanzwirt. Inhalte orientiert am Skript „Bilanzsteuerrecht Grundstudium I, Teil I“ mit Übungen sowie am Lehrplan Öffentliches Recht und den Gesetzestexten (Stand GG 22.03.2025, BWahlG 03.07.2026). Ohne Gewähr – maßgeblich sind Skript, Gesetz und Lehrveranstaltung.</span></div>
+      <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Finanzwirt-Trainer – inoffizielle Lernhilfe für das Studium zum Diplom-Finanzwirt. Inhalte orientiert am Skript „Bilanzsteuerrecht Grundstudium I, Teil I“ mit Übungen sowie am Unterrichtsskript Öffentliches Recht GS I, den Altklausuren und den Gesetzestexten (Stand GG 22.03.2025, BWahlG 03.07.2026). Ohne Gewähr – maßgeblich sind Skript, Gesetz und Lehrveranstaltung.</span></div>
         <div class="zeile"><span class="grow">Version</span><span class="sub">${VERSION}</span></div></div></div>
       <div class="liste" style="margin-bottom:24px"><button class="zeile" data-a="willkommenZeigen" style="justify-content:center;color:var(--accent);font-weight:600">Einführung erneut anzeigen</button>
         <button class="zeile" data-a="reset" style="justify-content:center;color:var(--err);font-weight:600">Gesamten Fortschritt löschen</button></div>`;
@@ -1114,7 +1114,7 @@ const AKTIONEN = {
   },
   schnell: (v, el) => {
     state.tab = "lernen";
-    const alle = themenFuer(state.fach).map((t) => t.id);
+    const alle = pruefungsThemen(state.fach).map((t) => t.id);
     const basis = { modus: "uebung", fach: state.fach };
     if (v === "buchung") starte({ ...basis, themen: alle, nurBuchung: true });
     else if (v === "qa" || v === "uebertragung") starte({ ...basis, themen: alle, filter: v });

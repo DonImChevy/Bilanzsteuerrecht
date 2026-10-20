@@ -1,9 +1,10 @@
 import { VORLAGEN } from "./vorlagen.js";
 import { FESTE } from "./feste.js";
 import { OER_FRAGEN } from "./oer/fragen.js";
+import { KLAUSUR_HAEUFIG } from "./oer/skript.js";
 import { OER_UEBERTRAGUNG } from "./oer/uebertragung.js";
 import { LERNKARTEN as BSR_KARTEN } from "./lernkarten.js";
-import { THEMA, themenFuer, Zufall } from "./kern.js";
+import { THEMA, pruefungsThemen, Zufall } from "./kern.js";
 import { normenAusText } from "./oer/normtext.js";
 import { MARKIERUNG } from "./markierungen.js";
 
@@ -51,12 +52,26 @@ export function fragen(themen, anzahl, r, filter = null) {
   return out;
 }
 
+/** Zieht `anzahl` verschiedene Vorlagen; in den Altklausuren häufig geprüfte Themen zählen doppelt. */
+function gewichtet(pool, anzahl, r) {
+  const rest = [...pool], out = [];
+  while (out.length < anzahl && rest.length) {
+    const gewicht = (v) => (KLAUSUR_HAEUFIG.has(v.id) ? 2 : 1);
+    let x = r.next() * rest.reduce((s, v) => s + gewicht(v), 0);
+    let i = 0;
+    while ((x -= gewicht(rest[i])) > 0) i++;
+    out.push(rest.splice(i, 1)[0].erzeugen(r));
+  }
+  return out;
+}
+
 export function klausur(anzahl, r, fach = "bsr") {
-  const alle = themenFuer(fach).map((t) => t.id);
+  const alle = pruefungsThemen(fach).map((t) => t.id);
   if (fach === "oer") {
-    // Klausurstruktur ÖR: ca. 75 % Frage-Antwort, 25 % Übertragungsaufgaben
+    // Klausurstruktur ÖR: ca. 75 % Frage-Antwort (davon häufige Klausurthemen doppelt gewichtet), 25 % Übertragungsaufgaben
     const ue = fragen(alle, Math.round(anzahl * 0.25), r, "uebertragung");
-    const qa = fragen(alle, anzahl - ue.length, r, "qa");
+    const pool = ALLE.filter((v) => alle.includes(v.thema) && v.kategorie !== "uebertragung");
+    const qa = gewichtet(pool, anzahl - ue.length, r);
     return r.mischen([...qa, ...ue]);
   }
   const b = fragen(alle, Math.ceil(anzahl * 0.6), r, "buchung");
@@ -67,7 +82,7 @@ export function klausur(anzahl, r, fach = "bsr") {
 // Lernkarten: BSR-Karten plus alle offenen ÖR-Fragen (Vorderseite Frage, Rückseite Musterantwort)
 const OER_KARTEN = OER_FRAGEN.map((v) => v.erzeugen(new Zufall(1)))
   .filter((f) => f.typ === "offen")
-  .map((f) => ({ id: "k-" + f.id, thema: f.thema, vorne: f.text, hinten: f.antwort, normen: f.normen }));
+  .map((f) => ({ id: "k-" + f.id, thema: f.thema, vorne: (f.fall ? "Klausurfall: " : "") + f.text, hinten: f.antwort, normen: f.normen }));
 
 export const LERNKARTEN = [...BSR_KARTEN, ...OER_KARTEN];
 export const kartenFuer = (fach) => LERNKARTEN.filter((k) => THEMA[k.thema].fach === fach);
