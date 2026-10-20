@@ -238,7 +238,7 @@ const parteien = [
     "• Eine schriftliche Satzung und ein schriftliches Programm (§ 6 Abs. 1 PartG).\n• Satzung, Programm, Namen der Vorstandsmitglieder sowie eine Auflösung sind dem Bundeswahlleiter mitzuteilen (§ 6 Abs. 3).",
     ["PartG 6 1", "PartG 6 3"]),
   mc("oer-mc-partei-mitglied", "oer-parteien", "Wer kann Mitglied einer Partei sein?",
-    ["Nur natürliche Personen", "Natürliche und juristische Personen", "Nur Deutsche mit Wahlrecht zum Bundestag", "Auch Vereine und Gewerkschaften"], [0],
+    ["Nur natürliche Personen", "Natürliche und juristische Personen", "Nur Deutsche mit Wahlrecht zum Bundestag", "Natürliche Personen sowie Vereine und Gewerkschaften"], [0],
     "§ 2 Abs. 1 Satz 2 PartG. Ausländer dürfen Mitglied sein – nur nicht in der Mehrheit (§ 2 Abs. 3 Nr. 1).", ["PartG 2 1"]),
 ];
 
