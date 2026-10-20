@@ -8,20 +8,20 @@ const M = (r, f, frage) => ({ r, f, frage });
 export const MC = {
   // ---------------------------------------------------------------- Staatsziele, Geschichte
   "oer-gg-entstehung": M(
-    ["Es wurde vom Parlamentarischen Rat beschlossen.", "Es wurde am 23. Mai 1949 ausgefertigt und verkündet.", "Es trat mit Ablauf des Tages der Verkündung in Kraft (Art. 145 Abs. 2 GG)."],
-    ["Es wurde durch eine Volksabstimmung angenommen.", "Es wurde vom ersten Deutschen Bundestag beschlossen.", "Es trat am 3. Oktober 1990 in Kraft."],
+    ["Das GG wurde vom Parlamentarischen Rat beschlossen.", "Das GG wurde am 23. Mai 1949 ausgefertigt und verkündet.", "Das GG trat mit Ablauf des Tages der Verkündung in Kraft (Art. 145 Abs. 2 GG)."],
+    ["Das GG wurde durch eine Volksabstimmung angenommen.", "Das GG wurde vom ersten Deutschen Bundestag beschlossen.", "Das GG trat am 3. Oktober 1990 in Kraft."],
     "Welche Aussagen zur Entstehung des Grundgesetzes sind richtig?"),
   "oer-gg-146": M(
-    ["Das GG war ursprünglich als Provisorium bis zur Wiedervereinigung gedacht.", "Es verliert seine Gültigkeit, wenn eine vom deutschen Volk in freier Entscheidung beschlossene Verfassung in Kraft tritt.", "Seit der Vollendung der Einheit gilt es für das gesamte deutsche Volk."],
+    ["Das GG war ursprünglich als Provisorium bis zur Wiedervereinigung gedacht.", "Das GG verliert seine Gültigkeit, wenn eine vom deutschen Volk in freier Entscheidung beschlossene Verfassung in Kraft tritt.", "Seit der Vollendung der Einheit gilt es für das gesamte deutsche Volk."],
     ["Art. 146 GG verbietet jede neue Verfassung (Ewigkeitsklausel).", "Das GG tritt nach Art. 146 automatisch nach 50 Jahren außer Kraft.", "Eine neue Verfassung kann nach Art. 146 vom Bundestag mit Zweidrittelmehrheit beschlossen werden."],
     "Welche Aussagen zur Bezeichnung „Grundgesetz“ und zu Art. 146 GG treffen zu?"),
   "oer-gg-einheit": M(
-    ["In der Präambel", "Es werden 16 Länder genannt."],
-    ["In Art. 23 GG in der heutigen Fassung", "In Art. 146 GG", "Es werden 11 Länder genannt.", "Im Einigungsvertrag, nicht im GG"],
+    ["In der Präambel", "Die Präambel nennt 16 Länder."],
+    ["In Art. 23 GG in der heutigen Fassung", "In Art. 146 GG", "Die Präambel nennt 11 Länder.", "Im Einigungsvertrag, nicht im GG"],
     "Wo stellt das GG die Vollendung der deutschen Einheit fest, und wie viele Länder werden dort genannt?"),
   "oer-staatszielbestimmung": M(
-    ["Staatszielbestimmungen binden alle staatliche Gewalt.", "Sie gewähren grundsätzlich keine einklagbaren subjektiven Rechte.", "Beispiel: Schutz der natürlichen Lebensgrundlagen und der Tiere (Art. 20a GG)", "Beispiel: Sozialstaatsprinzip (Art. 20 Abs. 1 GG)"],
-    ["Staatszielbestimmungen sind bloße unverbindliche Programmsätze.", "Beispiel: Bundesrecht bricht Landesrecht (Art. 31 GG)", "Jeder Bürger kann ihre Erfüllung mit der Verfassungsbeschwerde unmittelbar einklagen."],
+    ["Staatszielbestimmungen binden alle staatliche Gewalt.", "Staatszielbestimmungen gewähren grundsätzlich keine einklagbaren subjektiven Rechte.", "Beispiel: Schutz der natürlichen Lebensgrundlagen und der Tiere (Art. 20a GG)", "Beispiel: Sozialstaatsprinzip (Art. 20 Abs. 1 GG)"],
+    ["Staatszielbestimmungen sind bloße unverbindliche Programmsätze.", "Beispiel: Bundesrecht bricht Landesrecht (Art. 31 GG)", "Jeder Bürger kann die Erfüllung von Staatszielen mit der Verfassungsbeschwerde unmittelbar einklagen."],
     "Welche Aussagen zu Staatszielbestimmungen sind richtig?"),
   "oer-20a": M(
     ["Die natürlichen Lebensgrundlagen", "Die Tiere", "Schutz auch in Verantwortung für die künftigen Generationen", "Durch Gesetzgebung, vollziehende Gewalt und Rechtsprechung"],
@@ -58,13 +58,13 @@ export const MC = {
     ["Pflicht zur Verstaatlichung großer Unternehmen", "Anspruch jedes Bürgers auf ein bestimmtes Einkommen", "Verbot eines progressiven Steuertarifs"],
     "Was beinhaltet das Sozialstaatsprinzip?"),
   "oer-sozialstaat-anspruch": M(
-    ["Nein, grundsätzlich entstehen Ansprüche erst durch Gesetze.", "Ausnahme: Anspruch auf ein menschenwürdiges Existenzminimum aus Art. 1 Abs. 1 i.V.m. Art. 20 Abs. 1 GG"],
+    ["Nein, grundsätzlich entstehen Ansprüche erst durch Gesetze.", "Unmittelbar aus dem GG folgt aber ein Anspruch auf ein menschenwürdiges Existenzminimum (Art. 1 Abs. 1 i.V.m. Art. 20 Abs. 1 GG)."],
     ["Ja, jede Sozialleistung kann unmittelbar aus Art. 20 Abs. 1 GG eingeklagt werden.", "Ja, aber nur gegenüber dem Land, nicht gegenüber dem Bund", "Nein, das Sozialstaatsprinzip ist rechtlich völlig unverbindlich.", "Ja, sofern der Bundestag zustimmt"]),
 
   // ---------------------------------------------------------------- Demokratie
   "oer-volkssouveraenitaet": M(
-    ["Alle Staatsgewalt geht vom Volke aus.", "Das Volk übt sie in Wahlen und Abstimmungen aus.", "Sie wird durch besondere Organe der Gesetzgebung, der vollziehenden Gewalt und der Rechtsprechung ausgeübt."],
-    ["Alle Staatsgewalt geht vom Bundestag aus.", "Alle Staatsgewalt geht vom Bundespräsidenten aus.", "Das Volk übt sie ausschließlich durch Volksentscheide aus."],
+    ["Alle Staatsgewalt geht vom Volke aus.", "Das Volk übt die Staatsgewalt in Wahlen und Abstimmungen aus.", "Die Staatsgewalt wird durch besondere Organe der Gesetzgebung, der vollziehenden Gewalt und der Rechtsprechung ausgeübt."],
+    ["Alle Staatsgewalt geht vom Bundestag aus.", "Alle Staatsgewalt geht vom Bundespräsidenten aus.", "Das Volk übt die Staatsgewalt ausschließlich durch Volksentscheide aus."],
     "Welche Aussagen enthält Art. 20 Abs. 2 GG?"),
   "oer-repraesentativ": M(
     ["Überwiegend repräsentative (mittelbare) Demokratie", "Abgeordnete sind Vertreter des ganzen Volkes (Art. 38 Abs. 1 GG).", "Volksentscheide auf Bundesebene sieht das GG nur bei der Neugliederung des Bundesgebiets vor (Art. 29 GG)."],
@@ -135,15 +135,15 @@ export const MC = {
     ["Grundsätzlich ist der Bund für alle Aufgaben zuständig.", "Die Aufgaben werden jährlich durch den Bundesrat verteilt.", "Bund und Länder sind für alle Aufgaben gemeinsam zuständig."],
     "Wie verteilt das GG grundsätzlich die staatlichen Aufgaben?"),
   "oer-art83": M(
-    ["Die Länder führen die Bundesgesetze grundsätzlich als eigene Angelegenheit aus.", "Deshalb sind die Finanzämter Landesbehörden, obwohl sie überwiegend Bundesgesetze anwenden."],
+    ["Die Länder führen die Bundesgesetze grundsätzlich als eigene Angelegenheit aus.", "Die Finanzämter sind Landesbehörden, obwohl sie überwiegend Bundesgesetze anwenden."],
     ["Bundesgesetze werden stets von Bundesbehörden ausgeführt.", "Die Finanzämter sind Bundesbehörden.", "Die Ausführung erfolgt durch den Bundesrat.", "Die Länder brauchen für jede Ausführung die Zustimmung der Bundesregierung."],
     "Wer führt die Bundesgesetze – z. B. die Steuergesetze – aus?"),
   "oer-art31": M(
-    ["Bundesrecht bricht Landesrecht (Art. 31 GG).", "Die widersprechende Landesnorm ist nichtig bzw. unanwendbar."],
+    ["Bundesrecht bricht Landesrecht (Art. 31 GG).", "Eine Landesnorm, die dem Bundesrecht widerspricht, ist nichtig bzw. unanwendbar."],
     ["Landesrecht bricht Bundesrecht.", "Das jüngere Gesetz geht immer vor.", "Der Bundesrat entscheidet im Einzelfall, welches Recht gilt.", "Beide Normen gelten nebeneinander."],
     "Was gilt, wenn Bundesrecht und Landesrecht einander widersprechen?"),
   "oer-bundeszwang": M(
-    ["Die Bundesregierung kann den Bundeszwang einsetzen (Art. 37 GG).", "Dafür ist die Zustimmung des Bundesrates erforderlich.", "Die Bundesregierung hat dann ein Weisungsrecht gegenüber allen Ländern und ihren Behörden."],
+    ["Die Bundesregierung kann den Bundeszwang einsetzen (Art. 37 GG).", "Für den Bundeszwang ist die Zustimmung des Bundesrates erforderlich.", "Beim Bundeszwang hat die Bundesregierung ein Weisungsrecht gegenüber allen Ländern und ihren Behörden."],
     ["Der Bundespräsident kann das Land eigenmächtig auflösen.", "Der Bundestag muss mit Zweidrittelmehrheit zustimmen.", "Das Bundesverfassungsgericht ordnet den Bundeszwang von Amts wegen an."],
     "Was kann der Bund tun, wenn ein Land seine Bundespflichten nicht erfüllt?"),
   "oer-laender-gesetzgebung": M(
@@ -153,19 +153,19 @@ export const MC = {
 
   // ---------------------------------------------------------------- Parteien
   "oer-partei-begriff": M(
-    ["Vereinigungen von Bürgern, die dauernd oder für längere Zeit Einfluss auf die politische Willensbildung nehmen wollen", "Sie wollen an der Vertretung des Volkes im Bundestag oder in einem Landtag mitwirken.", "Sie müssen eine ausreichende Gewähr für die Ernsthaftigkeit ihrer Zielsetzung bieten.", "Mitglieder können nur natürliche Personen sein."],
-    ["Es genügt die Teilnahme an Kommunalwahlen.", "Eine Partei muss mindestens 1.000 Mitglieder haben.", "Auch juristische Personen können Mitglied sein."],
+    ["Vereinigungen von Bürgern, die dauernd oder für längere Zeit Einfluss auf die politische Willensbildung nehmen wollen", "Parteien wollen an der Vertretung des Volkes im Bundestag oder in einem Landtag mitwirken.", "Parteien müssen eine ausreichende Gewähr für die Ernsthaftigkeit ihrer Zielsetzung bieten.", "Mitglieder können nur natürliche Personen sein."],
+    ["Für den Parteibegriff genügt die Teilnahme an Kommunalwahlen.", "Eine Partei muss mindestens 1.000 Mitglieder haben.", "Juristische Personen können Mitglied einer Partei sein."],
     "Welche Merkmale gehören zum Parteibegriff des § 2 Abs. 1 PartG?"),
   "oer-partei-verlust": M(
     ["Sechs Jahre lang keine Teilnahme an einer Bundestags- oder Landtagswahl mit eigenen Wahlvorschlägen", "Sechs Jahre lang kein Rechenschaftsbericht trotz Pflicht"],
     ["Zwei Jahre lang keine Teilnahme an einer Kommunalwahl", "Weniger als 0,5 % bei der letzten Bundestagswahl", "Verfehlen der 5-%-Hürde bei zwei Bundestagswahlen", "Mitgliederzahl unter 100"],
     "Wann verliert eine Vereinigung ihre Rechtsstellung als Partei (§ 2 Abs. 2 PartG)?"),
   "oer-partei-keine": M(
-    ["Wenn ihre Mitglieder oder Vorstandsmitglieder in der Mehrheit Ausländer sind", "Wenn ihr Sitz oder ihre Geschäftsleitung im Ausland liegt", "Vereinigungen, die nur in Gemeinden tätig sein wollen (Rathausparteien)"],
-    ["Wenn sie weniger als 5 % der Stimmen erhält", "Wenn sie überhaupt Ausländer als Mitglieder hat", "Wenn sie nur in einem Land antritt"],
+    ["Vereinigungen, deren Mitglieder oder Vorstandsmitglieder in der Mehrheit Ausländer sind", "Vereinigungen mit Sitz oder Geschäftsleitung im Ausland", "Vereinigungen, die nur in Gemeinden tätig sein wollen (Rathausparteien)"],
+    ["Vereinigungen, die bei einer Wahl weniger als 5 % der Stimmen erhalten", "Vereinigungen, die überhaupt Ausländer als Mitglieder haben", "Vereinigungen, die nur in einem Land zu Wahlen antreten"],
     "Welche politischen Vereinigungen sind keine Parteien?"),
   "oer-partei-stellung": M(
-    ["Die Parteien wirken bei der politischen Willensbildung des Volkes mit (Art. 21 Abs. 1 GG).", "Sie sind ein verfassungsrechtlich notwendiger Bestandteil der freiheitlichen demokratischen Grundordnung (§ 1 Abs. 1 PartG).", "Sie sind keine Staatsorgane, sondern Mittler zwischen Volk und Staat."],
+    ["Die Parteien wirken bei der politischen Willensbildung des Volkes mit (Art. 21 Abs. 1 GG).", "Parteien sind ein verfassungsrechtlich notwendiger Bestandteil der freiheitlichen demokratischen Grundordnung (§ 1 Abs. 1 PartG).", "Parteien sind keine Staatsorgane, sondern Mittler zwischen Volk und Staat."],
     ["Parteien sind Verfassungsorgane wie Bundestag und Bundesrat.", "Parteien sind Behörden der mittelbaren Staatsverwaltung.", "Parteien haben das alleinige Recht zur politischen Willensbildung."],
     "Welche verfassungsrechtliche Stellung haben die Parteien?"),
   "oer-partei-aufgaben": M(
@@ -173,15 +173,15 @@ export const MC = {
     ["Ernennung der Bundesminister", "Wahlprüfung nach einer Bundestagswahl", "Ausfertigung der Bundesgesetze"],
     "Welche Aufgaben haben die Parteien nach § 1 Abs. 2 PartG?"),
   "oer-art21-1": M(
-    ["Ihre Gründung ist frei.", "Ihre innere Ordnung muss demokratischen Grundsätzen entsprechen.", "Sie müssen über Herkunft und Verwendung ihrer Mittel sowie über ihr Vermögen öffentlich Rechenschaft geben."],
-    ["Ihre Gründung bedarf der Genehmigung des Bundeswahlleiters.", "Sie müssen jährlich vom Bundesverfassungsgericht zugelassen werden.", "Sie dürfen kein eigenes Vermögen haben."],
+    ["Die Gründung einer Partei ist frei.", "Die innere Ordnung einer Partei muss demokratischen Grundsätzen entsprechen.", "Parteien müssen über Herkunft und Verwendung ihrer Mittel sowie über ihr Vermögen öffentlich Rechenschaft geben."],
+    ["Die Gründung einer Partei bedarf der Genehmigung des Bundeswahlleiters.", "Parteien müssen jährlich vom Bundesverfassungsgericht zugelassen werden.", "Parteien dürfen kein eigenes Vermögen haben."],
     "Welche Anforderungen stellt Art. 21 Abs. 1 GG an die Parteien?"),
   "oer-parteiverbot": M(
-    ["Die Partei muss darauf ausgehen, die freiheitliche demokratische Grundordnung zu beeinträchtigen oder zu beseitigen oder den Bestand der BRD zu gefährden.", "Entscheidung ausschließlich durch das Bundesverfassungsgericht", "Folge u. a.: Verlust der Bundestagsmandate (§ 46 Abs. 1 Nr. 5 BWahlG)", "Ersatzorganisationen sind verboten (§ 33 PartG)."],
+    ["Die Partei muss darauf ausgehen, die freiheitliche demokratische Grundordnung zu beeinträchtigen oder zu beseitigen oder den Bestand der BRD zu gefährden.", "Entscheidung ausschließlich durch das Bundesverfassungsgericht", "Nach einem Verbot verlieren die Abgeordneten der Partei ihre Bundestagsmandate (§ 46 Abs. 1 Nr. 5 BWahlG).", "Ersatzorganisationen sind verboten (§ 33 PartG)."],
     ["Entscheidung durch den Bundesinnenminister", "Entscheidung durch Beschluss des Bundestages mit Zweidrittelmehrheit", "Ein Verbot ist bereits bei radikalen Forderungen zur Steuerpolitik möglich."],
     "Welche Aussagen zum Parteiverbot sind richtig?"),
   "oer-finanzierungsausschluss": M(
-    ["Verfassungsfeindliche Parteien können von der staatlichen Finanzierung ausgeschlossen werden.", "Auch steuerliche Begünstigungen entfallen.", "Es kommt nicht darauf an, ob die Partei ihre Ziele realistisch erreichen kann.", "Die Entscheidung trifft das Bundesverfassungsgericht; die Partei bleibt bestehen."],
+    ["Verfassungsfeindliche Parteien können von der staatlichen Finanzierung ausgeschlossen werden.", "Beim Finanzierungsausschluss entfallen auch steuerliche Begünstigungen der Partei und ihrer Spender.", "Für den Finanzierungsausschluss kommt es nicht darauf an, ob die Partei ihre Ziele realistisch erreichen kann.", "Die Entscheidung trifft das Bundesverfassungsgericht; die Partei bleibt bestehen."],
     ["Der Ausschluss führt automatisch zum Parteiverbot.", "Über den Ausschluss entscheidet der Bundestagspräsident.", "Der Ausschluss gilt nur für Spenden, nicht für staatliche Mittel."],
     "Welche Aussagen zu Art. 21 Abs. 3 GG treffen zu?"),
   "oer-staatliche-finanzierung": M(
@@ -211,11 +211,11 @@ export const MC = {
     ["598 Abgeordnete", "736 Abgeordnete", "Die Zahl erhöht sich regelmäßig durch Überhang- und Ausgleichsmandate.", "299 Abgeordnete"],
     "Aus wie vielen Abgeordneten besteht der Bundestag?"),
   "oer-bt-organisation": M(
-    ["Er wählt seinen Präsidenten, dessen Stellvertreter und die Schriftführer.", "Er gibt sich eine Geschäftsordnung.", "Der Präsident übt Hausrecht und Polizeigewalt im Bundestag aus.", "Pflichtausschüsse sind u. a. der Petitionsausschuss und der Verteidigungsausschuss."],
+    ["Der Bundestag wählt seinen Präsidenten, dessen Stellvertreter und die Schriftführer.", "Der Bundestag gibt sich eine Geschäftsordnung.", "Der Präsident übt Hausrecht und Polizeigewalt im Bundestag aus.", "Pflichtausschüsse sind u. a. der Petitionsausschuss und der Verteidigungsausschuss."],
     ["Der Bundestagspräsident wird vom Bundespräsidenten ernannt.", "Die Geschäftsordnung des Bundestages erlässt die Bundesregierung.", "Ausschüsse für Finanzen und Sport sind im GG vorgeschrieben."],
     "Welche Aussagen zur Organisation des Bundestages sind richtig?"),
   "oer-untersuchungsausschuss": M(
-    ["Auf Antrag eines Viertels seiner Mitglieder ist der Bundestag dazu verpflichtet.", "Bei 630 Mitgliedern sind mindestens 158 Abgeordnete nötig.", "Auf dem Gebiet der Verteidigung übernimmt der Verteidigungsausschuss diese Rolle."],
+    ["Auf Antrag eines Viertels seiner Mitglieder muss der Bundestag einen Untersuchungsausschuss einsetzen.", "Bei 630 Mitgliedern sind mindestens 158 Abgeordnete nötig.", "Für Angelegenheiten der Verteidigung hat der Verteidigungsausschuss die Rechte eines Untersuchungsausschusses."],
     ["Auf Antrag einer Fraktion", "Auf Antrag eines Drittels der Mitglieder", "Bei 630 Mitgliedern genügen 126 Abgeordnete.", "Nur auf Antrag der Bundesregierung"],
     "Wann muss der Bundestag einen Untersuchungsausschuss einsetzen?"),
   "oer-oeffentlichkeit": M(
@@ -223,11 +223,11 @@ export const MC = {
     ["Antrag auf Ausschluss: ein Viertel der Mitglieder", "Beschluss mit einfacher Mehrheit", "Der Bundestagspräsident kann die Öffentlichkeit allein ausschließen."],
     "Was gilt nach Art. 42 Abs. 1 GG zur Öffentlichkeit der Bundestagssitzungen?"),
   "oer-zitierrecht": M(
-    ["Bundestag und Ausschüsse können die Anwesenheit jedes Mitglieds der Bundesregierung verlangen.", "Mitglieder von Bundesrat und Bundesregierung haben zu allen Sitzungen Zutritt.", "Sie müssen jederzeit gehört werden."],
+    ["Bundestag und Ausschüsse können die Anwesenheit jedes Mitglieds der Bundesregierung verlangen.", "Mitglieder von Bundesrat und Bundesregierung haben zu allen Sitzungen Zutritt.", "Mitglieder von Bundesrat und Bundesregierung müssen im Bundestag jederzeit gehört werden."],
     ["Der Bundestag kann den Bundespräsidenten zur Anwesenheit verpflichten.", "Bundesratsmitglieder haben im Bundestag Stimmrecht.", "Das Zutrittsrecht gilt nur für öffentliche Sitzungen."],
     "Was versteht man unter Zitier- und Zutrittsrecht (Art. 43 GG)?"),
   "oer-wahlpruefung": M(
-    ["Der Bundestag selbst", "Gegen seine Entscheidung ist Beschwerde zum Bundesverfassungsgericht zulässig."],
+    ["Der Bundestag selbst", "Gegen die Entscheidung des Bundestages ist Beschwerde zum Bundesverfassungsgericht zulässig."],
     ["Der Bundeswahlleiter abschließend", "Der Bundesrat", "Ausschließlich das Bundesverwaltungsgericht", "Der Bundespräsident"],
     "Wer prüft die Gültigkeit der Bundestagswahl (Art. 41 GG)?"),
   "oer-legislatur": M(
@@ -251,7 +251,7 @@ export const MC = {
     ["Die Mehrheit der anwesenden Abgeordneten", "Die Mehrheit der abgegebenen Stimmen", "Bei 630 Abgeordneten: mindestens 315 Stimmen", "Zwei Drittel der Mitglieder"],
     "Was bedeutet „Mehrheit der Mitglieder des Bundestages“ (Art. 121 GG)?"),
   "oer-freies-mandat": M(
-    ["Abgeordnete sind Vertreter des ganzen Volkes.", "Sie sind an Aufträge und Weisungen nicht gebunden.", "Sie sind nur ihrem Gewissen unterworfen."],
+    ["Abgeordnete sind Vertreter des ganzen Volkes.", "Abgeordnete sind an Aufträge und Weisungen nicht gebunden.", "Abgeordnete sind nur ihrem Gewissen unterworfen."],
     ["Bei Fraktionsaustritt verliert der Abgeordnete sein Mandat.", "Abgeordnete sind an Weisungen ihrer Partei gebunden.", "Abgeordnete vertreten nur ihren Wahlkreis."],
     "Was besagt das freie Mandat (Art. 38 Abs. 1 Satz 2 GG)?"),
   "oer-indemnitaet": M(
@@ -263,7 +263,7 @@ export const MC = {
     ["Anspruch auf einen Dienstwagen mit Fahrer", "Befreiung von der Einkommensteuer", "Recht, an Bundesratssitzungen mit Stimmrecht teilzunehmen"],
     "Welche Rechte gewähren Art. 47 und 48 GG den Abgeordneten?"),
   "oer-mandatsverlust": M(
-    ["Verzicht", "Feststellung der Verfassungswidrigkeit seiner Partei durch das BVerfG", "Wegfall einer Voraussetzung der jederzeitigen Wählbarkeit", "Ungültigkeit des Erwerbs der Mitgliedschaft"],
+    ["Verzicht", "Das BVerfG stellt die Verfassungswidrigkeit seiner Partei fest.", "Wegfall einer Voraussetzung der jederzeitigen Wählbarkeit", "Ungültigkeit des Erwerbs der Mitgliedschaft"],
     ["Austritt aus der Partei", "Austritt aus der Fraktion", "Abstimmung gegen die eigene Fraktion"],
     "Wann verliert ein Abgeordneter seine Mitgliedschaft im Bundestag (§ 46 BWahlG)?"),
 
@@ -273,16 +273,16 @@ export const MC = {
     ["öffentlich", "verpflichtend", "mittelbar"],
     "Welche Wahlrechtsgrundsätze nennt Art. 38 Abs. 1 Satz 1 GG?"),
   "oer-wahlsystem": M(
-    ["Es gelten die Grundsätze der Verhältniswahl.", "Jeder Wähler hat eine Erst- und eine Zweitstimme.", "Die Zweitstimme bestimmt die Sitzverteilung zwischen den Parteien.", "Wahlkreissieger erhalten ihren Sitz nur bei Zweitstimmendeckung."],
-    ["Es gilt die reine Mehrheitswahl.", "Die Erststimme bestimmt die Stärke der Parteien im Bundestag.", "Jeder Wähler hat drei Stimmen."],
+    ["Bei der Bundestagswahl gelten die Grundsätze der Verhältniswahl.", "Jeder Wähler hat eine Erst- und eine Zweitstimme.", "Die Zweitstimme bestimmt die Sitzverteilung zwischen den Parteien.", "Wahlkreissieger erhalten ihren Sitz nur bei Zweitstimmendeckung."],
+    ["Bei der Bundestagswahl gilt die reine Mehrheitswahl.", "Die Erststimme bestimmt die Stärke der Parteien im Bundestag.", "Jeder Wähler hat drei Stimmen."],
     "Welche Aussagen zum Wahlsystem der Bundestagswahl treffen zu?"),
   "oer-zweitstimmendeckung": M(
     ["Eine Partei erhält für ihre Wahlkreissieger nur so viele Sitze, wie ihr nach den Zweitstimmen zustehen.", "Die Wahlkreissieger werden nach fallendem Erststimmenanteil gereiht.", "Wahlkreissieger mit den niedrigsten Anteilen können leer ausgehen."],
     ["Überzählige Wahlkreissieger erhalten Überhangmandate.", "Die Reihenfolge richtet sich nach der Landesliste.", "Für jedes Überhangmandat erhalten die anderen Parteien Ausgleichsmandate."],
     "Was bedeutet Zweitstimmendeckung (§ 6 Abs. 1 BWahlG)?"),
   "oer-sperrklausel": M(
-    ["Parteien mit weniger als 5 % der gültigen Zweitstimmen werden grundsätzlich nicht berücksichtigt.", "Ausnahme: Parteien nationaler Minderheiten", "Ausnahme (Maßgabe des BVerfG): mindestens drei gewonnene Wahlkreise"],
-    ["Ausnahme: Parteien mit mehr als 100.000 Mitgliedern", "Ausnahme: ein gewonnener Wahlkreis genügt", "Die Sperrklausel beträgt 3 %."],
+    ["Parteien mit weniger als 5 % der gültigen Zweitstimmen werden grundsätzlich nicht berücksichtigt.", "Parteien nationaler Minderheiten sind von der 5-%-Hürde ausgenommen.", "Parteien mit mindestens drei gewonnenen Wahlkreisen werden trotz weniger als 5 % berücksichtigt (Maßgabe des BVerfG)."],
+    ["Parteien mit mehr als 100.000 Mitgliedern sind von der 5-%-Hürde ausgenommen.", "Ein einziger gewonnener Wahlkreis genügt, um trotz weniger als 5 % berücksichtigt zu werden.", "Die Sperrklausel beträgt 3 %."],
     "Welche Parteien werden bei der Sitzverteilung berücksichtigt?"),
   "oer-sitzverteilung": M(
     ["Oberverteilung: Verteilung auf die Parteien nach den Zweitstimmen im ganzen Wahlgebiet", "Unterverteilung: Verteilung auf die Landeslisten jeder Partei", "Divisorverfahren mit Standardrundung (Sainte-Laguë/Schepers)", "Der Divisor wird so bestimmt, dass alle Sitze vergeben werden."],
@@ -293,7 +293,7 @@ export const MC = {
     ["Seit mindestens einem Jahr Wohnung im Wahlkreis", "Mitgliedschaft in einer Partei", "Staatsangehörigkeit eines EU-Mitgliedstaats genügt."],
     "Welche Voraussetzungen hat die Wahlberechtigung bei der Bundestagswahl (§ 12 Abs. 1 BWahlG)?"),
   "oer-auslandsdeutsche": M(
-    ["Ja, wenn sie nach dem 14. Lebensjahr mindestens drei Monate ununterbrochen in Deutschland gewohnt haben und dies nicht länger als 25 Jahre zurückliegt", "Ja, wenn sie aus anderen Gründen persönlich und unmittelbar mit den politischen Verhältnissen vertraut und betroffen sind"],
+    ["Ja, wenn sie nach dem 14. Lebensjahr mindestens drei Monate ununterbrochen in Deutschland gewohnt haben und der Wegzug nicht länger als 25 Jahre zurückliegt", "Ja, wenn sie aus anderen Gründen persönlich und unmittelbar mit den politischen Verhältnissen in Deutschland vertraut und von ihnen betroffen sind"],
     ["Nein, Auslandsdeutsche sind nie wahlberechtigt.", "Ja, aber nur, wenn sie weniger als 10 Jahre im Ausland leben", "Ja, ohne jede weitere Voraussetzung", "Ja, wenn der Aufenthalt in Deutschland nicht länger als 40 Jahre zurückliegt"],
     "Dürfen im Ausland lebende Deutsche an der Bundestagswahl teilnehmen (§ 12 Abs. 2 BWahlG)?"),
   "oer-wahlausschluss": M(
@@ -314,15 +314,15 @@ export const MC = {
     "Was gilt nach § 14 BWahlG zur Stimmabgabe?"),
   "oer-briefwahl": M(
     ["Wahlschein und Stimmzettel (im Stimmzettelumschlag) werden im Wahlbriefumschlag an den Kreiswahlleiter gesandt.", "Der Wahlbrief muss spätestens am Wahltag bis 18 Uhr eingehen.", "Auf dem Wahlschein ist an Eides statt zu versichern, dass persönlich gekennzeichnet wurde."],
-    ["Es genügt, wenn der Wahlbrief am Wahltag abgestempelt ist.", "Der Wahlbrief muss bis Freitag vor der Wahl eingehen.", "Der Stimmzettel wird ohne Umschlag direkt im Wahlbrief versandt."],
+    ["Bei der Briefwahl genügt es, wenn der Wahlbrief am Wahltag abgestempelt ist.", "Der Wahlbrief muss bis Freitag vor der Wahl eingehen.", "Der Stimmzettel wird ohne Umschlag direkt im Wahlbrief versandt."],
     "Welche Aussagen zur Briefwahl (§ 36 BWahlG) sind richtig?"),
   "oer-ungueltig": M(
     ["Der Stimmzettel ist nicht amtlich hergestellt.", "Der Stimmzettel enthält keine Kennzeichnung.", "Der Wille des Wählers ist nicht zweifelsfrei erkennbar.", "Der Stimmzettel enthält einen Zusatz oder Vorbehalt."],
     ["Das Kreuz wurde mit Kugelschreiber statt mit dem bereitgelegten Stift gesetzt.", "Erst- und Zweitstimme wurden für verschiedene Parteien abgegeben.", "Das Kreuz ragt leicht über den Kreis hinaus."],
     "Wann sind Stimmen nach § 39 Abs. 1 BWahlG ungültig?"),
   "oer-unabhaengige": M(
-    ["Ja, parteilose Einzelbewerber können in einem Wahlkreis kandidieren.", "Sie brauchen mindestens 200 Unterschriften Wahlberechtigter des Wahlkreises.", "Sie sind mit den meisten Erststimmen gewählt – ohne Zweitstimmendeckung."],
-    ["Ja, sie können auch eine Landesliste einreichen.", "Nein, nur Parteien können Bewerber aufstellen.", "Sie brauchen 2.000 Unterschriften."],
+    ["Ja, parteilose Einzelbewerber können in einem Wahlkreis kandidieren.", "Einzelbewerber brauchen mindestens 200 Unterschriften Wahlberechtigter des Wahlkreises.", "Einzelbewerber sind mit den meisten Erststimmen gewählt – ohne Zweitstimmendeckung."],
+    ["Einzelbewerber können auch eine Landesliste einreichen.", "Nein, nur Parteien können Bewerber aufstellen.", "Einzelbewerber brauchen 2.000 Unterschriften."],
     "Können parteilose Einzelbewerber in den Bundestag gewählt werden?"),
   "oer-wahlgeheimnis": M(
     ["Der Stimmzettel muss unbeobachtet gekennzeichnet und gefaltet werden können (Wahlkabine).", "Die Wahlurnen müssen das Wahlgeheimnis sicherstellen.", "Der Wähler faltet den Stimmzettel so, dass die Stimmabgabe nicht erkennbar ist."],
@@ -331,15 +331,15 @@ export const MC = {
 
   // ---------------------------------------------------------------- Bundesrat
   "oer-br-bedeutung": M(
-    ["Durch ihn wirken die Länder bei der Gesetzgebung des Bundes mit.", "Durch ihn wirken die Länder bei der Verwaltung des Bundes mit.", "Durch ihn wirken die Länder in Angelegenheiten der Europäischen Union mit."],
-    ["Er ist die Vertretung der Gemeinden.", "Er kontrolliert die Landesregierungen.", "Er wählt den Bundeskanzler."],
+    ["Durch den Bundesrat wirken die Länder bei der Gesetzgebung des Bundes mit.", "Durch den Bundesrat wirken die Länder bei der Verwaltung des Bundes mit.", "Durch den Bundesrat wirken die Länder in Angelegenheiten der Europäischen Union mit."],
+    ["Der Bundesrat ist die Vertretung der Gemeinden.", "Der Bundesrat kontrolliert die Landesregierungen.", "Der Bundesrat wählt den Bundeskanzler."],
     "Welche Bedeutung hat der Bundesrat (Art. 50 GG)?"),
   "oer-br-aufgaben": M(
     ["Gesetzesinitiative beim Bundestag", "Einspruch bzw. Zustimmung zu Bundesgesetzen", "Zustimmung zu Grundgesetzänderungen mit zwei Dritteln seiner Stimmen", "Wahl der Hälfte der Bundesverfassungsrichter"],
     ["Wahl des Bundeskanzlers", "Ernennung der Bundesminister", "Ausfertigung und Verkündung der Bundesgesetze"],
     "Welche Aufgaben und Befugnisse hat der Bundesrat?"),
   "oer-br-zusammensetzung": M(
-    ["Aus Mitgliedern der Regierungen der Länder", "Die Länder bestellen und berufen sie ab.", "Jedes Land kann so viele Mitglieder entsenden, wie es Stimmen hat."],
+    ["Aus Mitgliedern der Regierungen der Länder", "Die Länder bestellen ihre Bundesratsmitglieder und berufen sie ab.", "Jedes Land kann so viele Mitglieder entsenden, wie es Stimmen hat."],
     ["Aus direkt vom Volk gewählten Senatoren", "Aus Abgeordneten der Landtage", "Aus Vertretern der Parteien im Verhältnis ihrer Bundestagssitze"],
     "Wie setzt sich der Bundesrat zusammen (Art. 51 GG)?"),
   "oer-br-stimmen": M(
@@ -347,24 +347,24 @@ export const MC = {
     ["Jedes Land hat gleich viele Stimmen.", "Länder mit mehr als 10 Mio. Einwohnern haben acht Stimmen.", "Die Stimmen werden nach der Wirtschaftskraft verteilt."],
     "Wie viele Stimmen hat ein Land im Bundesrat (Art. 51 Abs. 2 GG)?"),
   "oer-br-einheitlich": M(
-    ["Die Stimmen eines Landes können nur einheitlich abgegeben werden.", "Sie können nur durch anwesende Mitglieder oder deren Vertreter abgegeben werden.", "Bei uneinheitlicher Abgabe sind die Stimmen des Landes ungültig."],
+    ["Die Stimmen eines Landes können nur einheitlich abgegeben werden.", "Die Stimmen eines Landes können nur durch anwesende Mitglieder oder deren Vertreter abgegeben werden.", "Bei uneinheitlicher Abgabe sind die Stimmen des Landes ungültig."],
     ["Jedes Bundesratsmitglied stimmt nach eigenem Gewissen.", "Die Stimmen können schriftlich durch Abwesende abgegeben werden.", "Bei uneinheitlicher Abgabe zählt die Stimme des Ministerpräsidenten."],
     "Wie müssen die Stimmen eines Landes im Bundesrat abgegeben werden?"),
   "oer-br-beschluss": M(
-    ["Mit mindestens der Mehrheit seiner Stimmen", "Bei 69 Stimmen also mindestens 35 Ja-Stimmen", "Enthaltungen wirken wie Nein-Stimmen."],
+    ["Mit mindestens der Mehrheit seiner Stimmen (absolute Mehrheit)", "Bei 69 Stimmen also mindestens 35 Ja-Stimmen", "Enthaltungen wirken wie Nein-Stimmen."],
     ["Mit der Mehrheit der abgegebenen Stimmen", "Enthaltungen werden nicht mitgezählt.", "Bei 69 Stimmen genügen 30 Ja-Stimmen, wenn weniger Nein-Stimmen abgegeben werden."],
     "Mit welcher Mehrheit fasst der Bundesrat Beschlüsse (Art. 52 Abs. 3 GG)?"),
   "oer-br-praesident": M(
-    ["Er wird auf ein Jahr gewählt.", "Er beruft den Bundesrat ein.", "Er nimmt bei Verhinderung des Bundespräsidenten dessen Befugnisse wahr."],
-    ["Er wird auf vier Jahre gewählt.", "Er ist zugleich Bundestagspräsident.", "Er wird vom Bundespräsidenten ernannt."],
+    ["Der Bundesratspräsident wird auf ein Jahr gewählt.", "Der Bundesratspräsident beruft den Bundesrat ein.", "Der Bundesratspräsident nimmt bei Verhinderung des Bundespräsidenten dessen Befugnisse wahr."],
+    ["Der Bundesratspräsident wird auf vier Jahre gewählt.", "Der Bundesratspräsident ist zugleich Bundestagspräsident.", "Der Bundesratspräsident wird vom Bundespräsidenten ernannt."],
     "Welche Aussagen zum Präsidenten des Bundesrates sind richtig?"),
   "oer-br-regierung": M(
-    ["Mitglieder der Bundesregierung haben das Recht, an den Verhandlungen des Bundesrates teilzunehmen.", "Auf Verlangen sind sie dazu verpflichtet.", "Sie müssen jederzeit gehört werden.", "Die Bundesregierung muss den Bundesrat über die Führung der Geschäfte auf dem Laufenden halten."],
+    ["Mitglieder der Bundesregierung haben das Recht, an den Verhandlungen des Bundesrates teilzunehmen.", "Auf Verlangen des Bundesrates müssen Mitglieder der Bundesregierung an seinen Verhandlungen teilnehmen.", "Mitglieder der Bundesregierung müssen im Bundesrat jederzeit gehört werden.", "Die Bundesregierung muss den Bundesrat über die Führung der Geschäfte auf dem Laufenden halten."],
     ["Bundesminister haben im Bundesrat Stimmrecht.", "Der Bundesrat kann einzelne Minister durch Misstrauensvotum abberufen.", "Die Bundesregierung kann den Bundesrat auflösen."],
     "Welche Rechte und Pflichten bestehen zwischen Bundesregierung und Bundesrat (Art. 53 GG)?"),
   "oer-br-europakammer": M(
-    ["Der Bundesrat kann für EU-Angelegenheiten eine Europakammer bilden.", "Ihre Beschlüsse gelten als Beschlüsse des Bundesrates.", "Die Stimmenzahl der Länder richtet sich nach Art. 51 Abs. 2 GG."],
-    ["Die Europakammer besteht aus den deutschen Europaabgeordneten.", "Jedes Land hat in der Europakammer genau eine Stimme.", "Ihre Beschlüsse müssen vom Bundestag bestätigt werden."],
+    ["Der Bundesrat kann für EU-Angelegenheiten eine Europakammer bilden.", "Beschlüsse der Europakammer gelten als Beschlüsse des Bundesrates.", "Die Stimmenzahl der Länder richtet sich nach Art. 51 Abs. 2 GG."],
+    ["Die Europakammer besteht aus den deutschen Europaabgeordneten.", "Jedes Land hat in der Europakammer genau eine Stimme.", "Beschlüsse der Europakammer müssen vom Bundestag bestätigt werden."],
     "Was gilt für die Europakammer des Bundesrates?"),
 
   // ---------------------------------------------------------------- Bundespräsident
@@ -393,8 +393,8 @@ export const MC = {
     ["Bestimmung der Richtlinien der Politik", "Wahl der Bundesverfassungsrichter", "Beschluss des Bundeshaushalts"],
     "Welche Aufgaben hat der Bundespräsident?"),
   "oer-gegenzeichnung": M(
-    ["Anordnungen und Verfügungen des Bundespräsidenten bedürfen der Gegenzeichnung durch den Kanzler oder zuständigen Minister.", "Damit übernimmt die Regierung die politische Verantwortung.", "Ausnahme: Ernennung und Entlassung des Bundeskanzlers", "Ausnahme: Auflösung des Bundestages nach Art. 63 GG"],
-    ["Ausnahme: Ausfertigung der Bundesgesetze", "Die Gegenzeichnung erfolgt durch den Bundestagspräsidenten.", "Gegenzeichnung ist nur bei völkerrechtlichen Verträgen erforderlich."],
+    ["Anordnungen und Verfügungen des Bundespräsidenten bedürfen der Gegenzeichnung durch den Kanzler oder zuständigen Minister.", "Durch die Gegenzeichnung übernimmt die Regierung die politische Verantwortung.", "Ernennung und Entlassung des Bundeskanzlers brauchen keine Gegenzeichnung.", "Die Auflösung des Bundestages nach Art. 63 GG braucht keine Gegenzeichnung."],
+    ["Die Ausfertigung der Bundesgesetze braucht keine Gegenzeichnung.", "Die Gegenzeichnung erfolgt durch den Bundestagspräsidenten.", "Gegenzeichnung ist nur bei völkerrechtlichen Verträgen erforderlich."],
     "Welche Aussagen zur Gegenzeichnung (Art. 58 GG) sind richtig?"),
   "oer-bp-vertretung": M(
     ["Der Präsident des Bundesrates"],
@@ -402,15 +402,15 @@ export const MC = {
     "Wer nimmt bei Verhinderung des Bundespräsidenten dessen Befugnisse wahr (Art. 57 GG)?"),
   "oer-praesidentenanklage": M(
     ["Anklage vor dem Bundesverfassungsgericht durch Bundestag oder Bundesrat", "Nur wegen vorsätzlicher Verletzung des GG oder eines anderen Bundesgesetzes", "Antrag: mindestens ein Viertel der Mitglieder des Bundestages oder ein Viertel der Stimmen des Bundesrates", "Beschluss: zwei Drittel der Mitglieder des Bundestages oder zwei Drittel der Stimmen des Bundesrates"],
-    ["Abwahl durch den Bundestag mit Kanzlermehrheit", "Auch wegen politischer Fehlentscheidungen", "Beschluss mit einfacher Mehrheit genügt"],
+    ["Abwahl durch den Bundestag mit Kanzlermehrheit", "Die Anklage ist auch wegen politischer Fehlentscheidungen möglich.", "Beschluss mit einfacher Mehrheit genügt"],
     "Welche Aussagen zur Präsidentenanklage (Art. 61 GG) sind richtig?"),
   "oer-bp-eid": M(
-    ["Bei seinem Amtsantritt", "Vor den versammelten Mitgliedern des Bundestages und des Bundesrates", "Auch ohne religiöse Beteuerung möglich"],
+    ["Der Bundespräsident leistet den Eid bei seinem Amtsantritt.", "Vor den versammelten Mitgliedern des Bundestages und des Bundesrates", "Der Eid kann auch ohne religiöse Beteuerung geleistet werden."],
     ["Vor dem Bundesverfassungsgericht", "Vor der Bundesversammlung unmittelbar nach der Wahl", "Nur mit religiöser Beteuerung"],
     "Wann und vor wem leistet der Bundespräsident seinen Eid (Art. 56 GG)?"),
   "oer-bp-pruefungsrecht": M(
-    ["Er hat ein formelles Prüfungsrecht (ordnungsgemäßes Gesetzgebungsverfahren).", "Nach h. M. ein materielles Prüfungsrecht bei offensichtlichen Verfassungsverstößen"],
-    ["Er darf die Ausfertigung aus politischen Gründen verweigern.", "Er hat überhaupt kein Prüfungsrecht.", "Er muss jedes Gesetz vorher dem BVerfG vorlegen.", "Er kann ein Gesetz mit Änderungen zurück an den Bundestag senden."],
+    ["Der Bundespräsident hat ein formelles Prüfungsrecht (ordnungsgemäßes Gesetzgebungsverfahren).", "Nach h. M. ein materielles Prüfungsrecht bei offensichtlichen Verfassungsverstößen"],
+    ["Der Bundespräsident darf die Ausfertigung aus politischen Gründen verweigern.", "Der Bundespräsident hat überhaupt kein Prüfungsrecht.", "Der Bundespräsident muss jedes Gesetz vorher dem BVerfG vorlegen.", "Der Bundespräsident kann ein Gesetz mit Änderungen zurück an den Bundestag senden."],
     "Darf der Bundespräsident die Ausfertigung eines Gesetzes verweigern?"),
 
   // ---------------------------------------------------------------- Bundesregierung
@@ -431,7 +431,7 @@ export const MC = {
     ["Der Kanzler darf jedem Minister Einzelweisungen in dessen Ressort erteilen.", "Bei Meinungsverschiedenheiten entscheidet der Bundespräsident.", "Die Minister bestimmen gemeinsam die Richtlinien der Politik."],
     "Was beinhalten Kanzler-, Ressort- und Kollegialprinzip (Art. 65 GG)?"),
   "oer-65a": M(
-    ["Der Bundesminister der Verteidigung", "Im Verteidigungsfall geht sie auf den Bundeskanzler über."],
+    ["Der Bundesminister der Verteidigung", "Im Verteidigungsfall geht die Befehls- und Kommandogewalt auf den Bundeskanzler über."],
     ["Der Bundespräsident als Oberbefehlshaber", "Der Generalinspekteur der Bundeswehr", "Der Bundestag", "Der Bundeskanzler auch in Friedenszeiten"],
     "Wer hat die Befehls- und Kommandogewalt über die Streitkräfte?"),
   "oer-art66": M(
@@ -447,11 +447,11 @@ export const MC = {
     ["Bei Scheitern ist der Bundestag automatisch aufgelöst.", "Bei Scheitern ist der Kanzler automatisch entlassen.", "Der Bundespräsident muss den Bundestag auflösen."],
     "Welche Aussagen zur Vertrauensfrage (Art. 68 GG) sind richtig?"),
   "oer-art69": M(
-    ["Mit dem Zusammentritt eines neuen Bundestages", "Das Amt eines Ministers auch mit jeder anderen Erledigung des Amtes des Kanzlers", "Es gibt keine Begrenzung der Wiederwahl des Kanzlers."],
+    ["Mit dem Zusammentritt eines neuen Bundestages", "Das Amt eines Ministers auch mit jeder anderen Erledigung des Amtes des Kanzlers", "Die Wiederwahl des Bundeskanzlers ist nicht begrenzt."],
     ["Nach höchstens zwei Amtszeiten", "Genau vier Jahre nach der Ernennung", "Mit dem Ende der Amtszeit des Bundespräsidenten"],
     "Wann endet die Amtszeit von Bundeskanzler und Bundesministern?"),
   "oer-geschaeftsfuehrend": M(
-    ["Auf Ersuchen des Bundespräsidenten muss der Kanzler die Geschäfte bis zur Ernennung eines Nachfolgers weiterführen.", "Minister sind auf Ersuchen des Kanzlers oder des Bundespräsidenten dazu verpflichtet.", "Das Ersuchen braucht keine Gegenzeichnung."],
+    ["Auf Ersuchen des Bundespräsidenten muss der Kanzler die Geschäfte bis zur Ernennung eines Nachfolgers weiterführen.", "Bundesminister müssen auf Ersuchen des Kanzlers oder des Bundespräsidenten die Geschäfte bis zur Ernennung eines Nachfolgers weiterführen.", "Das Ersuchen braucht keine Gegenzeichnung."],
     ["Die Geschäfte führt automatisch der Bundestagspräsident.", "Bis zur Neuwahl gibt es keine Regierung.", "Die Weiterführung bedarf der Zustimmung des Bundesrates."],
     "Was gilt nach Ende der Amtszeit bis zur Ernennung eines Nachfolgers (Art. 69 Abs. 3 GG)?"),
   "oer-vizekanzler": M(

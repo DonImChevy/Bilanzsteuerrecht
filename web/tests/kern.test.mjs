@@ -161,6 +161,8 @@ test("Multiple-Choice-Fassung für jede ÖR-Frage-Antwort-Aufgabe", () => {
     const alle = [...d.r, ...d.f];
     assert.ok(alle.length >= 5 && alle.length <= 8, f.id + " hat " + alle.length + " Optionen");
     assert.equal(new Set(alle).size, alle.length, "Doppelte Option: " + f.id);
+    // Jede Antwort muss für sich verständlich sein (die Reihenfolge wird gemischt)
+    for (const t of alle) assert.ok(!/^(Sie|Er|Es|Ihre?|Dafür|Damit|Deshalb|Daher|Dazu|Ausnahme|Auch|Folge|Durch ihn)\b/.test(t) && !/\bdazu\b/.test(t), `${f.id}: „${t}“ bezieht sich auf eine andere Antwort`);
     const m = alsMultipleChoice(f, new Zufall(3));
     assert.equal(m.typ, "auswahl");
     assert.equal(m.richtig.length, d.r.length);
