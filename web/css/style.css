@@ -365,6 +365,12 @@ button.zeile:active, button.karte-btn:active { background: var(--card2); }
 .loesung-zeile.haben { padding-left: 22px; }
 .loesung { background: var(--card2); border-radius: 12px; padding: 10px 12px; margin: 8px 0; }
 .fehlt { color: var(--err); font-size: 13.5px; margin-top: 6px; }
+.pruefung { background: var(--card2); border-radius: 12px; padding: 10px 12px; margin: 4px 0 8px; display: grid; gap: 6px; font-size: 14.5px; }
+.pruef-zeile { display: flex; gap: 8px; align-items: baseline; }
+.pruef-ic { font-weight: 800; flex: none; width: 16px; } .pruef-ic.ja { color: var(--ok); } .pruef-ic.nein { color: var(--err); }
+.pruef-chips { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 24px; }
+.pruef-chip { font-size: 13px; padding: 3px 9px; border-radius: 999px; font-weight: 600; }
+.pruef-chip.ja { background: var(--ok-weak); color: var(--ok); } .pruef-chip.nein { background: var(--err-weak); color: var(--err); }
 
 /* ---------- Ergebnis ---------- */
 .ring { --p: 0; width: 150px; height: 150px; border-radius: 50%; margin: 16px auto 6px; display: grid; place-items: center; background: conic-gradient(var(--farbe, var(--accent)) calc(var(--p) * 1%), var(--card2) 0); animation: pop 0.45s cubic-bezier(.2,1.4,.4,1); }
