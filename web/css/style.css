@@ -365,6 +365,10 @@ button.zeile:active, button.karte-btn:active { background: var(--card2); }
 .loesung-zeile.haben { padding-left: 22px; }
 .loesung { background: var(--card2); border-radius: 12px; padding: 10px 12px; margin: 8px 0; }
 .fehlt { color: var(--err); font-size: 13.5px; margin-top: 6px; }
+.punkte-karte { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--accent); }
+.punkte-titel { font-weight: 800; margin-bottom: 8px; }
+.punkte-satz { font-size: 16.5px; line-height: 1.55; }
+.punkte-fuss { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line, var(--card2)); font-size: 13.5px; font-weight: 700; color: var(--accent); }
 .pruefung { background: var(--card2); border-radius: 12px; padding: 10px 12px; margin: 4px 0 8px; display: grid; gap: 6px; font-size: 14.5px; }
 .pruef-zeile { display: flex; gap: 8px; align-items: baseline; }
 .pruef-ic { font-weight: 800; flex: none; width: 16px; } .pruef-ic.ja { color: var(--ok); } .pruef-ic.nein { color: var(--err); }

@@ -58,7 +58,7 @@ test("Eindeutige IDs, gültige Konten, genug Aufgaben je Thema", () => {
   const ids = ALLE.map((v) => v.id);
   assert.equal(new Set(ids).size, ids.length);
   assert.equal(new Set(LERNKARTEN.map((k) => k.id)).size, LERNKARTEN.length);
-  for (const t of THEMEN) assert.ok(vorlagenFuer(t.id).length >= (t.waechst ? 1 : 3), t.id); // „waechst“: Sammlung wird nach und nach gefüllt
+  for (const t of THEMEN) assert.ok(vorlagenFuer(t.id).length >= 3, t.id);
   for (const k of LERNKARTEN) assert.ok(THEMEN.some((t) => t.id === k.thema), k.id);
 });
 
@@ -304,19 +304,9 @@ test("Frage-Antwort: automatische Prüfung nach Norm und Stichworten", async () 
   assert.equal(pruefeOffen(f, "Unbeschränkt steuerpflichtig nach § 1 Abs. 1 EStG ist jede natürliche Person mit Wohnsitz oder gewöhnlichem Aufenthalt im Inland; besteuert wird das Welteinkommen.").korrekt, true);
 });
 
-test("ESt-Punktesammler: strenge Prüfung mit Gesetz, Absatz und Satz", async () => {
-  const { pruefeOffen } = await import("../js/offen.js");
-  const f = ALLE.find((v) => v.id === "est-punkte-stpfl").erzeugen(new Zufall(1));
-  assert.equal(f.thema, "est-punkte");
-  assert.equal(pruefeOffen(f, f.antwort).korrekt, true);
-  // andere Reihenfolge, römische Absätze, ohne ≙-Zeichen
-  assert.equal(pruefeOffen(f, "Eine natürliche Person (§ 1 BGB) mit Wohnsitz (§ 8 AO) oder gewöhnlichem Aufenthalt (§ 9 AO) im Inland (§ 1 I 2 EStG) ist unbeschränkt steuerpflichtig, § 1 I 1 EStG – Welteinkommensprinzip.").korrekt, true);
-  // § 1 BGB fehlt (nur Nummer 1 aus dem EStG) → falsch
-  assert.equal(pruefeOffen(f, f.antwort.replace("(§ 1 BGB)", "")).korrekt, false);
-  // Inland ohne S. 2 → falsch
-  assert.equal(pruefeOffen(f, f.antwort.replace("(§ 1 Abs. 1 S. 2 EStG)", "")).korrekt, false);
-  // Welteinkommen fehlt → falsch
-  assert.equal(pruefeOffen(f, f.antwort.replace("(≙ Welteinkommensprinzip) ", "")).korrekt, false);
-  assert.ok(kartenFuer("est").some((k) => k.id === "k-est-punkte-stpfl"));
-  assert.equal(fragen(["est-punkte"], 10, new Zufall(1), "punkte").length, vorlagenFuer("est-punkte").length);
+test("ESt-Punktesammler: Kartei mit Satz und Punktzahl, § 1 BGB im Normen-Tab", async () => {
+  const { PUNKTESAMMLER } = await import("../js/est/punkte.js");
+  assert.ok(PUNKTESAMMLER.length >= 1);
+  for (const p of PUNKTESAMMLER) assert.ok(p.titel && p.satz && p.punkte > 0 && p.punkte <= 60);
+  assert.ok(norm("BGB 1"));
 });

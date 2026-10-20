@@ -5,7 +5,7 @@ import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer } from "./katalog.js";
 import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
-import { PUNKTE_HINWEIS } from "./est/punkte.js";
+import { PUNKTESAMMLER } from "./est/punkte.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
@@ -59,7 +59,7 @@ const state = {
   kontoSuche: "",
   bilrAnsicht: "konten", // Bilanzrecht-Nachschlagen: "konten" | "gesetze"
   sitzung: null,
-  sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"}
+  sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
   klausurAnzahl: 20,
   klausurMinuten: 45,
@@ -119,7 +119,6 @@ function sitzungTitel(x) {
   if (x.filter === "uebertragung") return "Übertragungsaufgaben";
   if (x.filter === "rechnen") return "Rechenaufgaben";
   if (x.filter === "fall") return "Fälle einordnen";
-  if (x.filter === "punkte") return "Punkte sammeln";
   if (x.filter === "qa") return state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort";
   if (x.themen.length === 1) return THEMA[x.themen[0]].titel;
   return "Gemischte Übung";
@@ -502,7 +501,7 @@ function tabLernen() {
       kachel("uebertragung", "diagramm", "Übertragung", "Grafiken auswerten · 25 %") +
       kachel("alles", "mischen", "Gemischt", "Quer durch das Skript")
     : state.fach === "est"
-    ? kachel("punkte", "ziel", "Punkte sammeln", "Klausursätze auswendig · Dozenten-Hinweise") +
+    ? `<button class="kachel" data-a="punktesammler"><span class="k-icon">${ic("ziel")}</span><span class="k-text"><b>Punkte sammeln</b><span class="sub">Klausursätze zum Auswendiglernen</span></span></button>` +
       kachel("rechnen", "tkonto", "Rechnen", "Tarif, WK, Entfernungspauschale") +
       kachel("fall", "lernen", "Fälle einordnen", "Steuerpflicht, § 11, Einkunftsart") +
       kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Definitionen und Klausurfälle") +
@@ -555,7 +554,7 @@ function modusSchalter() {
     `<button data-a="oerModus" data-v="${id}" class="${state.oerModus === id ? "aktiv" : ""}">${ic(i, "klein")}${t}</button>`).join("")}</div>
     <div class="gruppe-fuss">${state.oerModus === "mc"
       ? "Ankreuzen statt formulieren – oft sind mehrere Antworten richtig. Ideal, wenn du das Gesetz gerade nicht dabei hast."
-      : "Antwort selbst formulieren, Musterantwort mit Normzitat aufdecken und selbst bewerten – wie in der Klausur."}</div></div></div>`;
+      : "Antwort selbst formulieren wie in der Klausur – automatisch geprüft nach Norm und Kernbegriffen, mit Musterantwort und Normzitat."}</div></div></div>`;
 }
 
 /** Verteilung der Aufgaben auf die Fächer der Lernkartei. */
@@ -801,7 +800,6 @@ function frageView(f, antwort, b, gesperrt, aufgedeckt = false) {
   return `
     <div class="aufgabe"><div class="meta"><span>${THEMA[f.thema].icon} ${esc(THEMA[f.thema].titel)}</span><span class="typ">${f.uebertragung ? "Übertragung · " : ""}${typBezeichnung(f)}</span></div>
       <div class="text">${esc(f.text)}</div>
-      ${f.punkte ? `<div class="sub" style="margin-top:8px">🎯 ${f.punkte} von 60 Punkten in der Klausur GS I · ${esc(PUNKTE_HINWEIS)}</div>` : ""}
       ${f.grafik ? `<div class="grafik-box">${f.grafik}</div>` : ""}</div>
     ${eingabe}
     ${zeigeAuswertung ? auswertungView(f, b || { korrekt: null, offen: true }) : ""}`;
@@ -809,12 +807,10 @@ function frageView(f, antwort, b, gesperrt, aufgedeckt = false) {
 
 const offenKnopfText = (f, a) => (pruefdaten(f) && a.text.trim() ? "Prüfen" : "Antwort zeigen");
 function offenView(f, antwort, lock) {
-  const auto = !!pruefdaten(f), streng = pruefdaten(f)?.streng;
+  const auto = !!pruefdaten(f);
   return `<div class="gruppe"><div class="gruppe-titel">Deine Antwort ${lock ? "" : "<span class='sub' style='text-transform:none;letter-spacing:0'>Stichpunkte, optional</span>"}</div>
     <textarea id="offen" class="offen-eingabe" rows="5" data-fokus="offen" placeholder="Antwort mit Normen notieren – z. B. „Art. 51 Abs. 2 GG: …“" ${lock ? "readonly" : ""}>${esc(antwort.text)}</textarea>
-    ${lock ? "" : `<div class="gruppe-fuss">${streng
-      ? "Punktesammler: Hier zählt jede Norm genau mit Gesetz, Absatz und Satz (z. B. „§ 1 Abs. 1 S. 2 EStG“ oder „§ 1 I 2 EStG“) und jedes Tatbestandsmerkmal. Reihenfolge und Satzbau sind egal."
-      : auto
+    ${lock ? "" : `<div class="gruppe-fuss">${auto
       ? "Wird automatisch geprüft: die richtige Norm (z. B. „§ 26“ oder „Art. 51“) und die wichtigsten Begriffe – Formulierung und Reihenfolge sind egal. Leer lassen, um die Musterantwort aufzudecken und selbst zu bewerten."
       : "Formuliere deine Antwort wie in der Klausur und decke dann die Musterantwort auf."}</div>`}</div>`;
 }
@@ -1033,6 +1029,12 @@ function sheetView() {
     inhalt = `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
       ${n.absaetze.map((a) => `<p style="margin:8px 0;line-height:1.55">${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</span></div></div>
       <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: www.gesetze-im-internet.de</div>`;
+  } else if (sh.art === "punktesammler") {
+    titel = "Punkte sammeln";
+    inhalt = `<div class="gruppe-fuss" style="margin:4px 4px 12px">Diese Sätze werden in der Klausur fast wörtlich verlangt – auswendig lernen.</div>
+      ${PUNKTESAMMLER.map((p) => `<div class="punkte-karte"><div class="punkte-titel">🎯 ${esc(p.titel)}</div>
+        <div class="punkte-satz">${esc(p.satz)}</div>
+        <div class="punkte-fuss">${p.punkte} von 60 Punkten · Klausur GS I</div></div>`).join("")}`;
   } else if (sh.art === "merksaetze") {
     titel = "Merksätze";
     inhalt = `<div class="liste">${MERKSAETZE.map(([t, x]) => `<div class="zeile"><span class="grow"><b>${esc(t)}</b><div class="sub">${esc(x)}</div></span></div>`).join("")}</div>`;
@@ -1183,7 +1185,7 @@ const AKTIONEN = {
     const alle = pruefungsThemen(state.fach).map((t) => t.id);
     const basis = { modus: "uebung", fach: state.fach };
     if (v === "buchung") starte({ ...basis, themen: alle, nurBuchung: true });
-    else if (["qa", "uebertragung", "rechnen", "fall", "punkte"].includes(v)) starte({ ...basis, themen: alle, filter: v });
+    else if (["qa", "uebertragung", "rechnen", "fall"].includes(v)) starte({ ...basis, themen: alle, filter: v });
     else if (v === "alles") starte({ ...basis, themen: alle });
     else starte({ ...basis, themen: [el.dataset.t] });
   },
@@ -1271,6 +1273,7 @@ const AKTIONEN = {
   },
   kontoDetail: (v) => { state.sheet = { art: "kontoDetail", konto: v }; render(); },
   merksaetze: () => { state.sheet = { art: "merksaetze" }; render(); },
+  punktesammler: () => { state.sheet = { art: "punktesammler" }; render(); },
   anzahl: (v) => { state.klausurAnzahl = Math.min(60, Math.max(5, state.klausurAnzahl + Number(v))); render(); },
   minuten: (v) => { state.klausurMinuten = Number(v); render(); },
   klausurStart: () => starte({ modus: "klausur", fach: state.fach, anzahl: state.klausurAnzahl, minuten: state.klausurMinuten || null }),

@@ -4,7 +4,6 @@ import { OER_FRAGEN } from "./oer/fragen.js";
 import { KLAUSUR_HAEUFIG } from "./oer/skript.js";
 import { OER_UEBERTRAGUNG } from "./oer/uebertragung.js";
 import { EST_AUFGABEN } from "./est/aufgaben.js";
-import { EST_PUNKTE } from "./est/punkte.js";
 import { LERNKARTEN as BSR_KARTEN } from "./lernkarten.js";
 import { THEMA, pruefungsThemen, Zufall } from "./kern.js";
 import { normenAusText } from "./oer/normtext.js";
@@ -27,7 +26,7 @@ const mitNormen = (v) => {
   } };
 };
 
-export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...EST_AUFGABEN, ...EST_PUNKTE].map(mitNormen);
+export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...EST_AUFGABEN].map(mitNormen);
 
 export const vorlagenFuer = (thema) => ALLE.filter((v) => v.thema === thema);
 export const fachVon = (vorlage) => THEMA[vorlage.thema].fach;
@@ -46,9 +45,6 @@ export function fragen(themen, anzahl, r, filter = null) {
   if (filter === "qa") pool = pool.filter((v) => v.kategorie !== "uebertragung" && v.kategorie !== "rechnen" && v.kategorie !== "fall");
   if (filter === "rechnen") pool = pool.filter((v) => v.kategorie === "rechnen");
   if (filter === "fall") pool = pool.filter((v) => v.kategorie === "fall");
-  if (filter === "punkte") pool = pool.filter((v) => v.kategorie === "punkte");
-  // Punktesammler: jede Karte nur einmal je Runde (die Sammlung ist noch klein)
-  if (filter === "punkte" || themen.every((t) => THEMA[t]?.waechst)) anzahl = Math.min(anzahl, pool.length);
   if (!pool.length || anzahl <= 0) return [];
   const out = [];
   let runde = [];
@@ -94,9 +90,9 @@ export function klausur(anzahl, r, fach = "bsr") {
 }
 
 // Lernkarten: BSR-Karten plus alle offenen ÖR- und ESt-Fragen (Vorderseite Frage, Rückseite Musterantwort)
-const OER_KARTEN = [...OER_FRAGEN, ...EST_AUFGABEN.filter((v) => v.mc), ...EST_PUNKTE].map((v) => v.erzeugen(new Zufall(1)))
+const OER_KARTEN = [...OER_FRAGEN, ...EST_AUFGABEN.filter((v) => v.mc)].map((v) => v.erzeugen(new Zufall(1)))
   .filter((f) => f.typ === "offen")
-  .map((f) => ({ id: "k-" + f.id, thema: f.thema, vorne: (f.punkte ? `🎯 Punktesammler (${f.punkte} P.): ` : f.fall ? "Klausurfall: " : "") + f.text, hinten: f.antwort, normen: f.normen }));
+  .map((f) => ({ id: "k-" + f.id, thema: f.thema, vorne: (f.fall ? "Klausurfall: " : "") + f.text, hinten: f.antwort, normen: f.normen }));
 
 export const LERNKARTEN = [...BSR_KARTEN, ...OER_KARTEN];
 export const kartenFuer = (fach) => LERNKARTEN.filter((k) => THEMA[k.thema].fach === fach);
