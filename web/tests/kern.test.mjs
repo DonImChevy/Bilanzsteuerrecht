@@ -212,3 +212,22 @@ test("Lernserie, Wochenverlauf und Module", async () => {
     assert.equal(THEMEN.some((t) => t.fach === m.id), !m.bald, m.id);
   }
 });
+
+test("Bilanzrecht: Gesetzestexte zu den Aufgaben", async () => {
+  const { norm, normenAusText } = await import("../js/oer/normtext.js");
+  assert.equal(norm("UStG 17 1").label, "§ 17 Abs. 1 UStG");
+  assert.match(norm("UStG 15 1").absaetze[0].text, /Vorsteuerbeträge abziehen/);
+  assert.match(norm("UStG 12 2").absaetze[0].text, /Wohn- und Schlafräumen/, "Ergänzungsstrich bleibt erhalten");
+  assert.match(norm("UStG 4").absaetze[0].text, /Grunderwerbsteuergesetz[\s\S]*12\. a\) die Vermietung/);
+  assert.ok(norm("UStG 4").auszug);
+  assert.deepEqual(normenAusText("Ohne Option (§ 9 UStG) ist die Vermietung steuerfrei (§ 4 Nr. 12 UStG)."), ["UStG 9", "UStG 4"]);
+  assert.deepEqual(normenAusText("§ 17 I 8 UStG"), ["UStG 17 1"]);
+  // Jede BilR-Aufgabe, die das UStG zitiert, hat den Gesetzestext dabei
+  for (const v of ALLE) {
+    const f = v.erzeugen(new Zufall(1));
+    if (!v.thema || f.thema.startsWith("oer-")) continue;
+    if (/§[^§]*UStG/.test([f.text, f.erklaerung, f.quelle].join(" "))) assert.ok(f.normen?.some((r) => r.startsWith("UStG")), v.id);
+    for (const r of f.normen || []) assert.ok(norm(r), `${v.id}: ${r}`);
+  }
+  assert.deepEqual(ALLE.find((v) => v.id === "wu-skonto-kunde").erzeugen(new Zufall(2)).normen, ["UStG 17 1"]);
+});

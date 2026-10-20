@@ -331,7 +331,7 @@ export const NORMEN = [
 },
 {
 "abs": "3",
-"text": "Gerichte und Verwaltungsbehörden sind zur Rechtsund Amtshilfe verpflichtet."
+"text": "Gerichte und Verwaltungsbehörden sind zur Rechts- und Amtshilfe verpflichtet."
 },
 {
 "abs": "4",
@@ -734,7 +734,7 @@ export const NORMEN = [
 "abs": [
 {
 "abs": "1",
-"text": "Der Bundesminister für Verteidigung hat die Befehlsund Kommandogewalt über die Streitkräfte."
+"text": "Der Bundesminister für Verteidigung hat die Befehls- und Kommandogewalt über die Streitkräfte."
 },
 {
 "abs": "2",
@@ -956,7 +956,7 @@ export const NORMEN = [
 },
 {
 "abs": "4",
-"text": "Wird in einem zusammenhängenden, abgegrenzten Siedlungsund Wirtschaftsraum, dessen Teile in mehreren Ländern liegen und der mindestens eine Million Einwohner hat, von einem Zehntel der in ihm zum Bundestag Wahlberechtigten durch Volksbegehren gefordert, daß für diesen Raum eine einheitliche Landeszugehörigkeit herbeigeführt werde, so ist durch Bundesgesetz innerhalb von zwei Jahren entweder zu bestimmen, ob die Landeszugehörigkeit gemäß Absatz 2 geändert wird, oder daß in den betroffenen Ländern eine Volksbefragung stattfindet."
+"text": "Wird in einem zusammenhängenden, abgegrenzten Siedlungs- und Wirtschaftsraum, dessen Teile in mehreren Ländern liegen und der mindestens eine Million Einwohner hat, von einem Zehntel der in ihm zum Bundestag Wahlberechtigten durch Volksbegehren gefordert, daß für diesen Raum eine einheitliche Landeszugehörigkeit herbeigeführt werde, so ist durch Bundesgesetz innerhalb von zwei Jahren entweder zu bestimmen, ob die Landeszugehörigkeit gemäß Absatz 2 geändert wird, oder daß in den betroffenen Ländern eine Volksbefragung stattfindet."
 },
 {
 "abs": "5",
@@ -1110,7 +1110,7 @@ export const NORMEN = [
 },
 {
 "abs": "3",
-"text": "Die Teilungsergebnisse bei der Berechnung nach Absatz 1 werden gerundet, indem Zahlenbruchteile unter 0,5 zur darunterliegenden ganzen Zahl abgerundet und solche über 0,5 zur darüber liegenden ganzen Zahl aufgerundet werden. Zahlenbruchteile, die gleich 0,5 sind, werden so aboder aufgerundet, dass die Anzahl der verfügbaren Sitze eingehalten wird; ergeben sich dabei mehrere mögliche Sitzzuteilungen, so entscheidet das vom Bundeswahlleiter zu ziehende Los."
+"text": "Die Teilungsergebnisse bei der Berechnung nach Absatz 1 werden gerundet, indem Zahlenbruchteile unter 0,5 zur darunterliegenden ganzen Zahl abgerundet und solche über 0,5 zur darüber liegenden ganzen Zahl aufgerundet werden. Zahlenbruchteile, die gleich 0,5 sind, werden so ab- oder aufgerundet, dass die Anzahl der verfügbaren Sitze eingehalten wird; ergeben sich dabei mehrere mögliche Sitzzuteilungen, so entscheidet das vom Bundeswahlleiter zu ziehende Los."
 }
 ]
 },
@@ -1518,7 +1518,7 @@ export const NORMEN = [
 },
 {
 "abs": "2",
-"text": "Die Satzungen müssen Bestimmungen enthalten über\n1. Namen sowie Kurzbezeichnung, sofern eine solche verwandt wird, Sitz und Tätigkeitsgebiet der Partei,\n2. Aufnahme und Austritt der Mitglieder,\n3. Rechte und Pflichten der Mitglieder,\n4. zulässige Ordnungsmaßnahmen gegen Mitglieder und ihren Ausschluß (§ 10 Abs. 3 bis 5),\n5. zulässige Ordnungsmaßnahmen gegen Gebietsverbände,\n6. allgemeine Gliederung der Partei,\n7. Zusammensetzung und Befugnisse des Vorstandes und der übrigen Organe,\n8. der Beschlußfassung durch die Mitgliederund Vertreterversammlungen nach § 9 vorbehaltene Angelegenheiten,\n9. Voraussetzung, Form und Frist der Einberufung der Mitgliederund Vertreterversammlungen sowie Beurkundung der Beschlüsse,\n10. Gebietsverbände und Organe, die zur Einreichung (Unterzeichnung) von Wahlvorschlägen für Wahlen zu Volksvertretungen befugt sind, soweit hierüber keine gesetzlichen Vorschriften bestehen,\n11. eine Urabstimmung der Mitglieder und das Verfahren, wenn der Parteitag die Auflösung der Partei oder des Gebietsverbandes oder die Verschmelzung mit anderen Parteien nach § 9 Abs. 3 beschlossen hat. Der Beschluß gilt nach dem Ergebnis der Urabstimmung als bestätigt, geändert oder aufgehoben,\n12. Form und Inhalt einer Finanzordnung, die den Vorschriften des Fünften Abschnittes dieses Gesetzes genügt."
+"text": "Die Satzungen müssen Bestimmungen enthalten über\n1. Namen sowie Kurzbezeichnung, sofern eine solche verwandt wird, Sitz und Tätigkeitsgebiet der Partei,\n2. Aufnahme und Austritt der Mitglieder,\n3. Rechte und Pflichten der Mitglieder,\n4. zulässige Ordnungsmaßnahmen gegen Mitglieder und ihren Ausschluß (§ 10 Abs. 3 bis 5),\n5. zulässige Ordnungsmaßnahmen gegen Gebietsverbände,\n6. allgemeine Gliederung der Partei,\n7. Zusammensetzung und Befugnisse des Vorstandes und der übrigen Organe,\n8. der Beschlußfassung durch die Mitglieder- und Vertreterversammlungen nach § 9 vorbehaltene Angelegenheiten,\n9. Voraussetzung, Form und Frist der Einberufung der Mitglieder- und Vertreterversammlungen sowie Beurkundung der Beschlüsse,\n10. Gebietsverbände und Organe, die zur Einreichung (Unterzeichnung) von Wahlvorschlägen für Wahlen zu Volksvertretungen befugt sind, soweit hierüber keine gesetzlichen Vorschriften bestehen,\n11. eine Urabstimmung der Mitglieder und das Verfahren, wenn der Parteitag die Auflösung der Partei oder des Gebietsverbandes oder die Verschmelzung mit anderen Parteien nach § 9 Abs. 3 beschlossen hat. Der Beschluß gilt nach dem Ergebnis der Urabstimmung als bestätigt, geändert oder aufgehoben,\n12. Form und Inhalt einer Finanzordnung, die den Vorschriften des Fünften Abschnittes dieses Gesetzes genügt."
 },
 {
 "abs": "3",
@@ -1587,7 +1587,7 @@ export const NORMEN = [
 "abs": [
 {
 "abs": "1",
-"text": "Die Parteien erhalten Mittel als Teilfinanzierung der allgemein ihnen nach dem Grundgesetz obliegenden Tätigkeit. Maßstäbe für die Verteilung der staatlichen Mittel bilden der Erfolg, den eine Partei bei den Wählern bei Europa-, Bundestagsund Landtagswahlen erzielt, die Summe ihrer Mitgliedsund Mandatsträgerbeiträge sowie der Umfang der von ihr eingeworbenen Spenden."
+"text": "Die Parteien erhalten Mittel als Teilfinanzierung der allgemein ihnen nach dem Grundgesetz obliegenden Tätigkeit. Maßstäbe für die Verteilung der staatlichen Mittel bilden der Erfolg, den eine Partei bei den Wählern bei Europa-, Bundestags- und Landtagswahlen erzielt, die Summe ihrer Mitglieds- und Mandatsträgerbeiträge sowie der Umfang der von ihr eingeworbenen Spenden."
 },
 {
 "abs": "2",
@@ -1595,11 +1595,11 @@ export const NORMEN = [
 },
 {
 "abs": "3",
-"text": "Die Parteien erhalten jährlich im Rahmen der staatlichen Teilfinanzierung\n1. 0,83 Euro für jede für ihre jeweilige Liste abgegebene gültige Stimme oder\n2. 0,83 Euro für jede für sie in einem Wahloder Stimmkreis abgegebene gültige Stimme, wenn in einem Land eine Liste für diese Partei nicht zugelassen war, und\n3. 0,45 Euro für jeden Euro, den sie als Zuwendung (eingezahlter Mitgliedsoder Mandatsträgerbeitrag oder rechtmäßig erlangte Spende) erhalten haben; dabei werden nur Zuwendungen bis zu 3 300 Euro je natürliche Person berücksichtigt. Die Parteien erhalten abweichend von den Nummern 1 und 2 für die von ihnen jeweils erzielten bis zu vier Millionen gültigen Stimmen 1 Euro je Stimme. Die in Satz 1 Nummer 1 und 2 sowie in Satz 2 genannten Beträge erhöhen sich ab dem Jahr 2017 entsprechend Absatz 2 Satz 2 bis 5."
+"text": "Die Parteien erhalten jährlich im Rahmen der staatlichen Teilfinanzierung\n1. 0,83 Euro für jede für ihre jeweilige Liste abgegebene gültige Stimme oder\n2. 0,83 Euro für jede für sie in einem Wahl- oder Stimmkreis abgegebene gültige Stimme, wenn in einem Land eine Liste für diese Partei nicht zugelassen war, und\n3. 0,45 Euro für jeden Euro, den sie als Zuwendung (eingezahlter Mitglieds- oder Mandatsträgerbeitrag oder rechtmäßig erlangte Spende) erhalten haben; dabei werden nur Zuwendungen bis zu 3 300 Euro je natürliche Person berücksichtigt. Die Parteien erhalten abweichend von den Nummern 1 und 2 für die von ihnen jeweils erzielten bis zu vier Millionen gültigen Stimmen 1 Euro je Stimme. Die in Satz 1 Nummer 1 und 2 sowie in Satz 2 genannten Beträge erhöhen sich ab dem Jahr 2017 entsprechend Absatz 2 Satz 2 bis 5."
 },
 {
 "abs": "4",
-"text": "Anspruch auf staatliche Mittel gemäß Absatz 3 Nr. 1 und 3 haben Parteien, die nach dem endgültigen Wahlergebnis der jeweils letzten Europaoder Bundestagswahl mindestens 0,5 vom Hundert oder einer Landtagswahl 1,0 vom Hundert der für die Listen abgegebenen gültigen Stimmen erreicht haben; für Zahlungen nach Absatz 3 Satz 1 Nr. 1 und Satz 2 muss die Partei diese Voraussetzungen bei der jeweiligen Wahl erfüllen. Anspruch auf die staatlichen Mittel gemäß Absatz 3 Nr. 2 haben Parteien, die nach dem endgültigen Wahlergebnis 10 vom Hundert der in einem Wahloder Stimmkreis abgegebenen gültigen Stimmen erreicht haben. Die Sätze 1 und 2 gelten nicht für Parteien nationaler Minderheiten."
+"text": "Anspruch auf staatliche Mittel gemäß Absatz 3 Nr. 1 und 3 haben Parteien, die nach dem endgültigen Wahlergebnis der jeweils letzten Europa- oder Bundestagswahl mindestens 0,5 vom Hundert oder einer Landtagswahl 1,0 vom Hundert der für die Listen abgegebenen gültigen Stimmen erreicht haben; für Zahlungen nach Absatz 3 Satz 1 Nr. 1 und Satz 2 muss die Partei diese Voraussetzungen bei der jeweiligen Wahl erfüllen. Anspruch auf die staatlichen Mittel gemäß Absatz 3 Nr. 2 haben Parteien, die nach dem endgültigen Wahlergebnis 10 vom Hundert der in einem Wahl- oder Stimmkreis abgegebenen gültigen Stimmen erreicht haben. Die Sätze 1 und 2 gelten nicht für Parteien nationaler Minderheiten."
 },
 {
 "abs": "5",

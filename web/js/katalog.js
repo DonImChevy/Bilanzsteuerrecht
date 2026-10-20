@@ -4,8 +4,27 @@ import { OER_FRAGEN } from "./oer/fragen.js";
 import { OER_UEBERTRAGUNG } from "./oer/uebertragung.js";
 import { LERNKARTEN as BSR_KARTEN } from "./lernkarten.js";
 import { THEMA, themenFuer, Zufall } from "./kern.js";
+import { normenAusText } from "./oer/normtext.js";
 
-export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG];
+// Bilanzrecht: Gesetzestexte zu jeder Aufgabe – aus den Zitaten in Text/Erklärung/Fundstelle
+// und ergänzend dort, wo die Aufgabe inhaltlich auf eine Vorschrift zielt, sie aber nicht nennt.
+const ZUSATZ_NORMEN = {
+  "wu-einkauf-fracht": ["UStG 15 1"], "wu-anlage-nebenkosten": ["UStG 15 1"],
+  "wu-skonto-lieferant": ["UStG 17 1"], "wu-skonto-kunde": ["UStG 17 1"], "wu-bonus-gewaehrt": ["UStG 17 1"],
+  "us-skonto-einzelhaendler": ["UStG 17 1"], "us-skonto-grosshaendler": ["UStG 17 1"], "us-skonto-r": ["UStG 17 1"],
+  "us-herausrechnen": ["UStG 12 1", "UStG 12 2"],
+};
+const mitNormen = (v) => {
+  if (THEMA[v.thema].fach !== "bsr") return v;
+  return { ...v, erzeugen: (r) => {
+    const f = v.erzeugen(r);
+    if (f.normen?.length) return f;
+    const refs = [...normenAusText([f.text, f.erklaerung, f.quelle].join(" ")), ...(ZUSATZ_NORMEN[v.id] || [])];
+    return refs.length ? { ...f, normen: [...new Set(refs)] } : f;
+  } };
+};
+
+export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG].map(mitNormen);
 
 export const vorlagenFuer = (thema) => ALLE.filter((v) => v.thema === thema);
 export const fachVon = (vorlage) => THEMA[vorlage.thema].fach;
