@@ -24,6 +24,8 @@ export function zitierteNummern(text) {
   return out;
 }
 
+/** Stichwort lesbar anzeigen: „rueckwirk“ → „rückwirk“ (ae/oe/ue nach Konsonant sind Umlaute). */
+const lesbar = (w) => w.replace(/([^aeiouq ])(ae|oe|ue)/g, (_, k, v) => k + { ae: "ä", oe: "ö", ue: "ü" }[v]);
 const nummerVon = (ref) => nrNorm(ref.split(" ")[1] || "");
 /** Norm aus einer Referenz wie "EStG 26 1" lesbar machen: "§ 26 EStG" bzw. "Art. 51 GG". */
 export const normLabel = (ref) => { const [g, nr] = ref.split(" "); return g === "GG" ? `Art. ${nr} GG` : `§ ${nr} ${g}`; };
@@ -47,7 +49,7 @@ export function pruefeOffen(frage, text) {
   const t = " " + normalisiere(text) + " ";
   const zitiert = zitierteNummern(text);
   const normen = d.norm.map((gruppe) => ({ label: gruppe.map(normLabel).join(" oder "), ok: gruppe.some((ref) => zitiert.has(nummerVon(ref))) }));
-  const stichworte = d.s.map((alts, i) => ({ wort: d.roh[i].split("|")[0], ok: alts.some((teile) => teile.every((w) => t.includes(w))) }));
+  const stichworte = d.s.map((alts, i) => ({ wort: lesbar(d.roh[i].split("|")[0]), ok: alts.some((teile) => teile.every((w) => t.includes(w))) }));
   const treffer = stichworte.filter((x) => x.ok).length;
   return { korrekt: normen.every((n) => n.ok) && treffer >= d.min, normen, stichworte, treffer, min: d.min };
 }

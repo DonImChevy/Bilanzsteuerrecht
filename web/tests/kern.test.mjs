@@ -287,3 +287,19 @@ test("ESt: Tarif 2026, Klausurstruktur und Gesamtfälle", async () => {
   assert.match(fall("est-fall-ehepaar"), /83\.346 €[\s\S]*15\.488 €[\s\S]*Abschlusszahlung 2\.488 €/);
   assert.match(fall("est-fall-physio"), /96\.100 €[\s\S]*88\.900 €[\s\S]*26\.202 €[\s\S]*Abschlusszahlung: 18\.202 €/);
 });
+
+test("Frage-Antwort: automatische Prüfung nach Norm und Stichworten", async () => {
+  const { pruefeOffen, pruefdaten, zitierteNummern } = await import("../js/offen.js");
+  assert.deepEqual([...zitierteNummern("§§ 8, 9 AO und § 26; Art. 20a GG, Art 51 Abs. 2, nach 38 GG")].sort(), ["20a", "26", "38", "51", "8", "9"]);
+  const offen = ALLE.map((v) => v.erzeugen(new Zufall(1))).filter((f) => f.typ === "offen");
+  for (const f of offen) {
+    assert.ok(pruefdaten(f), "Keine Stichworte: " + f.id);
+    assert.equal(pruefeOffen(f, f.antwort).korrekt, true, "Musterantwort scheitert: " + f.id);
+    assert.equal(pruefeOffen(f, "Weiß ich leider nicht.").korrekt, false, f.id);
+    assert.equal(bewerte(f, { text: "" }).korrekt, null, f.id);
+  }
+  // Norm fehlt → falsch, auch wenn alle Begriffe stimmen
+  const f = offen.find((x) => x.id === "est-unbeschraenkt");
+  assert.equal(pruefeOffen(f, f.antwort.replace(/§\s*\d+[a-z]?|Abs\.|AO|EStG/g, "")).korrekt, false);
+  assert.equal(pruefeOffen(f, "Unbeschränkt steuerpflichtig nach § 1 Abs. 1 EStG ist jede natürliche Person mit Wohnsitz oder gewöhnlichem Aufenthalt im Inland; besteuert wird das Welteinkommen.").korrekt, true);
+});
