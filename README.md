@@ -12,7 +12,7 @@ Suche über alle Inhalte und Modul-Kacheln. Verfügbar:
   Falschantworten aus benachbarten Normen, oft mehrere richtig) – umschaltbar im Reiter Üben und Klausur.
 
 In Vorbereitung (als „Bald verfügbar“ sichtbar): Einkommensteuer (ESt), Umsatzsteuer (USt),
-Abgabenordnung (AO), Bewertungsrecht (BewR), Privatrecht (PrivR), ASV. Neue Module werden in `web/js/module.js` eingetragen.
+Abgabenordnung (AO), Bewertungsrecht (BewR), Privatrecht (PrivR). Neue Module werden in `web/js/module.js` eingetragen.
 
 **Kostenlos, ohne App Store, offline nutzbar:** Die App ist eine Web-App (PWA). Man öffnet sie einmal im
 Browser und legt sie auf den Home-Bildschirm – danach startet sie wie eine normale App, auch ohne Internet.

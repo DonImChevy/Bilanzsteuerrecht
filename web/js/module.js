@@ -9,7 +9,6 @@ export const MODULE = [
   { id: "ao", titel: "Abgabenordnung", kurz: "AO", unter: "Verfahrensrecht", icon: "akte", farbe: "#7c3aed", farbeDunkel: "#b794f6", bald: true },
   { id: "bewr", titel: "Bewertungsrecht", kurz: "BewR", unter: "BewG", icon: "haus", farbe: "#0284c7", farbeDunkel: "#38bdf8", bald: true },
   { id: "pr", titel: "Privatrecht", kurz: "PrivR", unter: "BGB, HGB", icon: "waage", farbe: "#c026d3", farbeDunkel: "#e879f9", bald: true },
-  { id: "asv", titel: "ASV", kurz: "ASV", unter: "laut Stundenplan", icon: "sterne", farbe: "#475569", farbeDunkel: "#94a3b8", bald: true },
 ];
 export const MODUL = Object.fromEntries(MODULE.map((m) => [m.id, m]));
 export const aktiveModule = () => MODULE.filter((m) => !m.bald);
