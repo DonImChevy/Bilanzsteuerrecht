@@ -1,5 +1,6 @@
 import { K } from "./konten.js";
 import * as G from "./geld.js";
+import { pruefeOffen } from "./offen.js";
 
 export const THEMEN = [
   { id: "buchfuehrungspflicht", titel: "Buchführungspflicht", unter: "§§ 238, 241a HGB, §§ 140, 141 AO", icon: "📕", fach: "bsr" },
@@ -163,7 +164,7 @@ export function leereAntwort(frage) {
   return { text: "" };
 }
 
-/** Offene Fragen werden selbst bewertet: korrekt = true/false, null = noch nicht bewertet. */
+/** Offene Fragen: automatisch geprüft (Norm + Stichworte) oder selbst bewertet – korrekt = true/false, null = noch nicht bewertet. */
 export const istOffen = (frage) => frage.typ === "offen";
 
 let zeilenZaehler = 0;
@@ -188,7 +189,10 @@ export function bewerte(frage, antwort) {
     const r = [...frage.richtig].sort();
     return { korrekt: g.length === r.length && g.every((v, i) => v === r[i]) };
   }
-  if (frage.typ === "offen") return { korrekt: null, offen: true };
+  if (frage.typ === "offen") {
+    const p = pruefeOffen(frage, antwort.text);
+    return p ? { korrekt: p.korrekt, offen: true, auto: p } : { korrekt: null, offen: true };
+  }
   const wert = G.lesen(antwort.text);
   if (wert == null) return { korrekt: false, lesbar: false };
   return { korrekt: Math.abs(wert - frage.loesung) <= frage.toleranz, lesbar: true };

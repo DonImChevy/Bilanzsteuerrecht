@@ -4,6 +4,7 @@ import { THEMEN, THEMA, themenFuer, pruefungsThemen, Zufall, bewerte, leereAntwo
 import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer } from "./katalog.js";
 import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
+import { pruefdaten } from "./offen.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
@@ -126,8 +127,14 @@ function pruefen() {
   const x = s();
   if (x.bewertungen[x.index]) return;
   if (aktFrage().typ === "offen") {
-    // Offene Frage: Musterantwort aufdecken, danach Selbstbewertung
+    // Offene Frage: automatisch prüfen (Norm + Stichworte); ohne Antwort oder Prüfdaten Musterantwort aufdecken und selbst bewerten
     x.aufgedeckt[x.index] = true;
+    const b = bewerte(aktFrage(), aktAntwort());
+    if (b.korrekt !== null) {
+      x.bewertungen[x.index] = b;
+      erfasseMitVorher(aktFrage(), b);
+      if (navigator.vibrate) navigator.vibrate(b.korrekt ? 20 : [30, 40, 30]);
+    }
     render();
     setTimeout(() => document.getElementById("auswertung")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
     return;
@@ -140,6 +147,30 @@ function pruefen() {
   render();
   setTimeout(() => document.getElementById("auswertung")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
 }
+/** Wie erfasse(), merkt sich aber den Lernstand davor – für eine spätere Korrektur der automatischen Prüfung. */
+function erfasseMitVorher(f, b) {
+  b.lernVorher = stat.lern[f.id] || null;
+  erfasse(f, b.korrekt);
+}
+/** Automatische Prüfung einer offenen Antwort umkehren („Doch gewusst“ / „Doch nicht gewusst“). */
+function korrigieren(i) {
+  const x = s(), f = x.fragen[i], b = x.bewertungen[i];
+  if (!b?.auto || b.korrigiert) return;
+  const korrekt = !b.korrekt;
+  const z = { ...zaehler(f.thema) };
+  z.r = Math.max(0, z.r + (korrekt ? 1 : -1));
+  stat.proThema[f.thema] = z;
+  stat.lern[f.id] = planen(b.lernVorher || undefined, korrekt);
+  x.bewertungen[i] = { ...b, korrekt, korrigiert: true };
+  klausurZaehlen(x);
+  speichern();
+  render();
+}
+function klausurZaehlen(x) {
+  if (x.klausurEintrag == null) return;
+  const k = stat.klausuren[x.klausurEintrag];
+  if (k) { k.richtig = x.bewertungen.filter((b) => b?.korrekt === true).length; k.offen = x.bewertungen.filter((b) => b?.korrekt === null).length; speichern(); }
+}
 /** Selbstbewertung einer offenen Frage (Übung oder Klausur-Rückschau). */
 function selbstBewerten(i, korrekt) {
   const x = s(), f = x.fragen[i];
@@ -147,10 +178,7 @@ function selbstBewerten(i, korrekt) {
   if (vorher && vorher.korrekt !== null) return;
   x.bewertungen[i] = { korrekt, offen: true };
   erfasse(f, korrekt);
-  if (x.klausurEintrag != null) {
-    const k = stat.klausuren[x.klausurEintrag];
-    if (k) { k.richtig = x.bewertungen.filter((b) => b?.korrekt === true).length; k.offen = x.bewertungen.filter((b) => b?.korrekt === null).length; speichern(); }
-  }
+  klausurZaehlen(x);
   if (navigator.vibrate) navigator.vibrate(korrekt ? 20 : [30, 40, 30]);
   if (x.review == null && x.modus !== "klausur") { weiter(); return; }
   render();
@@ -167,7 +195,7 @@ function abgeben() {
   x.fragen.forEach((f, i) => {
     if (!x.bewertungen[i]) {
       x.bewertungen[i] = bewerte(f, x.antworten[i]);
-      if (x.bewertungen[i].korrekt !== null) erfasse(f, x.bewertungen[i].korrekt);
+      if (x.bewertungen[i].korrekt !== null) erfasseMitVorher(f, x.bewertungen[i]);
     }
   });
   x.beendet = true;
@@ -735,7 +763,7 @@ function sitzungView() {
     fuss = `<button class="knopf zweit" data-a="zurueck" ${x.index === 0 ? "disabled" : ""}>${ic("zurueck")} Zurück</button>` +
       (x.index === n - 1 ? `<button class="knopf" data-a="abgeben">${ic("haken")} Abgeben</button>` : `<button class="knopf" data-a="weiter">Weiter ${ic("pfeil")}</button>`);
   } else if (f.typ === "offen" && !b && !x.aufgedeckt[x.index]) {
-    fuss = `<button class="knopf" data-a="pruefen">Antwort zeigen</button>`;
+    fuss = `<button class="knopf" id="offenKnopf" data-a="pruefen">${offenKnopfText(f, aktAntwort())}</button>`;
   } else if (f.typ === "offen" && !b) {
     feedback = `<div class="feedback" style="color:var(--text);font-size:16px"><span>Hast du es gewusst?<small>Ehrlich vergleichen – das steuert, wann die Frage wiederkommt.</small></span></div>`;
     fuss = `<button class="knopf rot" data-a="selbst" data-v="0">${ic("kreuz")} Nicht gewusst</button><button class="knopf gruen" data-a="selbst" data-v="1">${ic("haken")} Gewusst</button>`;
@@ -764,7 +792,7 @@ function frageView(f, antwort, b, gesperrt, aufgedeckt = false) {
   let eingabe = "";
   if (f.typ === "buchung") eingabe = buchungView(antwort, b?.buchung, lock);
   else if (f.typ === "auswahl") eingabe = auswahlView(f, antwort, !!b, lock);
-  else if (f.typ === "offen") eingabe = offenView(antwort, lock);
+  else if (f.typ === "offen") eingabe = offenView(f, antwort, lock);
   else eingabe = zahlView(f, antwort, b, lock);
   const zeigeAuswertung = b || (f.typ === "offen" && (aufgedeckt || gesperrt));
   return `
@@ -775,10 +803,14 @@ function frageView(f, antwort, b, gesperrt, aufgedeckt = false) {
     ${zeigeAuswertung ? auswertungView(f, b || { korrekt: null, offen: true }) : ""}`;
 }
 
-function offenView(antwort, lock) {
+const offenKnopfText = (f, a) => (pruefdaten(f) && a.text.trim() ? "Prüfen" : "Antwort zeigen");
+function offenView(f, antwort, lock) {
+  const auto = !!pruefdaten(f);
   return `<div class="gruppe"><div class="gruppe-titel">Deine Antwort ${lock ? "" : "<span class='sub' style='text-transform:none;letter-spacing:0'>Stichpunkte, optional</span>"}</div>
     <textarea id="offen" class="offen-eingabe" rows="5" data-fokus="offen" placeholder="Antwort mit Normen notieren – z. B. „Art. 51 Abs. 2 GG: …“" ${lock ? "readonly" : ""}>${esc(antwort.text)}</textarea>
-    ${lock ? "" : `<div class="gruppe-fuss">Formuliere deine Antwort wie in der Klausur und decke dann die Musterantwort auf.</div>`}</div>`;
+    ${lock ? "" : `<div class="gruppe-fuss">${auto
+      ? "Wird automatisch geprüft: die richtige Norm (z. B. „§ 26“ oder „Art. 51“) und die wichtigsten Begriffe – Formulierung und Reihenfolge sind egal. Leer lassen, um die Musterantwort aufzudecken und selbst zu bewerten."
+      : "Formuliere deine Antwort wie in der Klausur und decke dann die Musterantwort auf."}</div>`}</div>`;
 }
 
 function buchungView(antwort, bb, lock) {
@@ -848,6 +880,23 @@ function auswertungView(f, b) {
       ${l.soll.map(([k, c]) => `<div class="loesung-zeile"><span>${esc(K(k).name)}</span><span>${G.text(c)}</span></div>`).join("")}
       ${l.haben.map(([k, c]) => `<div class="loesung-zeile haben"><span>an ${esc(K(k).name)}</span><span>${G.text(c)}</span></div>`).join("")}</div>
       ${!b.korrekt && b.buchung.fehlend.length ? `<div class="fehlt"><b>In deiner Lösung fehlt:</b><br>${b.buchung.fehlend.map(([sd, k, c]) => `• ${sd === "soll" ? "Soll" : "Haben"}: ${esc(K(k).kurz)} ${G.text(c)}`).join("<br>")}</div>` : ""}`;
+  }
+  if (f.typ === "offen" && b.auto) {
+    const a = b.auto, haken = (ok) => `<span class="pruef-ic ${ok ? "ja" : "nein"}">${ok ? "✓" : "✗"}</span>`;
+    return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt ? "" : "nein"}">
+      <div class="urteil ${b.korrekt ? "ja" : "nein"}">${b.korrekt ? "✓ Richtig" : "✗ Noch nicht vollständig"}${b.korrigiert ? ` <span class="sub">(von dir korrigiert)</span>` : ""}</div>
+      <div class="pruefung">
+        ${a.normen.length ? a.normen.map((n) => `<div class="pruef-zeile">${haken(n.ok)}<span><b>Norm:</b> ${esc(n.label)}${n.ok ? "" : " – nicht zitiert"}</span></div>`).join("") : ""}
+        <div class="pruef-zeile">${haken(a.treffer >= a.min)}<span><b>Begriffe:</b> ${a.treffer} von ${a.stichworte.length} genannt (mindestens ${a.min})</span></div>
+        <div class="pruef-chips">${a.stichworte.map((w) => `<span class="pruef-chip ${w.ok ? "ja" : "nein"}">${w.ok ? "✓" : "✗"} ${esc(w.wort)}</span>`).join("")}</div>
+      </div>
+      <div class="sub" style="margin:10px 0 4px">Musterantwort</div>
+      <div class="erkl muster">${esc(f.antwort)}</div>
+      ${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}
+      ${normBlock(f.normen, [f.text, f.antwort, f.erklaerung, f.quelle, f.zusatzZitate].join(" "))}
+      ${!b.korrigiert && (s()?.beendet || s()?.modus !== "klausur") ? `<div class="gruppe-fuss" style="margin:10px 0 0">Die Prüfung achtet nur auf Norm und Schlüsselbegriffe. ${b.korrekt ? "Doch etwas Wesentliches vergessen?" : "Inhaltlich trotzdem richtig?"}
+        <button class="link" data-a="korrigieren">${b.korrekt ? "Als „nicht gewusst“ werten" : "Als „gewusst“ werten"}</button></div>` : ""}
+    </div></div>`;
   }
   if (f.typ === "offen") {
     const urteil = b.korrekt === true ? `<div class="urteil ja">✓ Gewusst</div>` : b.korrekt === false ? `<div class="urteil nein">✗ Nicht gewusst</div>` : `<div class="urteil">Musterantwort</div>`;
@@ -1163,6 +1212,7 @@ const AKTIONEN = {
     starte({ modus: x.modus, fach: x.fach, themen: x.themen, nurBuchung: x.nurBuchung, filter: x.filter, ids: x.einzeln ? x.ids : undefined, einzeln: x.einzeln, anzahl: x.fragen.length, minuten: x.minuten });
   },
   selbst: (v) => selbstBewerten(s().index, v === "1"),
+  korrigieren: () => korrigieren(s().review ?? s().index),
   selbstReview: (v) => selbstBewerten(s().review, v === "1"),
   normDetail: (v) => { state.sheet = { art: "norm", ref: v }; render(); },
   review: (v) => { s().review = Number(v); render(); scrollOben(); },
@@ -1273,6 +1323,8 @@ app.addEventListener("input", (e) => {
     aktualisierePruefen();
   } else if (t.id === "offen") {
     aktAntwort().text = t.value;
+    const k = document.getElementById("offenKnopf");
+    if (k) k.textContent = offenKnopfText(aktFrage(), aktAntwort());
   } else if (t.id === "homeSuche") {
     state.suche = t.value;
     const leer = !t.value.trim();
