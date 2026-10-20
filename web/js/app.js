@@ -5,6 +5,7 @@ import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer } from "./katalog.js";
 import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
+import { PUNKTESAMMLER } from "./est/punkte.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
@@ -58,7 +59,7 @@ const state = {
   kontoSuche: "",
   bilrAnsicht: "konten", // Bilanzrecht-Nachschlagen: "konten" | "gesetze"
   sitzung: null,
-  sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"}
+  sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
   klausurAnzahl: 20,
   klausurMinuten: 45,
@@ -500,13 +501,14 @@ function tabLernen() {
       kachel("uebertragung", "diagramm", "Übertragung", "Grafiken auswerten · 25 %") +
       kachel("alles", "mischen", "Gemischt", "Quer durch das Skript")
     : state.fach === "est"
-    ? kachel("rechnen", "tkonto", "Rechnen", "Tarif, WK, Entfernungspauschale") +
-      kachel("fall", "ziel", "Fälle einordnen", "Steuerpflicht, § 11, Einkunftsart") +
+    ? `<button class="kachel" data-a="punktesammler"><span class="k-icon">${ic("ziel")}</span><span class="k-text"><b>Punkte sammeln</b><span class="sub">Klausursätze zum Auswendiglernen</span></span></button>` +
+      kachel("rechnen", "tkonto", "Rechnen", "Tarif, WK, Entfernungspauschale") +
+      kachel("fall", "lernen", "Fälle einordnen", "Steuerpflicht, § 11, Einkunftsart") +
       kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Definitionen und Klausurfälle") +
       kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen")
     : kachel("buchung", "tkonto", "Buchungssätze", "Immer neue Beträge") +
       kachel("alles", "mischen", "Gemischt", "Buchen, Rechnen, Theorie");
-  const breit = state.fach === "oer" ? "" : " breit";
+  const breit = state.fach === "bsr" ? " breit" : "";
   const schwachKachel = schwach && quote(zaehler(schwach.id)) < 0.8
     ? `<button class="kachel${breit}" data-a="schnell" data-v="schwach" data-t="${schwach.id}"><span class="k-icon" style="background:var(--warn-weak);color:var(--warn)">${ic("ziel")}</span><span class="k-text"><b>Schwächstes Thema</b><span class="sub">${esc(schwach.titel)} · ${Math.round(quote(zaehler(schwach.id)) * 100)} %</span></span></button>`
     : `<button class="kachel${breit}" data-a="tab" data-v="klausur"><span class="k-icon">${ic("klausur")}</span><span class="k-text"><b>Klausur</b><span class="sub">Unter Echtbedingungen</span></span></button>`;
@@ -552,7 +554,7 @@ function modusSchalter() {
     `<button data-a="oerModus" data-v="${id}" class="${state.oerModus === id ? "aktiv" : ""}">${ic(i, "klein")}${t}</button>`).join("")}</div>
     <div class="gruppe-fuss">${state.oerModus === "mc"
       ? "Ankreuzen statt formulieren – oft sind mehrere Antworten richtig. Ideal, wenn du das Gesetz gerade nicht dabei hast."
-      : "Antwort selbst formulieren, Musterantwort mit Normzitat aufdecken und selbst bewerten – wie in der Klausur."}</div></div></div>`;
+      : "Antwort selbst formulieren wie in der Klausur – automatisch geprüft nach Norm und Kernbegriffen, mit Musterantwort und Normzitat."}</div></div></div>`;
 }
 
 /** Verteilung der Aufgaben auf die Fächer der Lernkartei. */
@@ -649,7 +651,7 @@ function kontenInhalt() {
 const GESETZE = {
   oer: [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"]],
   bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["UStG", "Umsatzsteuergesetz (UStG)"]],
-  est: [["EStG", "Einkommensteuergesetz (EStG)"], ["AO", "Abgabenordnung (AO)"]],
+  est: [["EStG", "Einkommensteuergesetz (EStG)"], ["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
 };
 const normenVon = (fach) => NORMEN.filter((n) => n.faecher.includes(fach));
 /** Gesetze eines Moduls, deren Text in der App vorliegt. */
@@ -1027,6 +1029,12 @@ function sheetView() {
     inhalt = `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
       ${n.absaetze.map((a) => `<p style="margin:8px 0;line-height:1.55">${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</span></div></div>
       <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: www.gesetze-im-internet.de</div>`;
+  } else if (sh.art === "punktesammler") {
+    titel = "Punkte sammeln";
+    inhalt = `<div class="gruppe-fuss" style="margin:4px 4px 12px">Diese Sätze werden in der Klausur fast wörtlich verlangt – auswendig lernen.</div>
+      ${PUNKTESAMMLER.map((p) => `<div class="punkte-karte"><div class="punkte-titel">🎯 ${esc(p.titel)}</div>
+        <div class="punkte-satz">${esc(p.satz)}</div>
+        <div class="punkte-fuss">${p.punkte} von 60 Punkten · Klausur GS I</div></div>`).join("")}`;
   } else if (sh.art === "merksaetze") {
     titel = "Merksätze";
     inhalt = `<div class="liste">${MERKSAETZE.map(([t, x]) => `<div class="zeile"><span class="grow"><b>${esc(t)}</b><div class="sub">${esc(x)}</div></span></div>`).join("")}</div>`;
@@ -1265,6 +1273,7 @@ const AKTIONEN = {
   },
   kontoDetail: (v) => { state.sheet = { art: "kontoDetail", konto: v }; render(); },
   merksaetze: () => { state.sheet = { art: "merksaetze" }; render(); },
+  punktesammler: () => { state.sheet = { art: "punktesammler" }; render(); },
   anzahl: (v) => { state.klausurAnzahl = Math.min(60, Math.max(5, state.klausurAnzahl + Number(v))); render(); },
   minuten: (v) => { state.klausurMinuten = Number(v); render(); },
   klausurStart: () => starte({ modus: "klausur", fach: state.fach, anzahl: state.klausurAnzahl, minuten: state.klausurMinuten || null }),

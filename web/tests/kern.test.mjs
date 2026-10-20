@@ -303,3 +303,10 @@ test("Frage-Antwort: automatische Prüfung nach Norm und Stichworten", async () 
   assert.equal(pruefeOffen(f, f.antwort.replace(/§\s*\d+[a-z]?|Abs\.|AO|EStG/g, "")).korrekt, false);
   assert.equal(pruefeOffen(f, "Unbeschränkt steuerpflichtig nach § 1 Abs. 1 EStG ist jede natürliche Person mit Wohnsitz oder gewöhnlichem Aufenthalt im Inland; besteuert wird das Welteinkommen.").korrekt, true);
 });
+
+test("ESt-Punktesammler: Kartei mit Satz und Punktzahl, § 1 BGB im Normen-Tab", async () => {
+  const { PUNKTESAMMLER } = await import("../js/est/punkte.js");
+  assert.ok(PUNKTESAMMLER.length >= 1);
+  for (const p of PUNKTESAMMLER) assert.ok(p.titel && p.satz && p.punkte > 0 && p.punkte <= 60);
+  assert.ok(norm("BGB 1"));
+});
