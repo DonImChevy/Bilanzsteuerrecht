@@ -33,6 +33,7 @@ export const THEMEN = [
   { id: "oer-gesetzgebung", titel: "Gesetzgebung", unter: "Skript 2 · Art. 70–82, 105, 106 GG", icon: "📝", fach: "oer" },
   { id: "oer-zusatz", titel: "Zusatzwissen", unter: "Nicht im Skript – nicht klausurrelevant", icon: "➕", fach: "oer", zusatz: true },
   // Einkommensteuer (Skripte und Folien GS I, Rechtsstand 2026)
+  { id: "est-punkte", titel: "Punkte sammeln", unter: "Klausursätze zum Auswendiglernen · nach Dozenten-Hinweisen, ohne Gewähr", icon: "🎯", fach: "est", waechst: true }, // wird Stück für Stück gefüllt
   { id: "est-grundlagen", titel: "Einführung in die ESt", unter: "Steuerart, Erhebungsformen, Rechtsgrundlagen", icon: "📘", fach: "est" },
   { id: "est-steuerpflicht", titel: "Persönliche Steuerpflicht", unter: "§ 1 EStG, §§ 8, 9 AO", icon: "🧑", fach: "est" },
   { id: "est-einkuenfte", titel: "Einkunftsarten", unter: "§ 2 Abs. 1, 2 EStG · Dualismus", icon: "🧾", fach: "est" },
@@ -206,7 +207,7 @@ export function loesungText(frage) {
 export function typBezeichnung(frage) {
   if (frage.typ === "buchung") return "Buchungssatz";
   if (frage.typ === "auswahl") return frage.richtig.length > 1 ? "Mehrfachauswahl" : "Auswahl";
-  if (frage.typ === "offen") return frage.fall ? "Klausurfall" : "Frage – Antwort";
+  if (frage.typ === "offen") return frage.punkte ? `Punktesammler · ${frage.punkte} P.` : frage.fall ? "Klausurfall" : "Frage – Antwort";
   return "Berechnung";
 }
 

@@ -5,6 +5,7 @@ import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer } from "./katalog.js";
 import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
+import { PUNKTE_HINWEIS } from "./est/punkte.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
@@ -118,6 +119,7 @@ function sitzungTitel(x) {
   if (x.filter === "uebertragung") return "Übertragungsaufgaben";
   if (x.filter === "rechnen") return "Rechenaufgaben";
   if (x.filter === "fall") return "Fälle einordnen";
+  if (x.filter === "punkte") return "Punkte sammeln";
   if (x.filter === "qa") return state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort";
   if (x.themen.length === 1) return THEMA[x.themen[0]].titel;
   return "Gemischte Übung";
@@ -500,13 +502,14 @@ function tabLernen() {
       kachel("uebertragung", "diagramm", "Übertragung", "Grafiken auswerten · 25 %") +
       kachel("alles", "mischen", "Gemischt", "Quer durch das Skript")
     : state.fach === "est"
-    ? kachel("rechnen", "tkonto", "Rechnen", "Tarif, WK, Entfernungspauschale") +
-      kachel("fall", "ziel", "Fälle einordnen", "Steuerpflicht, § 11, Einkunftsart") +
+    ? kachel("punkte", "ziel", "Punkte sammeln", "Klausursätze auswendig · Dozenten-Hinweise") +
+      kachel("rechnen", "tkonto", "Rechnen", "Tarif, WK, Entfernungspauschale") +
+      kachel("fall", "lernen", "Fälle einordnen", "Steuerpflicht, § 11, Einkunftsart") +
       kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Definitionen und Klausurfälle") +
       kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen")
     : kachel("buchung", "tkonto", "Buchungssätze", "Immer neue Beträge") +
       kachel("alles", "mischen", "Gemischt", "Buchen, Rechnen, Theorie");
-  const breit = state.fach === "oer" ? "" : " breit";
+  const breit = state.fach === "bsr" ? " breit" : "";
   const schwachKachel = schwach && quote(zaehler(schwach.id)) < 0.8
     ? `<button class="kachel${breit}" data-a="schnell" data-v="schwach" data-t="${schwach.id}"><span class="k-icon" style="background:var(--warn-weak);color:var(--warn)">${ic("ziel")}</span><span class="k-text"><b>Schwächstes Thema</b><span class="sub">${esc(schwach.titel)} · ${Math.round(quote(zaehler(schwach.id)) * 100)} %</span></span></button>`
     : `<button class="kachel${breit}" data-a="tab" data-v="klausur"><span class="k-icon">${ic("klausur")}</span><span class="k-text"><b>Klausur</b><span class="sub">Unter Echtbedingungen</span></span></button>`;
@@ -649,7 +652,7 @@ function kontenInhalt() {
 const GESETZE = {
   oer: [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"]],
   bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["UStG", "Umsatzsteuergesetz (UStG)"]],
-  est: [["EStG", "Einkommensteuergesetz (EStG)"], ["AO", "Abgabenordnung (AO)"]],
+  est: [["EStG", "Einkommensteuergesetz (EStG)"], ["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
 };
 const normenVon = (fach) => NORMEN.filter((n) => n.faecher.includes(fach));
 /** Gesetze eines Moduls, deren Text in der App vorliegt. */
@@ -798,6 +801,7 @@ function frageView(f, antwort, b, gesperrt, aufgedeckt = false) {
   return `
     <div class="aufgabe"><div class="meta"><span>${THEMA[f.thema].icon} ${esc(THEMA[f.thema].titel)}</span><span class="typ">${f.uebertragung ? "Übertragung · " : ""}${typBezeichnung(f)}</span></div>
       <div class="text">${esc(f.text)}</div>
+      ${f.punkte ? `<div class="sub" style="margin-top:8px">🎯 ${f.punkte} von 60 Punkten in der Klausur GS I · ${esc(PUNKTE_HINWEIS)}</div>` : ""}
       ${f.grafik ? `<div class="grafik-box">${f.grafik}</div>` : ""}</div>
     ${eingabe}
     ${zeigeAuswertung ? auswertungView(f, b || { korrekt: null, offen: true }) : ""}`;
@@ -805,10 +809,12 @@ function frageView(f, antwort, b, gesperrt, aufgedeckt = false) {
 
 const offenKnopfText = (f, a) => (pruefdaten(f) && a.text.trim() ? "Prüfen" : "Antwort zeigen");
 function offenView(f, antwort, lock) {
-  const auto = !!pruefdaten(f);
+  const auto = !!pruefdaten(f), streng = pruefdaten(f)?.streng;
   return `<div class="gruppe"><div class="gruppe-titel">Deine Antwort ${lock ? "" : "<span class='sub' style='text-transform:none;letter-spacing:0'>Stichpunkte, optional</span>"}</div>
     <textarea id="offen" class="offen-eingabe" rows="5" data-fokus="offen" placeholder="Antwort mit Normen notieren – z. B. „Art. 51 Abs. 2 GG: …“" ${lock ? "readonly" : ""}>${esc(antwort.text)}</textarea>
-    ${lock ? "" : `<div class="gruppe-fuss">${auto
+    ${lock ? "" : `<div class="gruppe-fuss">${streng
+      ? "Punktesammler: Hier zählt jede Norm genau mit Gesetz, Absatz und Satz (z. B. „§ 1 Abs. 1 S. 2 EStG“ oder „§ 1 I 2 EStG“) und jedes Tatbestandsmerkmal. Reihenfolge und Satzbau sind egal."
+      : auto
       ? "Wird automatisch geprüft: die richtige Norm (z. B. „§ 26“ oder „Art. 51“) und die wichtigsten Begriffe – Formulierung und Reihenfolge sind egal. Leer lassen, um die Musterantwort aufzudecken und selbst zu bewerten."
       : "Formuliere deine Antwort wie in der Klausur und decke dann die Musterantwort auf."}</div>`}</div>`;
 }
@@ -1177,7 +1183,7 @@ const AKTIONEN = {
     const alle = pruefungsThemen(state.fach).map((t) => t.id);
     const basis = { modus: "uebung", fach: state.fach };
     if (v === "buchung") starte({ ...basis, themen: alle, nurBuchung: true });
-    else if (["qa", "uebertragung", "rechnen", "fall"].includes(v)) starte({ ...basis, themen: alle, filter: v });
+    else if (["qa", "uebertragung", "rechnen", "fall", "punkte"].includes(v)) starte({ ...basis, themen: alle, filter: v });
     else if (v === "alles") starte({ ...basis, themen: alle });
     else starte({ ...basis, themen: [el.dataset.t] });
   },
