@@ -10,6 +10,8 @@ import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederhol
 import { MODULE, MODUL, aktiveModule } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
 import { ic } from "./icons.js";
+import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, codeAnzeige, abgleichen, SERVER } from "./sync.js";
+import qrcode from "./lib/qrcode.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
@@ -22,11 +24,130 @@ function laden() {
   return LEER();
 }
 let stat = laden();
-function speichern() {
+function speichernLokal() {
   try { localStorage.setItem(SPEICHER, JSON.stringify(stat)); } catch (_) { /* privat-Modus */ }
+}
+function speichern() {
+  speichernLokal();
+  planeSync();
 }
 const lies = (k, standard) => { try { return localStorage.getItem(k) ?? standard; } catch (_) { return standard; } };
 const schreib = (k, v) => { try { localStorage.setItem(k, v); } catch (_) { /* egal */ } };
+
+// ======================= Geräte-Synchronisierung =======================
+// Abgleich per Sync-Code (sync.js): beim Start, kurz nach jeder Änderung, wenn das Netz zurückkommt
+// und wenn die App in den Hintergrund geht. Ohne Internet wird lokal weitergelernt.
+const SYNC_SPEICHER = "bsr.sync.v1";
+let syncLokal = (() => { try { return JSON.parse(localStorage.getItem(SYNC_SPEICHER)); } catch (_) { return null; } })();
+const syncZustand = { laeuft: false, nochmal: false, fehler: null, timer: null };
+const syncVerbunden = () => syncVerfuegbar() && !!syncLokal?.code && !syncLokal.getrennt;
+function syncMerken() {
+  try { if (syncLokal) localStorage.setItem(SYNC_SPEICHER, JSON.stringify(syncLokal)); else localStorage.removeItem(SYNC_SPEICHER); } catch (_) { /* egal */ }
+}
+function planeSync(ms = 4000) {
+  if (!syncVerbunden()) return;
+  clearTimeout(syncZustand.timer);
+  syncZustand.timer = setTimeout(syncJetzt, ms);
+}
+async function syncJetzt() {
+  if (!syncVerbunden()) return;
+  clearTimeout(syncZustand.timer);
+  if (syncZustand.laeuft) { syncZustand.nochmal = true; return; }
+  if (!navigator.onLine) { syncZustand.fehler = "offline"; return; }
+  syncZustand.laeuft = true;
+  try {
+    const { ergebnis, lokal } = await abgleichen(stat, syncLokal, SERVER);
+    stat = ergebnis(stat); // berücksichtigt auch Antworten, die während des Abgleichs gegeben wurden
+    speichernLokal();
+    syncLokal = lokal; syncMerken();
+    syncZustand.fehler = null;
+    if (!state.sitzung && !state.deck) render();
+  } catch (_) {
+    syncZustand.fehler = navigator.onLine ? "server" : "offline";
+  } finally {
+    syncZustand.laeuft = false;
+    if (syncZustand.nochmal) { syncZustand.nochmal = false; planeSync(500); }
+  }
+}
+/** Verbinden: neuer Code (erstes Gerät) oder vorhandenen Code übernehmen. */
+async function syncStarten(code, neu) {
+  if (!navigator.onLine) { toast("Zum Verbinden wird Internet benötigt."); return; }
+  if (!neu) {
+    let da;
+    try { da = await SERVER.holen(code); } catch (_) { toast("Server nicht erreichbar – bitte später erneut versuchen."); return; }
+    if (!da) { toast("Diesen Code gibt es nicht. Bitte prüfen."); return; }
+  }
+  // Wieder verbinden mit demselben Code: bisherigen Geräteanteil weiterführen (sonst würde doppelt gezählt)
+  syncLokal = syncLokal?.code === code ? { ...syncLokal, getrennt: false } : { code, geraet: neueGeraeteId(), eigen: null, basis: null, basisKarten: null };
+  syncMerken();
+  state.syncEingabe = "";
+  await syncJetzt();
+  toast(syncZustand.fehler ? "Verbunden – der Abgleich folgt, sobald der Server erreichbar ist." : "Verbunden – Lernstand abgeglichen.");
+  render();
+}
+function syncStatusText() {
+  if (!syncVerbunden()) return syncLokal?.getrennt ? "Getrennt" : "Lernstand auf Handy, Tablet und PC gleich halten";
+  if (syncZustand.laeuft) return "Wird abgeglichen …";
+  if (syncZustand.fehler === "offline") return "Wartet auf Internet";
+  if (syncZustand.fehler === "server") return "Server gerade nicht erreichbar – neuer Versuch beim nächsten Mal";
+  if (!syncLokal.zuletzt) return "Verbunden";
+  const min = Math.round((Date.now() - syncLokal.zuletzt) / 60000);
+  return "Zuletzt abgeglichen " + (min < 1 ? "gerade eben" : min < 60 ? `vor ${min} Min.` : new Date(syncLokal.zuletzt).toLocaleString("de-DE", { dateStyle: "short", timeStyle: "short" }));
+}
+const syncLink = (code) => `${location.origin}${location.pathname}#sync=${code}`;
+/** QR-Code als SVG (immer schwarz auf weiß, damit Kameras ihn lesen). */
+function qrSvg(text) {
+  const q = qrcode(0, "M");
+  q.addData(text);
+  q.make();
+  const n = q.getModuleCount();
+  let d = "";
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (q.isDark(r, c)) d += `M${c} ${r}h1v1h-1z`;
+  return `<svg class="qr" viewBox="-3 -3 ${n + 6} ${n + 6}" role="img" aria-label="QR-Code"><rect x="-3" y="-3" width="${n + 6}" height="${n + 6}" fill="#fff"/><path d="${d}" fill="#000"/></svg>`;
+}
+function syncView() {
+  if (!syncVerbunden()) {
+    return `<div class="gruppe-fuss" style="margin:4px 4px 14px">Lerne auf Handy, Tablet und PC mit demselben Stand. Ohne Konto und ohne E-Mail: Die Geräte werden über einen Code verbunden. Abgeglichen wird automatisch, sobald Internet da ist.</div>
+      <div class="gruppe"><div class="gruppe-titel">Erstes Gerät</div><div class="liste">
+        <button class="zeile" data-a="syncErstellen" style="justify-content:center;color:var(--accent);font-weight:700">${ic("wechsel")} Neuen Sync-Code erstellen</button></div></div>
+      <div class="gruppe"><div class="gruppe-titel">Weiteres Gerät</div><div class="liste"><div class="zeile" style="flex-wrap:wrap;gap:10px">
+        <span class="grow sub" style="min-width:100%">Code vom ersten Gerät eingeben (dort unter Einstellungen → Geräte synchronisieren):</span>
+        <input id="syncCode" data-fokus="syncCode" class="sync-eingabe" placeholder="ABCD-EFGH-JKLM-NPQR" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${esc(state.syncEingabe || "")}">
+        <button class="knopf" data-a="syncVerbinden" style="width:100%">Verbinden</button></div></div></div>`;
+  }
+  const code = syncLokal.code;
+  return `<div class="gruppe" style="margin-top:4px"><div class="gruppe-titel">Dein Sync-Code</div><div class="liste">
+      <div class="zeile" style="flex-direction:column;align-items:stretch;gap:10px">
+        <div class="sync-code">${codeAnzeige(code)}</div>
+        ${state.syncQR ? `<div class="qr-box">${qrSvg(syncLink(code))}</div><div class="sub" style="text-align:center">Mit der Kamera des anderen Geräts scannen. Bei einer installierten App auf dem iPhone/iPad den Code lieber eintippen.</div>` : ""}
+        <button class="link" data-a="syncQR" style="align-self:center">${state.syncQR ? "QR-Code ausblenden" : "QR-Code anzeigen"}</button>
+        <div class="sub">Auf dem anderen Gerät: Einstellungen → Geräte synchronisieren → Code eingeben. Gib den Code nur an deine eigenen Geräte weiter.</div>
+      </div></div></div>
+    <div class="gruppe"><div class="gruppe-titel">Status</div><div class="liste">
+      <div class="zeile"><span class="grow">${esc(syncStatusText())}</span></div>
+      <button class="zeile" data-a="syncJetzt" style="justify-content:center;color:var(--accent);font-weight:600">Jetzt abgleichen</button></div></div>
+    <div class="liste" style="margin-bottom:24px">
+      <button class="zeile" data-a="syncTrennen" style="justify-content:center;font-weight:600">Dieses Gerät trennen</button>
+      <button class="zeile" data-a="syncLoeschen" style="justify-content:center;color:var(--err);font-weight:600">Daten vom Server löschen</button></div>`;
+}
+function syncBeimStart() {
+  // Link aus dem QR-Code: …#sync=CODE → Verbinden-Dialog mit vorausgefülltem Code
+  const m = location.hash.match(/sync=([A-Za-z0-9-]+)/);
+  if (m) {
+    history.replaceState(null, "", location.pathname + location.search);
+    if (syncVerfuegbar() && !(syncVerbunden() && syncLokal.code === codeNormal(m[1]))) {
+      state.syncEingabe = codeAnzeige(codeNormal(m[1]));
+      state.sheet = { art: "sync" };
+      render();
+    }
+  }
+  syncJetzt();
+  window.addEventListener("online", () => syncJetzt());
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") syncJetzt();
+    else if (!syncLokal?.zuletzt || Date.now() - syncLokal.zuletzt > 60 * 1000) syncJetzt();
+  });
+}
 
 const zaehler = (t) => stat.proThema[t] || { b: 0, r: 0 };
 const quote = (z) => (z.b ? z.r / z.b : 0);
@@ -172,7 +293,7 @@ function korrigieren(i) {
 }
 function klausurZaehlen(x) {
   if (x.klausurEintrag == null) return;
-  const k = stat.klausuren[x.klausurEintrag];
+  const k = stat.klausuren.find((e) => e.datum === x.klausurEintrag); // per Datum – die Reihenfolge kann sich durch den Abgleich ändern
   if (k) { k.richtig = x.bewertungen.filter((b) => b?.korrekt === true).length; k.offen = x.bewertungen.filter((b) => b?.korrekt === null).length; speichern(); }
 }
 /** Selbstbewertung einer offenen Frage (Übung oder Klausur-Rückschau). */
@@ -207,7 +328,7 @@ function abgeben() {
   const richtig = x.bewertungen.filter((b) => b.korrekt === true).length;
   const offen = x.bewertungen.filter((b) => b.korrekt === null).length;
   stat.klausuren.push({ datum: x.start, richtig, offen, gesamt: x.fragen.length, sek: Math.round((x.ende - x.start) / 1000), fach: x.fach || "bsr" });
-  x.klausurEintrag = stat.klausuren.length - 1;
+  x.klausurEintrag = x.start;
   speichern();
   state.sheet = null;
   render();
@@ -1043,6 +1164,9 @@ function sheetView() {
       ${PUNKTESAMMLER.map((p) => `<div class="punkte-karte"><div class="punkte-titel">🎯 ${esc(p.titel)}</div>
         <div class="punkte-satz">${esc(p.satz)}</div>
         <div class="punkte-fuss">${p.punkte} von 60 Punkten · Klausur GS I</div></div>`).join("")}`;
+  } else if (sh.art === "sync") {
+    titel = "Geräte synchronisieren";
+    inhalt = syncView();
   } else if (sh.art === "merksaetze") {
     titel = "Merksätze";
     inhalt = `<div class="liste">${MERKSAETZE.map(([t, x]) => `<div class="zeile"><span class="grow"><b>${esc(t)}</b><div class="sub">${esc(x)}</div></span></div>`).join("")}</div>`;
@@ -1059,6 +1183,8 @@ function sheetView() {
         <span class="chip-reihe">${[10, 20, 30, 50].map((z) => `<button class="chip ${state.ziel === z ? "aktiv" : ""}" data-a="ziel" data-v="${z}">${z} Aufgaben</button>`).join("")}</span></div></div></div>
       <div class="gruppe"><div class="gruppe-titel">Darstellung</div><div class="modus-karte"><div class="segment">
         ${[["system", "System"], ["light", "Hell"], ["dark", "Dunkel"]].map(([id, t]) => `<button data-a="design" data-v="${id}" class="${state.design === id ? "aktiv" : ""}">${t}</button>`).join("")}</div></div></div>
+      ${syncVerfuegbar() ? `<div class="gruppe"><div class="gruppe-titel">Mehrere Geräte</div><div class="liste"><button class="zeile" data-a="syncOeffnen"><span class="symbol">${ic("wechsel")}</span>
+        <span class="grow"><b>Geräte synchronisieren</b><div class="sub">${esc(syncStatusText())}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
       <div class="gruppe"><div class="gruppe-titel">So funktioniert's</div><div class="liste">
         ${[
           ["🧠", "Lernkartei: Jede Aufgabe kommt nach 1, 3, 7, 16 und 35 Tagen wieder. Fehler kommen am nächsten Tag zurück."],
@@ -1066,8 +1192,8 @@ function sheetView() {
           ["✍️", "Buchungssätze: Konten über „Konto wählen“ suchen, Betrag eintippen. Die Reihenfolge der Positionen ist egal."],
           ["🎲", `Generierte Aufgaben haben bei jedem Durchlauf neue Zahlen – insgesamt ${ALLE.length} Aufgabentypen.`],
           ["⌨️", "Am Computer: Zifferntasten wählen Antworten, Enter prüft bzw. geht weiter."],
-          ["✈️", "Funktioniert offline. Der Lernfortschritt bleibt nur auf diesem Gerät."],
-          ["📊", "Beim Start wird anonym gezählt, ob die App im Browser oder vom Home-Bildschirm geöffnet wurde (GoatCounter, ohne Cookies). Lernergebnisse werden nie übertragen."],
+          ["✈️", syncVerfuegbar() ? "Funktioniert offline. Mit „Geräte synchronisieren“ gleicht sich der Lernstand zwischen deinen Geräten ab, sobald Internet da ist." : "Funktioniert offline. Der Lernfortschritt bleibt nur auf diesem Gerät."],
+          ["📊", `Beim Start wird anonym gezählt, ob die App im Browser oder vom Home-Bildschirm geöffnet wurde (GoatCounter, ohne Cookies). ${syncVerfuegbar() ? "Lernergebnisse werden nur übertragen, wenn du die Synchronisierung einschaltest – ohne Namen oder E-Mail, gespeichert in der EU." : "Lernergebnisse werden nie übertragen."}`],
         ].map(([i, t]) => `<div class="zeile"><span style="font-size:20px">${i}</span><span class="grow" style="font-size:14.5px">${t}</span></div>`).join("")}
       </div></div>
       <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Finanzwirt-Trainer – inoffizielle Lernhilfe für das Studium zum Diplom-Finanzwirt. Inhalte orientiert am Skript „Bilanzsteuerrecht Grundstudium I, Teil I“ mit Übungen sowie am Unterrichtsskript Öffentliches Recht GS I, den Altklausuren und den Gesetzestexten (Stand GG 22.03.2025, BWahlG 03.07.2026). Ohne Gewähr – maßgeblich sind Skript, Gesetz und Lehrveranstaltung.</span></div>
@@ -1171,6 +1297,24 @@ function fachSetzen(v) {
 const AKTIONEN = {
   tab: (v) => { state.tab = v; state.sheet = null; render(); window.scrollTo(0, 0); },
   einstellungen: () => { state.sheet = { art: "einstellungen" }; render(); },
+  syncOeffnen: () => { state.sheet = { art: "sync" }; render(); },
+  syncErstellen: () => syncStarten(neuerCode(), true),
+  syncVerbinden: () => {
+    const c = codeNormal(state.syncEingabe);
+    if (!codeGueltig(c)) { toast("Der Code hat 16 Zeichen, z. B. ABCD-EFGH-JKLM-NPQR."); return; }
+    if (confirm("Mit diesem Code verbinden? Dein Lernstand auf diesem Gerät wird mit dem der anderen Geräte zusammengeführt.")) syncStarten(c, false);
+  },
+  syncJetzt: async () => { await syncJetzt(); toast(syncZustand.fehler ? syncStatusText() : "Abgeglichen."); render(); },
+  syncQR: () => { state.syncQR = !state.syncQR; render(); },
+  syncTrennen: () => {
+    if (!confirm("Dieses Gerät trennen? Der Lernstand bleibt hier und auf den anderen Geräten erhalten, wird aber nicht mehr abgeglichen.")) return;
+    syncLokal = { ...syncLokal, getrennt: true }; syncMerken(); render(); toast("Gerät getrennt.");
+  },
+  syncLoeschen: async () => {
+    if (!confirm("Gespeicherten Lernstand vom Server löschen und dieses Gerät trennen? Trenne danach auch deine anderen Geräte – sonst laden sie ihren Stand beim nächsten Abgleich wieder hoch.")) return;
+    try { await SERVER.loeschen(syncLokal.code); } catch (_) { toast("Server nicht erreichbar – bitte später erneut versuchen."); return; }
+    syncLokal = null; syncMerken(); render(); toast("Vom Server gelöscht.");
+  },
   info: () => { state.sheet = { art: "einstellungen" }; render(); },
   modul: (v) => { fachSetzen(v); state.sheet = null; state.suche = ""; state.tab = "lernen"; render(); window.scrollTo(0, 0); },
   fach: (v) => { fachSetzen(v); render(); },
@@ -1314,7 +1458,10 @@ const AKTIONEN = {
   },
   deckZu: () => { state.deck = null; render(); },
   reset: () => {
-    if (confirm("Gesamten Fortschritt löschen? Das kann nicht rückgängig gemacht werden.")) { stat = LEER(); speichern(); state.sheet = null; render(); toast("Fortschritt gelöscht."); }
+    const verbunden = syncVerbunden();
+    if (!confirm(`Gesamten Fortschritt löschen? Das kann nicht rückgängig gemacht werden.${verbunden ? "\n\nDieses Gerät wird dabei von der Synchronisierung getrennt; auf deinen anderen Geräten bleibt der Lernstand erhalten." : ""}`)) return;
+    if (verbunden) { syncLokal = null; syncMerken(); } // sonst würde der Abgleich das Löschen als „Minus“ auf alle Geräte übertragen
+    stat = LEER(); speichernLokal(); state.sheet = null; render(); toast("Fortschritt gelöscht.");
   },
 };
 
@@ -1357,6 +1504,8 @@ app.addEventListener("input", (e) => {
   } else if (t.id === "kontoSuche") {
     state.kontoSuche = t.value;
     document.getElementById("kontoListe").innerHTML = kontoListe("kontoGewaehlt");
+  } else if (t.id === "syncCode") {
+    state.syncEingabe = t.value;
   } else if (t.id === "kontoTabSuche") {
     state.kontoSuche = t.value;
     document.getElementById("kontoTabListe").innerHTML = kontoListe("kontoDetail");
@@ -1461,6 +1610,7 @@ document.addEventListener("visibilitychange", () => {
 const VERSION = "1.0.0";
 render();
 zaehleStart();
+syncBeimStart();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

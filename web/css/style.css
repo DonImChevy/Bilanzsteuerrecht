@@ -365,6 +365,9 @@ button.zeile:active, button.karte-btn:active { background: var(--card2); }
 .loesung-zeile.haben { padding-left: 22px; }
 .loesung { background: var(--card2); border-radius: 12px; padding: 10px 12px; margin: 8px 0; }
 .fehlt { color: var(--err); font-size: 13.5px; margin-top: 6px; }
+.sync-code { font: 800 24px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 1px; text-align: center; padding: 6px 0; user-select: all; -webkit-user-select: all; }
+.sync-eingabe { width: 100%; font: 700 19px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; letter-spacing: 1px; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--card2); background: var(--card2); color: var(--text); }
+.qr-box { display: flex; justify-content: center; } .qr { width: 220px; height: 220px; border-radius: 10px; }
 .punkte-karte { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--accent); }
 .punkte-titel { font-weight: 800; margin-bottom: 8px; }
 .punkte-satz { font-size: 16.5px; line-height: 1.55; }
