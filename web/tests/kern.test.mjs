@@ -310,3 +310,14 @@ test("ESt-Punktesammler: Kartei mit Satz und Punktzahl, § 1 BGB im Normen-Tab",
   for (const p of PUNKTESAMMLER) assert.ok(p.titel && p.satz && p.punkte > 0 && p.punkte <= 60);
   assert.ok(norm("BGB 1"));
 });
+
+test("Multiple Choice bei Klausurfällen behält den Sachverhalt", () => {
+  const faelle = ALLE.map((v) => v.erzeugen(new Zufall(1))).filter((f) => f.typ === "offen" && f.fall);
+  assert.ok(faelle.length >= 14);
+  for (const f of faelle) {
+    const m = alsMultipleChoice(f, new Zufall(2));
+    const sachverhalt = f.text.replace(/\n\nAufgabe:[\s\S]*$/, "");
+    assert.ok(m.text.startsWith(sachverhalt) && m.text.length > sachverhalt.length + 10, "Sachverhalt fehlt: " + f.id);
+    assert.ok(!/\n\nAufgabe:/.test(m.text), "Arbeitsanweisung doppelt: " + f.id);
+  }
+});

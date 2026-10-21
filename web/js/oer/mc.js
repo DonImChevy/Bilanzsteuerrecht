@@ -470,5 +470,7 @@ export function alsMultipleChoice(f, r) {
   if (!d || f.typ !== "offen") return f;
   const optionen = [...d.r, ...d.f];
   const richtig = d.r.map((_, i) => i);
-  return { ...auswahl(f.id, f.thema, d.frage || f.text, optionen, richtig, f.erklaerung, r), normen: f.normen, antwort: f.antwort, zusatzZitate: f.zusatzZitate };
+  // Klausurfall: Sachverhalt bleibt stehen, nur die Arbeitsanweisung („Aufgabe: …“) wird durch die MC-Frage ersetzt
+  const text = f.fall && d.frage ? `${f.text.replace(/\n\nAufgabe:[\s\S]*$/, "")}\n\n${d.frage}` : d.frage || f.text;
+  return { ...auswahl(f.id, f.thema, text, optionen, richtig, f.erklaerung, r), normen: f.normen, antwort: f.antwort, zusatzZitate: f.zusatzZitate, fall: f.fall };
 }
