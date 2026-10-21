@@ -14,10 +14,10 @@ export function tagPlus(zeit, tage) {
   return d.getTime();
 }
 
-/** Neuer Eintrag nach einer Antwort. */
+/** Neuer Eintrag nach einer Antwort (t = Zeitpunkt der Antwort, für den Abgleich zwischen Geräten). */
 export function planen(eintrag, korrekt, jetzt = Date.now()) {
   const fach = korrekt ? Math.min(FAECHER_MAX, (eintrag?.fach || 0) + 1) : 1;
-  return { fach, faellig: tagPlus(jetzt, INTERVALLE[fach]) };
+  return { fach, faellig: tagPlus(jetzt, INTERVALLE[fach]), t: jetzt };
 }
 
 /** Fällige Aufgaben-IDs, am längsten überfällige zuerst. */

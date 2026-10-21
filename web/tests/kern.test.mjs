@@ -176,14 +176,14 @@ test("Wiederholung nach Lernintervallen", async () => {
   const { planen, faellige, naechste, tagPlus } = await import("../js/wiederholung.js");
   const t0 = new Date(2026, 9, 19, 15, 30).getTime();
   let e = planen(undefined, true, t0);
-  assert.deepEqual(e, { fach: 1, faellig: tagPlus(t0, 1) });
+  assert.deepEqual(e, { fach: 1, faellig: tagPlus(t0, 1), t: t0 });
   assert.equal(new Date(e.faellig).getDate(), 20);
   assert.equal(new Date(e.faellig).getHours(), 0);
   const tage = [];
   for (let i = 0; i < 6; i++) { e = planen(e, true, t0); tage.push(e.fach); }
   assert.deepEqual(tage, [2, 3, 4, 5, 5, 5]);
   assert.equal(new Date(e.faellig).getMonth(), 10); // 35 Tage später → November
-  assert.deepEqual(planen(e, false, t0), { fach: 1, faellig: tagPlus(t0, 1) });
+  assert.deepEqual(planen(e, false, t0), { fach: 1, faellig: tagPlus(t0, 1), t: t0 });
   const lern = { a: { fach: 1, faellig: t0 - 10 }, b: { fach: 2, faellig: t0 - 99 }, c: { fach: 3, faellig: t0 + 5 } };
   assert.deepEqual(faellige(lern, ["a", "b", "c", "d"], t0), ["b", "a"]);
   assert.equal(naechste(lern, ["a", "b", "c"], t0), t0 + 5);
@@ -329,4 +329,67 @@ test("Multiple-Choice-Modus lässt Klausurfälle aus", async () => {
   assert.ok(!fragen(themen, 400, new Zufall(5), "qa", true).some((f) => f.fall));
   assert.ok(fragen(themen, 400, new Zufall(5), "qa").some((f) => f.fall));
   for (const fach of ["oer", "est"]) for (let s = 0; s < 20; s++) assert.ok(!klausur(30, new Zufall(s), fach, true).some((f) => f.fall), fach);
+});
+
+test("Synchronisierung: zwei Geräte, nichts doppelt, nichts verloren", async () => {
+  const S = await import("../js/sync.js");
+  const { planen } = await import("../js/wiederholung.js");
+  // Ersatz-Server mit Versionsprüfung wie in server/supabase.sql
+  const db = {};
+  const server = {
+    holen: async (c) => (db[c] ? JSON.parse(JSON.stringify(db[c])) : null),
+    speichern: async (c, daten, v) => {
+      if (v === 0) { if (db[c]) return null; db[c] = { daten, version: 1 }; return 1; }
+      if (!db[c] || db[c].version !== v) return null;
+      db[c] = { daten, version: v + 1 }; return v + 1;
+    },
+  };
+  const leer = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null });
+  const antwort = (st, thema, id, ok, t) => {
+    const z = st.proThema[thema] || { b: 0, r: 0 };
+    st.proThema[thema] = { b: z.b + 1, r: z.r + (ok ? 1 : 0) };
+    st.tage["2026-10-21"] = (st.tage["2026-10-21"] || 0) + 1;
+    st.lern[id] = planen(st.lern[id], ok, t);
+  };
+  const code = S.neuerCode();
+  assert.ok(S.codeGueltig(code) && S.codeGueltig(S.codeNormal(S.codeAnzeige(code).toLowerCase())));
+  const sync = async (st, lok) => { const { ergebnis, lokal } = await S.abgleichen(st, lok, server, 1000); return [ergebnis(st), lokal]; };
+
+  // Handy: 10 Antworten, dann Code erstellen
+  let handy = leer(), lh = { code, geraet: "HANDY" };
+  for (let i = 0; i < 10; i++) antwort(handy, "est-tarif", "a" + i, i % 2 === 0, 100 + i);
+  handy.karten = ["k1"];
+  [handy, lh] = await sync(handy, lh);
+  // iPad hat vorher schon 5 Antworten gesammelt, verbindet sich dann
+  let ipad = leer(), li = { code, geraet: "IPAD" };
+  for (let i = 0; i < 5; i++) antwort(ipad, "est-tarif", "b" + i, true, 200 + i);
+  [ipad, li] = await sync(ipad, li);
+  assert.deepEqual(ipad.proThema["est-tarif"], { b: 15, r: 10 });
+  assert.equal(ipad.tage["2026-10-21"], 15);
+  assert.ok(ipad.karten.includes("k1"));
+  // beide lernen offline weiter, a0 auf dem iPad später nochmal (neuer gewinnt)
+  antwort(handy, "est-tarif", "a1", true, 300);
+  antwort(ipad, "est-tarif", "a0", false, 400);
+  handy.klausuren.push({ datum: 500, richtig: 7, offen: 0, gesamt: 10, sek: 60, fach: "est" });
+  [handy, lh] = await sync(handy, lh);
+  [ipad, li] = await sync(ipad, li);
+  [handy, lh] = await sync(handy, lh);
+  for (const st of [handy, ipad]) {
+    assert.deepEqual(st.proThema["est-tarif"], { b: 17, r: 11 });
+    assert.equal(st.tage["2026-10-21"], 17);
+    assert.equal(st.klausuren.length, 1);
+    assert.equal(st.lern.a0.t, 400);
+    assert.equal(st.lern.a1.t, 300);
+  }
+  // wiederholter Abgleich ohne Änderungen zählt nichts doppelt
+  [handy, lh] = await sync(handy, lh); [handy, lh] = await sync(handy, lh);
+  assert.deepEqual(handy.proThema["est-tarif"], { b: 17, r: 11 });
+  // Antwort während des Abgleichs geht nicht verloren
+  const { ergebnis, lokal } = await S.abgleichen(handy, lh, server, 2000);
+  const waehrend = JSON.parse(JSON.stringify(handy)); antwort(waehrend, "est-tarif", "c1", true, 600);
+  handy = ergebnis(waehrend); lh = lokal;
+  assert.deepEqual(handy.proThema["est-tarif"], { b: 18, r: 12 });
+  [handy, lh] = await sync(handy, lh); [ipad, li] = await sync(ipad, li);
+  assert.deepEqual(ipad.proThema["est-tarif"], { b: 18, r: 12 });
+  assert.ok(ipad.lern.c1);
 });
