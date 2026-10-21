@@ -33,13 +33,16 @@ export const fachVon = (vorlage) => THEMA[vorlage.thema].fach;
 
 const istBuchung = (v) => v.erzeugen(new Zufall(1)).typ === "buchung";
 const BUCHUNGS_IDS = new Set(ALLE.filter(istBuchung).map((v) => v.id));
+/** Klausurfälle (lange Sachverhalte) – im Multiple-Choice-Modus ausgelassen. */
+export const FALL_IDS = new Set(ALLE.filter((v) => v.erzeugen(new Zufall(1)).fall).map((v) => v.id));
 
 /**
  * Zieht `anzahl` Aufgaben; jede Vorlage kommt erst wieder dran, wenn alle anderen einmal dran waren.
  * filter: "buchung" (nur Buchungssätze), "uebertragung" (ÖR-Übertragungsaufgaben), "qa" (ÖR Frage-Antwort) oder null
+ * ohneFaelle: Klausurfälle auslassen (Multiple-Choice-Modus)
  */
-export function fragen(themen, anzahl, r, filter = null) {
-  let pool = ALLE.filter((v) => themen.includes(v.thema));
+export function fragen(themen, anzahl, r, filter = null, ohneFaelle = false) {
+  let pool = ALLE.filter((v) => themen.includes(v.thema) && !(ohneFaelle && FALL_IDS.has(v.id)));
   if (filter === true || filter === "buchung") pool = pool.filter((v) => BUCHUNGS_IDS.has(v.id));
   if (filter === "uebertragung") pool = pool.filter((v) => v.kategorie === "uebertragung");
   if (filter === "qa") pool = pool.filter((v) => v.kategorie !== "uebertragung" && v.kategorie !== "rechnen" && v.kategorie !== "fall");
@@ -68,12 +71,12 @@ function gewichtet(pool, anzahl, r) {
   return out;
 }
 
-export function klausur(anzahl, r, fach = "bsr") {
+export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false) {
   const alle = pruefungsThemen(fach).map((t) => t.id);
   if (fach === "oer") {
     // Klausurstruktur ÖR: ca. 75 % Frage-Antwort (davon häufige Klausurthemen doppelt gewichtet), 25 % Übertragungsaufgaben
     const ue = fragen(alle, Math.round(anzahl * 0.25), r, "uebertragung");
-    const pool = ALLE.filter((v) => alle.includes(v.thema) && v.kategorie !== "uebertragung");
+    const pool = ALLE.filter((v) => alle.includes(v.thema) && v.kategorie !== "uebertragung" && !(ohneFaelle && FALL_IDS.has(v.id)));
     const qa = gewichtet(pool, anzahl - ue.length, r);
     return r.mischen([...qa, ...ue]);
   }
@@ -81,7 +84,7 @@ export function klausur(anzahl, r, fach = "bsr") {
     // Klausurstruktur ESt: Gesamtfall-Charakter – ca. 50 % Rechenaufgaben, Rest Einordnungsfälle und Frage-Antwort
     const re = fragen(alle, Math.round(anzahl * 0.5), r, "rechnen");
     const fa = fragen(alle, Math.round(anzahl * 0.2), r, "fall");
-    const qa = fragen(alle, anzahl - re.length - fa.length, r, "qa");
+    const qa = fragen(alle, anzahl - re.length - fa.length, r, "qa", ohneFaelle);
     return r.mischen([...re, ...fa, ...qa]);
   }
   const b = fragen(alle, Math.ceil(anzahl * 0.6), r, "buchung");
