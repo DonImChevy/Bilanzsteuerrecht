@@ -1,7 +1,7 @@
 import * as G from "./geld.js";
 import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
 import { THEMEN, THEMA, themenFuer, pruefungsThemen, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
-import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer } from "./katalog.js";
+import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer, FALL_IDS } from "./katalog.js";
 import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
@@ -85,13 +85,16 @@ function designAnwenden() {
 
 // ======================= Sitzung =======================
 function neueSitzung(opt) {
-  const r = new Zufall();
+  const r = new Zufall(), mc = state.oerModus === "mc";
+  // Multiple Choice ist für unterwegs: lange Klausurfälle bleiben dort außen vor (außer es bliebe sonst nichts übrig)
+  const vorlagen = opt.ids ? opt.ids.map((id) => ALLE.find((v) => v.id === id)).filter(Boolean) : [];
+  const ohneFall = vorlagen.filter((v) => !(mc && FALL_IDS.has(v.id)));
   let fr = opt.ids
-    ? r.mischen(opt.ids.map((id) => ALLE.find((v) => v.id === id)).filter(Boolean).map((v) => v.erzeugen(r)))
+    ? r.mischen((ohneFall.length ? ohneFall : vorlagen).map((v) => v.erzeugen(r)))
     : opt.modus === "klausur"
-    ? klausur(opt.anzahl, r, opt.fach)
-    : fragen(opt.themen, opt.anzahl || 10, r, opt.filter ?? opt.nurBuchung);
-  if (state.oerModus === "mc") fr = fr.map((f) => alsMultipleChoice(f, r));
+    ? klausur(opt.anzahl, r, opt.fach, mc)
+    : fragen(opt.themen, opt.anzahl || 10, r, opt.filter ?? opt.nurBuchung, mc);
+  if (mc) fr = fr.map((f) => alsMultipleChoice(f, r));
   return {
     ...opt, fragen: fr, antworten: fr.map(leereAntwort), bewertungen: fr.map(() => null), aufgedeckt: fr.map(() => false),
     index: 0, beendet: false, start: Date.now(), ende: null, review: null,
@@ -558,7 +561,7 @@ function modusSchalter() {
   return `<div class="gruppe"><div class="gruppe-titel">Antwortmodus</div><div class="modus-karte"><div class="segment">${m.map(([id, i, t]) =>
     `<button data-a="oerModus" data-v="${id}" class="${state.oerModus === id ? "aktiv" : ""}">${ic(i, "klein")}${t}</button>`).join("")}</div>
     <div class="gruppe-fuss">${state.oerModus === "mc"
-      ? "Ankreuzen statt formulieren – oft sind mehrere Antworten richtig. Ideal, wenn du das Gesetz gerade nicht dabei hast."
+      ? "Ankreuzen statt formulieren – oft sind mehrere Antworten richtig. Ideal für unterwegs: lange Klausurfälle werden hier ausgelassen."
       : "Antwort selbst formulieren wie in der Klausur – automatisch geprüft nach Norm und Kernbegriffen, mit Musterantwort und Normzitat."}</div></div></div>`;
 }
 

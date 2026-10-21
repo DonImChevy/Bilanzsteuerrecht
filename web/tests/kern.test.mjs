@@ -321,3 +321,12 @@ test("Multiple Choice bei Klausurfällen behält den Sachverhalt", () => {
     assert.ok(!/\n\nAufgabe:/.test(m.text), "Arbeitsanweisung doppelt: " + f.id);
   }
 });
+
+test("Multiple-Choice-Modus lässt Klausurfälle aus", async () => {
+  const { FALL_IDS } = await import("../js/katalog.js");
+  assert.ok(FALL_IDS.has("est-fall-physio") && FALL_IDS.has("oer-fall-art102"));
+  const themen = THEMEN.filter((t) => t.fach !== "bsr").map((t) => t.id);
+  assert.ok(!fragen(themen, 400, new Zufall(5), "qa", true).some((f) => f.fall));
+  assert.ok(fragen(themen, 400, new Zufall(5), "qa").some((f) => f.fall));
+  for (const fach of ["oer", "est"]) for (let s = 0; s < 20; s++) assert.ok(!klausur(30, new Zufall(s), fach, true).some((f) => f.fall), fach);
+});
