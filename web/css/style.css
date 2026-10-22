@@ -368,6 +368,20 @@ button.zeile:active, button.karte-btn:active { background: var(--card2); }
 .sync-code { font: 800 24px/1.2 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: 1px; text-align: center; padding: 6px 0; user-select: all; -webkit-user-select: all; }
 .sync-eingabe { width: 100%; font: 700 19px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; letter-spacing: 1px; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--card2); background: var(--card2); color: var(--text); }
 .qr-box { display: flex; justify-content: center; } .qr { width: 220px; height: 220px; border-radius: 10px; }
+.paar-feld { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-bottom: 12px; }
+.paar-spalte { display: flex; flex-direction: column; gap: 8px; }
+.paar-karte { min-height: 54px; padding: 8px 10px; border-radius: 12px; background: var(--card); box-shadow: var(--shadow); border: 2px solid transparent; color: var(--text); font: 600 13.5px/1.25 inherit; text-align: center; cursor: pointer; transition: transform 0.15s, border-color 0.15s, background 0.15s; -webkit-tap-highlight-color: transparent; }
+.paar-karte.l { color: var(--accent); font-weight: 800; font-size: 14px; }
+.paar-karte.gewaehlt { border-color: var(--accent); background: var(--accent-weak); transform: scale(1.03); }
+.paar-karte.treffer { border-color: var(--ok); background: var(--ok-weak); animation: paarTreffer 0.45s forwards; }
+.paar-karte.falsch { border-color: var(--err); background: var(--err-weak); animation: paarFalsch 0.4s; }
+.paar-karte.weg { visibility: hidden; }
+@keyframes paarTreffer { 35% { transform: scale(1.08); } to { transform: scale(0.5); opacity: 0; } }
+@keyframes paarFalsch { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.herzen { font-size: 22px; line-height: 1; color: #e11d48; letter-spacing: 2px; white-space: nowrap; }
+.herz { display: inline-block; } .herz.leer { color: var(--text3); }
+.herz.verloren { animation: herzWeg 0.55s; }
+@keyframes herzWeg { 30% { transform: scale(1.5); } to { transform: scale(0.4); opacity: 0.2; } }
 .punkte-karte { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--accent); }
 .punkte-titel { font-weight: 800; margin-bottom: 8px; }
 .punkte-satz { font-size: 16.5px; line-height: 1.55; }

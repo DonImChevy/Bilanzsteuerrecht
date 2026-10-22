@@ -6,6 +6,7 @@ import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
+import { PAARE } from "./est/paare.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
@@ -182,6 +183,7 @@ const state = {
   sitzung: null,
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
+  paare: null, // Spiel „Paare finden“: {links, rechts, weg, leben, wahl, start, ende, sperre}
   klausurAnzahl: 20,
   klausurMinuten: 45,
   kartenThemen: new Set(),
@@ -388,6 +390,7 @@ function render() {
   if (state.tab !== "start") html += `<nav class="tabbar">${TABS().map(([id, i, t]) => `<button data-a="tab" data-v="${id}" class="${state.tab === id ? "aktiv" : ""}" aria-label="${t}"><span class="ti">${ic(i)}</span>${t}</button>`).join("")}</nav>`;
   if (state.sitzung) html += sitzungView();
   if (state.deck) html += deckView();
+  if (state.paare) html += paareView();
   if (state.sheet) html += sheetView();
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
   const scrollVoll = animVoll ? 0 : app.querySelector(".vollbild .vb-inhalt")?.scrollTop || 0;
@@ -398,7 +401,7 @@ function render() {
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
-  document.body.style.overflow = state.sitzung || state.deck || state.sheet ? "hidden" : "";
+  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.sheet ? "hidden" : "";
   if (fokusId) {
     const el = document.querySelector(`[data-fokus="${fokusId}"]`);
     if (el) { el.focus(); if (pos && el.setSelectionRange) try { el.setSelectionRange(...pos); } catch (_) { /* egal */ } }
@@ -409,7 +412,7 @@ function render() {
 // Jede geöffnete Ebene (Unterseite, Übung, Rückschau, Lernkarten, Menü) bekommt einen Eintrag im Browserverlauf.
 // So schließt die Zurück-Geste (Android) bzw. Zurück-Taste die oberste Ebene, statt die App zu verlassen.
 let verlaufTiefe = 0, popIgnorieren = 0;
-const ansichtTiefe = () => (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.sheet ? 1 : 0);
+const ansichtTiefe = () => (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.sheet ? 1 : 0);
 function verlaufAbgleichen() {
   const t = ansichtTiefe();
   while (verlaufTiefe < t) { verlaufTiefe += 1; history.pushState({ tiefe: verlaufTiefe }, ""); }
@@ -419,6 +422,7 @@ function verlaufAbgleichen() {
 function ebeneZurueck() {
   if (state.sheet) AKTIONEN.sheetZu();
   else if (state.deck) AKTIONEN.deckZu();
+  else if (state.paare) AKTIONEN.paareZu();
   else if (state.sitzung?.review != null) AKTIONEN.reviewZurueck();
   else if (state.sitzung) AKTIONEN.beenden();
   else if (state.tab !== "start") AKTIONEN.tab("start");
@@ -433,7 +437,7 @@ window.addEventListener("popstate", () => {
 const ansicht = {};
 const schluessel = {
   tab: () => state.tab + state.fach,
-  voll: () => (state.sitzung ? "s" + state.sitzung.start + (state.sitzung.beendet ? "e" : "") : "") + (state.deck ? "d" + state.deck.karten.length : ""),
+  voll: () => (state.sitzung ? "s" + state.sitzung.start + (state.sitzung.beendet ? "e" : "") : "") + (state.deck ? "d" + state.deck.karten.length : "") + (state.paare ? "p" + state.paare.start + (state.paare.ende ? "e" : "") : ""),
   sheet: () => state.sheet?.art || "",
 };
 
@@ -634,10 +638,11 @@ function tabLernen() {
       kachel("rechnen", "tkonto", "Rechnen", "Tarif, WK, Entfernungspauschale") +
       kachel("fall", "lernen", "Fälle einordnen", "Steuerpflicht, § 11, Einkunftsart") +
       kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Definitionen und Klausurfälle") +
-      kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen")
+      kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") +
+      `<button class="kachel" data-a="paareStart"><span class="k-icon">${ic("karten")}</span><span class="k-text"><b>Paare finden</b><span class="sub">Wichtige Normen und ihre Bedeutung</span></span></button>`
     : kachel("buchung", "tkonto", "Buchungssätze", "Immer neue Beträge") +
       kachel("alles", "mischen", "Gemischt", "Buchen, Rechnen, Theorie");
-  const breit = state.fach === "bsr" ? " breit" : "";
+  const breit = state.fach === "oer" ? "" : " breit";
   const schwachKachel = schwach && quote(zaehler(schwach.id)) < 0.8
     ? `<button class="kachel${breit}" data-a="schnell" data-v="schwach" data-t="${schwach.id}"><span class="k-icon" style="background:var(--warn-weak);color:var(--warn)">${ic("ziel")}</span><span class="k-text"><b>Schwächstes Thema</b><span class="sub">${esc(schwach.titel)} · ${Math.round(quote(zaehler(schwach.id)) * 100)} %</span></span></button>`
     : `<button class="kachel${breit}" data-a="tab" data-v="klausur"><span class="k-icon">${ic("klausur")}</span><span class="k-text"><b>Klausur</b><span class="sub">Unter Echtbedingungen</span></span></button>`;
@@ -1134,6 +1139,68 @@ function deckView() {
     <div class="vb-fuss"><div class="reihe">${deckFuss(d.um)}</div></div></div>`;
 }
 
+// ======================= Spiel „Paare finden“ =======================
+// 10 Normen links, 10 Kurzerklärungen rechts; passende Paare antippen. Drei Leben pro Runde.
+const PAAR_ANZAHL = 10, PAAR_LEBEN = 3;
+function neuePaarRunde() {
+  const r = new Zufall();
+  const auswahl = r.mischen(PAARE[state.fach] || []).slice(0, PAAR_ANZAHL).map(([norm, text], id) => ({ id, norm, text }));
+  state.paare = { links: r.mischen(auswahl), rechts: r.mischen(auswahl), weg: [], leben: PAAR_LEBEN, wahl: null, start: Date.now(), ende: null, sperre: false };
+}
+function paareView() {
+  const p = state.paare, n = p.links.length;
+  const herzen = Array.from({ length: PAAR_LEBEN }, (_, i) => `<span class="herz${i < p.leben ? "" : " leer"}">${i < p.leben ? "♥" : "♡"}</span>`).join("");
+  const kopf = `<div class="vb-kopf"><button class="rund" data-a="paareZu" aria-label="Beenden">${ic("kreuz")}</button><div class="mitte">Paare finden · ${p.weg.length}/${n}</div><span class="herzen" aria-label="${p.leben} Leben">${herzen}</span></div>`;
+  if (p.ende) {
+    const geschafft = p.weg.length === n, sek = Math.round((p.ende - p.start) / 1000);
+    const rest = p.links.filter((k) => !p.weg.includes(k.id));
+    return `<div class="vollbild">${geschafft ? konfetti() : ""}${kopf}
+      <div class="vb-inhalt zentriert" style="display:flex;flex-direction:column"><div style="margin:auto 0">
+        <div style="font-size:60px">${geschafft ? "🎉" : "💔"}</div>
+        <div class="ergebnis-titel">${geschafft ? "Alle Paare gefunden!" : "Keine Leben mehr"}</div>
+        <p class="sub" style="font-size:15px">${geschafft ? `Mit ${p.leben} von ${PAAR_LEBEN} Leben übrig` : `${p.weg.length} von ${n} Paaren gefunden`} · ${Math.floor(sek / 60)}:${String(sek % 60).padStart(2, "0")} min</p>
+        ${rest.length ? `<div class="liste" style="text-align:left;margin-top:8px"><div class="zeile"><span class="grow sub">Diese Paare fehlten noch:</span></div>${rest.map((k) => `<div class="zeile"><span class="grow"><b>${esc(k.norm)}</b><div class="sub">${esc(k.text)}</div></span></div>`).join("")}</div>` : ""}
+        <button class="knopf" data-a="paareStart" style="max-width:300px;margin:16px auto 6px">${ic("wiederholen")} Neue Runde</button>
+        <button class="link" data-a="paareZu">Fertig</button></div></div></div>`;
+  }
+  const karte = (seite, k) => {
+    const weg = p.weg.includes(k.id), gewaehlt = p.wahl?.seite === seite && p.wahl.id === k.id;
+    return `<button class="paar-karte ${seite}${weg ? " weg" : ""}${gewaehlt ? " gewaehlt" : ""}" data-a="paarWahl" data-v="${seite}:${k.id}" ${weg ? "disabled" : ""}>${esc(seite === "l" ? k.norm : k.text)}</button>`;
+  };
+  return `<div class="vollbild">${kopf}
+    <div class="vb-inhalt">
+      <div class="sub" style="text-align:center;margin:2px 0 10px">Tippe eine Norm und die passende Bedeutung an.</div>
+      <div class="paar-feld"><div class="paar-spalte">${p.links.map((k) => karte("l", k)).join("")}</div><div class="paar-spalte">${p.rechts.map((k) => karte("r", k)).join("")}</div></div>
+    </div></div>`;
+}
+const paarKarte = (seite, id) => document.querySelector(`[data-a="paarWahl"][data-v="${seite}:${id}"]`);
+function paarWahl(v) {
+  const p = state.paare, [seite, idText] = v.split(":"), id = Number(idText);
+  if (!p || p.sperre || p.ende || p.weg.includes(id)) return;
+  const el = paarKarte(seite, id);
+  // erste Karte wählen, auf derselben Seite umwählen oder abwählen
+  if (!p.wahl || p.wahl.seite === seite) {
+    document.querySelectorAll(".paar-karte.gewaehlt").forEach((x) => x.classList.remove("gewaehlt"));
+    if (p.wahl?.seite === seite && p.wahl.id === id) { p.wahl = null; return; }
+    p.wahl = { seite, id };
+    el?.classList.add("gewaehlt");
+    return;
+  }
+  const andere = paarKarte(p.wahl.seite, p.wahl.id);
+  p.sperre = true;
+  if (p.wahl.id === id) {
+    [el, andere].forEach((x) => x?.classList.add("treffer"));
+    if (navigator.vibrate) navigator.vibrate(20);
+    setTimeout(() => { p.weg.push(id); p.wahl = null; p.sperre = false; if (p.weg.length === p.links.length) p.ende = Date.now(); render(); }, 450);
+  } else {
+    [el, andere].forEach((x) => { x?.classList.remove("gewaehlt"); x?.classList.add("falsch"); });
+    document.querySelectorAll(".herz:not(.leer)")[p.leben - 1]?.classList.add("verloren");
+    p.leben -= 1;
+    if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
+    setTimeout(() => { p.wahl = null; p.sperre = false; if (p.leben <= 0) p.ende = Date.now(); render(); }, 600);
+  }
+}
+
 // ======================= Render: Sheets =======================
 function sheetView() {
   const sh = state.sheet;
@@ -1457,6 +1524,9 @@ const AKTIONEN = {
     render();
   },
   deckZu: () => { state.deck = null; render(); },
+  paareStart: () => { neuePaarRunde(); render(); },
+  paarWahl: (v) => paarWahl(v),
+  paareZu: () => { state.paare = null; render(); },
   reset: () => {
     const verbunden = syncVerbunden();
     if (!confirm(`Gesamten Fortschritt löschen? Das kann nicht rückgängig gemacht werden.${verbunden ? "\n\nDieses Gerät wird dabei von der Synchronisierung getrennt; auf deinen anderen Geräten bleibt der Lernstand erhalten." : ""}`)) return;
