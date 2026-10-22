@@ -32,11 +32,20 @@ AUSWAHL_EST = {
              "46": ["2", "4"]},
     "AO": {"8": None, "9": None},
 }
+# Umsatzsteuer (Aufruf mit --ust → web/js/ust/normen.js, Export NORMEN_UST)
+AUSWAHL_UST = {
+    "UStG": {"1": ["1", "2"], "2": ["1"], "3": ["1", "1b", "3", "4", "6", "6a", "7", "9", "9a", "12"], "3a": ["1", "2", "3|1,3"],
+             "4": [""], "9": ["1", "2"], "10": ["1", "4", "5"], "12": ["1", "2|1,15"], "13": ["1"], "13a": ["1"],
+             "14": ["1", "4"], "14c": None, "15": ["1", "1a", "2", "3", "4"], "17": ["1"], "19": ["1"]},
+}
 # Paragrafen ohne amtliche Überschrift: Titel des Abschnitts
 TITEL = {("EStG", "3"): "Steuerfreie Einnahmen", ("EStG", "11"): "Vereinnahmung und Verausgabung",
          ("EStG", "12"): "Nicht abzugsfähige Ausgaben", ("EStG", "9b"): "Umsatzsteuerrechtlicher Vorsteuerabzug"}
 # Im PDF über einen Seitenumbruch verschobene Textteile (gehören zu § 3 Nr. 13 EStG)
-TEXT_KORREKTUR = {("EStG", "3"): [(r"Trennungsgelder\. Die als Reisekostenvergütungen .*?abziehbaren Aufwendungen nicht übersteigen; ", "")]}
+TEXT_KORREKTUR = {("UStG", "3a"): [(r"\n1\. 2\. Eine sonstige", "\n1. Eine sonstige"),
+                                    (r" Die kurzfristige Vermietung eines Beförderungsmittels.*?(?=\n3\.)", "")],
+                  ("UStG", "12"): [(r" -+\*\).*?(?=\n…)", "")],
+                  ("EStG", "3"): [(r"Trennungsgelder\. Die als Reisekostenvergütungen .*?abziehbaren Aufwendungen nicht übersteigen; ", "")]}
 START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
          "UStG": "§ 1 Steuerbare Umsätze"}
 STAND = {}
@@ -96,6 +105,18 @@ def ustg_4(roh):
     return [{"abs": "", "text": "Von den unter § 1 Abs. 1 Nr. 1 fallenden Umsätzen sind steuerfrei:\n…\n9. " + nr9 + "\n…\n12. " + nr12 + "\n…"}]
 
 
+def ustg_4_ust(roh):
+    """§ 4 UStG für das USt-Modul: Nr. 9, 12, 14 a und 28 über den Wortlaut ausgeschnitten (enthält den BilR-Auszug)."""
+    def zwischen(anfang, ende):
+        i = roh.index(anfang); j = roh.index(ende, i)
+        return absaetze(bindestriche(bereinigen(roh[i:j])))[0]["text"]
+    nr12 = re.sub(r"^12\.\s*", "", zwischen("12.\n\na)\n\ndie Vermietung und die Verpachtung von Grundstücken", "\n13.\n"))
+    nr14 = zwischen("a)\n\nHeilbehandlungen im Bereich der Humanmedizin", "\nb)\n") + "\nb) …"
+    nr28 = re.sub(r"^28\.\s*", "", zwischen("28.\n\ndie Lieferungen von Gegenständen, für die der Vorsteuerabzug", "\n29.\n"))
+    nr9 = zwischen("a)\n\ndie Umsätze, die unter das Grunderwerbsteuergesetz fallen", "\na)\n\ndie Leistungen auf Grund eines Versicherungsverhältnisses")
+    return [{"abs": "", "text": "Von den unter § 1 Abs. 1 Nr. 1 fallenden Umsätzen sind steuerfrei:\n…\n9. " + nr9 + "\n…\n12. " + nr12 + "\n…\n14. " + nr14 + "\n…\n28. " + nr28 + "\n…"}]
+
+
 def nummern(text, auswahl):
     """Behält aus einer Aufzählung (1. … 2. …) nur die Einleitung und die gewählten Nummern."""
     teile = re.split(r"\n(?=\d+[a-z]?\.\s)", text)
@@ -132,6 +153,8 @@ def main():
     name = "NORMEN_BILR"
     if args[0] == "--est":
         AUSWAHL, name, args = AUSWAHL_EST, "NORMEN_EST", args[1:]
+    if args[0] == "--ust":
+        AUSWAHL, name, args = AUSWAHL_UST, "NORMEN_UST", args[1:]
     ziel, *quellen = args
     aus, staende = [], []
     for q in quellen:
@@ -143,7 +166,7 @@ def main():
                 print("FEHLT", g, nr, file=sys.stderr); continue
             titel, abs_, auszug = paragraf(normen[nr], filter_)
             if (g, nr) == ("UStG", "4"):
-                abs_ = ustg_4(open(datei, encoding="utf-8").read())
+                abs_ = ustg_4_ust(open(datei, encoding="utf-8").read()) if name == "NORMEN_UST" else ustg_4(open(datei, encoding="utf-8").read())
             titel = titel or TITEL.get((g, nr), "")
             for muster, ersatz in TEXT_KORREKTUR.get((g, nr), []):
                 for a in abs_:

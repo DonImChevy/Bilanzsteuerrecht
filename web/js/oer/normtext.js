@@ -4,15 +4,18 @@ import { NORMEN_BILR } from "../bilr/normen.js";
 import { NORMEN_EST } from "../est/normen.js";
 import { NORMEN_EST_BGB } from "../est/punkte.js";
 import { NORMEN_BILR_ZUSATZ } from "../bilr/normen_zusatz.js";
+import { NORMEN_UST } from "../ust/normen.js";
 
 // Ein Paragraf kann in mehreren Modulen vorkommen (z. B. § 12 EStG): Absätze werden vereinigt,
 // faecher nennt die Module, in deren Nachschlagen-Liste er erscheint.
 const INDEX = new Map();
-for (const [fach, liste] of [["oer", NORMEN_OER], ["bsr", [...NORMEN_BILR, ...NORMEN_BILR_ZUSATZ]], ["est", [...NORMEN_EST, ...NORMEN_EST_BGB]]]) {
+for (const [fach, liste] of [["oer", NORMEN_OER], ["bsr", [...NORMEN_BILR, ...NORMEN_BILR_ZUSATZ]], ["est", [...NORMEN_EST, ...NORMEN_EST_BGB]], ["ust", NORMEN_UST]]) {
   for (const n of liste) {
     const k = `${n.g} ${n.nr}`, da = INDEX.get(k);
     if (!da) { INDEX.set(k, { ...n, faecher: [fach] }); continue; }
     da.faecher.push(fach);
+    // Gleicher Absatz in zwei Auszügen (z. B. § 4 UStG): der längere enthält den kürzeren
+    da.abs = da.abs.map((b) => { const a = n.abs.find((x) => x.abs === b.abs); return a && a.text.length > b.text.length ? a : b; });
     const neu = n.abs.filter((a) => !da.abs.some((b) => b.abs === a.abs));
     if (neu.length) da.abs = [...da.abs, ...neu].sort((a, b) => parseInt(a.abs || 0) - parseInt(b.abs || 0));
     da.auszug = da.auszug && n.auszug;

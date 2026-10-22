@@ -6,13 +6,14 @@ Suche über alle Inhalte und Modul-Kacheln. Verfügbar:
 - **Bilanzrecht (BilR)** – Bilanzsteuerrecht Teil I (Buchführung) und Teil II (GoB und Betriebsvermögen, Zurechnung, Anschaffungskosten, Grundstücke und Gebäude-AfA, AfA/GWG, Teilwert, Rechnungsabgrenzung, Entnahmen/Einlagen), orientiert am Skript, an den Übungen bzw. Lösungshinweisen und an den Semesterklausuren.
 - **Öffentliches Recht** – Staatsrecht und Gesetzgebung nach dem Unterrichtsskript ÖR GS I (Kapitel 1–2), abgeglichen mit den Altklausuren 2020–2025: Klausurfälle im Gutachtenstil, häufige Klausurthemen doppelt gewichtet, nicht klausurrelevante Fragen unter „Zusatzwissen“.
 - **Einkommensteuer** – Grundstudium I nach den Skripten und Folien, Rechtsstand 2026 (Grundfreibetrag 12.348 €, Entfernungspauschale 0,38 € ab km 1, Übungsleiter 3.300 €): Rechenaufgaben mit immer neuen Zahlen (Tarif/Splitting, Werbungskosten, Entfernungspauschale, § 11, AfA/GWG), Einordnungsfälle, Frage-Antwort mit Multiple-Choice-Fassung und zwei Gesamtfälle. Dazu „Punkte sammeln“: Kartei mit Klausursätzen zum Auswendiglernen und ihrer Punktzahl (wird Stück für Stück ergänzt).
+- **Umsatzsteuer** – Grundstudium I nach Skript, Klausurtechnik und Semesterklausuren, Rechtsstand 2026 (Kleinunternehmer 25.000/100.000 €, Restaurantleistungen 7 %): zehn Themen vom Unternehmer über Ort, Befreiungen/Option, Steuersatz und Entstehung bis Vorsteuer und unentgeltliche Wertabgaben; Rechenaufgaben, Einordnungsfälle, Frage-Antwort mit Multiple-Choice-Fassung, zwei Klausurfälle, Normen-Tab (UStG) und „Paare finden“.
   Quellen: Grundgesetz, Bundeswahlgesetz, Parteiengesetz. Aufbau wie in der Klausur: ca. 75 % Frage-Antwort
   (Musterantwort mit wörtlichem Normzitat, Selbstbewertung) und 25 % Übertragungsaufgaben mit Grafiken
   (Kanzlerwahl, Misstrauensvotum, Bundesrat-Abstimmungen, Sitzverteilung, Zweitstimmendeckung, Stimmzettel, Fristen …).
   Zwei Antwortmodi: **Frage – Antwort** (selbst formulieren) oder **Multiple Choice** (jede Frage mit plausiblen
   Falschantworten aus benachbarten Normen, oft mehrere richtig) – umschaltbar im Reiter Üben und Klausur.
 
-In Vorbereitung (als „Bald verfügbar“ sichtbar): Einkommensteuer (ESt), Umsatzsteuer (USt),
+In Vorbereitung (als „Bald verfügbar“ sichtbar):
 Abgabenordnung (AO), Bewertungsrecht (BewR), Privatrecht (PrivR). Neue Module werden in `web/js/module.js` eingetragen.
 
 **Kostenlos, ohne App Store, offline nutzbar:** Die App ist eine Web-App (PWA). Man öffnet sie einmal im
@@ -81,10 +82,13 @@ web/                     Die Web-App (wird veröffentlicht)
   js/sync.js             Geräte-Synchronisierung per Sync-Code (Zusammenführen ohne Doppelzählung)
   js/sync-config.js      Server-Adresse und öffentlicher Schlüssel (Supabase); leer = ausgeblendet
   js/lib/qrcode.js       QR-Code-Erzeugung (qrcode-generator, MIT)
-  js/paare.js           Spiel „Paare finden“: Normen-Paare je Modul (est/, bilr/, oer/paare.js)
+  js/paare.js           Spiel „Paare finden“: Normen-Paare je Modul (est/, ust/, bilr/, oer/paare.js)
   js/est/punkte.js       ESt-Punktesammler (Klausursätze zum Auswendiglernen, § 1 BGB)
   js/est/tarif.js        Einkommensteuertarif 2026 (§ 32a EStG, Grund- und Splittingtarif)
   js/est/normen.js       Gesetzestexte EStG/AO für das ESt-Modul (tools/bilr_normen.py --est)
+  js/ust/aufgaben.js     USt-Aufgaben (Rechengeneratoren, Fälle, Frage-Antwort mit MC und Stichworten)
+  js/ust/normen.js       Gesetzestexte UStG für das USt-Modul (tools/bilr_normen.py --ust)
+  js/ust/paare.js        Normen-Paare Umsatzsteuer
   js/oer/grafik.js       SVG-Diagramme, Sitzverteilung, Stimmzettel, Tabellen
   js/module.js           Module/Fächer (aktive und angekündigte)
   js/aktivitaet.js       Lernserie, Tagesziel, Wochenverlauf
