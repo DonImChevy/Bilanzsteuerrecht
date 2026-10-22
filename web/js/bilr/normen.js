@@ -188,6 +188,18 @@ export const NORMEN_BILR = [
 },
 {
 "g": "HGB",
+"nr": "246",
+"titel": "Vollständigkeit. Verrechnungsverbot",
+"abs": [
+{
+"abs": "1",
+"text": "Der Jahresabschluss hat sämtliche Vermögensgegenstände, Schulden, Rechnungsabgrenzungsposten sowie Aufwendungen und Erträge zu enthalten, soweit gesetzlich nichts anderes bestimmt ist. Vermögensgegenstände sind in der Bilanz des Eigentümers aufzunehmen; ist ein Vermögensgegenstand nicht dem Eigentümer, sondern einem anderen wirtschaftlich zuzurechnen, hat dieser ihn in seiner Bilanz auszuweisen. Schulden sind in die Bilanz des Schuldners aufzunehmen. Der Unterschiedsbetrag, um den die für die Übernahme eines Unternehmens bewirkte Gegenleistung den Wert der einzelnen Vermögensgegenstände des Unternehmens abzüglich der Schulden im Zeitpunkt der Übernahme übersteigt (entgeltlich erworbener Geschäfts- oder Firmenwert), gilt als zeitlich begrenzt nutzbarer Vermögensgegenstand."
+}
+],
+"auszug": true
+},
+{
+"g": "HGB",
 "nr": "247",
 "titel": "Inhalt der Bilanz",
 "abs": [
@@ -207,15 +219,85 @@ export const NORMEN_BILR = [
 },
 {
 "g": "HGB",
+"nr": "250",
+"titel": "Rechnungsabgrenzungsposten",
+"abs": [
+{
+"abs": "1",
+"text": "Als Rechnungsabgrenzungsposten sind auf der Aktivseite Ausgaben vor dem Abschlußstichtag auszuweisen, soweit sie Aufwand für eine bestimmte Zeit nach diesem Tag darstellen."
+},
+{
+"abs": "2",
+"text": "Auf der Passivseite sind als Rechnungsabgrenzungsposten Einnahmen vor dem Abschlußstichtag auszuweisen, soweit sie Ertrag für eine bestimmte Zeit nach diesem Tag darstellen."
+},
+{
+"abs": "3",
+"text": "Ist der Erfüllungsbetrag einer Verbindlichkeit höher als der Ausgabebetrag, so darf der Unterschiedsbetrag in den Rechnungsabgrenzungsposten auf der Aktivseite aufgenommen werden. Der Unterschiedsbetrag ist durch planmäßige jährliche Abschreibungen zu tilgen, die auf die gesamte Laufzeit der Verbindlichkeit verteilt werden können."
+}
+]
+},
+{
+"g": "HGB",
+"nr": "252",
+"titel": "Allgemeine Bewertungsgrundsätze",
+"abs": [
+{
+"abs": "1",
+"text": "Bei der Bewertung der im Jahresabschluß ausgewiesenen Vermögensgegenstände und Schulden gilt insbesondere folgendes:\n1. Die Wertansätze in der Eröffnungsbilanz des Geschäftsjahrs müssen mit denen der Schlußbilanz des vorhergehenden Geschäftsjahrs übereinstimmen.\n2. Bei der Bewertung ist von der Fortführung der Unternehmenstätigkeit auszugehen, sofern dem nicht tatsächliche oder rechtliche Gegebenheiten entgegenstehen.\n3. Die Vermögensgegenstände und Schulden sind zum Abschlußstichtag einzeln zu bewerten.\n4. Es ist vorsichtig zu bewerten, namentlich sind alle vorhersehbaren Risiken und Verluste, die bis zum Abschlußstichtag entstanden sind, zu berücksichtigen, selbst wenn diese erst zwischen dem Abschlußstichtag und dem Tag der Aufstellung des Jahresabschlusses bekanntgeworden sind; Gewinne sind nur zu berücksichtigen, wenn sie am Abschlußstichtag realisiert sind.\n5. Aufwendungen und Erträge des Geschäftsjahrs sind unabhängig von den Zeitpunkten der entsprechenden Zahlungen im Jahresabschluß zu berücksichtigen.\n6. Die auf den vorhergehenden Jahresabschluss angewandten Bewertungsmethoden sind beizubehalten."
+}
+],
+"auszug": true
+},
+{
+"g": "HGB",
+"nr": "253",
+"titel": "Zugangs- und Folgebewertung",
+"abs": [
+{
+"abs": "1",
+"text": "Vermögensgegenstände sind höchstens mit den Anschaffungs- oder Herstellungskosten, vermindert um die Abschreibungen nach den Absätzen 3 bis 5, anzusetzen. Verbindlichkeiten sind zu ihrem Erfüllungsbetrag und Rückstellungen in Höhe des nach vernünftiger kaufmännischer Beurteilung notwendigen Erfüllungsbetrages anzusetzen. Soweit sich die Höhe von Altersversorgungsverpflichtungen ausschließlich nach dem beizulegenden Zeitwert von Wertpapieren im Sinn des § 266 Abs. 2 A. III. 5 bestimmt, sind Rückstellungen hierfür zum beizulegenden Zeitwert dieser Wertpapiere anzusetzen, soweit er einen garantierten Mindestbetrag übersteigt. Nach § 246 Abs. 2 Satz 2 zu verrechnende Vermögensgegenstände sind mit ihrem beizulegenden Zeitwert zu bewerten. Kleinstkapitalgesellschaften (§ 267a) dürfen eine Bewertung zum beizulegenden Zeitwert nur vornehmen, wenn sie von keiner der in § 264 Absatz 1 Satz 5, § 266 Absatz 1 Satz 4, § 275 Absatz 5 und § 326 Absatz 2 vorgesehenen Erleichterungen Gebrauch machen. Macht eine Kleinstkapitalgesellschaft von mindestens einer der in Satz 5 genannten Erleichterungen Gebrauch, erfolgt die Bewertung der Vermögensgegenstände nach Satz 1, auch soweit eine Verrechnung nach § 246 Absatz 2 Satz 2 vorgesehen ist."
+},
+{
+"abs": "3",
+"text": "Bei Vermögensgegenständen des Anlagevermögens, deren Nutzung zeitlich begrenzt ist, sind die Anschaffungs- oder die Herstellungskosten um planmäßige Abschreibungen zu vermindern. Der Plan muss die Anschaffungs- oder Herstellungskosten auf die Geschäftsjahre verteilen, in denen der Vermögensgegenstand voraussichtlich genutzt werden kann. Kann in Ausnahmefällen die voraussichtliche Nutzungsdauer eines selbst geschaffenen immateriellen Vermögensgegenstands des Anlagevermögens nicht verlässlich geschätzt werden, sind planmäßige Abschreibungen auf die Herstellungskosten über einen Zeitraum von zehn Jahren vorzunehmen. Satz 3 findet auf einen entgeltlich erworbenen Geschäfts- oder Firmenwert entsprechende Anwendung. Ohne Rücksicht darauf, ob ihre Nutzung zeitlich begrenzt ist, sind bei Vermögensgegenständen des Anlagevermögens bei voraussichtlich dauernder Wertminderung außerplanmäßige Abschreibungen vorzunehmen, um diese mit dem niedrigeren Wert anzusetzen, der ihnen am Abschlussstichtag beizulegen ist. Bei Finanzanlagen können außerplanmäßige Abschreibungen auch bei voraussichtlich nicht dauernder Wertminderung vorgenommen werden."
+},
+{
+"abs": "4",
+"text": "Bei Vermögensgegenständen des Umlaufvermögens sind Abschreibungen vorzunehmen, um diese mit einem niedrigeren Wert anzusetzen, der sich aus einem Börsen- oder Marktpreis am Abschlussstichtag ergibt. Ist ein Börsen- oder Marktpreis nicht festzustellen und übersteigen die Anschaffungs- oder Herstellungskosten den Wert, der den Vermögensgegenständen am Abschlussstichtag beizulegen ist, so ist auf diesen Wert abzuschreiben."
+},
+{
+"abs": "5",
+"text": "Ein niedrigerer Wertansatz nach Absatz 3 Satz 5 oder 6 und Absatz 4 darf nicht beibehalten werden, wenn die Gründe dafür nicht mehr bestehen. Ein niedrigerer Wertansatz eines entgeltlich erworbenen Geschäfts- oder Firmenwertes ist beizubehalten."
+}
+],
+"auszug": true
+},
+{
+"g": "HGB",
 "nr": "255",
 "titel": "Bewertungsmaßstäbe",
 "abs": [
 {
 "abs": "1",
 "text": "Anschaffungskosten sind die Aufwendungen, die geleistet werden, um einen Vermögensgegenstand zu erwerben und ihn in einen betriebsbereiten Zustand zu versetzen, soweit sie dem Vermögensgegenstand einzeln zugeordnet werden können. Zu den Anschaffungskosten gehören auch die Nebenkosten sowie die nachträglichen Anschaffungskosten. Anschaffungspreisminderungen, die dem Vermögensgegenstand einzeln zugeordnet werden können, sind abzusetzen."
+},
+{
+"abs": "2",
+"text": "Herstellungskosten sind die Aufwendungen, die durch den Verbrauch von Gütern und die Inanspruchnahme von Diensten für die Herstellung eines Vermögensgegenstands, seine Erweiterung oder für eine über seinen ursprünglichen Zustand hinausgehende wesentliche Verbesserung entstehen. Dazu gehören die Materialkosten, die Fertigungskosten und die Sonderkosten der Fertigung sowie angemessene Teile der Materialgemeinkosten, der Fertigungsgemeinkosten und des Werteverzehrs des Anlagevermögens, soweit dieser durch die Fertigung veranlasst ist. Bei der Berechnung der Herstellungskosten dürfen angemessene Teile der Kosten der allgemeinen Verwaltung sowie angemessene Aufwendungen für soziale Einrichtungen des Betriebs, für freiwillige soziale Leistungen und für die betriebliche Altersversorgung einbezogen werden, soweit diese auf den Zeitraum der Herstellung entfallen. Forschungs- und Vertriebskosten dürfen nicht einbezogen werden."
 }
 ],
 "auszug": true
+},
+{
+"g": "HGB",
+"nr": "256a",
+"titel": "Währungsumrechnung",
+"abs": [
+{
+"abs": "",
+"text": "Auf fremde Währung lautende Vermögensgegenstände und Verbindlichkeiten sind zum Devisenkassamittelkurs am Abschlussstichtag umzurechnen. Bei einer Restlaufzeit von einem Jahr oder weniger sind § 253 Abs. 1 Satz 1 und § 252 Abs. 1 Nr. 4 Halbsatz 2 nicht anzuwenden."
+}
+]
 },
 {
 "g": "HGB",
@@ -279,6 +361,21 @@ export const NORMEN_BILR = [
 }
 ],
 "auszug": true
+},
+{
+"g": "AO",
+"nr": "39",
+"titel": "Zurechnung",
+"abs": [
+{
+"abs": "1",
+"text": "Wirtschaftsgüter sind dem Eigentümer zuzurechnen."
+},
+{
+"abs": "2",
+"text": "Abweichend von Absatz 1 gelten die folgenden Vorschriften:\n1. Übt ein anderer als der Eigentümer die tatsächliche Herrschaft über ein Wirtschaftsgut in der Weise aus, dass er den Eigentümer im Regelfall für die gewöhnliche Nutzungsdauer von der Einwirkung auf das Wirtschaftsgut wirtschaftlich ausschließen kann, so ist ihm das Wirtschaftsgut zuzurechnen. Bei Treuhandverhältnissen sind die Wirtschaftsgüter dem Treugeber, beim Sicherungseigentum dem Sicherungsgeber und beim Eigenbesitz dem Eigenbesitzer zuzurechnen.\n2. Wirtschaftsgüter, die mehreren zur gesamten Hand oder einer rechtsfähigen Personengesellschaft zustehen, werden den Beteiligten oder Gesellschaftern anteilig zugerechnet, soweit eine getrennte Zurechnung für die Besteuerung erforderlich ist. Rechtsfähige Personengesellschaften gelten für Zwecke der Ertragsbesteuerung als Gesamthand und deren Vermögen als Gesamthandsvermögen."
+}
+]
 },
 {
 "g": "AO",
@@ -362,6 +459,58 @@ export const NORMEN_BILR = [
 {
 "abs": "1",
 "text": "Bei Gewerbetreibenden, die auf Grund gesetzlicher Vorschriften verpflichtet sind, Bücher zu führen und regelmäßig Abschlüsse zu machen, oder die ohne eine solche Verpflichtung Bücher führen und regelmäßig Abschlüsse machen, ist für den Schluss des Wirtschaftsjahres das Betriebsvermögen anzusetzen (§ 4 Absatz 1 Satz 1), das nach den handelsrechtlichen Grundsätzen ordnungsmäßiger Buchführung auszuweisen ist, es sei denn, im Rahmen der Ausübung eines steuerlichen Wahlrechts wird oder wurde ein anderer Ansatz gewählt. Voraussetzung für die Ausübung steuerlicher Wahlrechte ist, dass die Wirtschaftsgüter, die nicht mit dem handelsrechtlich maßgeblichen Wert in der steuerlichen Gewinnermittlung ausgewiesen werden, in besondere, laufend zu führende Verzeichnisse aufgenommen werden. In den Verzeichnissen sind der Tag der Anschaffung oder Herstellung, die Anschaffungs- oder Herstellungskosten, die Vorschrift des ausgeübten steuerlichen Wahlrechts und die vorgenommenen Abschreibungen nachzuweisen."
+},
+{
+"abs": "5",
+"text": "Als Rechnungsabgrenzungsposten sind nur anzusetzen\n1. auf der Aktivseite Ausgaben vor dem Abschlussstichtag, soweit sie Aufwand für eine bestimmte Zeit nach diesem Tag darstellen;\n2. auf der Passivseite Einnahmen vor dem Abschlussstichtag, soweit sie Ertrag für eine bestimmte Zeit nach diesem Tag darstellen. Der Ansatz eines Rechnungsabgrenzungspostens kann unterbleiben, wenn die jeweilige Ausgabe oder Einnahme im Sinne des Satzes 1 den Betrag des § 6 Absatz 2 Satz 1 nicht übersteigt; das Wahlrecht ist einheitlich für alle Ausgaben und Einnahmen im Sinne des Satzes 1 auszuüben. Auf der Aktivseite sind ferner anzusetzen\n1. als Aufwand berücksichtigte Zölle und Verbrauchsteuern, soweit sie auf am Abschlussstichtag auszuweisende Wirtschaftsgüter des Vorratsvermögens entfallen,\n2. als Aufwand berücksichtigte Umsatzsteuer auf am Abschlussstichtag auszuweisende Anzahlungen."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "6",
+"titel": "Bewertung",
+"abs": [
+{
+"abs": "1",
+"text": "Für die Bewertung der einzelnen Wirtschaftsgüter, die nach § 4 Absatz 1 oder nach § 5 als Betriebsvermögen anzusetzen sind, gilt das Folgende:\n1. Wirtschaftsgüter des Anlagevermögens, die der Abnutzung unterliegen, sind mit den Anschaffungsoder Herstellungskosten oder dem an deren Stelle tretenden Wert, vermindert um die Absetzungen für Abnutzung, erhöhte Absetzungen, Sonderabschreibungen, Abzüge nach § 6b und ähnliche Abzüge, anzusetzen. Ist der Teilwert auf Grund einer voraussichtlich dauernden Wertminderung niedriger, so kann dieser angesetzt werden. Teilwert ist der Betrag, den ein Erwerber des ganzen Betriebs im Rahmen des Gesamtkaufpreises für das einzelne Wirtschaftsgut ansetzen würde; dabei ist davon auszugehen, dass der Erwerber den Betrieb fortführt. Wirtschaftsgüter, die bereits am Schluss des vorangegangenen Wirtschaftsjahres zum Anlagevermögen des Steuerpflichtigen gehört haben, sind in den folgenden Wirtschaftsjahren gemäß Satz 1 anzusetzen, es sei denn, der Steuerpflichtige weist nach, dass ein niedrigerer Teilwert nach Satz 2 angesetzt werden kann.\n2. Andere als die in Nummer 1 bezeichneten Wirtschaftsgüter des Betriebs (Grund und Boden, Beteiligungen, Umlaufvermögen) sind mit den Anschaffungs- oder Herstellungskosten oder dem an deren Stelle tretenden Wert, vermindert um Abzüge nach § 6b und ähnliche Abzüge, anzusetzen. Ist der Teilwert (Nummer 1 Satz 3) auf Grund einer voraussichtlich dauernden Wertminderung niedriger, so kann dieser angesetzt werden. Nummer 1 Satz 4 gilt entsprechend.\n3. Verbindlichkeiten sind unter sinngemäßer Anwendung der Vorschriften der Nummer 2 anzusetzen.\n1. soweit die Nummern 2, 3 oder 4 nicht anzuwenden sind und bei Anschaffung vor dem 1. Januar 2023 um die darin enthaltenen Kosten des Batteriesystems im Zeitpunkt der Erstzulassung des Kraftfahrzeugs wie folgt zu mindern: für bis zum 31. Dezember 2013 angeschaffte Kraftfahrzeuge um 500 Euro pro Kilowattstunde der Batteriekapazität, dieser Betrag mindert sich für in den Folgejahren angeschaffte Kraftfahrzeuge um jährlich 50 Euro pro Kilowattstunde der Batteriekapazität; die Minderung pro Kraftfahrzeug beträgt höchstens 10 000 Euro; dieser Höchstbetrag mindert sich für in den Folgejahren angeschaffte Kraftfahrzeuge um jährlich 500 Euro, oder\n2. soweit Nummer 3 nicht anzuwenden ist und bei Anschaffung nach dem 31. Dezember 2018 und vor dem 1. Januar 2022 nur zur Hälfte anzusetzen; bei extern aufladbaren Hybridelektrofahrzeugen muss das Fahrzeug die Voraussetzungen des § 3 Absatz 2 Nummer 1 oder 2 des Elektromobilitätsgesetzes erfüllen, oder\n3. bei Anschaffung nach dem 31. Dezember 2018 und vor dem 1. Januar 2031 nur zu einem Viertel anzusetzen, wenn das Kraftfahrzeug keine Kohlendioxidemission je gefahrenen Kilometer hat und der Bruttolistenpreis des Kraftfahrzeugs nicht mehr als 100 000 Euro beträgt, oder\n4. soweit Nummer 3 nicht anzuwenden ist und bei Anschaffung nach dem 31. Dezember 2021 und vor dem 1. Januar 2025 nur zur Hälfte anzusetzen, wenn das Kraftfahrzeug\n5. a) eine Kohlendioxidemission von höchstens 50 Gramm je gefahrenen Kilometer hat oder\nb) die Reichweite des Fahrzeugs unter ausschließlicher Nutzung der elektrischen Antriebsmaschine mindestens 60 Kilometer beträgt, oder soweit Nummer 3 nicht anzuwenden ist und bei Anschaffung nach dem 31. Dezember 2024 und vor dem 1. Januar 2031 nur zur Hälfte anzusetzen, wenn das Kraftfahrzeug\na) eine Kohlendioxidemission von höchstens 50 Gramm je gefahrenen Kilometer hat oder\nb) die Reichweite des Fahrzeugs unter ausschließlicher Nutzung der elektrischen Antriebsmaschine mindestens 80 Kilometer beträgt, die maßgebliche Kohlendioxidemission sowie die Reichweite des Kraftfahrzeugs unter ausschließlicher Nutzung der elektrischen Antriebsmaschine ist der Übereinstimmungsbescheinigung nach Anhang IX der Richtlinie 2007/46/EG oder aus der Übereinstimmungsbescheinigung nach Artikel 38 der Verordnung (EU) Nr. 168/2013 zu entnehmen. Die private Nutzung kann abweichend von Satz 2 mit den auf die Privatfahrten entfallenden Aufwendungen angesetzt werden, wenn die für das Kraftfahrzeug insgesamt entstehenden Aufwendungen durch Belege und das Verhältnis der privaten zu den übrigen Fahrten durch ein ordnungsgemäßes Fahrtenbuch nachgewiesen werden; bei der privaten Nutzung von Fahrzeugen mit Antrieb ausschließlich durch Elektromotoren, die ganz oder überwiegend aus mechanischen oder elektrochemischen Energiespeichern oder aus emissionsfrei betriebenen Energiewandlern gespeist werden (Elektrofahrzeuge), oder von extern aufladbaren Hybridelektrofahrzeugen, sind\n1. soweit die Nummern 2, 3 oder 4 nicht anzuwenden sind und bei Anschaffung vor dem 1. Januar 2023 die der Berechnung der Entnahme zugrunde zu legenden insgesamt entstandenen Aufwendungen um Aufwendungen für das Batteriesystem zu mindern; dabei ist bei zum Betriebsvermögen des Steuerpflichtigen gehörenden Elektro- und Hybridelektrofahrzeugen die der Berechnung der Absetzungen für Abnutzung zugrunde zu legende Bemessungsgrundlage um die nach Satz 2 in pauschaler Höhe festgelegten Aufwendungen zu mindern, wenn darin Kosten für ein Batteriesystem enthalten sind, oder\n2. soweit Nummer 3 nicht anzuwenden ist und bei Anschaffung nach dem 31. Dezember 2018 und vor dem 1. Januar 2022 bei der Ermittlung der insgesamt entstandenen Aufwendungen die Anschaffungskosten für das Kraftfahrzeug oder vergleichbare Aufwendungen nur zur Hälfte zu berücksichtigen; bei extern aufladbaren Hybridelektrofahrzeugen muss das Fahrzeug die Voraussetzungen des § 3 Absatz 2 Nummer 1 oder 2 des Elektromobilitätsgesetzes erfüllen, oder\n3. bei Anschaffung nach dem 31. Dezember 2018 und vor dem 1. Januar 2031 bei der Ermittlung der insgesamt entstandenen Aufwendungen die Anschaffungskosten für das Kraftfahrzeug oder vergleichbare Aufwendungen nur zu einem Viertel zu berücksichtigen, wenn das Kraftfahrzeug keine Kohlendioxidemission je gefahrenen Kilometer hat, und der Bruttolistenpreis des Kraftfahrzeugs nicht mehr als 100 000 Euro beträgt oder\n4. soweit Nummer 3 nicht anzuwenden ist und bei Anschaffung nach dem 31. Dezember 2021 und vor dem 1. Januar 2025 bei der Ermittlung der insgesamt entstandenen Aufwendungen die Anschaffungskosten für das Kraftfahrzeug oder vergleichbare Aufwendungen nur zur Hälfte zu berücksichtigen, wenn das Kraftfahrzeug\n5. a) eine Kohlendioxidemission von höchstens 50 Gramm je gefahrenen Kilometer hat oder\nb) die Reichweite des Kraftfahrzeugs unter ausschließlicher Nutzung der elektrischen Antriebsmaschine mindestens 60 Kilometer beträgt, oder soweit Nummer 3 nicht anzuwenden ist und bei Anschaffung nach dem 31. Dezember 2024 und vor dem 1. Januar 2031 bei der Ermittlung der insgesamt entstandenen Aufwendungen die Anschaffungskosten für das Kraftfahrzeug oder vergleichbare Aufwendungen nur zur Hälfte zu berücksichtigen, wenn das Kraftfahrzeug\na) eine Kohlendioxidemission von höchstens 50 Gramm je gefahrenen Kilometer hat oder\nb) die Reichweite des Kraftfahrzeugs unter ausschließlicher Nutzung der elektrischen Antriebsmaschine mindestens 80 Kilometer beträgt, die maßgebliche Kohlendioxidemission sowie die Reichweite des Kraftfahrzeugs unter ausschließlicher Nutzung der elektrischen Antriebsmaschine ist der Übereinstimmungsbescheinigung nach Anhang IX der Richtlinie 2007/46/EG oder aus der Übereinstimmungsbescheinigung nach Artikel 38 der Verordnung (EU) Nr. 168/2013 zu entnehmen. Wird ein Wirtschaftsgut unmittelbar nach seiner Entnahme einer nach § 5 Absatz 1 Nummer 9 des Körperschaftsteuergesetzes von der Körperschaftsteuer befreiten Körperschaft, Personenvereinigung oder Vermögensmasse oder einer juristischen Person des öffentlichen Rechts zur Verwendung für steuerbegünstigte Zwecke im Sinne des § 10b Absatz 1 Satz 1 unentgeltlich überlassen, so kann die Entnahme mit dem Buchwert angesetzt werden. Satz 4 gilt nicht für die Entnahme von Nutzungen und Leistungen. Die private Nutzung eines betrieblichen Fahrrads, das kein Kraftfahrzeug im Sinne des Satzes 2 ist, bleibt außer Ansatz.\n5. Einlagen sind mit dem Teilwert für den Zeitpunkt der Zuführung anzusetzen; sie sind jedoch höchstens mit den Anschaffungs- oder Herstellungskosten anzusetzen, wenn das zugeführte Wirtschaftsgut\na) innerhalb der letzten drei Jahre vor dem Zeitpunkt der Zuführung aus dem Privatvermögen angeschafft oder hergestellt worden ist,\nb) ein Anteil an einer Kapitalgesellschaft ist und der Steuerpflichtige an der Gesellschaft im Sinne des § 17 Absatz 1 oder Absatz 6 beteiligt ist; § 17 Absatz 2 Satz 5 gilt entsprechend, oder\nc) ein Wirtschaftsgut im Sinne des § 20 Absatz 2 oder im Sinne des § 2 Absatz 4 des Investmentsteuergesetzes ist. Ist die Einlage ein abnutzbares Wirtschaftsgut, so sind die Anschaffungs- oder Herstellungskosten um Absetzungen für Abnutzung zu kürzen, die auf den Zeitraum zwischen der Anschaffung oder Herstellung des Wirtschaftsguts und der Einlage entfallen. Ist die Einlage ein Wirtschaftsgut, das vor der Zuführung aus einem Betriebsvermögen des Steuerpflichtigen entnommen worden ist, so tritt an die Stelle der Anschaffungs- oder Herstellungskosten der Wert, mit dem die Entnahme angesetzt worden ist, und an die Stelle des Zeitpunkts der Anschaffung oder Herstellung der Zeitpunkt der Entnahme.\n…"
+},
+{
+"abs": "2",
+"text": "Die Anschaffungs- oder Herstellungskosten oder der nach Absatz 1 Nummer 5 bis 6 an deren Stelle tretende Wert von abnutzbaren beweglichen Wirtschaftsgütern des Anlagevermögens, die einer selbständigen Nutzung fähig sind, können im Wirtschaftsjahr der Anschaffung, Herstellung oder Einlage des Wirtschaftsguts oder der Eröffnung des Betriebs in voller Höhe als Betriebsausgaben abgezogen werden, wenn die Anschaffungsoder Herstellungskosten, vermindert um einen darin enthaltenen Vorsteuerbetrag (§ 9b Absatz 1), oder der nach Absatz 1 Nummer 5 bis 6 an deren Stelle tretende Wert für das einzelne Wirtschaftsgut 800 Euro nicht übersteigen. Ein Wirtschaftsgut ist einer selbständigen Nutzung nicht fähig, wenn es nach seiner betrieblichen Zweckbestimmung nur zusammen mit anderen Wirtschaftsgütern des Anlagevermögens genutzt werden kann und die in den Nutzungszusammenhang eingefügten Wirtschaftsgüter technisch aufeinander abgestimmt sind. Das gilt auch, wenn das Wirtschaftsgut aus dem betrieblichen Nutzungszusammenhang gelöst und in einen anderen betrieblichen Nutzungszusammenhang eingefügt werden kann. Wirtschaftsgüter im Sinne des Satzes 1, deren Wert 250 Euro übersteigt, sind unter Angabe des Tages der Anschaffung, Herstellung oder Einlage des Wirtschaftsguts oder der Eröffnung des Betriebs und der Anschaffungs- oder Herstellungskosten oder des nach Absatz 1 Nummer 5 bis 6 an deren Stelle tretenden Werts in ein besonderes, laufend zu führendes Verzeichnis aufzunehmen. Das Verzeichnis braucht nicht geführt zu werden, wenn diese Angaben aus der Buchführung ersichtlich sind."
+},
+{
+"abs": "2a",
+"text": "Abweichend von Absatz 2 Satz 1 kann für die abnutzbaren beweglichen Wirtschaftsgüter des Anlagevermögens, die einer selbständigen Nutzung fähig sind, im Wirtschaftsjahr der Anschaffung, Herstellung oder Einlage des Wirtschaftsguts oder der Eröffnung des Betriebs ein Sammelposten gebildet werden, wenn die Anschaffungs- oder Herstellungskosten, vermindert um einen darin enthaltenen Vorsteuerbetrag (§ 9b Absatz 1), oder der nach Absatz 1 Nummer 5 bis 6 an deren Stelle tretende Wert für das einzelne Wirtschaftsgut 250 Euro, aber nicht 1 000 Euro übersteigen. Der Sammelposten ist im Wirtschaftsjahr der Bildung und den folgenden vier Wirtschaftsjahren mit jeweils einem Fünftel gewinnmindernd aufzulösen. Scheidet ein Wirtschaftsgut im Sinne des Satzes 1 aus dem Betriebsvermögen aus, wird der Sammelposten nicht vermindert. Die Anschaffungsoder Herstellungskosten oder der nach Absatz 1 Nummer 5 bis 6 an deren Stelle tretende Wert von abnutzbaren beweglichen Wirtschaftsgütern des Anlagevermögens, die einer selbständigen Nutzung fähig sind, können im Wirtschaftsjahr der Anschaffung, Herstellung oder Einlage des Wirtschaftsguts oder der Eröffnung des Betriebs in voller Höhe als Betriebsausgaben abgezogen werden, wenn die Anschaffungs- oder Herstellungskosten, vermindert um einen darin enthaltenen Vorsteuerbetrag (§ 9b Absatz 1), oder der nach Absatz 1 Nummer 5 bis 6 an deren Stelle tretende Wert für das einzelne Wirtschaftsgut 250 Euro nicht übersteigen. Die Sätze 1 bis 3 sind für alle in einem Wirtschaftsjahr angeschafften, hergestellten oder eingelegten Wirtschaftsgüter einheitlich anzuwenden."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "7",
+"titel": "Absetzung für Abnutzung oder Substanzverringerung",
+"abs": [
+{
+"abs": "1",
+"text": "Bei Wirtschaftsgütern, deren Verwendung oder Nutzung durch den Steuerpflichtigen zur Erzielung von Einkünften sich erfahrungsgemäß auf einen Zeitraum von mehr als einem Jahr erstreckt, ist jeweils für ein Jahr der Teil der Anschaffungs- oder Herstellungskosten abzusetzen, der bei gleichmäßiger Verteilung dieser Kosten auf die Gesamtdauer der Verwendung oder Nutzung auf ein Jahr entfällt (Absetzung für Abnutzung in gleichen Jahresbeträgen). Die Absetzung bemisst sich hierbei nach der betriebsgewöhnlichen Nutzungsdauer des Wirtschaftsguts. Als betriebsgewöhnliche Nutzungsdauer des Geschäfts- oder Firmenwerts eines Gewerbebetriebs oder eines Betriebs der Land- und Forstwirtschaft gilt ein Zeitraum von 15 Jahren. Im Jahr der Anschaffung oder Herstellung des Wirtschaftsguts vermindert sich für dieses Jahr der Absetzungsbetrag nach Satz 1 um jeweils ein Zwölftel für jeden vollen Monat, der dem Monat der Anschaffung oder Herstellung vorangeht. Bei Wirtschaftsgütern, die nach einer Verwendung zur Erzielung von Einkünften im Sinne des § 2 Absatz 1 Satz 1 Nummer 4 bis 7 in ein Betriebsvermögen eingelegt worden sind, mindert sich der Einlagewert um die Absetzungen für Abnutzung oder Substanzverringerung, Sonderabschreibungen oder erhöhte Absetzungen, die bis zum Zeitpunkt der Einlage vorgenommen worden sind, höchstens jedoch bis zu den fortgeführten Anschaffungs- oder Herstellungskosten; ist der Einlagewert niedriger als dieser Wert, bemisst sich die weitere Absetzung für Abnutzung vom Einlagewert. Bei beweglichen Wirtschaftsgütern des Anlagevermögens, bei denen es wirtschaftlich begründet ist, die Absetzung für Abnutzung nach Maßgabe der Leistung des Wirtschaftsguts vorzunehmen, kann der Steuerpflichtige dieses Verfahren statt der Absetzung für Abnutzung in gleichen Jahresbeträgen anwenden, wenn er den auf das einzelne Jahr entfallenden Umfang der Leistung nachweist. Absetzungen für außergewöhnliche technische oder wirtschaftliche Abnutzung sind zulässig; soweit der Grund hierfür in späteren Wirtschaftsjahren entfällt, ist in den Fällen der Gewinnermittlung nach § 4 Absatz 1 oder nach § 5 eine entsprechende Zuschreibung vorzunehmen."
+},
+{
+"abs": "4",
+"text": "Bei Gebäuden sind abweichend von Absatz 1 als Absetzung für Abnutzung die folgenden Beträge bis zur vollen Absetzung abzuziehen:\n1. bei Gebäuden, soweit sie zu einem Betriebsvermögen gehören und nicht Wohnzwecken dienen und für die der Bauantrag nach dem 31. März 1985 gestellt worden ist, jährlich 3 Prozent,\n2. bei Gebäuden, soweit sie die Voraussetzungen der Nummer 1 nicht erfüllen und die\na) nach dem 31. Dezember 2022 fertiggestellt worden sind, jährlich 3 Prozent,\nb) vor dem 1. Januar 2023 und nach dem 31. Dezember 1924 fertiggestellt worden sind, jährlich 2 Prozent,\nc) vor dem 1. Januar 1925 fertiggestellt worden sind, jährlich 2,5 Prozent der Anschaffungs- oder Herstellungskosten; Absatz 1 Satz 5 gilt entsprechend. Beträgt die tatsächliche Nutzungsdauer eines Gebäudes in den Fällen des Satzes 1 Nummer 1 und 2 Buchstabe a weniger als 33 Jahre, in den Fällen des Satzes 1 Nummer 2 Buchstabe b weniger als 50 Jahre, in den Fällen des Satzes 1 Nummer 2 Buchstabe c weniger als 40 Jahre, so können anstelle der Absetzungen nach Satz 1 die der tatsächlichen Nutzungsdauer entsprechenden Absetzungen für Abnutzung vorgenommen werden. Absatz 1 letzter Satz bleibt unberührt. Bei Gebäuden im Sinne der Nummer 2 rechtfertigt die für Gebäude im Sinne der Nummer 1 geltende Regelung weder die Anwendung des Absatzes 1 letzter Satz noch den Ansatz des niedrigeren Teilwerts (§ 6 Absatz 1 Nummer 1 Satz 2)."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "9b",
+"titel": "Umsatzsteuerrechtlicher Vorsteuerabzug",
+"abs": [
+{
+"abs": "1",
+"text": "Der Vorsteuerbetrag nach § 15 des Umsatzsteuergesetzes gehört, soweit er bei der Umsatzsteuer abgezogen werden kann, nicht zu den Anschaffungs- oder Herstellungskosten des Wirtschaftsguts, auf dessen Anschaffung oder Herstellung er entfällt."
 }
 ],
 "auszug": true

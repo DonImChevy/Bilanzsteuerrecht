@@ -1,5 +1,5 @@
 // Normen-Paare (Spiel „Paare finden“) – Bilanzsteuerrecht.
-// Auswahl nach den Lösungshinweisen der Semesterklausuren GS I (10/23, 10/25) und den Kernnormen des Skripts.
+// Auswahl nach den Lösungshinweisen der Semesterklausuren GS I (10/23, 10/24, 10/25) und den Kernnormen von Skript und Übungen Teil I/II.
 export const PAARE_BSR = [
   ["§ 1 Abs. 1 HGB", "Kaufmann = wer ein Handelsgewerbe betreibt"],
   ["§ 238 Abs. 1 HGB", "Buchführungspflicht des Kaufmanns"],
@@ -22,6 +22,12 @@ export const PAARE_BSR = [
   ["§ 6 Abs. 1 Nr. 4 EStG", "Entnahmen mit dem Teilwert"],
   ["§ 6 Abs. 2 EStG", "GWG bis 800 € netto sofort abziehbar"],
   ["§ 7 Abs. 1 EStG", "Lineare AfA"],
+  ["§ 7 Abs. 4 EStG", "Gebäude-AfA (3 / 2 / 2,5 %)"],
+  ["§ 6 Abs. 2a EStG", "Sammelposten (250 bis 1.000 €)"],
+  ["§ 6 Abs. 1 Nr. 5 EStG", "Bewertung von Einlagen"],
+  ["§ 4 Abs. 1 S. 8 EStG", "Begriff der Einlage"],
+  ["§ 250 HGB", "Rechnungsabgrenzungsposten"],
+  ["§ 252 Abs. 1 Nr. 5 HGB", "Periodenabgrenzung"],
   ["§ 9b Abs. 1 EStG", "Abziehbare Vorsteuer keine Anschaffungskosten"],
   ["§ 9a EStDV", "Anschaffung = Zeitpunkt der Lieferung"],
   ["§ 39 Abs. 1 AO", "Zurechnung beim Eigentümer"],
