@@ -395,7 +395,7 @@ test("Synchronisierung: zwei Geräte, nichts doppelt, nichts verloren", async ()
 });
 
 test("Paare finden: Normen und Kurzerklärungen eindeutig", async () => {
-  const { PAARE } = await import("../js/est/paare.js");
+  const { PAARE } = await import("../js/paare.js");
   for (const [fach, liste] of Object.entries(PAARE)) {
     assert.ok(liste.length >= 10, fach);
     assert.equal(new Set(liste.map(([n]) => n)).size, liste.length, "doppelte Norm in " + fach);

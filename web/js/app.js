@@ -6,7 +6,7 @@ import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
-import { PAARE } from "./est/paare.js";
+import { PAARE } from "./paare.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
@@ -629,20 +629,20 @@ function tabLernen() {
       <span class="grow"><b>${n ? "Heute nichts zu wiederholen" : "Lernkartei startet mit deiner ersten Übung"}</b><div class="sub">${n ? `Nächste Wiederholung ${inTagen(n)}.` : "Jede Aufgabe kommt nach 1, 3, 7, 16 und 35 Tagen wieder."}</div></span></div>`;
   }
   const kachel = (a, icon, titel, text, v = "") => `<button class="kachel" data-a="schnell" data-v="${a}" data-t="${v}"><span class="k-icon">${ic(icon)}</span><span class="k-text"><b>${titel}</b><span class="sub">${esc(text)}</span></span></button>`;
+  const paareKachel = PAARE[state.fach] ? `<button class="kachel" data-a="paareStart"><span class="k-icon">${ic("karten")}</span><span class="k-text"><b>Paare finden</b><span class="sub">Klausurnormen und ihre Bedeutung</span></span></button>` : "";
   const schnell = state.fach === "oer"
     ? kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "75 % der Klausur") +
       kachel("uebertragung", "diagramm", "Übertragung", "Grafiken auswerten · 25 %") +
-      kachel("alles", "mischen", "Gemischt", "Quer durch das Skript")
+      kachel("alles", "mischen", "Gemischt", "Quer durch das Skript") + paareKachel
     : state.fach === "est"
     ? `<button class="kachel" data-a="punktesammler"><span class="k-icon">${ic("ziel")}</span><span class="k-text"><b>Punkte sammeln</b><span class="sub">Klausursätze zum Auswendiglernen</span></span></button>` +
       kachel("rechnen", "tkonto", "Rechnen", "Tarif, WK, Entfernungspauschale") +
       kachel("fall", "lernen", "Fälle einordnen", "Steuerpflicht, § 11, Einkunftsart") +
       kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Definitionen und Klausurfälle") +
-      kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") +
-      `<button class="kachel" data-a="paareStart"><span class="k-icon">${ic("karten")}</span><span class="k-text"><b>Paare finden</b><span class="sub">Wichtige Normen und ihre Bedeutung</span></span></button>`
+      kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") + paareKachel
     : kachel("buchung", "tkonto", "Buchungssätze", "Immer neue Beträge") +
-      kachel("alles", "mischen", "Gemischt", "Buchen, Rechnen, Theorie");
-  const breit = state.fach === "oer" ? "" : " breit";
+      kachel("alles", "mischen", "Gemischt", "Buchen, Rechnen, Theorie") + paareKachel;
+  const breit = (schnell.match(/class="kachel/g) || []).length % 2 === 0 ? " breit" : ""; // letzte Kachel füllt die Reihe auf
   const schwachKachel = schwach && quote(zaehler(schwach.id)) < 0.8
     ? `<button class="kachel${breit}" data-a="schnell" data-v="schwach" data-t="${schwach.id}"><span class="k-icon" style="background:var(--warn-weak);color:var(--warn)">${ic("ziel")}</span><span class="k-text"><b>Schwächstes Thema</b><span class="sub">${esc(schwach.titel)} · ${Math.round(quote(zaehler(schwach.id)) * 100)} %</span></span></button>`
     : `<button class="kachel${breit}" data-a="tab" data-v="klausur"><span class="k-icon">${ic("klausur")}</span><span class="k-text"><b>Klausur</b><span class="sub">Unter Echtbedingungen</span></span></button>`;
@@ -1145,35 +1145,60 @@ const PAAR_ANZAHL = 10, PAAR_LEBEN = 3;
 function neuePaarRunde() {
   const r = new Zufall();
   const auswahl = r.mischen(PAARE[state.fach] || []).slice(0, PAAR_ANZAHL).map(([norm, text], id) => ({ id, norm, text }));
-  state.paare = { links: r.mischen(auswahl), rechts: r.mischen(auswahl), weg: [], leben: PAAR_LEBEN, wahl: null, start: Date.now(), ende: null, sperre: false };
+  state.paare = { links: r.mischen(auswahl), rechts: r.mischen(auswahl), weg: [], leben: PAAR_LEBEN, serie: 0, wahl: null, start: Date.now(), ende: null, sperre: false, frisch: true };
 }
 function paareView() {
   const p = state.paare, n = p.links.length;
   const herzen = Array.from({ length: PAAR_LEBEN }, (_, i) => `<span class="herz${i < p.leben ? "" : " leer"}">${i < p.leben ? "♥" : "♡"}</span>`).join("");
-  const kopf = `<div class="vb-kopf"><button class="rund" data-a="paareZu" aria-label="Beenden">${ic("kreuz")}</button><div class="mitte">Paare finden · ${p.weg.length}/${n}</div><span class="herzen" aria-label="${p.leben} Leben">${herzen}</span></div>`;
+  const kopf = `<div class="vb-kopf"><button class="rund" data-a="paareZu" aria-label="Beenden">${ic("kreuz")}</button>
+    <div class="sitzung-fortschritt" aria-label="${p.weg.length} von ${n} Paaren"><span style="width:${(p.weg.length / n) * 100}%"></span></div>
+    <span class="herzen" aria-label="${p.leben} Leben">${herzen}</span></div>`;
   if (p.ende) {
     const geschafft = p.weg.length === n, sek = Math.round((p.ende - p.start) / 1000);
     const rest = p.links.filter((k) => !p.weg.includes(k.id));
+    const sterne = geschafft ? `<div class="sterne">${Array.from({ length: PAAR_LEBEN }, (_, i) => `<span class="stern${i < p.leben ? " an" : ""}" style="--i:${i}">★</span>`).join("")}</div>` : `<div style="font-size:60px">💔</div>`;
     return `<div class="vollbild">${geschafft ? konfetti() : ""}${kopf}
       <div class="vb-inhalt zentriert" style="display:flex;flex-direction:column"><div style="margin:auto 0">
-        <div style="font-size:60px">${geschafft ? "🎉" : "💔"}</div>
-        <div class="ergebnis-titel">${geschafft ? "Alle Paare gefunden!" : "Keine Leben mehr"}</div>
+        ${sterne}
+        <div class="ergebnis-titel">${geschafft ? (p.leben === PAAR_LEBEN ? "Perfekt – ohne Fehler!" : "Alle Paare gefunden!") : "Keine Leben mehr"}</div>
         <p class="sub" style="font-size:15px">${geschafft ? `Mit ${p.leben} von ${PAAR_LEBEN} Leben übrig` : `${p.weg.length} von ${n} Paaren gefunden`} · ${Math.floor(sek / 60)}:${String(sek % 60).padStart(2, "0")} min</p>
         ${rest.length ? `<div class="liste" style="text-align:left;margin-top:8px"><div class="zeile"><span class="grow sub">Diese Paare fehlten noch:</span></div>${rest.map((k) => `<div class="zeile"><span class="grow"><b>${esc(k.norm)}</b><div class="sub">${esc(k.text)}</div></span></div>`).join("")}</div>` : ""}
         <button class="knopf" data-a="paareStart" style="max-width:300px;margin:16px auto 6px">${ic("wiederholen")} Neue Runde</button>
         <button class="link" data-a="paareZu">Fertig</button></div></div></div>`;
   }
-  const karte = (seite, k) => {
+  const karte = (seite, k, i) => {
     const weg = p.weg.includes(k.id), gewaehlt = p.wahl?.seite === seite && p.wahl.id === k.id;
-    return `<button class="paar-karte ${seite}${weg ? " weg" : ""}${gewaehlt ? " gewaehlt" : ""}" data-a="paarWahl" data-v="${seite}:${k.id}" ${weg ? "disabled" : ""}>${esc(seite === "l" ? k.norm : k.text)}</button>`;
+    return `<button class="paar-karte ${seite}${weg ? " weg" : ""}${gewaehlt ? " gewaehlt" : ""}${p.frisch ? " neu" : ""}" style="--i:${i * 2 + (seite === "r" ? 1 : 0)}" data-a="paarWahl" data-v="${seite}:${k.id}" ${weg ? "disabled" : ""}>${esc(seite === "l" ? k.norm : k.text)}</button>`;
   };
-  return `<div class="vollbild">${kopf}
+  return `<div class="vollbild paar-spiel">${kopf}
     <div class="vb-inhalt">
       <div class="sub" style="text-align:center;margin:2px 0 10px">Tippe eine Norm und die passende Bedeutung an.</div>
-      <div class="paar-feld"><div class="paar-spalte">${p.links.map((k) => karte("l", k)).join("")}</div><div class="paar-spalte">${p.rechts.map((k) => karte("r", k)).join("")}</div></div>
+      <div class="paar-feld"><div class="paar-spalte">${p.links.map((k, i) => karte("l", k, i)).join("")}</div><div class="paar-spalte">${p.rechts.map((k, i) => karte("r", k, i)).join("")}</div></div>
     </div></div>`;
 }
 const paarKarte = (seite, id) => document.querySelector(`[data-a="paarWahl"][data-v="${seite}:${id}"]`);
+const mitte = (el) => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
+/** Funkenregen an einer Bildschirmposition (liegt außerhalb von #app und überlebt daher das Neuzeichnen). */
+function funken(x, y) {
+  const ebene = document.createElement("div");
+  ebene.className = "funken";
+  ebene.style.left = x + "px"; ebene.style.top = y + "px";
+  for (let i = 0; i < 16; i++) {
+    const f = document.createElement("span"), w = (i / 16) * 2 * Math.PI + Math.random() * 0.4, d = 45 + Math.random() * 55;
+    f.style.setProperty("--dx", `${Math.cos(w) * d}px`); f.style.setProperty("--dy", `${Math.sin(w) * d}px`);
+    if (i % 3 === 0) f.classList.add("akzent");
+    ebene.appendChild(f);
+  }
+  document.body.appendChild(ebene);
+  setTimeout(() => ebene.remove(), 900);
+}
+function schwebeText(x, y, text, klasse = "") {
+  const e = document.createElement("div");
+  e.className = "schwebe-text " + klasse; e.textContent = text;
+  e.style.left = x + "px"; e.style.top = y + "px";
+  document.body.appendChild(e);
+  setTimeout(() => e.remove(), 1100);
+}
 function paarWahl(v) {
   const p = state.paare, [seite, idText] = v.split(":"), id = Number(idText);
   if (!p || p.sperre || p.ende || p.weg.includes(id)) return;
@@ -1188,16 +1213,27 @@ function paarWahl(v) {
   }
   const andere = paarKarte(p.wahl.seite, p.wahl.id);
   p.sperre = true;
-  if (p.wahl.id === id) {
-    [el, andere].forEach((x) => x?.classList.add("treffer"));
-    if (navigator.vibrate) navigator.vibrate(20);
-    setTimeout(() => { p.weg.push(id); p.wahl = null; p.sperre = false; if (p.weg.length === p.links.length) p.ende = Date.now(); render(); }, 450);
+  if (p.wahl.id === id && el && andere) {
+    // Treffer: beide Karten fliegen zueinander und lösen sich in Funken auf
+    const [x1, y1] = mitte(el), [x2, y2] = mitte(andere), mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    [[el, x1, y1, 1], [andere, x2, y2, -1]].forEach(([k, x, y, s]) => {
+      k.classList.remove("gewaehlt");
+      k.style.setProperty("--tx", `${mx - x}px`); k.style.setProperty("--ty", `${my - y}px`); k.style.setProperty("--rot", `${s * 12}deg`);
+      k.classList.add("treffer");
+    });
+    p.serie += 1;
+    setTimeout(() => { funken(mx, my); schwebeText(mx, my - 10, p.serie >= 2 ? `Serie ×${p.serie} 🔥` : "+1", p.serie >= 2 ? "serie" : ""); }, 260);
+    if (navigator.vibrate) navigator.vibrate(p.serie >= 3 ? [15, 40, 15] : 20);
+    setTimeout(() => { p.weg.push(id); p.wahl = null; p.sperre = false; if (p.weg.length === p.links.length) p.ende = Date.now(); render(); }, 560);
   } else {
+    // Fehler: Karten wackeln, Bildschirm bebt kurz, ein Herz zerbricht
     [el, andere].forEach((x) => { x?.classList.remove("gewaehlt"); x?.classList.add("falsch"); });
-    document.querySelectorAll(".herz:not(.leer)")[p.leben - 1]?.classList.add("verloren");
-    p.leben -= 1;
+    document.querySelector(".paar-spiel")?.classList.add("beben");
+    const herz = document.querySelectorAll(".herz:not(.leer)")[p.leben - 1];
+    if (herz) { herz.textContent = "💔"; herz.classList.add("verloren"); }
+    p.leben -= 1; p.serie = 0;
     if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
-    setTimeout(() => { p.wahl = null; p.sperre = false; if (p.leben <= 0) p.ende = Date.now(); render(); }, 600);
+    setTimeout(() => { p.wahl = null; p.sperre = false; if (p.leben <= 0) p.ende = Date.now(); render(); }, 700);
   }
 }
 
@@ -1524,7 +1560,7 @@ const AKTIONEN = {
     render();
   },
   deckZu: () => { state.deck = null; render(); },
-  paareStart: () => { neuePaarRunde(); render(); },
+  paareStart: () => { neuePaarRunde(); render(); state.paare.frisch = false; }, // Austeil-Animation nur beim ersten Zeichnen
   paarWahl: (v) => paarWahl(v),
   paareZu: () => { state.paare = null; render(); },
   reset: () => {
