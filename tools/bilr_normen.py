@@ -15,10 +15,12 @@ from normen_extrahieren import absaetze, bereinigen  # noqa: E402
 # "|9,12" = Paragraf ohne Absätze, nur Einleitung und Nr. 9 und 12
 AUSWAHL = {
     "HGB": {"1": None, "2": None, "3": None, "6": None, "238": None, "239": None, "240": None, "241a": None,
-            "242": None, "243": None, "245": None, "247": None, "255": ["1"], "257": None, "264": ["1"],
+            "242": None, "243": None, "245": None, "246": ["1"], "247": None, "250": None, "252": ["1"],
+            "253": ["1", "3", "4", "5"], "255": ["1", "2"], "256a": None, "257": None, "264": ["1"],
             "268": ["5"], "277": ["1"]},
-    "AO": {"140": None, "141": None, "146": ["1"], "147": ["1", "3"]},
-    "EStG": {"4": ["1", "3"], "5": ["1"], "12": None, "13a": ["1"], "18": ["1"]},
+    "AO": {"39": None, "140": None, "141": None, "146": ["1"], "147": ["1", "3"]},
+    "EStG": {"4": ["1", "3"], "5": ["1", "5"], "6": ["1|1,2,3,4,5", "2", "2a"], "7": ["1", "4"], "9b": ["1"],
+             "12": None, "13a": ["1"], "18": ["1"]},
     "UStG": {"1": ["1"], "3": ["1", "1b", "9"], "4": [""], "9": ["1"], "10": ["1", "4"],
              "12": ["1", "2|1,11"], "15": ["1"], "17": ["1", "2"], "19": ["1"]},
 }
@@ -32,7 +34,7 @@ AUSWAHL_EST = {
 }
 # Paragrafen ohne amtliche Überschrift: Titel des Abschnitts
 TITEL = {("EStG", "3"): "Steuerfreie Einnahmen", ("EStG", "11"): "Vereinnahmung und Verausgabung",
-         ("EStG", "12"): "Nicht abzugsfähige Ausgaben"}
+         ("EStG", "12"): "Nicht abzugsfähige Ausgaben", ("EStG", "9b"): "Umsatzsteuerrechtlicher Vorsteuerabzug"}
 # Im PDF über einen Seitenumbruch verschobene Textteile (gehören zu § 3 Nr. 13 EStG)
 TEXT_KORREKTUR = {("EStG", "3"): [(r"Trennungsgelder\. Die als Reisekostenvergütungen .*?abziehbaren Aufwendungen nicht übersteigen; ", "")]}
 START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",

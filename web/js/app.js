@@ -661,7 +661,7 @@ function tabLernen() {
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
-    <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien" }[state.fach] || "Themen · Skript Teil I"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenFuer(state.fach).length} Themen</span></div>
+    <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien" }[state.fach] || "Themen · Skript Teil I und II"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenFuer(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
       <div id="themenListe">${themenListe()}</div></div>
     ${lernkarteiView()}`;
@@ -784,7 +784,7 @@ function kontenInhalt() {
 
 const GESETZE = {
   oer: [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"]],
-  bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["UStG", "Umsatzsteuergesetz (UStG)"]],
+  bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["EStDV", "Einkommensteuer-Durchführungsverordnung (EStDV)"], ["UStG", "Umsatzsteuergesetz (UStG)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
   est: [["EStG", "Einkommensteuergesetz (EStG)"], ["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
 };
 const normenVon = (fach) => NORMEN.filter((n) => n.faecher.includes(fach));

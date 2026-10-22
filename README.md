@@ -3,7 +3,7 @@
 Lern-App zur Klausurvorbereitung im Grundstudium I. Startseite mit Tagesziel, Lernserie, Wiederholungen,
 Suche über alle Inhalte und Modul-Kacheln. Verfügbar:
 
-- **Bilanzrecht (BilR)** – Bilanzsteuerrecht Teil I (Buchführung), orientiert am Skript und an den Übungen bzw. Lösungshinweisen.
+- **Bilanzrecht (BilR)** – Bilanzsteuerrecht Teil I (Buchführung) und Teil II (GoB und Betriebsvermögen, Zurechnung, Anschaffungskosten, Grundstücke und Gebäude-AfA, AfA/GWG, Teilwert, Rechnungsabgrenzung, Entnahmen/Einlagen), orientiert am Skript, an den Übungen bzw. Lösungshinweisen und an den Semesterklausuren.
 - **Öffentliches Recht** – Staatsrecht und Gesetzgebung nach dem Unterrichtsskript ÖR GS I (Kapitel 1–2), abgeglichen mit den Altklausuren 2020–2025: Klausurfälle im Gutachtenstil, häufige Klausurthemen doppelt gewichtet, nicht klausurrelevante Fragen unter „Zusatzwissen“.
 - **Einkommensteuer** – Grundstudium I nach den Skripten und Folien, Rechtsstand 2026 (Grundfreibetrag 12.348 €, Entfernungspauschale 0,38 € ab km 1, Übungsleiter 3.300 €): Rechenaufgaben mit immer neuen Zahlen (Tarif/Splitting, Werbungskosten, Entfernungspauschale, § 11, AfA/GWG), Einordnungsfälle, Frage-Antwort mit Multiple-Choice-Fassung und zwei Gesamtfälle. Dazu „Punkte sammeln“: Kartei mit Klausursätzen zum Auswendiglernen und ihrer Punktzahl (wird Stück für Stück ergänzt).
   Quellen: Grundgesetz, Bundeswahlgesetz, Parteiengesetz. Aufbau wie in der Klausur: ca. 75 % Frage-Antwort
@@ -71,6 +71,8 @@ web/                     Die Web-App (wird veröffentlicht)
   js/katalog.js          Auswahl für Übung und Klausur
   js/wiederholung.js     Lernintervalle (Leitner-Lernkartei)
   js/oer/normen.js       Gesetzestexte GG/BWahlG/PartG (erzeugt mit tools/normen_extrahieren.py)
+  js/bilr/teil2.js       Bilanzsteuerrecht Teil II: Zurechnung, AK, Grundstücke, AfA/GWG, Teilwert, Abgrenzung, Entnahmen/Einlagen
+  js/bilr/normen_zusatz.js  § 449 BGB, § 9a EStDV (von Hand)
   js/bilr/normen.js      Gesetzestexte Bilanzrecht – HGB/AO/EStG/UStG, Auszüge (erzeugt mit tools/bilr_normen.py aus den PDFs von gesetze-im-internet.de)
   js/oer/fragen.js       ÖR Frage-Antwort-Aufgaben
   js/oer/mc.js           Multiple-Choice-Fassungen dieser Aufgaben (richtige/falsche Aussagen)
