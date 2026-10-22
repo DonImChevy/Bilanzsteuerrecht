@@ -27,6 +27,8 @@ export const PAARE_BSR = [
   ["§ 6 Abs. 1 Nr. 5 EStG", "Bewertung von Einlagen"],
   ["§ 4 Abs. 1 S. 8 EStG", "Begriff der Einlage"],
   ["§ 250 HGB", "Rechnungsabgrenzungsposten"],
+  ["§ 252 Abs. 1 Nr. 4 HGB", "Vorsichts-, Realisations-, Imparitätsprinzip"],
+  ["§ 4 Abs. 5 S. 1 Nr. 1 EStG", "Geschenke: Freigrenze 50 €"],
   ["§ 252 Abs. 1 Nr. 5 HGB", "Periodenabgrenzung"],
   ["§ 9b Abs. 1 EStG", "Abziehbare Vorsteuer keine Anschaffungskosten"],
   ["§ 9a EStDV", "Anschaffung = Zeitpunkt der Lieferung"],

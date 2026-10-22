@@ -1,5 +1,5 @@
-// Bilanzsteuerrecht GS I, Teil II: Zurechnung, Anschaffungskosten, Grundstücke, Abschreibungen, Teilwert,
-// Rechnungsabgrenzung, Entnahmen und Einlagen. Nach dem Übungsheft „Bilanz Übungen 2026 – Teil II“ und den
+// Bilanzsteuerrecht GS I, Teil II: GoB und Betriebsvermögen, Zurechnung, Anschaffungskosten, Grundstücke, Abschreibungen, Teilwert,
+// Rechnungsabgrenzung, Entnahmen und Einlagen. Nach Skript und Übungsheft Teil II (2026/2027) und den
 // Lösungshinweisen der Semesterklausuren; Rechtsstand 2026. Reine Daten- und Generatordatei.
 import { zahl, auswahl, buchung, satz, einfach } from "../kern.js";
 import * as G from "../geld.js";
@@ -487,6 +487,60 @@ const privat = [
   }),
 ];
 
+
+// ======================================================================= GoB, Betriebsvermögen und Bewertung
+const gob = [
+  A("t2-gob", "bsr-gob",
+    "Erläutern Sie das Vorsichtsprinzip mit Realisations- und Imparitätsprinzip sowie das Stichtagsprinzip. Wie wirken die handelsrechtlichen GoB auf die Steuerbilanz?",
+    "• Vorsichtsprinzip (§ 252 Abs. 1 Nr. 4 HGB): vorsichtig bewerten; alle vorhersehbaren Risiken und Verluste, die bis zum Abschlussstichtag entstanden sind, sind zu berücksichtigen – auch wenn sie erst bis zur Aufstellung bekannt werden.\n• Realisationsprinzip (§ 252 Abs. 1 Nr. 4 letzter Hs. HGB): Gewinne erst ausweisen, wenn sie realisiert sind – bei Lieferungen mit Erbringung der geschuldeten Leistung (Übergang der Verfügungsmacht); Rechnung und Fälligkeit sind unerheblich. Steuerlich auch durch Entnahme (§ 6 Abs. 1 Nr. 4 EStG).\n• Imparitätsprinzip: Unrealisierte Verluste müssen, unrealisierte Gewinne dürfen nicht berücksichtigt werden (Niederstwertprinzip bei Aktiva, Höchstwertprinzip bei Passiva).\n• Stichtagsprinzip (§ 242 Abs. 1, § 252 Abs. 1 Nr. 3, 4 HGB): Verhältnisse am Bilanzstichtag; Erkenntnisse bis zur Aufstellung sind zu berücksichtigen, wenn sie werterhellend sind (Ursache vor dem Stichtag), nicht wenn sie wertbegründend sind (Ereignis nach dem Stichtag).\n• Wirtschaftliche Betrachtungsweise: maßgebend ist die wirtschaftliche Verursachung; schwebende Geschäfte werden nicht bilanziert.\n• Maßgeblichkeit (§ 5 Abs. 1 S. 1 EStG): Das Betriebsvermögen ist nach den handelsrechtlichen GoB anzusetzen, soweit keine steuerlichen Bewertungsvorbehalte greifen (§ 5 Abs. 6 EStG); steuerliche Wahlrechte können abweichend ausgeübt werden.",
+    ["HGB 252 1", "EStG 5 1"],
+    M(["Gewinne dürfen erst ausgewiesen werden, wenn sie realisiert sind.", "Unrealisierte Verluste sind zu berücksichtigen, unrealisierte Gewinne nicht.", "Werterhellende Erkenntnisse bis zur Bilanzaufstellung sind zu berücksichtigen.", "Die handelsrechtlichen GoB gelten über § 5 Abs. 1 EStG auch für die Steuerbilanz."],
+      ["Gewinne sind mit der Rechnungsstellung realisiert.", "Unrealisierte Gewinne und Verluste werden gleich behandelt.", "Ein Brand im Lager nach dem Bilanzstichtag ist bei der Bewertung zum Stichtag zu berücksichtigen.", "Steuerliche Wahlrechte müssen stets wie in der Handelsbilanz ausgeübt werden."],
+      "Welche Aussagen zu den GoB sind richtig?"),
+    { norm: ["HGB 252"], s: ["vorsicht", "realisation|realisiert", "imparit|unrealisierte verluste", "stichtag", "werterhellend|wertaufhellend", "massgeblich"] }),
+  A("t2-betriebsvermoegen", "bsr-gob",
+    "Wann gehört ein Wirtschaftsgut zum notwendigen Betriebsvermögen, wann kann es gewillkürtes Betriebsvermögen sein, wann ist es notwendiges Privatvermögen?",
+    "• Notwendiges Betriebsvermögen (R 4.2 Abs. 1 S. 1, 4 EStR): Wirtschaftsgüter, die ausschließlich und unmittelbar eigenbetrieblich genutzt werden oder dazu bestimmt sind; bei gemischter Nutzung von mehr als 50 % betrieblich → in vollem Umfang Betriebsvermögen.\n• Gewillkürtes Betriebsvermögen (R 4.2 Abs. 1 S. 3, 6 EStR): betriebliche Nutzung von mindestens 10 % bis 50 % – Zuordnung zum Betriebsvermögen in vollem Umfang möglich, wenn das Wirtschaftsgut objektiv geeignet und bestimmt ist, den Betrieb zu fördern; die Zuordnung muss unmissverständlich dokumentiert werden (z. B. Aufnahme in die Buchführung). Keine Einlage von absehbar verlustbringenden Wirtschaftsgütern.\n• Notwendiges Privatvermögen (R 4.2 Abs. 1 S. 5 EStR): private Nutzung von mehr als 90 % (betriebliche unter 10 %).\n• Folgen: Nur Betriebsvermögen wird bilanziert und abgeschrieben; die private Nutzung von Betriebsvermögen ist eine Nutzungsentnahme, die betriebliche Nutzung von Privatvermögen eine Nutzungseinlage. Die 1-%-Regelung für Kfz gilt nur bei notwendigem Betriebsvermögen (> 50 %).",
+    ["EStG 4 1"],
+    M(["Bei einer betrieblichen Nutzung von mehr als 50 % liegt notwendiges Betriebsvermögen vor.", "Bei einer betrieblichen Nutzung von 10 % bis 50 % ist gewillkürtes Betriebsvermögen möglich.", "Bei einer privaten Nutzung von mehr als 90 % liegt notwendiges Privatvermögen vor.", "Die Zuordnung zum gewillkürten Betriebsvermögen muss unmissverständlich dokumentiert werden."],
+      ["Bei einer betrieblichen Nutzung von 30 % liegt stets notwendiges Betriebsvermögen vor.", "Bei einer betrieblichen Nutzung von 5 % ist gewillkürtes Betriebsvermögen möglich.", "Gemischt genutzte Wirtschaftsgüter werden immer nach dem Nutzungsanteil aufgeteilt bilanziert.", "Die 1-%-Regelung gilt auch für Fahrzeuge des gewillkürten Betriebsvermögens."],
+      "Welche Aussagen zur Zuordnung zum Betriebsvermögen sind richtig?"),
+    { norm: [], s: ["notwendig betriebsverm", "gewillkuert", "privatverm", "50", "10", "90"] }),
+  F("t2-bv-fall", "bsr-gob", "Wie ist das (bewegliche) Wirtschaftsgut zuzuordnen?",
+    ["Notwendiges Betriebsvermögen", "Gewillkürtes Betriebsvermögen möglich (Wahlrecht)", "Notwendiges Privatvermögen"], [
+      { text: "Ein Händler nutzt einen Lieferwagen zu 95 % betrieblich und zu 5 % privat.", richtig: 0, erkl: "Betriebliche Nutzung über 50 % → notwendiges Betriebsvermögen in vollem Umfang (R 4.2 Abs. 1 S. 4 EStR); die private Nutzung ist eine Nutzungsentnahme.", normen: ["EStG 4 1"] },
+      { text: "Ein Unternehmer nutzt einen Pkw laut Fahrtenbuch zu 30 % betrieblich und zu 70 % privat.", richtig: 1, erkl: "Betriebliche Nutzung zwischen 10 % und 50 % → gewillkürtes Betriebsvermögen möglich (R 4.2 Abs. 1 S. 6 EStR); die 1-%-Regelung gilt dann nicht, die private Nutzung wird mit den anteiligen Kosten bewertet.", normen: ["EStG 4 1"] },
+      { text: "Ein Unternehmer nutzt sein privates Motorrad gelegentlich (5 %) für Botenfahrten.", richtig: 2, erkl: "Betriebliche Nutzung unter 10 % → notwendiges Privatvermögen (R 4.2 Abs. 1 S. 5 EStR); die betrieblichen Fahrten sind eine Nutzungseinlage.", normen: ["EStG 4 1"] },
+      { text: "Ein Steuerberater kauft einen Laptop, den er ausschließlich in der Kanzlei nutzt.", richtig: 0, erkl: "Ausschließlich und unmittelbar eigenbetrieblich genutzt → notwendiges Betriebsvermögen (R 4.2 Abs. 1 S. 1 EStR).", normen: ["EStG 4 1"] },
+      { text: "Ein Händler nutzt einen Pkw zu 60 % betrieblich und zu 40 % privat.", richtig: 0, erkl: "Mehr als 50 % betrieblich → notwendiges Betriebsvermögen; private Nutzung nach der 1-%-Regelung oder per Fahrtenbuch.", normen: ["EStG 4 1", "EStG 6 1"] },
+    ]),
+  F("t2-wertaufhellung", "bsr-gob", "Die Bilanz zum 31.12.01 wird am 15.03.02 aufgestellt. Ist die Information bei der Bewertung zum 31.12.01 zu berücksichtigen?",
+    ["Ja – werterhellend (Ursache vor dem Stichtag)", "Nein – wertbegründend (Ereignis nach dem Stichtag)"], [
+      { text: "Im Februar 02 erfährt der Unternehmer, dass ein Kunde bereits seit November 01 zahlungsunfähig ist.", richtig: 0, erkl: "Die Zahlungsunfähigkeit bestand schon am Stichtag; die spätere Kenntnis erhellt nur den Wert zum Stichtag → Teilwertabschreibung auf die Forderung (§ 252 Abs. 1 Nr. 4 HGB).", normen: ["HGB 252 1"] },
+      { text: "Am 20.01.02 zerstört ein Brand einen Teil des Warenlagers.", richtig: 1, erkl: "Das schädigende Ereignis liegt nach dem Stichtag → wertbegründend; keine Berücksichtigung zum 31.12.01.", normen: ["HGB 252 1"] },
+      { text: "Ein Kunde, dessen Forderung am Stichtag zu 80 % ausfallgefährdet war, stellt im Februar 02 unerwartet eine Sicherheit.", richtig: 1, erkl: "Die Sicherheit wird erst nach dem Stichtag gestellt → wertbegründend; zum 31.12.01 bleibt die Teilwertabschreibung zulässig.", normen: ["HGB 252 1"] },
+      { text: "Börsennotierte Aktien fallen im Januar 02 deutlich unter den Stichtagskurs.", richtig: 1, erkl: "Kursänderungen nach dem Stichtag sind wertbegründend (BMF 02.09.2016) und bleiben unberücksichtigt.", normen: ["EStG 6 1"] },
+      { text: "Im Januar 02 stellt sich heraus, dass eine am 30.12.01 gelieferte Maschine schon bei Lieferung einen versteckten Mangel hatte.", richtig: 0, erkl: "Der Mangel bestand bereits am Stichtag → werterhellend; bei der Bewertung zum 31.12.01 zu berücksichtigen.", normen: ["HGB 252 1"] },
+    ]),
+  F("t2-geschenke", "bsr-gob", "Sind die Aufwendungen für das Geschenk als Betriebsausgabe abziehbar (§ 4 Abs. 5 S. 1 Nr. 1 EStG)?",
+    ["Ja – Freigrenze nicht überschritten bzw. nicht anwendbar", "Nein – nicht abziehbare Betriebsausgabe"], [
+      { text: "Ein Händler mit vollem Vorsteuerabzug schenkt einem Geschäftsfreund ein Präsent für 59,50 € einschließlich 19 % USt (einziges Geschenk an ihn im Jahr).", richtig: 0, erkl: "Bei Vorsteuerabzug zählt der Nettowert: 50 € – die Freigrenze von 50 € wird nicht überschritten (R 9b Abs. 2 S. 3 EStR).", normen: ["EStG 4 5"] },
+      { text: "Ein Arzt (umsatzsteuerfreie Umsätze, kein Vorsteuerabzug) schenkt einem Geschäftsfreund ein Präsent für 59,50 € einschließlich USt.", richtig: 1, erkl: "Ohne Vorsteuerabzug zählt der Bruttowert 59,50 € → Freigrenze von 50 € überschritten → in voller Höhe nicht abziehbar.", normen: ["EStG 4 5"] },
+      { text: "Ein Unternehmer schenkt einem Kunden einen Kalender (35 € netto) und im Herbst zusätzlich einen Bildband (25 € netto).", richtig: 1, erkl: "Die Freigrenze gilt je Empfänger und Jahr: 35 € + 25 € = 60 € > 50 € → beide Geschenke nicht abziehbar; die Vorsteuer ist nicht abziehbar (§ 15 Abs. 1a UStG).", normen: ["EStG 4 5", "UStG 15 1"] },
+      { text: "Ein Unternehmer schenkt seiner Angestellten zum Dienstjubiläum einen Blumenstrauß für 70 €.", richtig: 0, erkl: "§ 4 Abs. 5 S. 1 Nr. 1 EStG gilt nur für Geschenke an Personen, die nicht Arbeitnehmer des Steuerpflichtigen sind → Betriebsausgabe (lohnsteuerlich ggf. Aufmerksamkeit).", normen: ["EStG 4 5"] },
+    ]),
+  F("t2-zurechnung-wer", "bsr-gob", "Wem ist das Wirtschaftsgut steuerlich zuzurechnen (wer bilanziert es)?", null, [
+    { text: "Ein Unternehmer übereignet seinen betrieblichen Lkw zur Sicherung eines Darlehens an seine Bank; er nutzt ihn weiter.", optionen: ["Der Unternehmer (Sicherungsgeber)", "Die Bank (Sicherungsnehmer)"], richtig: 0,
+      erkl: "Sicherungseigentum ist dem Sicherungsgeber zuzurechnen (§ 39 Abs. 2 Nr. 1 S. 2 AO) – er bleibt wirtschaftlicher Eigentümer.", normen: ["AO 39 2"] },
+    { text: "Ein Treuhänder hält im eigenen Namen, aber für Rechnung eines Unternehmers Aktien.", optionen: ["Der Treuhänder", "Der Unternehmer (Treugeber)"], richtig: 1,
+      erkl: "Bei Treuhandverhältnissen ist das Wirtschaftsgut dem Treugeber zuzurechnen (§ 39 Abs. 2 Nr. 1 S. 2 AO).", normen: ["AO 39 2"] },
+    { text: "Eine Händlerin erhält Ware unter Eigentumsvorbehalt; bezahlt ist noch nichts.", optionen: ["Die Händlerin (Käuferin)", "Der Lieferant (Vorbehaltsverkäufer)"], richtig: 0,
+      erkl: "Die Käuferin ist ab Lieferung wirtschaftliche Eigentümerin (§ 39 Abs. 2 Nr. 1 AO); rechtliches Eigentum erst mit Zahlung (§ 449 BGB).", normen: ["AO 39 2", "BGB 449 1"] },
+    { text: "Für ein gekauftes Betriebsgrundstück sind Nutzen und Lasten bereits übergegangen; die Eintragung im Grundbuch steht noch aus.", optionen: ["Der Käufer", "Der Verkäufer (noch eingetragener Eigentümer)"], richtig: 0,
+      erkl: "Besitz in Erwartung des Eigentumserwerbs: Mit Übergang von Nutzen und Lasten ist der Käufer wirtschaftlicher Eigentümer (§ 39 Abs. 2 Nr. 1 AO).", normen: ["AO 39 2"] },
+  ]),
+];
+
 // ======================================================================= Klausurfall
 const fall = (() => {
   const ak = 543000, gub = 162900, geb = 380100, afaG = Math.round(geb * 0.03 * 9 / 12 * 100) / 100, zins = 9000, gbk = 1000;
@@ -502,6 +556,6 @@ const fall = (() => {
     { fall: true });
 })();
 
-export const BSR_TEIL2 = [...zurechnung, ...ak, ...grundstueck, fall, ...afa, ...teilwert, ...abgrenzung, ...privat];
+export const BSR_TEIL2 = [...gob, ...zurechnung, ...ak, ...grundstueck, fall, ...afa, ...teilwert, ...abgrenzung, ...privat];
 export const MC_BSR_TEIL2 = Object.fromEntries(BSR_TEIL2.filter((v) => v.mc).map((v) => [v.id, v.mc]));
 export const SW_BSR_TEIL2 = Object.fromEntries(BSR_TEIL2.filter((v) => v.sw).map((v) => [v.id, v.sw]));

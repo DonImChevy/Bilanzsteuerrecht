@@ -18,6 +18,7 @@ export const THEMEN = [
   { id: "grundbegriffe", titel: "Grundbegriffe", unter: "Auszahlung, Ausgabe, Aufwand, Kosten", icon: "📖", fach: "bsr" },
   { id: "buecher", titel: "Grund-, Haupt- & Nebenbücher", unter: "Journal, Kassenbericht, Belege", icon: "📚", fach: "bsr" },
   // Bilanzsteuerrecht Teil II (Übungen Teil II, Semesterklausuren)
+  { id: "bsr-gob", titel: "GoB, Betriebsvermögen & Bewertung", unter: "Teil II · § 252 HGB, § 5 I EStG, R 4.2 EStR, § 4 V Nr. 1 EStG", icon: "🧭", fach: "bsr" },
   { id: "bsr-zurechnung", titel: "Zurechnung & Zugangszeitpunkt", unter: "Teil II · § 39 AO, § 246 HGB, § 9a EStDV, § 449 BGB", icon: "🔑", fach: "bsr" },
   { id: "bsr-ak", titel: "Anschaffungskosten", unter: "Teil II · § 255 I HGB, § 9b EStG", icon: "🏷️", fach: "bsr" },
   { id: "bsr-grundstueck", titel: "Grundstückserwerb & Gebäude-AfA", unter: "Teil II · § 255 HGB, § 7 IV EStG", icon: "🏠", fach: "bsr" },
