@@ -33,6 +33,3 @@ export const PAARE_EST = [
   ["§ 36 Abs. 1 EStG", "ESt entsteht mit Ablauf des VZ"],
   ["§ 255 Abs. 1 HGB", "Anschaffungskosten"],
 ];
-
-/** Paar-Sammlungen je Modul (weitere Module können hier ergänzt werden). */
-export const PAARE = { est: PAARE_EST };
