@@ -696,8 +696,10 @@ export const FESTE = [
     "Das Finanzamt hat die Bilanzen von Mike Scott korrigiert: Eigenkapital 31.12.01 lt. FA 105.000 €, Eigenkapital 31.12.02 lt. FA 120.000 €. Entnahmen 02 lt. FA 80.000 €, Einlagen 02 lt. FA 10.000 €. Wie hoch ist der Gewinn 02 lt. FA?",
     E(85000), "120.000 ./. 105.000 + 80.000 ./. 10.000 = 85.000 € (lt. Stpfl. waren es 82.000 €).", { quelle: "Übung Gewinnermittlung (Mike Scott)" })),
   { id: "bu-kassenbericht", thema: "buecher", erzeugen: (r) => {
-    const anfang = r.betrag(200, 1500, 10), ende = r.betrag(300, 2000, 10), ausg = r.betrag(100, 800, 10), bank = r.betrag(500, 3000, 100), einlage = r.betrag(0, 300, 50);
-    const losung = ende + ausg + bank - anfang - einlage;
+    // Tageslosung zuerst ziehen, damit sie nie negativ wird; die Bankeinzahlung lässt mindestens 100 € in der Kasse.
+    const anfang = r.betrag(200, 1500, 10), losung = r.betrag(800, 5000, 10), ausg = r.betrag(100, 800, 10), einlage = r.betrag(0, 300, 50);
+    const bank = Math.floor((anfang + losung + einlage - ausg - 10000) * r.wahl([0.5, 0.7, 0.9]) / 10000) * 10000;
+    const ende = anfang + losung + einlage - ausg - bank;
     const eur = G.euro;
     return zahl("bu-kassenbericht", "buecher",
       `Retrograder Kassenbericht: Kassenbestand bei Geschäftsschluss ${eur(ende)}; Geschäftsausgaben bar ${eur(ausg)}; Einzahlung auf das Bankkonto ${eur(bank)}; Kassenbestand des Vortags ${eur(anfang)}; Privateinlage in die Kasse ${eur(einlage)}. Wie hoch sind die Bareinnahmen (Tageslosung)?`,
