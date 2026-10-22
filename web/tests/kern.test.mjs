@@ -393,3 +393,13 @@ test("Synchronisierung: zwei Geräte, nichts doppelt, nichts verloren", async ()
   assert.deepEqual(ipad.proThema["est-tarif"], { b: 18, r: 12 });
   assert.ok(ipad.lern.c1);
 });
+
+test("Paare finden: Normen und Kurzerklärungen eindeutig", async () => {
+  const { PAARE } = await import("../js/est/paare.js");
+  for (const [fach, liste] of Object.entries(PAARE)) {
+    assert.ok(liste.length >= 10, fach);
+    assert.equal(new Set(liste.map(([n]) => n)).size, liste.length, "doppelte Norm in " + fach);
+    assert.equal(new Set(liste.map(([, t]) => t)).size, liste.length, "doppelte Erklärung in " + fach);
+    for (const [n, t] of liste) assert.ok(/^(§|Art\.)/.test(n) && t.length <= 45, n);
+  }
+});

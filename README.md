@@ -79,6 +79,7 @@ web/                     Die Web-App (wird veröffentlicht)
   js/sync.js             Geräte-Synchronisierung per Sync-Code (Zusammenführen ohne Doppelzählung)
   js/sync-config.js      Server-Adresse und öffentlicher Schlüssel (Supabase); leer = ausgeblendet
   js/lib/qrcode.js       QR-Code-Erzeugung (qrcode-generator, MIT)
+  js/est/paare.js        Spiel „Paare finden“: wichtigste ESt-Normen mit Kurzerklärung
   js/est/punkte.js       ESt-Punktesammler (Klausursätze zum Auswendiglernen, § 1 BGB)
   js/est/tarif.js        Einkommensteuertarif 2026 (§ 32a EStG, Grund- und Splittingtarif)
   js/est/normen.js       Gesetzestexte EStG/AO für das ESt-Modul (tools/bilr_normen.py --est)
