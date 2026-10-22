@@ -53,6 +53,17 @@ export const THEMEN = [
   { id: "est-zufluss", titel: "Zu- und Abfluss", unter: "§ 11 EStG", icon: "📅", fach: "est" },
   { id: "est-werbungskosten", titel: "Werbungskosten", unter: "§§ 9, 9a EStG · Arbeitsmittel, AfA, Home-Office", icon: "💼", fach: "est" },
   { id: "est-entfernung", titel: "Entfernungspauschale", unter: "§ 9 Abs. 1 S. 3 Nr. 4, Abs. 2, 4 EStG", icon: "🚗", fach: "est" },
+  // Umsatzsteuer (Skript GS I, Klausurtechnik, Semesterklausuren; Rechtsstand 2026)
+  { id: "ust-grundlagen", titel: "System & Unternehmer", unter: "§§ 1, 2 UStG · Rahmen des Unternehmens", icon: "🏢", fach: "ust" },
+  { id: "ust-leistung", titel: "Lieferung & sonstige Leistung", unter: "§ 3 Abs. 1, 9 UStG · Nebenleistungen", icon: "📦", fach: "ust" },
+  { id: "ust-ort", titel: "Ort der Leistung", unter: "§ 3 Abs. 6, 7, § 3a, § 1 Abs. 2 UStG", icon: "📍", fach: "ust" },
+  { id: "ust-entgelt", titel: "Leistungsaustausch & Prüfschema", unter: "§ 1 Abs. 1 Nr. 1 UStG · Schadensersatz", icon: "🔁", fach: "ust" },
+  { id: "ust-befreiung", titel: "Steuerbefreiungen & Option", unter: "§ 4 Nr. 12, 14, 28, § 9 UStG", icon: "🏠", fach: "ust" },
+  { id: "ust-bmg", titel: "Bemessungsgrundlage & Steuersatz", unter: "§§ 10, 12 UStG · Anlage 2", icon: "％", fach: "ust" },
+  { id: "ust-entstehung", titel: "Entstehung & Änderung", unter: "§§ 13, 13a, 17 UStG · Anzahlungen", icon: "📅", fach: "ust" },
+  { id: "ust-vorsteuer", titel: "Vorsteuer & Rechnungen", unter: "§§ 14, 14c, 15 UStG", icon: "🧾", fach: "ust" },
+  { id: "ust-wertabgabe", titel: "Unentgeltliche Wertabgaben", unter: "§ 3 Abs. 1b, 9a, § 10 Abs. 4 UStG", icon: "🎁", fach: "ust" },
+  { id: "ust-sonder", titel: "Sonderfälle & Kleinunternehmer", unter: "§ 3 Abs. 3, 4, 6a, § 10 Abs. 5, § 19 UStG", icon: "🧩", fach: "ust" },
 ];
 export const THEMA = Object.fromEntries(THEMEN.map((t) => [t.id, t]));
 
@@ -60,6 +71,7 @@ export const FAECHER = {
   bsr: { id: "bsr", titel: "Bilanzsteuerrecht", kurz: "BSR" },
   oer: { id: "oer", titel: "Öffentliches Recht", kurz: "ÖR" },
   est: { id: "est", titel: "Einkommensteuer", kurz: "ESt" },
+  ust: { id: "ust", titel: "Umsatzsteuer", kurz: "USt" },
 };
 export const themenFuer = (fach) => THEMEN.filter((t) => t.fach === fach);
 /** Themen für Klausur und gemischte Übungen – ohne „Zusatzwissen“. */

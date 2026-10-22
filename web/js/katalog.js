@@ -5,6 +5,7 @@ import { KLAUSUR_HAEUFIG } from "./oer/skript.js";
 import { OER_UEBERTRAGUNG } from "./oer/uebertragung.js";
 import { EST_AUFGABEN } from "./est/aufgaben.js";
 import { BSR_TEIL2 } from "./bilr/teil2.js";
+import { UST_AUFGABEN } from "./ust/aufgaben.js";
 import { LERNKARTEN as BSR_KARTEN } from "./lernkarten.js";
 import { THEMA, pruefungsThemen, Zufall } from "./kern.js";
 import { normenAusText } from "./oer/normtext.js";
@@ -27,7 +28,7 @@ const mitNormen = (v) => {
   } };
 };
 
-export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...EST_AUFGABEN, ...BSR_TEIL2].map(mitNormen);
+export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...EST_AUFGABEN, ...BSR_TEIL2, ...UST_AUFGABEN].map(mitNormen);
 
 export const vorlagenFuer = (thema) => ALLE.filter((v) => v.thema === thema);
 export const fachVon = (vorlage) => THEMA[vorlage.thema].fach;
@@ -81,7 +82,7 @@ export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false) {
     const qa = gewichtet(pool, anzahl - ue.length, r);
     return r.mischen([...qa, ...ue]);
   }
-  if (fach === "est") {
+  if (fach === "est" || fach === "ust") {
     // Klausurstruktur ESt: Gesamtfall-Charakter – ca. 50 % Rechenaufgaben, Rest Einordnungsfälle und Frage-Antwort
     const re = fragen(alle, Math.round(anzahl * 0.5), r, "rechnen");
     const fa = fragen(alle, Math.round(anzahl * 0.2), r, "fall");
@@ -94,7 +95,7 @@ export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false) {
 }
 
 // Lernkarten: BSR-Karten plus alle offenen ÖR- und ESt-Fragen (Vorderseite Frage, Rückseite Musterantwort)
-const OER_KARTEN = [...OER_FRAGEN, ...EST_AUFGABEN.filter((v) => v.mc), ...BSR_TEIL2.filter((v) => v.mc)].map((v) => v.erzeugen(new Zufall(1)))
+const OER_KARTEN = [...OER_FRAGEN, ...EST_AUFGABEN.filter((v) => v.mc), ...BSR_TEIL2.filter((v) => v.mc), ...UST_AUFGABEN.filter((v) => v.mc)].map((v) => v.erzeugen(new Zufall(1)))
   .filter((f) => f.typ === "offen")
   .map((f) => ({ id: "k-" + f.id, thema: f.thema, vorne: (f.fall ? "Klausurfall: " : "") + f.text, hinten: f.antwort, normen: f.normen }));
 

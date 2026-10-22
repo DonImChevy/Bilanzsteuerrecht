@@ -169,7 +169,7 @@ const summeFach = (fach) => themenFuer(fach).map((t) => zaehler(t.id)).reduce((a
 
 // ======================= Zustand =======================
 const state = {
-  fach: ["oer", "est"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
+  fach: ["oer", "est", "ust"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
   oerModus: lies("bsr.oerModus", "qa") === "mc" ? "mc" : "qa", // "qa" = selbst formulieren, "mc" = Multiple Choice
   ziel: Number(lies("bsr.ziel", "20")) || 20,
   design: lies("bsr.design", "system"),
@@ -640,6 +640,11 @@ function tabLernen() {
       kachel("fall", "lernen", "Fälle einordnen", "Steuerpflicht, § 11, Einkunftsart") +
       kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Definitionen und Klausurfälle") +
       kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") + paareKachel
+    : state.fach === "ust"
+    ? kachel("rechnen", "tkonto", "Rechnen", "USt, BMG, Anzahlung, Vorsteuer") +
+      kachel("fall", "lernen", "Fälle einordnen", "Ort, Befreiung, Steuersatz, VAZ") +
+      kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Prüfschema und Klausurfälle") +
+      kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") + paareKachel
     : kachel("buchung", "tkonto", "Buchungssätze", "Immer neue Beträge") +
       kachel("alles", "mischen", "Gemischt", "Buchen, Rechnen, Theorie") + paareKachel;
   const breit = (schnell.match(/class="kachel/g) || []).length % 2 === 0 ? " breit" : ""; // letzte Kachel füllt die Reihe auf
@@ -661,7 +666,7 @@ function tabLernen() {
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
-    <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien" }[state.fach] || "Themen · Skript Teil I und II"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenFuer(state.fach).length} Themen</span></div>
+    <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien", ust: "Themen · Skript & Klausurtechnik" }[state.fach] || "Themen · Skript Teil I und II"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenFuer(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
       <div id="themenListe">${themenListe()}</div></div>
     ${lernkarteiView()}`;
@@ -716,7 +721,7 @@ function tabKlausur() {
       ? (state.oerModus === "mc"
         ? "Ca. 75 % Frage-Antwort als Multiple Choice und 25 % Übertragungsaufgaben. Automatische Auswertung nach der Abgabe."
         : "Wie in der Klausur: ca. 75 % Frage-Antwort und 25 % Übertragungsaufgaben. Nach der Abgabe vergleichst du mit den Musterantworten.")
-      : state.fach === "est"
+      : state.fach === "est" || state.fach === "ust"
       ? "Ca. 50 % Rechenaufgaben mit immer neuen Zahlen, dazu Einordnungsfälle und Frage-Antwort. Auswertung erst nach der Abgabe."
       : "Gemischte Aufgaben aus allen Themen, Schwerpunkt Buchungssätze (ca. 60 %). Auswertung erst nach der Abgabe.")}
     ${modusSchalter()}
@@ -786,8 +791,12 @@ const GESETZE = {
   oer: [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"]],
   bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["EStDV", "Einkommensteuer-Durchführungsverordnung (EStDV)"], ["UStG", "Umsatzsteuergesetz (UStG)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
   est: [["EStG", "Einkommensteuergesetz (EStG)"], ["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
+  ust: [["UStG", "Umsatzsteuergesetz (UStG)"]],
 };
-const normenVon = (fach) => NORMEN.filter((n) => n.faecher.includes(fach));
+/** Paragrafen in Gesetzesreihenfolge (§ 3 vor § 3a vor § 4); Präambel und Nummern ohne Ziffer zuerst. */
+const nrKey = (nr) => { const m = String(nr).match(/^(\d+)(.*)$/); return m ? [Number(m[1]), m[2]] : [-1, String(nr)]; };
+const nrVergleich = (a, b) => { const [x, xs] = nrKey(a.nr), [y, ys] = nrKey(b.nr); return x - y || xs.localeCompare(ys); };
+const normenVon = (fach) => NORMEN.filter((n) => n.faecher.includes(fach)).sort(nrVergleich);
 /** Gesetze eines Moduls, deren Text in der App vorliegt. */
 const gesetzeFuer = (fach) => (GESETZE[fach] || []).filter(([g]) => normenVon(fach).some((n) => n.g === g));
 
@@ -807,7 +816,7 @@ function normenListe() {
 function tabNormen() {
   return `
     ${seitenKopf("Normen", "Alle lehrplanrelevanten Vorschriften im Wortlaut – auch offline.")}
-    <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="${state.fach === "est" ? "Suchen, z. B. Entfernungspauschale, § 11, Wohnsitz" : "Suchen, z. B. Bundesrat, Art. 63, Wahlrecht"}" autocomplete="off" value="${esc(state.normSuche)}"></div>
+    <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="${state.fach === "est" ? "Suchen, z. B. Entfernungspauschale, § 11, Wohnsitz" : state.fach === "ust" ? "Suchen, z. B. Vorsteuer, § 4, Kleinunternehmer" : "Suchen, z. B. Bundesrat, Art. 63, Wahlrecht"}" autocomplete="off" value="${esc(state.normSuche)}"></div>
     <div id="normListe">${normenListe()}</div>`;
 }
 

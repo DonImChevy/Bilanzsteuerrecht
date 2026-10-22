@@ -205,7 +205,7 @@ test("Lernserie, Wochenverlauf und Module", async () => {
   assert.equal(w.length, 7);
   assert.deepEqual([w[0].n, w[6].n, w[6].heute, w[6].kurz], [2, 7, true, "Di"]);
   // Module: aktive haben Themen und Aufgaben, kommende nicht; Icons existieren
-  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer", "est"]);
+  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer", "est", "ust"]);
   assert.ok(MODULE.length === 7 && !MODUL.asv && MODUL.ust.kurz === "USt" && MODUL.bsr.kurz === "BilR" && MODUL.pr.kurz === "PrivR");
   for (const m of MODULE) {
     assert.ok(ICON_NAMEN.includes(m.icon), m.id);

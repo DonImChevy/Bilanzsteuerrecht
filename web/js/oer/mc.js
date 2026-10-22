@@ -1,6 +1,7 @@
 import { auswahl } from "../kern.js";
 import { MC_SKRIPT } from "./skript.js";
 import { MC_EST } from "../est/aufgaben.js";
+import { MC_UST } from "../ust/aufgaben.js";
 import { MC_BSR_TEIL2 } from "../bilr/teil2.js";
 
 // Multiple-Choice-Fassungen der ÖR-Frage-Antwort-Aufgaben.
@@ -10,6 +11,7 @@ const M = (r, f, frage) => ({ r, f, frage });
 
 export const MC = {
   ...MC_EST,
+  ...MC_UST,
   ...MC_BSR_TEIL2,
   ...MC_SKRIPT,
   // ---------------------------------------------------------------- Staatsziele, Geschichte
