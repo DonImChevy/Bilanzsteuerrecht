@@ -106,6 +106,8 @@ const ak = [
     { text: "Die Vorsteuer aus der Rechnung über eine Maschine ist voll abziehbar.", richtig: 3, erkl: "Abziehbare Vorsteuer gehört nicht zu den Anschaffungskosten (§ 9b Abs. 1 EStG); sie ist eine Forderung gegenüber dem Finanzamt und kein Aufwand.", normen: ["EStG 9b 1"] },
     { text: "Für ein Darlehen, mit dem die Maschine finanziert wurde, fallen im Jahr 6.000 € Zinsen an.", richtig: 2, erkl: "Finanzierungskosten gehören nicht zu den Anschaffungskosten → Betriebsausgabe (Zinsaufwand).", normen: ["EStG 4 4"] },
     { text: "Der Unternehmer besucht im Februar eine Fachmesse, um sich allgemein über Produktionsmaschinen zu informieren; im Juli kauft er eine Maschine eines Ausstellers.", richtig: 2, erkl: "Kosten vor der konkreten Erwerbsentscheidung sind keine Anschaffungsnebenkosten → Reisekosten als Betriebsausgabe.", normen: ["EStG 4 4"] },
+    { text: "Der Unternehmer reist im Mai zum Hersteller, um sich eine bestimmte Produktionsmaschine vorführen zu lassen, die er dort im Juni kauft. Die Reisekosten betragen 900 €.", richtig: 0, erkl: "Die Reise dient dem Erwerb genau dieser Maschine (Einzelkosten nach der konkreten Erwerbsentscheidung) → Anschaffungsnebenkosten (§ 255 Abs. 1 S. 2 HGB). Anders der allgemeine Messebesuch (Gemeinkosten).", normen: ["HGB 255 1"] },
+    { text: "Beim Kauf eines Motorrads lässt der Unternehmer einen Hecklederkoffer für 700 € zzgl. USt mitliefern und montieren.", richtig: 0, erkl: "Zubehör, das mit dem Fahrzeug erworben wird, gehört als Nebenkosten zu den Anschaffungskosten (§ 255 Abs. 1 S. 2 HGB).", normen: ["HGB 255 1"] },
     { text: "Für die Installation und Einrichtung einer Warenwirtschafts-Software berechnet der Anbieter 850 € zzgl. USt.", richtig: 0, erkl: "Installation und Einrichtung versetzen die Software in den betriebsbereiten Zustand → Anschaffungskosten (§ 255 Abs. 1 S. 1 HGB).", normen: ["HGB 255 1"] },
     { text: "Ein externer Berater, den der Unternehmer mit der Auswahl einer Warenwirtschafts-Software beauftragt hat, berechnet 600 € zzgl. USt.", richtig: 0, erkl: "Die Beratung steht im Zusammenhang mit dem konkreten Erwerb → Anschaffungsnebenkosten (§ 255 Abs. 1 S. 2 HGB).", normen: ["HGB 255 1"] },
     { text: "Der Anbieter einer neuen Software berechnet eine Anwenderschulung für den Unternehmer über 200 € zzgl. USt.", richtig: 2, erkl: "Die Schulung betrifft den Anwender, nicht die Betriebsbereitschaft der Software → sofort abziehbare Betriebsausgabe.", normen: ["EStG 4 4"] },
@@ -302,6 +304,7 @@ const afa = [
       { text: "Bürostuhl für 950 € zzgl. USt.", richtig: 1, erkl: "Über 800 €, aber nicht über 1.000 € → Sammelposten (1/5 jährlich) oder lineare AfA.", normen: ["EStG 6 2a"] },
       { text: "Gabelstapler für 18.000 € zzgl. USt.", richtig: 2, erkl: "Über 1.000 € → nur AfA nach § 7 Abs. 1 EStG (bei Anschaffung 07/2025 – 2027 wahlweise degressiv).", normen: ["EStG 7 1"] },
       { text: "Monitor für den vorhandenen Büro-PC für 650 € zzgl. USt.", richtig: 3, erkl: "Peripheriegeräte einer EDV-Anlage sind nicht selbständig nutzungsfähig (§ 6 Abs. 2 S. 2 EStG, H 6.13 EStH) → keine GWG-/Sammelpostenregelung; AfA mit der Anlage bzw. eigene Nutzungsdauer.", normen: ["EStG 6 2"] },
+      { text: "Bücherregal aus 10 Regalelementen zu je 450 € zzgl. USt; der Unternehmer will die Einteilung je nach Bedarf ändern. Ein einzelnes Element ist allein nicht standfest.", richtig: 3, erkl: "Die Regalelemente sind selbständige Wirtschaftsgüter, aber nicht selbständig nutzbar (technische Verbindung, keine Standfestigkeit; § 6 Abs. 2 S. 2 EStG, H 6.13 EStH) → keine GWG; nur AfA nach § 7 Abs. 1 EStG, im Zugangsjahr zeitanteilig.", normen: ["EStG 6 2", "EStG 7 1"] },
       { text: "Aktenvernichter für 240 € zzgl. USt.", richtig: 0, erkl: "Bis 250 € sofort als Betriebsausgabe; ohne Verzeichnis (§ 6 Abs. 2 EStG).", normen: ["EStG 6 2"] },
       { text: "Kaffeevollautomat für das Büro für 1.190 € einschließlich 19 % USt.", richtig: 1, erkl: "Maßgeblich ist der Nettobetrag: 1.190 € / 1,19 = 1.000 €. Das übersteigt 800 € → kein GWG; Sammelposten ist möglich (nicht über 1.000 €), alternativ lineare AfA.", normen: ["EStG 6 2a"] },
     ]),
@@ -362,6 +365,33 @@ const teilwert = [
         ? `Kursrückgang am Stichtag um mehr als 5 % (${eur(stichtag)} < 95 % von ${eur(kurs)}) → voraussichtlich dauernd (BMF 02.09.2016); spätere Kursanstiege bleiben unberücksichtigt. Ansatz: ${n} × ${eur(stichtag)} = ${eur(wert)} (§ 6 Abs. 1 Nr. 2 S. 2 EStG).`
         : `Der Kursrückgang liegt innerhalb der Bagatellgrenze von 5 % → keine dauernde Wertminderung. Ansatz mit den Anschaffungskosten: ${n} × ${eur(kurs)} = ${eur(wert)}.`);
   }),
+  V("t2-teilwert-maschine", "bsr-teilwert", (r) => {
+    const ak = r.betrag(6000, 60000, 1200), m = r.zahl(1, 12), nd = 10, mon = ak / (nd * 12);
+    const bw = ak - mon * (monate(m) + 24), rnd = nd * 12 - monate(m) - 24, halb = bw / 2;
+    const tw = Math.round(halb * r.wahl([0.8, 0.9, 1.1, 1.3]) / 10000) * 10000, dauernd = tw < halb, wert = dauernd ? tw : bw;
+    return rechnen("t2-teilwert-maschine", "bsr-teilwert",
+      `Eine Produktionsmaschine wurde im ${MONAT[m - 1]} 01 für ${eur(ak)} netto angeschafft (Nutzungsdauer 10 Jahre, lineare AfA). Wegen einer technischen Neuerung beträgt ihr Teilwert am 31.12.03 nur noch ${eur(tw)}. Der Unternehmer möchte einen möglichst niedrigen Gewinn ausweisen.\n\nMit welchem Wert ist die Maschine in der Steuerbilanz 31.12.03 anzusetzen (in €)?`,
+      wert,
+      `Planmäßiger Buchwert 31.12.03: ${eur(ak)} − AfA ${monate(m) + 24} Monate × ${eur(mon)} = ${eur(bw)}; Restnutzungsdauer ${rnd} Monate.\nDauernde Wertminderung beim abnutzbaren Anlagevermögen, wenn der Teilwert unter dem planmäßigen Buchwert nach der halben Restnutzungsdauer liegt (BMF 02.09.2016, Rn. 8): ${eur(bw)} − ${String(rnd / 2).replace(".", ",")} Monate × ${eur(mon)} = ${eur(halb)}.\n` +
+        (dauernd
+          ? `${eur(tw)} < ${eur(halb)} → voraussichtlich dauernd; Teilwertabschreibung auf ${eur(tw)} (§ 6 Abs. 1 Nr. 1 S. 2 EStG, Wahlrecht; handelsrechtlich Pflicht nach § 253 Abs. 3 S. 5 HGB). Danach AfA vom Teilwert über die Restnutzungsdauer.`
+          : `${eur(tw)} ≥ ${eur(halb)} → nicht dauernd; keine Teilwertabschreibung, Ansatz mit dem planmäßigen Buchwert ${eur(bw)}.`),
+      Q + " – Lösungshinweis Teilwertabschreibung");
+  }),
+  V("t2-wertpapiere", "bsr-teilwert", (r) => {
+    const nenn = r.betrag(10000, 100000, 5000), k0 = r.wahl([102, 103, 104, 105, 106]), k1 = r.wahl([94, 95, 96, 97, 98]);
+    const ak = nenn * k0 / 100 * 1.01, tw = nenn * k1 / 100 * 1.01, hb = r.muenze(), av = r.muenze();
+    const wert = hb ? tw : nenn;
+    return rechnen("t2-wertpapiere", "bsr-teilwert",
+      `Ein Unternehmer erwirbt am 01.09.01 festverzinsliche, börsennotierte Wertpapiere im Nennwert von ${eur(nenn)} zum Kurs von ${k0} % zuzüglich 1 % Bankgebühren für das ${av ? "Anlage" : "Umlauf"}vermögen. Die Papiere werden bei Fälligkeit zu 100 % eingelöst; ein Bonitätsrisiko besteht nicht. Am 31.12.01 notieren sie bei ${k1} %. Der Unternehmer möchte einen möglichst niedrigen Gewinn ausweisen.\n\nMit welchem Wert sind die Wertpapiere ${hb ? "in der Handelsbilanz" : "in der Steuerbilanz"} 31.12.01 anzusetzen (in €)?`,
+      wert,
+      `Anschaffungskosten: ${k0} % von ${eur(nenn)} + 1 % Bankgebühren (Anschaffungsnebenkosten, § 255 Abs. 1 S. 2 HGB) = ${eur(Math.round(ak))}.\nNiedrigerer Wert am Stichtag einschließlich anteiliger Nebenkosten eines gedachten Erwerbers: ${k1} % + 1 % = ${eur(Math.round(tw))}.\n` +
+        (hb
+          ? (av ? `Handelsbilanz, Finanzanlage: außerplanmäßige Abschreibung auch bei nur vorübergehender Wertminderung zulässig (§ 253 Abs. 3 S. 6 HGB) → niedrigster Ansatz ${eur(Math.round(tw))}.`
+            : `Handelsbilanz, Umlaufvermögen: strenges Niederstwertprinzip (§ 253 Abs. 4 S. 1 HGB) → ${eur(Math.round(tw))}.`)
+          : `Steuerbilanz: Teilwertabschreibung nur, soweit die Wertminderung dauerhaft ist (§ 6 Abs. 1 Nr. 2 S. 2 EStG). Da die Papiere zum Nennwert eingelöst werden, ist eine Minderung unter 100 % nicht von Dauer – ${av ? "" : "auch im Umlaufvermögen; "}Teilwertabschreibung nur bis auf den Nennwert ${eur(nenn)} (BMF 02.09.2016, Rn. 21).`),
+      Q + " – Lösungshinweis Teilwertabschreibung");
+  }),
 ];
 
 // ======================================================================= Rechnungsabgrenzung und Verbindlichkeiten
@@ -384,11 +414,11 @@ const abgrenzung = [
     { norm: ["HGB 253|EStG 6"], s: ["erfuellungsbetrag", "abzins", "devisenkassamittelkurs|256a", "hoechstwert", "ein jahr|laufzeit"] }),
   V("t2-arap", "bsr-abgrenzung", (r) => {
     const [was, dauer, konto] = r.wahl([["die Kfz-Versicherung", 12, "Kfz-Kosten"], ["die Kfz-Steuer", 12, "Kfz-Kosten"], ["die Büromiete", 24, "Mietaufwendungen"], ["die Büromiete", 12, "Mietaufwendungen"], ["einen Wartungsvertrag", 12, "Reparaturaufwendungen"]]);
-    const m = r.zahl(2, 12), betrag = r.betrag(600, 6000, 60), folge = dauer - monate(m), arap = betrag * folge / dauer;
+    const m = r.zahl(2, 12), betrag = r.betrag(900, 6000, 60), folge = dauer - monate(m), arap = betrag * folge / dauer;
     return rechnen("t2-arap", "bsr-abgrenzung",
       `Ein Unternehmer überweist am 01.${String(m).padStart(2, "0")}.01 ${was} für ${dauer} Monate ab diesem Tag im Voraus: ${eur(betrag)} (ohne USt). Die Zahlung wurde voll als Aufwand gebucht.\n\nWelcher aktive Rechnungsabgrenzungsposten ist zum 31.12.01 zu bilden (in €)?`,
       arap,
-      `Ausgabe vor dem Stichtag, Aufwand für eine bestimmte Zeit danach → aktiver RAP (§ 250 Abs. 1 HGB, § 5 Abs. 5 S. 1 Nr. 1 EStG).\nAuf 01 entfallen ${monate(m)} Monate, auf die Folgezeit ${folge} Monate: ${eur(betrag)} × ${folge}/${dauer} = ${eur(Math.round(arap))}.\nBuchung: ARAP an ${konto} ${eur(Math.round(arap))}.`);
+      `Ausgabe vor dem Stichtag, Aufwand für eine bestimmte Zeit danach → aktiver RAP (§ 250 Abs. 1 HGB, § 5 Abs. 5 S. 1 Nr. 1 EStG); die Ausgabe übersteigt 800 €, das Wahlrecht nach § 5 Abs. 5 S. 2 EStG greift nicht.\nAuf 01 entfallen ${monate(m)} Monate, auf die Folgezeit ${folge} Monate: ${eur(betrag)} × ${folge}/${dauer} = ${eur(Math.round(arap))}.\nBuchung: ARAP an ${konto} ${eur(Math.round(arap))}.`);
   }),
   V("t2-zinsen-abgrenzung", "bsr-abgrenzung", (r) => {
     const d = r.betrag(50000, 500000, 10000), z = r.wahl([2, 3, 3.5, 4, 4.5, 5, 6]), m = r.zahl(2, 11), forderung = r.muenze();
@@ -399,11 +429,11 @@ const abgrenzung = [
       `Die Zinsen für ${MONAT[m - 1]} bis Dezember 01 gehören wirtschaftlich zu 01 (Periodenabgrenzung, § 252 Abs. 1 Nr. 5 HGB), werden aber erst in 02 gezahlt → antizipativer Posten: ${forderung ? "sonstige Forderung (Zinsertrag)" : "sonstige Verbindlichkeit (Zinsaufwand)"}.\n${eur(d)} × ${String(z).replace(".", ",")} % × ${monate(m)}/12 = ${eur(Math.round(zinsen))}.\nBuchung: ${forderung ? "Sonstige Forderungen an Zinserträge" : "Zinsaufwendungen an Sonstige Verbindlichkeiten"}.`);
   }),
   V("t2-prap", "bsr-abgrenzung", (r) => {
-    const d = r.betrag(20000, 200000, 10000), z = r.wahl([3, 4, 5, 6]), m = r.zahl(2, 12), zins = d * z / 100, prap = zins * (m - 1) / 12;
+    const d = r.betrag(30000, 200000, 10000), z = r.wahl([3, 4, 5, 6]), m = r.zahl(2, 12), zins = d * z / 100, prap = zins * (m - 1) / 12;
     return rechnen("t2-prap", "bsr-abgrenzung",
       `Ein Unternehmer hat am 01.${String(m).padStart(2, "0")}.01 einem Geschäftspartner ein Darlehen über ${eur(d)} gewährt (${z} % p. a.). Die Zinsen für die ersten 12 Monate (${eur(zins)}) erhält er am selben Tag im Voraus und bucht sie als Zinsertrag.\n\nWelcher passive Rechnungsabgrenzungsposten ist zum 31.12.01 zu bilden (in €)?`,
       prap,
-      `Einnahme vor dem Stichtag, Ertrag für eine bestimmte Zeit danach → passiver RAP (§ 250 Abs. 2 HGB, § 5 Abs. 5 S. 1 Nr. 2 EStG).\nAuf 02 entfallen ${m - 1} Monate: ${eur(zins)} × ${m - 1}/12 = ${eur(Math.round(prap))}.\nBuchung: Zinserträge an PRAP.`);
+      `Einnahme vor dem Stichtag, Ertrag für eine bestimmte Zeit danach → passiver RAP (§ 250 Abs. 2 HGB, § 5 Abs. 5 S. 1 Nr. 2 EStG); die Einnahme übersteigt 800 € (§ 5 Abs. 5 S. 2 EStG).\nAuf 02 entfallen ${m - 1} Monate: ${eur(zins)} × ${m - 1}/12 = ${eur(Math.round(prap))}.\nBuchung: Zinserträge an PRAP.`);
   }),
   F("t2-abgrenzung-art", "bsr-abgrenzung", "Welcher Posten ist zum Bilanzstichtag 31.12.01 zu bilden?",
     ["Aktiver Rechnungsabgrenzungsposten", "Passiver Rechnungsabgrenzungsposten", "Sonstige Forderung", "Sonstige Verbindlichkeit", "Kein Abgrenzungsposten"], [
@@ -413,6 +443,8 @@ const abgrenzung = [
       { text: "Ein Geschäftspartner zahlt die Zinsen für ein vom Unternehmer gewährtes Darlehen für das Jahr 01 erst im Juli 02.", richtig: 2, erkl: "Ertrag 01, Zahlung 02 → sonstige Forderung.", normen: ["HGB 252 1"] },
       { text: "Am 01.11.01 wird die Kfz-Versicherung für 01.11.01 bis 31.10.02 bezahlt.", richtig: 0, erkl: "Ausgabe in 01, Aufwand zu 10/12 in 02 → aktiver RAP.", normen: ["HGB 250"] },
       { text: "Am 01.09.01 erhält der Unternehmer einen öffentlichen Zuschuss für einen Ausbildungsplatz, der für drei Jahre zu besetzen ist.", richtig: 1, erkl: "Einnahme vor dem Stichtag als Gegenleistung für eine bestimmte Zeit danach → passiver RAP, über die Laufzeit aufzulösen.", normen: ["HGB 250"] },
+      { text: "Ein Landwirt erhält am 01.01.01 eine Prämie von 8.000 € dafür, dass er seine Milch 5 Jahre lang nicht vermarktet.", richtig: 1, erkl: "Die Prämie ist Gegenleistung für die Nichtvermarktung während einer bestimmten Zeit → passiver RAP (§ 250 Abs. 2 HGB, § 5 Abs. 5 S. 1 Nr. 2 EStG): 8.000 € × 4/5 = 6.400 €. Auch ein Forderungszugang ist eine Einnahme.", normen: ["HGB 250", "EStG 5 5"] },
+      { text: "Am 01.03.01 wird die Kfz-Steuer für den Lkw für 12 Monate im Voraus abgebucht (2.400 €).", richtig: 0, erkl: "Die Steuer entfällt zu 2/12 auf die Zulassungszeit in 02 → aktiver RAP 400 € (H 5.6 EStH). Die Ausgabe übersteigt 800 €, das Wahlrecht nach § 5 Abs. 5 S. 2 EStG greift nicht.", normen: ["HGB 250", "EStG 5 5"] },
       { text: "Die Dezembermiete 01 wird am 30.12.01 bezahlt.", richtig: 4, erkl: "Aufwand und Zahlung fallen in dasselbe Jahr → keine Abgrenzung.", normen: ["HGB 252 1"] },
     ]),
   V("t2-zinsen-buchung", "bsr-abgrenzung", (r) => {
@@ -424,12 +456,28 @@ const abgrenzung = [
       { quelle: Q + " – Verbindlichkeiten; Semesterklausur 10/24, Sachverhalt 3" });
   }),
   V("t2-arap-buchung", "bsr-abgrenzung", (r) => {
-    const b = r.betrag(600, 2400, 120), m = r.zahl(7, 12), arap = b * (12 - monate(m)) / 12;
+    const b = r.betrag(960, 2400, 120), m = r.zahl(7, 12), arap = b * (12 - monate(m)) / 12;
     return buchung("t2-arap-buchung", "bsr-abgrenzung",
       `Am 01.${String(m).padStart(2, "0")}.01 wurde die Kfz-Versicherung für 12 Monate im Voraus (${eur(b)}) bezahlt und voll als Kfz-Kosten gebucht. Buchen Sie zum 31.12.01 die erforderliche Abgrenzung.`,
       einfach("arap", "kfzKosten", Math.round(arap)),
       `Auf 02 entfallen ${12 - monate(m)} Monate: ${eur(b)} × ${12 - monate(m)}/12 = ${eur(Math.round(arap))} → ARAP an Kfz-Kosten (§ 250 Abs. 1 HGB, § 5 Abs. 5 S. 1 Nr. 1 EStG).`,
       { quelle: Q + " – Rechnungsabgrenzungsposten" });
+  }),
+  V("t2-fremdwaehrung", "bsr-abgrenzung", (r) => {
+    const usd = r.betrag(50000, 300000, 10000), k0 = r.wahl([0.95, 1, 1.05, 1.1]), k1 = Math.round(k0 * r.wahl([0.96, 0.98, 1.02, 1.04]) * 10000) / 10000;
+    const kurz = r.muenze(), hb = r.wahl([true, true, false]);
+    const e0 = usd / k0, e1 = usd / k1, kurs = (k) => k.toFixed(4).replace(".", ","), dollar = (c) => eur(c).replace("€", "USD");
+    const wert = !hb ? e0 : kurz ? e1 : Math.max(e0, e1);
+    return rechnen("t2-fremdwaehrung", "bsr-abgrenzung",
+      `Ein Unternehmer nimmt am 01.07.01 zur Stärkung des Betriebskapitals ein Darlehen über ${dollar(usd)} auf (Devisenkassamittelkurs ${kurs(k0)} USD je 1 €). Am 31.12.01 beträgt der Kurs ${kurs(k1)} USD je 1 €; die Restlaufzeit beträgt ${kurz ? "10 Monate" : "3 Jahre"}. Die Kursänderung entspricht üblichen Schwankungen am Devisenmarkt.\n\nMit welchem Wert ist das Darlehen in der ${hb ? "Handelsbilanz" : "Steuerbilanz"} 31.12.01 anzusetzen (in €)?`,
+      wert,
+      `Erstverbuchung zum Kurs bei Entstehung: ${dollar(usd)} / ${kurs(k0)} = ${eur(Math.round(e0))}; Stichtagswert: ${dollar(usd)} / ${kurs(k1)} = ${eur(Math.round(e1))}.\n` +
+        (!hb
+          ? `Steuerbilanz: höherer Teilwert nur bei voraussichtlich dauernder Erhöhung (§ 6 Abs. 1 Nr. 3 i. V. m. Nr. 2 S. 2 EStG). Bei einem Darlehen, das dauerhaft das Betriebskapital stärkt, sind übliche Kursschwankungen nicht dauerhaft (BMF 02.09.2016, Rn. 33); ein niedrigerer Wert scheidet nach dem Realisationsprinzip aus → Anschaffungskosten ${eur(Math.round(e0))}.`
+          : kurz
+            ? `Handelsbilanz, Restlaufzeit bis zu einem Jahr: Umrechnung zum Stichtagskurs ohne Rücksicht auf Anschaffungskosten- und Realisationsprinzip (§ 256a S. 2 HGB) → ${eur(Math.round(e1))}.`
+            : `Handelsbilanz, Restlaufzeit über einem Jahr: Höchstwertprinzip (§ 256a S. 1, § 253 Abs. 1 S. 2 HGB) – ein gestiegener Erfüllungsbetrag ist anzusetzen, ein gesunkener nicht → ${eur(Math.round(wert))}.`),
+      Q + " – Lösungshinweis Verbindlichkeiten");
   }),
 ];
 
@@ -484,6 +532,21 @@ const privat = [
       satz([["privatentnahmen", wert + u]], [["privateKfzNutzung", wert], ["umsatzsteuer", u]]),
       `Nutzungsentnahme: 1 % × ${eur(blp)} × 12 = ${eur(wert)} (§ 6 Abs. 1 Nr. 4 S. 2 EStG). USt auf die unentgeltliche Wertabgabe (§ 3 Abs. 9a Nr. 1 UStG): ${eur(wert)} × 80 % × 19 % = ${eur(u)}. Ertrag ${eur(wert)} erhöht den Gewinn; die Entnahme selbst ist erfolgsneutral.`,
       { quelle: Q + " – Entnahmen" });
+  }),
+  V("t2-einlage-gebaeude", "bsr-entnahme-einlage", (r) => {
+    const ak = r.betrag(200000, 600000, 10000), j = r.zahl(4, 9), bisher = ak * 2 / 100 * j, fortg = ak - bisher;
+    const tw = Math.round(r.wahl([fortg + bisher / 4, ak * 1.3, fortg * 0.92]) / 1000000) * 1000000;
+    const bmg = tw >= fortg ? Math.max(tw - bisher, fortg) : tw, afa = bmg * 3 / 100;
+    return rechnen("t2-einlage-gebaeude", "bsr-entnahme-einlage",
+      `Ein Unternehmer hat am 02.01.01 privat ein Gebäude (Bauantrag 2015) für ${eur(ak)} erworben und bis Ende ${String(j).padStart(2, "0")} an einen Gewerbetreibenden vermietet (AfA bisher 2 % jährlich, Einkünfte nach § 21 EStG). Ab dem 01.01.${String(j + 1).padStart(2, "0")} nutzt er es ausschließlich für seinen eigenen Betrieb. Der Teilwert beträgt an diesem Tag ${eur(tw)}.\n\nWie hoch ist die AfA für das Gebäude im Jahr ${String(j + 1).padStart(2, "0")} (in €)?`,
+      afa,
+      `Einlage (§ 4 Abs. 1 S. 8 EStG) mit dem Teilwert ${eur(tw)} (§ 6 Abs. 1 Nr. 5 S. 1 EStG; die Anschaffung liegt mehr als drei Jahre zurück). Buchung: Gebäude an Privateinlagen.\n` +
+        `Fortgeführte Anschaffungskosten: ${eur(ak)} − AfA ${j} × 2 % (${eur(bisher)}) = ${eur(fortg)}.\n` +
+        (tw >= fortg
+          ? `AfA-Bemessungsgrundlage nach § 7 Abs. 1 S. 5 EStG (Einlage nach Nutzung zur Erzielung von Überschusseinkünften): Einlagewert − bisherige AfA, höchstens bis zu den fortgeführten AK: ${eur(tw)} − ${eur(bisher)} = ${eur(tw - bisher)} → ${eur(bmg)}.\n`
+          : `Der Einlagewert liegt unter den fortgeführten Anschaffungskosten → AfA vom Einlagewert ${eur(tw)} (§ 7 Abs. 1 S. 5 letzter Halbsatz EStG).\n`) +
+        `AfA ${String(j + 1).padStart(2, "0")}: 3 % (§ 7 Abs. 4 S. 1 Nr. 1 EStG – Betriebsvermögen, keine Wohnzwecke) × ${eur(bmg)} = ${eur(Math.round(afa))}.`,
+      Q + " – Lösungshinweis Einlagen");
   }),
 ];
 
