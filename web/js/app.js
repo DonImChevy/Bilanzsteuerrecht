@@ -7,6 +7,7 @@ import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
 import { PAARE } from "./paare.js";
+import { PFADE, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
@@ -184,6 +185,7 @@ const state = {
   sitzung: null,
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
+  pfad: null, // Lernpfad-Modus: {fach, block: null | {id, schritt, fehler, antwort, start, reihen}}
   paare: null, // Spiel „Paare finden“: {links, rechts, weg, leben, wahl, start, ende, sperre}
   klausurAnzahl: 20,
   klausurMinuten: 45,
@@ -399,6 +401,10 @@ function render() {
   if (state.sitzung) html += sitzungView();
   if (state.deck) html += deckView();
   if (state.paare) html += paareView();
+  if (state.pfad) {
+    const hilfe = { esc, ic, konfetti, normLabel: (r) => norm(r)?.label || r };
+    html += state.pfad.block ? blockView(state.pfad.fach, state.pfad.block, hilfe) : kartenView(state.pfad.fach, hilfe);
+  }
   if (state.sheet) html += sheetView();
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
   const scrollVoll = animVoll ? 0 : app.querySelector(".vollbild .vb-inhalt")?.scrollTop || 0;
@@ -409,7 +415,7 @@ function render() {
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
-  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.sheet ? "hidden" : "";
+  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.sheet ? "hidden" : "";
   if (fokusId) {
     const el = document.querySelector(`[data-fokus="${fokusId}"]`);
     if (el) { el.focus(); if (pos && el.setSelectionRange) try { el.setSelectionRange(...pos); } catch (_) { /* egal */ } }
@@ -420,7 +426,7 @@ function render() {
 // Jede geöffnete Ebene (Unterseite, Übung, Rückschau, Lernkarten, Menü) bekommt einen Eintrag im Browserverlauf.
 // So schließt die Zurück-Geste (Android) bzw. Zurück-Taste die oberste Ebene, statt die App zu verlassen.
 let verlaufTiefe = 0, popIgnorieren = 0;
-const ansichtTiefe = () => (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.sheet ? 1 : 0);
+const ansichtTiefe = () => (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.sheet ? 1 : 0);
 function verlaufAbgleichen() {
   const t = ansichtTiefe();
   while (verlaufTiefe < t) { verlaufTiefe += 1; history.pushState({ tiefe: verlaufTiefe }, ""); }
@@ -431,6 +437,8 @@ function ebeneZurueck() {
   if (state.sheet) AKTIONEN.sheetZu();
   else if (state.deck) AKTIONEN.deckZu();
   else if (state.paare) AKTIONEN.paareZu();
+  else if (state.pfad?.block) AKTIONEN.pfadKarte();
+  else if (state.pfad) AKTIONEN.pfadZu();
   else if (state.sitzung?.review != null) AKTIONEN.reviewZurueck();
   else if (state.sitzung) AKTIONEN.beenden();
   else if (state.tab !== "start") AKTIONEN.tab("start");
@@ -445,7 +453,8 @@ window.addEventListener("popstate", () => {
 const ansicht = {};
 const schluessel = {
   tab: () => state.tab + state.fach,
-  voll: () => (state.sitzung ? "s" + state.sitzung.start + (state.sitzung.beendet ? "e" : "") : "") + (state.deck ? "d" + state.deck.karten.length : "") + (state.paare ? "p" + state.paare.start + (state.paare.ende ? "e" : "") : ""),
+  voll: () => (state.sitzung ? "s" + state.sitzung.start + (state.sitzung.beendet ? "e" : "") : "") + (state.deck ? "d" + state.deck.karten.length : "") + (state.paare ? "p" + state.paare.start + (state.paare.ende ? "e" : "") : "")
+    + (state.pfad ? "f" + (state.pfad.block ? state.pfad.block.id + state.pfad.block.start + ":" + state.pfad.block.schritt : "karte") : ""),
   sheet: () => state.sheet?.art || "",
 };
 
@@ -674,6 +683,7 @@ function tabLernen() {
     </section>
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
+    ${pfadKachel()}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
     <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien", ust: "Themen · Skript & Klausurtechnik" }[state.fach] || { 1: "Themen · Skript Teil I", 2: "Themen · Skript Teil II", beide: "Themen · Skript Teil I und II" }[state.bilrTeil]}<span class="sub" style="text-transform:none;letter-spacing:0">${themenImTeil(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
@@ -703,6 +713,15 @@ function modusSchalter() {
     <div class="gruppe-fuss">${state.oerModus === "mc"
       ? "Ankreuzen statt formulieren – oft sind mehrere Antworten richtig. Ideal für unterwegs: lange Klausurfälle werden hier ausgelassen."
       : "Antwort selbst formulieren wie in der Klausur – automatisch geprüft nach Norm und Kernbegriffen, mit Musterantwort und Normzitat."}</div></div></div>`;
+}
+
+/** Einstieg in den Lernpfad-Modus (nur Module mit Lernpfad). */
+function pfadKachel() {
+  if (!PFADE[state.fach]) return "";
+  const st = pfadStand(state.fach);
+  return `<button class="pfad-kachel" data-a="pfadOeffnen"><span class="pk-glanz"></span>
+    <span class="pk-text"><span class="pk-neu">Neu · eigener Modus</span><b>Lernpfad</b><span>${st.fertig ? `${st.fertig} von ${st.gesamt} Blöcken · ★ ${st.sterne}` : `${st.gesamt} Blöcke – Stoff Schritt für Schritt aufbauen`}</span></span>
+    <span class="pk-orbit"><i>🧭</i><i>％</i><i>🧾</i></span></button>`;
 }
 
 /** Bilanzrecht: Teil I (bis Dezember), Teil II oder beide wie in der Klausur. */
@@ -1172,6 +1191,20 @@ function deckView() {
 // ======================= Spiel „Paare finden“ =======================
 // 10 Normen links, 10 Kurzerklärungen rechts; passende Paare antippen. Drei Leben pro Runde.
 const PAAR_ANZAHL = 10, PAAR_LEBEN = 3;
+/** Antwort im Lernpfad auswerten: sofortiges Feedback mit Funken bzw. Wackeln. */
+function pfadAntwort(eingabe, el) {
+  const z = state.pfad?.block;
+  if (!z || z.antwort) return;
+  const b = PFADE[state.pfad.fach].bloecke.find((x) => x.id === z.id), q = b.fragen[z.schritt - b.karten.length - 1];
+  const { ok } = auswerten(q, eingabe);
+  z.antwort = { eingabe, ok };
+  if (!ok) z.fehler += 1;
+  const pos = el ? mitte(el) : null;
+  render();
+  if (ok && pos) { funken(...pos); schwebeText(pos[0], pos[1] - 10, "+10 XP"); }
+  if (!ok) document.querySelector(".pf-frage")?.classList.add("wackeln");
+}
+
 function neuePaarRunde() {
   const r = new Zufall();
   const auswahl = r.mischen((PAARE[state.fach] || []).filter((p) => imTeil({ teil: p[2] }, teilVon(state.fach)))).slice(0, PAAR_ANZAHL).map(([norm, text], id) => ({ id, norm, text }));
@@ -1596,6 +1629,25 @@ const AKTIONEN = {
     render();
   },
   deckZu: () => { state.deck = null; render(); },
+  pfadOeffnen: () => { state.pfad = { fach: state.fach, block: null }; render(); },
+  pfadZu: () => { state.pfad = null; render(); },
+  pfadKarte: () => { if (state.pfad) state.pfad.block = null; render(); },
+  pfadBlock: (v) => { state.pfad.block = blockStarten(state.pfad.fach, v, new Zufall()); render(); },
+  pfadZurueck: () => { const z = state.pfad.block; if (z.schritt > 0) { z.schritt -= 1; render(); } },
+  pfadWeiter: () => {
+    const z = state.pfad.block, b = PFADE[state.pfad.fach].bloecke.find((x) => x.id === z.id), n = schritte(b);
+    const frage = z.schritt > b.karten.length && z.schritt < n - 1;
+    if (frage && !z.antwort) return;
+    z.schritt = Math.min(n - 1, z.schritt + 1); z.antwort = null;
+    if (z.schritt === n - 1) { z.ende = Date.now(); sterneSpeichern(state.pfad.fach, z.id, sterneFuer(z.fehler)); }
+    render();
+  },
+  pfadWahl: (v, el) => pfadAntwort(String(v), el),
+  pfadPruefen: () => {
+    const wert = document.getElementById("pfadZahl")?.value || "";
+    if (!wert.trim()) { toast("Bitte einen Betrag eingeben."); return; }
+    pfadAntwort(wert, document.querySelector(".pf-zahl"));
+  },
   paareStart: () => { neuePaarRunde(); render(); state.paare.frisch = false; }, // Austeil-Animation nur beim ersten Zeichnen
   paarWahl: (v) => paarWahl(v),
   paareZu: () => { state.paare = null; render(); },
@@ -1666,6 +1718,7 @@ app.addEventListener("keydown", (e) => {
     if (erster) erster.click();
   }
   if (e.target.id === "homeSuche") e.target.blur();
+  if (e.target.id === "pfadZahl") { e.preventDefault(); AKTIONEN.pfadPruefen(); }
 });
 
 // Tastatur am Computer: Ziffern wählen Antworten, Enter prüft bzw. geht weiter, Leertaste dreht Karten um
@@ -1674,6 +1727,14 @@ document.addEventListener("keydown", (e) => {
   if (tag === "INPUT" || tag === "TEXTAREA" || e.metaKey || e.ctrlKey || e.altKey) return;
   if (e.key === "Escape") { ebeneZurueck(); return; }
   if (state.sheet) return;
+  if (state.pfad?.block) {
+    const knoepfe = [...document.querySelectorAll('.pf-option:not([disabled])')];
+    if (/^[1-8]$/.test(e.key) && knoepfe[Number(e.key) - 1]) knoepfe[Number(e.key) - 1].click();
+    else if (e.key === "Enter" || e.key === "ArrowRight") { e.preventDefault(); document.querySelector('.pf-fuss [data-a="pfadWeiter"], .pf-fuss [data-a="pfadBlock"]')?.click(); }
+    else if (e.key === "ArrowLeft") AKTIONEN.pfadZurueck();
+    return;
+  }
+  if (state.pfad) return;
   if (state.deck) {
     if (state.deck.index >= state.deck.karten.length) return;
     if (e.key === " " || e.key === "Enter") { e.preventDefault(); if (!state.deck.um) AKTIONEN.umdrehen(); else AKTIONEN.karte("1"); }

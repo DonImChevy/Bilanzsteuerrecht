@@ -409,3 +409,21 @@ test("Paare finden: Normen und Kurzerklärungen eindeutig", async () => {
     for (const [n, t] of liste) assert.ok(/^(§|Art\.)/.test(n) && t.length <= 45, n);
   }
 });
+
+test("Lernpfad Umsatzsteuer: jeder Block in sich vollständig", async () => {
+  const { PFAD_UST } = await import("../js/ust/pfad.js");
+  const ids = new Set();
+  for (const b of PFAD_UST) {
+    assert.ok(!ids.has(b.id), "doppelt: " + b.id); ids.add(b.id);
+    assert.ok(b.karten.length >= 3 && b.fragen.length >= 3, b.id + ": zu wenig Karten oder Fragen");
+    for (const r of b.normen) assert.ok(norm(r), `${b.id}: Norm ${r} fehlt`);
+    for (const k of b.karten) assert.ok(["merksatz", "erklaerung", "beispiel", "klausur"].includes(k.art) && k.titel && k.text, b.id);
+    for (const q of b.fragen) {
+      assert.ok(q.frage && q.erkl, b.id);
+      if (q.art === "wahl") {
+        assert.ok(q.optionen.length >= 3 && new Set(q.optionen).size === q.optionen.length, `${b.id}: Optionen`);
+        assert.ok(Number.isInteger(q.richtig) && q.richtig >= 0 && q.richtig < q.optionen.length, `${b.id}: richtig`);
+      } else assert.ok(q.art === "zahl" && Number.isInteger(q.cent), `${b.id}: Zahl`);
+    }
+  }
+});
