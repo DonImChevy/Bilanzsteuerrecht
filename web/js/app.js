@@ -7,7 +7,7 @@ import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
 import { PAARE } from "./paare.js";
-import { PFADE, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
+import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
@@ -17,15 +17,22 @@ import qrcode from "./lib/qrcode.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
-const LEER = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null });
+const LEER = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null, pfad: {}, einstellungen: null });
 function laden() {
+  let s = LEER();
   try {
-    const s = JSON.parse(localStorage.getItem(SPEICHER));
-    if (s && s.proThema) return { ...LEER(), ...s };
+    const x = JSON.parse(localStorage.getItem(SPEICHER));
+    if (x && x.proThema) s = { ...LEER(), ...x };
   } catch (_) { /* leer */ }
-  return LEER();
+  // Lernpfad-Fortschritt lag anfangs separat – in den Lernstand übernehmen (damit er synchronisiert wird)
+  try {
+    const alt = JSON.parse(localStorage.getItem("bsr.pfad.v1") || "null");
+    if (alt && !Object.keys(s.pfad || {}).length) { s.pfad = alt; localStorage.removeItem("bsr.pfad.v1"); }
+  } catch (_) { /* egal */ }
+  return s;
 }
 let stat = laden();
+pfadSpeicherSetzen({ lesen: () => stat.pfad, schreiben: (f) => { stat.pfad = f; speichern(); } });
 function speichernLokal() {
   try { localStorage.setItem(SPEICHER, JSON.stringify(stat)); } catch (_) { /* privat-Modus */ }
 }
@@ -61,6 +68,7 @@ async function syncJetzt() {
     const { ergebnis, lokal } = await abgleichen(stat, syncLokal, SERVER);
     stat = ergebnis(stat); // berücksichtigt auch Antworten, die während des Abgleichs gegeben wurden
     speichernLokal();
+    einstellungenAnwenden();
     syncLokal = lokal; syncMerken();
     syncZustand.fehler = null;
     if (!state.sitzung && !state.deck) render();
@@ -199,6 +207,27 @@ const farbklasse = (q) => (q >= 0.8 ? "gut" : q >= 0.5 ? "mittel" : "schlecht");
 const farbe = (q) => (q >= 0.8 ? "var(--ok)" : q >= 0.5 ? "var(--warn)" : "var(--err)");
 const zahlText = (n) => n.toLocaleString("de-DE");
 
+// ======================= Einstellungen (werden mit dem Sync-Code abgeglichen) =======================
+const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus"];
+// Erster Stand ohne Zeitstempel (t = 0): Ein neu verbundenes Gerät übernimmt die Einstellungen der anderen.
+if (!stat.einstellungen) stat.einstellungen = { ziel: String(state.ziel), design: state.design, teil: state.bilrTeil, oerModus: state.oerModus, t: 0 };
+/** Einstellung lokal speichern und für den Abgleich mit Zeitstempel im Lernstand vermerken. */
+function einstellungMerken(k, v) {
+  schreib("bsr." + k, v);
+  stat.einstellungen = { ...(stat.einstellungen || {}), [k]: v, t: Date.now() };
+  speichern();
+}
+/** Nach dem Abgleich: neuere Einstellungen eines anderen Geräts übernehmen. */
+function einstellungenAnwenden() {
+  const e = stat.einstellungen;
+  if (!e) return;
+  for (const k of EINSTELLUNGEN) if (e[k] != null) schreib("bsr." + k, e[k]);
+  if (e.ziel != null) state.ziel = Number(e.ziel) || state.ziel;
+  if (e.design) state.design = e.design;
+  if (e.teil) state.bilrTeil = ["1", "2"].includes(e.teil) ? e.teil : "beide";
+  if (e.oerModus) state.oerModus = e.oerModus === "mc" ? "mc" : "qa";
+}
+
 /** Akzentfarbe und Hell/Dunkel anwenden. */
 function designAnwenden() {
   // Startseite in der App-Farbe, innerhalb eines Moduls in dessen Farbe
@@ -229,7 +258,7 @@ function neueSitzung(opt) {
 function starte(opt) {
   state.sitzung = neueSitzung(opt);
   if (opt.modus === "uebung" && !opt.ids) {
-    stat.zuletzt = { fach: opt.fach || state.fach, themen: opt.themen, nurBuchung: opt.nurBuchung, filter: opt.filter, titel: sitzungTitel(opt) };
+    stat.zuletzt = { fach: opt.fach || state.fach, themen: opt.themen, nurBuchung: opt.nurBuchung, filter: opt.filter, titel: sitzungTitel(opt), t: Date.now() };
     speichern();
   }
   state.sheet = null;
@@ -1488,21 +1517,21 @@ const AKTIONEN = {
   bald: (v) => toast(`${MODUL[v].titel} kommt bald – du wirst es hier als Erstes sehen.`),
   willkommenModul: (v) => { fachSetzen(v); schreib("bsr.willkommen", "1"); state.sheet = null; state.tab = "lernen"; render(); },
   willkommenZeigen: () => { state.sheet = { art: "willkommen" }; render(); },
-  ziel: (v) => { state.ziel = Number(v); schreib("bsr.ziel", v); render(); },
-  design: (v) => { state.design = v; schreib("bsr.design", v); render(); },
+  ziel: (v) => { state.ziel = Number(v); einstellungMerken("ziel", String(v)); render(); },
+  design: (v) => { state.design = v; einstellungMerken("design", v); render(); },
   hinweisWeg: () => { state.hinweisWeg = true; schreib("bsr.hinweisWeg", "1"); render(); },
   zuModulen: () => document.querySelector(".modul-grid")?.scrollIntoView({ behavior: "smooth", block: "start" }),
   sucheLeeren: () => { state.suche = ""; render(); document.getElementById("homeSuche")?.focus(); },
   bilrAnsicht: (v) => { state.bilrAnsicht = v === "gesetze" ? "gesetze" : "konten"; render(); },
   bilrTeil: (v) => {
     state.bilrTeil = ["1", "2"].includes(v) ? v : "beide";
-    schreib("bsr.teil", state.bilrTeil);
+    einstellungMerken("teil", state.bilrTeil);
     state.kartenThemen = new Set();
     render();
   },
   oerModus: (v) => {
     state.oerModus = v === "mc" ? "mc" : "qa";
-    schreib("bsr.oerModus", state.oerModus);
+    einstellungMerken("oerModus", state.oerModus);
     render();
   },
   schnell: (v, el) => {

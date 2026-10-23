@@ -20,11 +20,11 @@ const speicherVon = (schluessel) => (schluessel.startsWith("bsr") ? "bsr" : schl
 /** Lernpfad-Schlüssel für ein Modul (Bilanzrecht abhängig vom gewählten Skriptteil). */
 export const pfadSchluessel = (fach, teil = "beide") => (fach === "bsr" ? { 1: "bsr1", 2: "bsr2" }[teil] || "bsr" : fach);
 
-const SPEICHER = "bsr.pfad.v1";
-export function fortschrittLesen() {
-  try { return JSON.parse(localStorage.getItem(SPEICHER) || "{}"); } catch (_) { return {}; }
-}
-function fortschrittSchreiben(f) { try { localStorage.setItem(SPEICHER, JSON.stringify(f)); } catch (_) { /* egal */ } }
+// Speicher stellt die App bereit (Lernstand stat.pfad – wird mit dem Sync-Code abgeglichen).
+let speicher = { lesen: () => ({}), schreiben: () => {} };
+export const pfadSpeicherSetzen = (s) => { speicher = s; };
+export const fortschrittLesen = () => speicher.lesen() || {};
+const fortschrittSchreiben = (f) => speicher.schreiben(f);
 export function sterneSpeichern(schluessel, id, sterne) {
   const fach = speicherVon(schluessel), f = fortschrittLesen(), alt = f[fach]?.[id]?.sterne || 0;
   f[fach] = { ...(f[fach] || {}), [id]: { sterne: Math.max(alt, sterne), t: Date.now() } };

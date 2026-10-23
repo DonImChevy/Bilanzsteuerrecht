@@ -398,6 +398,22 @@ test("Synchronisierung: zwei Geräte, nichts doppelt, nichts verloren", async ()
   [handy, lh] = await sync(handy, lh); [ipad, li] = await sync(ipad, li);
   assert.deepEqual(ipad.proThema["est-tarif"], { b: 18, r: 12 });
   assert.ok(ipad.lern.c1);
+  // Lernpfad (beste Sterne je Block), Einstellungen und „Weiterlernen“ (jeweils der neueste Stand)
+  handy.pfad = { ust: { system: { sterne: 2, t: 700 } } };
+  ipad.pfad = { ust: { system: { sterne: 3, t: 650 }, unternehmer: { sterne: 1, t: 660 } }, bsr: { "b1-pflicht": { sterne: 3, t: 670 } } };
+  handy.einstellungen = { ziel: "30", design: "dark", teil: "1", oerModus: "mc", t: 800 };
+  ipad.einstellungen = { ziel: "20", design: "system", teil: "beide", oerModus: "qa", t: 0 };
+  ipad.zuletzt = { fach: "ust", titel: "Vorsteuer", t: 900 };
+  [handy, lh] = await sync(handy, lh); [ipad, li] = await sync(ipad, li); [handy, lh] = await sync(handy, lh);
+  for (const st of [handy, ipad]) {
+    assert.equal(st.pfad.ust.system.sterne, 3);
+    assert.equal(st.pfad.ust.unternehmer.sterne, 1);
+    assert.equal(st.pfad.bsr["b1-pflicht"].sterne, 3);
+    assert.equal(st.einstellungen.ziel, "30");
+    assert.equal(st.einstellungen.teil, "1");
+    assert.equal(st.zuletzt.titel, "Vorsteuer");
+  }
+  assert.deepEqual(handy.proThema["est-tarif"], { b: 18, r: 12 }); // weiterhin nichts doppelt
 });
 
 test("Paare finden: Normen und Kurzerklärungen eindeutig", async () => {
