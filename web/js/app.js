@@ -7,7 +7,7 @@ import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
 import { PAARE } from "./paare.js";
-import { PFADE, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
+import { PFADE, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
@@ -717,11 +717,12 @@ function modusSchalter() {
 
 /** Einstieg in den Lernpfad-Modus (nur Module mit Lernpfad). */
 function pfadKachel() {
-  if (!PFADE[state.fach]) return "";
-  const st = pfadStand(state.fach);
+  const schluessel = pfadSchluessel(state.fach, teilVon(state.fach));
+  if (!PFADE[schluessel]) return "";
+  const st = pfadStand(schluessel);
   return `<button class="pfad-kachel" data-a="pfadOeffnen"><span class="pk-glanz"></span>
-    <span class="pk-text"><span class="pk-neu">Neu · eigener Modus</span><b>Lernpfad</b><span>${st.fertig ? `${st.fertig} von ${st.gesamt} Blöcken · ★ ${st.sterne}` : `${st.gesamt} Blöcke – Stoff Schritt für Schritt aufbauen`}</span></span>
-    <span class="pk-orbit"><i>🧭</i><i>％</i><i>🧾</i></span></button>`;
+    <span class="pk-text"><span class="pk-neu">Neu · eigener Modus</span><b>Lernpfad${state.fach === "bsr" && state.bilrTeil !== "beide" ? ` · Teil ${state.bilrTeil === "1" ? "I" : "II"}` : ""}</b><span>${st.fertig ? `${st.fertig} von ${st.gesamt} Blöcken · ★ ${st.sterne}` : `${st.gesamt} Blöcke – Stoff Schritt für Schritt aufbauen`}</span></span>
+    <span class="pk-orbit">${PFADE[schluessel].bloecke.slice(0, 3).map((x) => `<i>${x.icon}</i>`).join("")}</span></button>`;
 }
 
 /** Bilanzrecht: Teil I (bis Dezember), Teil II oder beide wie in der Klausur. */
@@ -1629,7 +1630,7 @@ const AKTIONEN = {
     render();
   },
   deckZu: () => { state.deck = null; render(); },
-  pfadOeffnen: () => { state.pfad = { fach: state.fach, block: null }; render(); },
+  pfadOeffnen: () => { state.pfad = { fach: pfadSchluessel(state.fach, teilVon(state.fach)), block: null }; render(); },
   pfadZu: () => { state.pfad = null; render(); },
   pfadKarte: () => { if (state.pfad) state.pfad.block = null; render(); },
   pfadBlock: (v) => { state.pfad.block = blockStarten(state.pfad.fach, v, new Zufall()); render(); },

@@ -410,10 +410,11 @@ test("Paare finden: Normen und Kurzerklärungen eindeutig", async () => {
   }
 });
 
-test("Lernpfad Umsatzsteuer: jeder Block in sich vollständig", async () => {
-  const { PFAD_UST } = await import("../js/ust/pfad.js");
+test("Lernpfade aller Module: jeder Block in sich vollständig", async () => {
+  const { PFADE } = await import("../js/lernpfad.js");
+  for (const fach of ["ust", "est", "oer", "bsr1", "bsr2"]) assert.ok(PFADE[fach]?.bloecke.length >= 8, "Lernpfad fehlt: " + fach);
   const ids = new Set();
-  for (const b of PFAD_UST) {
+  for (const b of ["ust", "est", "oer", "bsr1", "bsr2"].flatMap((f) => PFADE[f].bloecke)) {
     assert.ok(!ids.has(b.id), "doppelt: " + b.id); ids.add(b.id);
     assert.ok(b.karten.length >= 3 && b.fragen.length >= 3, b.id + ": zu wenig Karten oder Fragen");
     for (const r of b.normen) assert.ok(norm(r), `${b.id}: Norm ${r} fehlt`);
