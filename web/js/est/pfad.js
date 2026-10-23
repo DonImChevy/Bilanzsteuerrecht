@@ -83,7 +83,7 @@ export const PFAD_EST = [
       { art: "zahl", frage: "Festzusetzende ESt 14.200 €, Lohnsteuer 11.000 €, Vorauszahlungen 2.000 €. Abschlusszahlung (in €)?", cent: 120000, erkl: "14.200 − 11.000 − 2.000 = 1.200 €." },
       { art: "wahl", frage: "Wie hoch ist der Grundfreibetrag 2026?", optionen: ["12.348 €", "10.908 €", "11.604 €", "24.696 €"], richtig: 0, erkl: "2026: 12.348 € (bei Zusammenveranlagung durch das Splitting faktisch doppelt)." },
       { art: "wahl", frage: "Festzusetzende ESt 6.000 €, Lohnsteuer 7.500 €. Ergebnis?", optionen: ["Erstattung von 1.500 €", "Abschlusszahlung von 1.500 €", "Abschlusszahlung von 6.000 €", "Erstattung von 7.500 €"], richtig: 0, erkl: "Es wurde mehr Lohnsteuer einbehalten, als geschuldet wird." },
-      { art: "wahl", frage: "Was bedeutet Progression?", optionen: ["Der Steuersatz steigt mit dem Einkommen", "Alle zahlen den gleichen Prozentsatz", "Die Steuer sinkt mit dem Einkommen", "Jeder zahlt einen festen Betrag"], richtig: 0, erkl: "Je höher das zvE, desto höher der Grenzsteuersatz." },
+      { art: "wahl", frage: "Was bedeutet Progression?", optionen: ["Der Steuersatz steigt mit dem Einkommen", "Alle zahlen den gleichen Prozentsatz", "Die Steuer sinkt mit dem Einkommen", "Jeder zahlt einen festen Betrag"], richtig: 0, erkl: "Je höher das zvE, desto höher der Steuersatz auf den nächsten Euro." },
     ],
   },
   {
@@ -104,7 +104,7 @@ export const PFAD_EST = [
   {
     id: "e-paragraf12", titel: "Was nicht abziehbar ist", kurz: "§ 12 EStG", icon: "🚫", normen: ["EStG 12"],
     karten: [
-      { art: "merksatz", titel: "Privates bleibt privat", text: "Ausgaben für die **private Lebensführung** sind nicht abziehbar (§ 12 Nr. 1 EStG) – auch dann nicht, wenn sie dem Beruf **auch** nützen. Beispiele: normale Kleidung, Essen, Wohnung, Brille, Armbanduhr." },
+      { art: "merksatz", titel: "Privates bleibt privat", text: "Ausgaben für die **private Lebensführung** sind nicht abziehbar (§ 12 Nr. 1 EStG) – auch wenn sie dem Beruf **auch** nützen, **sofern sich Privates und Berufliches nicht trennen lässt**. Beispiele: normale Kleidung, Essen, Wohnung, Brille, Armbanduhr. Lässt es sich klar trennen, wird aufgeteilt (nächste Karte)." },
       { art: "erklaerung", titel: "Weitere Abzugsverbote", text: "• **Steuern vom Einkommen** (§ 12 Nr. 3): die Einkommensteuer selbst, Solidaritätszuschlag – auch die Vorauszahlungen.\n• **Geldstrafen** aus Strafverfahren (§ 12 Nr. 4).\n• **Gemischte Aufwendungen**: Lassen sich berufliche und private Anteile **klar trennen** (z. B. nach Tagen bei einer Reise), wird **aufgeteilt** – der berufliche Teil ist abziehbar." },
       { art: "beispiel", titel: "Aufteilen nach Tagen", text: "Fachkongress 2 Tage, danach 5 Tage Urlaub am selben Ort. Flug und Hotel 1.400 €:\n• Kongressgebühr: voll abziehbar\n• Flug und Hotel: 1.400 × 2/7 = **400 €** abziehbar" },
     ],
@@ -133,16 +133,16 @@ export const PFAD_EST = [
   {
     id: "e-wk", titel: "Werbungskosten", kurz: "§§ 9, 9a EStG", icon: "💼", normen: ["EStG 9 1", "EStG 9a", "EStG 4 5"],
     karten: [
-      { art: "merksatz", titel: "Was sind Werbungskosten?", text: "Werbungskosten sind Aufwendungen zur **Erwerbung, Sicherung und Erhaltung der Einnahmen** (§ 9 Abs. 1 S. 1 EStG) – bei Arbeitnehmern alles, was **beruflich** veranlasst ist: Fachbücher, Arbeitsmittel, Fortbildung, Gewerkschaftsbeiträge, Fahrten zur Arbeit." },
+      { art: "merksatz", titel: "Was sind Werbungskosten?", text: "Werbungskosten sind Aufwendungen zur **Erwerbung, Sicherung und Erhaltung der Einnahmen** (§ 9 Abs. 1 S. 1 EStG) – bei Arbeitnehmern alles, was **beruflich** veranlasst ist: Fachbücher, Arbeitsmittel, Fortbildung, Gewerkschaftsbeiträge, Fahrten zur Arbeit. **Nicht** dazu gehört, was zur privaten Lebensführung zählt (§ 12 Nr. 1 EStG), z. B. normale (**bürgerliche**) Kleidung." },
       { art: "erklaerung", titel: "Der Pauschbetrag", text: "Arbeitnehmer bekommen ohne Nachweis den **Arbeitnehmer-Pauschbetrag von 1.230 €** (§ 9a S. 1 Nr. 1 a EStG). Nur wenn die tatsächlichen Werbungskosten **höher** sind, lohnt sich der Einzelnachweis – es wird **immer der höhere** Betrag angesetzt." },
-      { art: "erklaerung", titel: "Arbeitsmittel und Home-Office", text: "• **Arbeitsmittel** (Laptop, Schreibtisch): bis **800 € netto** sofort voll abziehbar, sonst über die Nutzungsdauer (AfA). Computer und Software dürfen mit einer Nutzungsdauer von **1 Jahr** voll abgezogen werden.\n• **Home-Office-Pauschale**: **6 € pro Tag** zu Hause, höchstens **1.260 €** im Jahr (210 Tage)." },
+      { art: "erklaerung", titel: "Arbeitsmittel und Home-Office", text: "• **Arbeitsmittel** (Laptop, Schreibtisch): bis **800 € ohne USt** (952 € brutto) sofort voll abziehbar – abgezogen wird der tatsächlich gezahlte Bruttobetrag, sonst über die Nutzungsdauer (AfA). Computer und Software dürfen mit einer Nutzungsdauer von **1 Jahr** voll abgezogen werden.\n• **Home-Office-Pauschale**: **6 € pro Tag** zu Hause, höchstens **1.260 €** im Jahr (210 Tage)." },
       { art: "beispiel", titel: "Rechenbeispiel", text: "Fachbücher 180 €, Gewerkschaft 240 €, Home-Office 50 Tage × 6 € = 300 € → 720 € < 1.230 € → es bleibt beim **Pauschbetrag 1.230 €**." },
     ],
     fragen: [
       { art: "zahl", frage: "Tatsächliche Werbungskosten eines Arbeitnehmers: 980 €. Welcher Betrag wird abgezogen (in €)?", cent: 123000, erkl: "980 € < 1.230 € → Arbeitnehmer-Pauschbetrag 1.230 €." },
       { art: "zahl", frage: "Home-Office an 230 Tagen. Wie hoch ist die Pauschale (in €)?", cent: 126000, erkl: "230 × 6 € = 1.380 €, aber höchstens 1.260 €." },
       { art: "wahl", frage: "Ein Arbeitnehmer kauft beruflich einen Schreibtischstuhl für 450 € netto. Was gilt?", optionen: ["Sofort voll als Werbungskosten abziehbar", "Nur über 13 Jahre abschreibbar", "Gar nicht abziehbar", "Nur zur Hälfte"], richtig: 0, erkl: "Arbeitsmittel bis 800 € netto sind sofort abziehbar." },
-      { art: "wahl", frage: "Was ist kein Werbungskostenbeispiel?", optionen: ["Bürgerliche Kleidung", "Fachbücher", "Gewerkschaftsbeiträge", "Fortbildungskosten"], richtig: 0, erkl: "Normale Kleidung gehört zur privaten Lebensführung (§ 12 Nr. 1 EStG)." },
+      { art: "wahl", frage: "Was gehört nicht zu den Werbungskosten?", optionen: ["Bürgerliche Kleidung", "Fachbücher", "Gewerkschaftsbeiträge", "Fortbildungskosten"], richtig: 0, erkl: "Normale Kleidung gehört zur privaten Lebensführung (§ 12 Nr. 1 EStG)." },
     ],
   },
   {

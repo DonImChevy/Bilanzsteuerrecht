@@ -38,7 +38,7 @@ export const PFAD_UST = [
     id: "leistung", titel: "Lieferung oder sonstige Leistung?", kurz: "§ 3 Abs. 1, 9 UStG", icon: "📦", normen: ["UStG 3 1", "UStG 3 9"],
     karten: [
       { art: "merksatz", titel: "Lieferung", text: "Eine Lieferung liegt vor, wenn der Unternehmer dem Abnehmer die **Verfügungsmacht** an einem **Gegenstand** verschafft (§ 3 Abs. 1 UStG) – der Abnehmer kann darüber wie ein Eigentümer verfügen." },
-      { art: "erklaerung", titel: "Gegenstand und Eigentumsvorbehalt", text: "• Gegenstände sind körperliche Sachen – auch **Strom** und **Wärme**.\n• Ein **Eigentumsvorbehalt** ändert nichts: Mit der Übergabe hat der Käufer die Verfügungsmacht, auch wenn er noch in Raten zahlt." },
+      { art: "erklaerung", titel: "Gegenstand und Eigentumsvorbehalt", text: "• Gegenstände sind körperliche Sachen und Güter, die im Verkehr wie Sachen behandelt werden – z. B. **Strom** und **Wärme**.\n• Ein **Eigentumsvorbehalt** ändert nichts: Mit der Übergabe hat der Käufer die Verfügungsmacht, auch wenn er noch in Raten zahlt." },
       { art: "merksatz", titel: "Sonstige Leistung", text: "Alles, was **keine Lieferung** ist, ist eine sonstige Leistung (§ 3 Abs. 9 UStG): ein **Tun, Dulden oder Unterlassen** – z. B. Vermietung, Behandlung, Beratung, Unterricht, ein Wettbewerbsverbot gegen Geld." },
       { art: "beispiel", titel: "Keine Leistung", text: "Die bloße **Zahlung von Geld** ist keine Leistung. Zahlt eine Versicherung nach einem Brand, erbringt weder sie noch der Geschädigte eine Leistung im umsatzsteuerlichen Sinne." },
     ],
@@ -85,7 +85,7 @@ export const PFAD_UST = [
       { art: "merksatz", titel: "Leistungsaustausch", text: "Steuerbar ist eine Leistung nur **gegen Entgelt**: Leistung und Gegenleistung müssen **wirtschaftlich verknüpft** sein – das Geld wird gerade **für** die Leistung gezahlt. Die Höhe spielt dafür keine Rolle." },
       { art: "erklaerung", titel: "Echter Schadensersatz", text: "Wer zahlt, weil er für einen **Schaden einstehen** muss, zahlt kein Entgelt. Das gilt für **Mahngebühren, Verzugszinsen, Vertragsstrafen** und Schadensersatz nach einem Unfall – sie sind **nicht steuerbar** und erhöhen auch den Kaufpreis nicht." },
       { art: "erklaerung", titel: "Kein Austausch mit sich selbst", text: "Zahlungen **innerhalb eines Unternehmens** (z. B. „Miete“ des eigenen Ladens im eigenen Haus) sind kein Leistungsaustausch – nicht steuerbarer **Innenumsatz**." },
-      { art: "klausur", titel: "Die fünf Merkmale von § 1 Abs. 1 Nr. 1 UStG", text: "Ein Unternehmer führt im Rahmen seines Unternehmens eine Lieferung oder sonstige Leistung gegen Entgelt im Inland aus. Fehlt **ein** Merkmal, ist der Vorgang nicht steuerbar." },
+      { art: "klausur", titel: "Die fünf Merkmale von § 1 Abs. 1 Nr. 1 UStG", text: "Ein Unternehmer führt im Rahmen seines Unternehmens eine Lieferung oder sonstige Leistung gegen Entgelt im Inland aus. Fehlt **ein** Merkmal, ist der Vorgang nicht nach § 1 Abs. 1 Nr. 1 UStG steuerbar. (Ausnahme: bestimmte **unentgeltliche** Entnahmen und Zuwendungen werden gesetzlich wie entgeltliche Leistungen behandelt.)" },
     ],
     fragen: [
       { art: "wahl", frage: "Ein Kunde zahlt mit der letzten Rate 200 € Mahngebühren. Wie sind die 200 € zu behandeln?", optionen: ["Nicht steuerbar – echter Schadensersatz", "Teil des Kaufpreises", "Eigene steuerpflichtige Leistung", "Steuerfrei"], richtig: 0, erkl: "Mahngebühren werden für den Verzugsschaden gezahlt, nicht für die Lieferung." },
@@ -115,7 +115,7 @@ export const PFAD_UST = [
     karten: [
       { art: "merksatz", titel: "Grundregel (Sollbesteuerung)", text: "Die Steuer entsteht mit **Ablauf des Voranmeldungszeitraums**, in dem die Leistung **ausgeführt** wurde (§ 13 Abs. 1 Nr. 1 Buchst. a S. 1 UStG). Rechnung und Zahlung spielen dafür **keine** Rolle." },
       { art: "erklaerung", titel: "Wann ist ausgeführt?", text: "• Lieferung: mit Übergabe bzw. Beginn der Beförderung oder Versendung.\n• Sonstige Leistung: mit ihrer **Vollendung** – eine Ferienwohnung am letzten Miettag.\n• **Teilleistungen** (S. 2, 3): Wird z. B. Monatsmiete vereinbart, entsteht die Steuer **jeden Monat** – auch wenn der Mieter zu spät zahlt." },
-      { art: "erklaerung", titel: "Anzahlungen (S. 4)", text: "Wird Geld **vor** der Leistung vereinnahmt, entsteht die Steuer **insoweit** schon mit Ablauf des Monats der **Zahlung**. Der Rest folgt im Monat der Ausführung." },
+      { art: "erklaerung", titel: "Anzahlungen (S. 4)", text: "Wird Geld **vor** der Leistung vereinnahmt, entsteht die Steuer **insoweit** schon mit Ablauf des Monats der **Zahlung**. (Wir unterstellen monatliche Voranmeldungen: Voranmeldungszeitraum = Monat.) Der Rest folgt im Monat der Ausführung." },
       { art: "beispiel", titel: "Beispiel Anzahlung", text: "Kaufpreis 9.600 € brutto, Anzahlung 1.600 € im März, Lieferung im April:\n• März: 1.600 × 19/119 = **255,46 €**\n• April: 9.600 × 19/119 = 1.532,77 € − 255,46 € = **1.277,31 €**" },
     ],
     fragen: [
@@ -129,9 +129,9 @@ export const PFAD_UST = [
     id: "befreiung", titel: "Steuerfrei: Vermietung & Heilbehandlung", kurz: "§ 4 Nr. 12, 14, 28 UStG", icon: "🏠", normen: ["UStG 4"],
     karten: [
       { art: "merksatz", titel: "Erst steuerbar, dann befreit", text: "Eine Steuerbefreiung wird **erst geprüft, wenn der Umsatz steuerbar ist**. Steuerfreie Umsätze sind trotzdem mit **Bemessungsgrundlage** und **Voranmeldungszeitraum** anzugeben." },
-      { art: "erklaerung", titel: "Grundstücksvermietung (§ 4 Nr. 12 a UStG)", text: "Vermietung und Verpachtung von Grundstücken ist **steuerfrei**. **Nicht** befreit sind (S. 2):\n• **kurzfristige Beherbergung** – Ferienwohnung, Hotel → steuerpflichtig zu **7 %**\n• einzeln vermietete **Stellplätze**\n• Betriebsvorrichtungen\nBetriebs- und Heizkosten sowie ein mitvermieteter Stellplatz teilen als **Nebenleistung** die Steuerfreiheit." },
+      { art: "erklaerung", titel: "Grundstücksvermietung (§ 4 Nr. 12 a UStG)", text: "Vermietung und Verpachtung von Grundstücken ist **steuerfrei**. **Nicht** befreit sind (S. 2):\n• **kurzfristige Beherbergung** (bis zu 6 Monate) – Ferienwohnung, Hotel → steuerpflichtig zu **7 %**\n• einzeln vermietete **Stellplätze**\n• Betriebsvorrichtungen\nBetriebs- und Heizkosten sowie ein mitvermieteter Stellplatz teilen als **Nebenleistung** die Steuerfreiheit." },
       { art: "erklaerung", titel: "Heilbehandlung (§ 4 Nr. 14 a UStG)", text: "Steuerfrei sind **Heilbehandlungen im Bereich der Humanmedizin** durch Ärzte, Zahnärzte, Heilpraktiker, Physiotherapeuten, Hebammen – auch **Vorsorge**.\n**Nicht** befreit: Gutachten für Versicherungen (kein therapeutisches Ziel) und **Tierbehandlungen**. Ein Medikament während der Behandlung ist steuerfreie Nebenleistung." },
-      { art: "erklaerung", titel: "Verkauf von Praxisgeräten (§ 4 Nr. 28 UStG)", text: "Verkauft die Ärztin ein Gerät, das sie **nur für steuerfreie Behandlungen** genutzt hat, ist der Verkauf steuerbar, aber nach § 4 Nr. 28 UStG **steuerfrei**." },
+      { art: "erklaerung", titel: "Verkauf von Praxisgeräten (§ 4 Nr. 28 UStG)", text: "Verkauft die Ärztin ein Gerät ihrer Praxis (ein sog. **Hilfsgeschäft** – auch das gehört zum Unternehmen), das sie **nur für steuerfreie Behandlungen** genutzt hat, ist der Verkauf steuerbar, aber nach § 4 Nr. 28 UStG **steuerfrei**." },
     ],
     fragen: [
       { art: "wahl", frage: "Ein Vermieter vermietet eine Wohnung an ein Rentnerehepaar. Wie ist der Umsatz zu behandeln?", optionen: ["Steuerfrei nach § 4 Nr. 12 a", "Steuerpflichtig 19 %", "Steuerpflichtig 7 %", "Nicht steuerbar"], richtig: 0, erkl: "Grundstücksvermietung ist steuerfrei." },
@@ -158,8 +158,8 @@ export const PFAD_UST = [
   {
     id: "vorsteuer", titel: "Vorsteuerabzug", kurz: "§ 15 UStG", icon: "🧾", normen: ["UStG 15 1", "UStG 15 2", "UStG 14 4"],
     karten: [
-      { art: "merksatz", titel: "Voraussetzungen", text: "Ein Unternehmer kann die Umsatzsteuer abziehen, die ihm ein **anderer Unternehmer** für eine Leistung **für sein Unternehmen** in Rechnung stellt – wenn er eine **ordnungsgemäße Rechnung** besitzt (§ 15 Abs. 1 S. 1 Nr. 1 UStG). Bei Beträgen bis 250 € genügt eine Kleinbetragsrechnung mit Bruttobetrag und Steuersatz." },
-      { art: "erklaerung", titel: "Höhe", text: "Abziehbar ist die **gesetzlich geschuldete** Steuer, **höchstens** die in der Rechnung ausgewiesene.\n• **zu hoch** ausgewiesen → nur der gesetzliche Betrag\n• **zu niedrig** ausgewiesen → nur der ausgewiesene Betrag\n• Kauf von einer **Privatperson** → keine Vorsteuer, auch wenn sie Steuer ausweist" },
+      { art: "merksatz", titel: "Voraussetzungen", text: "Ein Unternehmer kann die Umsatzsteuer abziehen, die ihm ein **anderer Unternehmer** für eine Leistung **für sein Unternehmen** in Rechnung stellt – wenn er eine **ordnungsgemäße Rechnung** besitzt (§ 15 Abs. 1 S. 1 Nr. 1 UStG). Bei Rechnungen bis 250 € brutto genügt eine Kleinbetragsrechnung mit Bruttobetrag und Steuersatz." },
+      { art: "erklaerung", titel: "Höhe", text: "Abziehbar ist die **gesetzlich geschuldete** Steuer, **höchstens** die in der Rechnung ausgewiesene.\n• **zu hoch** ausgewiesen → nur der gesetzliche Betrag; ihn rechnet man aus dem Gesamtbetrag heraus: **Brutto × 19/119**\n• **zu niedrig** ausgewiesen → nur der ausgewiesene Betrag\n• Kauf von einer **Privatperson** → keine Vorsteuer, auch wenn sie Steuer ausweist" },
       { art: "erklaerung", titel: "Zeitpunkt", text: "Abzug im Voranmeldungszeitraum, in dem **Leistung und Rechnung** vorliegen – das spätere Ereignis zählt. Bei **Anzahlungen**: sobald **Rechnung und Zahlung** vorliegen." },
       { art: "erklaerung", titel: "Ausschluss", text: "Kein Abzug, soweit die Eingangsleistung für **steuerfreie Umsätze** verwendet wird (§ 15 Abs. 2 S. 1 Nr. 1 UStG) – z. B. Liegen in der Arztpraxis. Bei gemischter Nutzung wird **aufgeteilt** (§ 15 Abs. 4 UStG), bei Gebäuden meist nach Fläche." },
     ],
