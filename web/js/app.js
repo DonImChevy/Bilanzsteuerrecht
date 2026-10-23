@@ -1,6 +1,6 @@
 import * as G from "./geld.js";
 import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
-import { THEMEN, THEMA, themenFuer, pruefungsThemen, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
+import { THEMEN, THEMA, themenFuer, pruefungsThemen, imTeil, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
 import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer, FALL_IDS } from "./katalog.js";
 import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
@@ -163,7 +163,7 @@ function erfasse(frage, korrekt) {
   speichern();
 }
 function schwaechstesThema() {
-  return pruefungsThemen(state.fach).filter((t) => zaehler(t.id).b >= 3).sort((a, b) => quote(zaehler(a.id)) - quote(zaehler(b.id)))[0];
+  return pruefImTeil(state.fach).filter((t) => zaehler(t.id).b >= 3).sort((a, b) => quote(zaehler(a.id)) - quote(zaehler(b.id)))[0];
 }
 const summeFach = (fach) => themenFuer(fach).map((t) => zaehler(t.id)).reduce((a, z) => ({ b: a.b + z.b, r: a.r + z.r }), { b: 0, r: 0 });
 
@@ -171,6 +171,7 @@ const summeFach = (fach) => themenFuer(fach).map((t) => zaehler(t.id)).reduce((a
 const state = {
   fach: ["oer", "est", "ust"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
   oerModus: lies("bsr.oerModus", "qa") === "mc" ? "mc" : "qa", // "qa" = selbst formulieren, "mc" = Multiple Choice
+  bilrTeil: ["1", "2"].includes(lies("bsr.teil", "beide")) ? lies("bsr.teil", "beide") : "beide", // Bilanzrecht: "1" | "2" | "beide"
   ziel: Number(lies("bsr.ziel", "20")) || 20,
   design: lies("bsr.design", "system"),
   hinweisWeg: lies("bsr.hinweisWeg", "") === "1",
@@ -215,7 +216,7 @@ function neueSitzung(opt) {
   let fr = opt.ids
     ? r.mischen((ohneFall.length ? ohneFall : vorlagen).map((v) => v.erzeugen(r)))
     : opt.modus === "klausur"
-    ? klausur(opt.anzahl, r, opt.fach, mc)
+    ? klausur(opt.anzahl, r, opt.fach, mc, opt.teil)
     : fragen(opt.themen, opt.anzahl || 10, r, opt.filter ?? opt.nurBuchung, mc);
   if (mc) fr = fr.map((f) => alsMultipleChoice(f, r));
   return {
@@ -359,6 +360,13 @@ function scrollOben() {
 
 // ======================= Wiederholung =======================
 const idsVon = (fach) => ALLE.filter((v) => THEMA[v.thema].fach === fach).map((v) => v.id);
+// Bilanzrecht: Auswahl Teil I / Teil II / beide (andere Module immer vollständig)
+const teilVon = (fach) => (fach === "bsr" ? state.bilrTeil : "beide");
+const themenImTeil = (fach) => themenFuer(fach).filter((t) => imTeil(t, teilVon(fach)));
+const pruefImTeil = (fach) => pruefungsThemen(fach).filter((t) => imTeil(t, teilVon(fach)));
+const idsImTeil = (fach) => ALLE.filter((v) => THEMA[v.thema].fach === fach && imTeil(THEMA[v.thema], teilVon(fach))).map((v) => v.id);
+const kartenImTeil = (fach) => kartenFuer(fach).filter((k) => imTeil(THEMA[k.thema], teilVon(fach)));
+const faelligImTeil = (fach) => faellige(stat.lern, idsImTeil(fach));
 const idsAktiv = () => aktiveModule().flatMap((m) => idsVon(m.id));
 const faelligVon = (fach) => faellige(stat.lern, fach ? idsVon(fach) : idsAktiv());
 const PRO_WIEDERHOLUNG = 20;
@@ -615,9 +623,10 @@ function suchErgebnisse(q) {
 
 // ======================= Tab: Lernen (Modulseite) =======================
 function tabLernen() {
-  const m = MODUL[state.fach], ids = idsVon(state.fach), z = summeFach(state.fach);
+  const m = MODUL[state.fach], ids = idsImTeil(state.fach);
+  const z = themenImTeil(state.fach).map((t) => zaehler(t.id)).reduce((a, x) => ({ b: a.b + x.b, r: a.r + x.r }), { b: 0, r: 0 });
   const gemeistert = ids.filter((id) => stat.lern[id]?.fach >= 3).length;
-  const due = faelligVon(state.fach);
+  const due = faelligImTeil(state.fach);
   const schwach = schwaechstesThema();
   let heute;
   if (due.length) {
@@ -666,7 +675,7 @@ function tabLernen() {
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
-    <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien", ust: "Themen · Skript & Klausurtechnik" }[state.fach] || "Themen · Skript Teil I und II"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenFuer(state.fach).length} Themen</span></div>
+    <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien", ust: "Themen · Skript & Klausurtechnik" }[state.fach] || { 1: "Themen · Skript Teil I", 2: "Themen · Skript Teil II", beide: "Themen · Skript Teil I und II" }[state.bilrTeil]}<span class="sub" style="text-transform:none;letter-spacing:0">${themenImTeil(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
       <div id="themenListe">${themenListe()}</div></div>
     ${lernkarteiView()}`;
@@ -674,7 +683,7 @@ function tabLernen() {
 
 function themenListe() {
   const q = norma(state.themenFilter.trim());
-  const liste = themenFuer(state.fach).filter((t) => !q || norma(`${t.titel} ${t.unter}`).includes(q));
+  const liste = themenImTeil(state.fach).filter((t) => !q || norma(`${t.titel} ${t.unter}`).includes(q));
   if (!liste.length) return `<div class="leer-zustand" style="padding:20px">${ic("suche")}<div class="sub">Kein Thema gefunden.</div></div>`;
   return `<div class="liste">${liste.map((t) => {
     const z = zaehler(t.id), q2 = quote(z), n = vorlagenFuer(t.id).length;
@@ -687,7 +696,7 @@ function themenListe() {
 
 /** Umschalter Frage-Antwort / Multiple Choice (ÖR und ESt). */
 function modusSchalter() {
-  if (state.fach === "bsr") return "";
+  if (state.fach === "bsr") return teilSchalter();
   const m = [["qa", "stift", "Frage – Antwort"], ["mc", "haken", "Multiple Choice"]];
   return `<div class="gruppe"><div class="gruppe-titel">Antwortmodus</div><div class="modus-karte"><div class="segment">${m.map(([id, i, t]) =>
     `<button data-a="oerModus" data-v="${id}" class="${state.oerModus === id ? "aktiv" : ""}">${ic(i, "klein")}${t}</button>`).join("")}</div>
@@ -696,16 +705,25 @@ function modusSchalter() {
       : "Antwort selbst formulieren wie in der Klausur – automatisch geprüft nach Norm und Kernbegriffen, mit Musterantwort und Normzitat."}</div></div></div>`;
 }
 
+/** Bilanzrecht: Teil I (bis Dezember), Teil II oder beide wie in der Klausur. */
+function teilSchalter() {
+  const m = [["1", "Teil I"], ["2", "Teil II"], ["beide", "Beide"]];
+  const fuss = { 1: "Teil I – Buchführung: Buchführungspflicht, Inventur und Bilanz, Konten, Warenverkehr, Umsatzsteuer, Abschluss, Kalkulation (Skript Teil I).", 2: "Teil II – Bilanzierung und Bewertung: Zurechnung, Anschaffungskosten, Grundstücke, AfA und GWG, Teilwert, Rechnungsabgrenzung, Entnahmen und Einlagen (Skript Teil II).", beide: "Beide Teile – wie in der Semesterklausur: Klausur mit ca. 25 % Teil I und 75 % Teil II." }[state.bilrTeil];
+  return `<div class="gruppe"><div class="gruppe-titel">Skript</div><div class="modus-karte"><div class="segment">${m.map(([id, t]) =>
+    `<button data-a="bilrTeil" data-v="${id}" class="${state.bilrTeil === id ? "aktiv" : ""}">${t}</button>`).join("")}</div>
+    <div class="gruppe-fuss">${fuss}</div></div></div>`;
+}
+
 /** Verteilung der Aufgaben auf die Fächer der Lernkartei. */
 function lernkarteiView() {
-  const ids = idsVon(state.fach);
+  const ids = idsImTeil(state.fach);
   const n = Array(FAECHER_MAX + 1).fill(0);
   ids.forEach((id) => { n[stat.lern[id]?.fach || 0] += 1; });
   const max = Math.max(1, ...n.slice(1));
   return `<div class="gruppe"><div class="gruppe-titel">Lernkartei · Langzeitgedächtnis</div><div class="liste"><div style="padding:16px">
     <div class="kartei">${n.slice(1).map((k, i) => `<div class="kartei-fach"><div class="kartei-saeule"><span style="height:${Math.round((k / max) * 100)}%"></span></div>
       <b class="mono">${k}</b><div class="sub">Fach ${i + 1}</div><div class="sub" style="font-size:11.5px">${INTERVALLE[i + 1]} ${INTERVALLE[i + 1] === 1 ? "Tag" : "Tage"}</div></div>`).join("")}</div>
-    <div class="sub" style="margin-top:10px">${n[0]} von ${ids.length} Aufgaben noch nie beantwortet · ${faelligVon(state.fach).length} heute fällig</div></div></div>
+    <div class="sub" style="margin-top:10px">${n[0]} von ${ids.length} Aufgaben noch nie beantwortet · ${faelligImTeil(state.fach).length} heute fällig</div></div></div>
     <div class="gruppe-fuss">Richtig → ein Fach weiter, längere Pause. Falsch → zurück in Fach 1, morgen wieder dran. Ab Fach 3 gilt eine Aufgabe als gefestigt.</div></div>`;
 }
 
@@ -723,7 +741,9 @@ function tabKlausur() {
         : "Wie in der Klausur: ca. 75 % Frage-Antwort und 25 % Übertragungsaufgaben. Nach der Abgabe vergleichst du mit den Musterantworten.")
       : state.fach === "est" || state.fach === "ust"
       ? "Ca. 50 % Rechenaufgaben mit immer neuen Zahlen, dazu Einordnungsfälle und Frage-Antwort. Auswertung erst nach der Abgabe."
-      : "Gemischte Aufgaben aus allen Themen, Schwerpunkt Buchungssätze (ca. 60 %). Auswertung erst nach der Abgabe.")}
+      : { 1: "Teil I: Buchführung mit Schwerpunkt Buchungssätze (ca. 60 %), dazu Rechnen und Theorie. Auswertung erst nach der Abgabe.",
+          2: "Teil II: Bilanzierung und Bewertung – ca. 40 % Buchungssätze, dazu Berechnungen und Würdigung. Auswertung erst nach der Abgabe.",
+          beide: "Wie die Semesterklausur: ca. 25 % Teil I (Buchführung) und 75 % Teil II (Bilanzierung und Bewertung). Auswertung erst nach der Abgabe." }[state.bilrTeil])}
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Einstellungen</div><div class="liste">
       <div class="zeile"><span class="symbol">${ic("lernen")}</span><span class="grow"><b>Aufgaben</b></span>
@@ -742,13 +762,14 @@ function tabKlausur() {
 
 // ======================= Tab: Karten =======================
 function tabKarten() {
-  const LERNKARTEN = kartenFuer(state.fach);
+  const LERNKARTEN = kartenImTeil(state.fach);
   const gewusst = new Set(stat.karten);
   const offen = LERNKARTEN.filter((k) => !gewusst.has(k.id));
-  const themen = themenFuer(state.fach).filter((t) => LERNKARTEN.some((k) => k.thema === t.id));
+  const themen = themenImTeil(state.fach).filter((t) => LERNKARTEN.some((k) => k.thema === t.id));
   const p = Math.round(((LERNKARTEN.length - offen.length) / LERNKARTEN.length) * 100);
   return `
     ${seitenKopf("Lernkarten", state.fach === "bsr" ? "Merksätze, Definitionen, Fristen und Formeln aus dem Skript." : "Jede Frage-Antwort-Aufgabe als Karte – Rückseite mit Musterantwort und Normzitat.")}
+    ${state.fach === "bsr" ? teilSchalter() : ""}
     <div class="kachel-grid">
       <button class="kachel" data-a="deck" data-v="alle"><span class="k-icon">${ic("mischen")}</span><span class="k-text"><b>Alle mischen</b><span class="sub">${LERNKARTEN.length} Karten</span></span></button>
       <button class="kachel" data-a="deck" data-v="offen" ${offen.length ? "" : "disabled"}><span class="k-icon" style="background:var(--warn-weak);color:var(--warn)">${ic("ziel")}</span><span class="k-text"><b>Noch nicht gewusst</b><span class="sub">${offen.length} Karten</span></span></button>
@@ -1153,7 +1174,7 @@ function deckView() {
 const PAAR_ANZAHL = 10, PAAR_LEBEN = 3;
 function neuePaarRunde() {
   const r = new Zufall();
-  const auswahl = r.mischen(PAARE[state.fach] || []).slice(0, PAAR_ANZAHL).map(([norm, text], id) => ({ id, norm, text }));
+  const auswahl = r.mischen((PAARE[state.fach] || []).filter((p) => imTeil({ teil: p[2] }, teilVon(state.fach)))).slice(0, PAAR_ANZAHL).map(([norm, text], id) => ({ id, norm, text }));
   state.paare = { links: r.mischen(auswahl), rechts: r.mischen(auswahl), weg: [], leben: PAAR_LEBEN, serie: 0, wahl: null, start: Date.now(), ende: null, sperre: false, frisch: true };
 }
 function paareView() {
@@ -1439,6 +1460,12 @@ const AKTIONEN = {
   zuModulen: () => document.querySelector(".modul-grid")?.scrollIntoView({ behavior: "smooth", block: "start" }),
   sucheLeeren: () => { state.suche = ""; render(); document.getElementById("homeSuche")?.focus(); },
   bilrAnsicht: (v) => { state.bilrAnsicht = v === "gesetze" ? "gesetze" : "konten"; render(); },
+  bilrTeil: (v) => {
+    state.bilrTeil = ["1", "2"].includes(v) ? v : "beide";
+    schreib("bsr.teil", state.bilrTeil);
+    state.kartenThemen = new Set();
+    render();
+  },
   oerModus: (v) => {
     state.oerModus = v === "mc" ? "mc" : "qa";
     schreib("bsr.oerModus", state.oerModus);
@@ -1446,7 +1473,7 @@ const AKTIONEN = {
   },
   schnell: (v, el) => {
     state.tab = "lernen";
-    const alle = pruefungsThemen(state.fach).map((t) => t.id);
+    const alle = pruefImTeil(state.fach).map((t) => t.id);
     const basis = { modus: "uebung", fach: state.fach };
     if (v === "buchung") starte({ ...basis, themen: alle, nurBuchung: true });
     else if (["qa", "uebertragung", "rechnen", "fall"].includes(v)) starte({ ...basis, themen: alle, filter: v });
@@ -1474,7 +1501,7 @@ const AKTIONEN = {
   wiederholen: (v) => {
     const alle = v === "alle";
     if (MODUL[v]) { fachSetzen(v); state.tab = "lernen"; }
-    const ids = faelligVon(alle ? null : state.fach).slice(0, PRO_WIEDERHOLUNG);
+    const ids = (alle ? faelligVon(null) : faelligImTeil(state.fach)).slice(0, PRO_WIEDERHOLUNG);
     if (!ids.length) { state.sitzung = null; toast("Gerade ist nichts fällig – super!"); render(); return; }
     starte({ modus: "uebung", fach: state.fach, themen: themenFuer(state.fach).map((t) => t.id), ids, wiederholung: alle ? "alle" : "fach" });
   },
@@ -1540,13 +1567,13 @@ const AKTIONEN = {
   punktesammler: () => { state.sheet = { art: "punktesammler" }; render(); },
   anzahl: (v) => { state.klausurAnzahl = Math.min(60, Math.max(5, state.klausurAnzahl + Number(v))); render(); },
   minuten: (v) => { state.klausurMinuten = Number(v); render(); },
-  klausurStart: () => starte({ modus: "klausur", fach: state.fach, anzahl: state.klausurAnzahl, minuten: state.klausurMinuten || null }),
+  klausurStart: () => starte({ modus: "klausur", fach: state.fach, teil: teilVon(state.fach), anzahl: state.klausurAnzahl, minuten: state.klausurMinuten || null }),
   kartenThema: (v) => { state.kartenThemen.has(v) ? state.kartenThemen.delete(v) : state.kartenThemen.add(v); render(); },
-  kartenAlle: () => { state.kartenThemen = new Set(themenFuer(state.fach).map((t) => t.id).filter((id) => kartenFuer(state.fach).some((k) => k.thema === id))); render(); },
+  kartenAlle: () => { state.kartenThemen = new Set(themenImTeil(state.fach).map((t) => t.id).filter((id) => kartenImTeil(state.fach).some((k) => k.thema === id))); render(); },
   kartenKeine: () => { state.kartenThemen = new Set(); render(); },
   deck: (v) => {
     const r = new Zufall(), gew = new Set(stat.karten);
-    const LERNKARTEN = kartenFuer(state.fach);
+    const LERNKARTEN = kartenImTeil(state.fach);
     const karten = v === "alle" ? LERNKARTEN : v === "offen" ? LERNKARTEN.filter((k) => !gew.has(k.id)) : LERNKARTEN.filter((k) => state.kartenThemen.has(k.thema));
     if (!karten.length) return;
     state.deck = { karten: r.mischen(karten), index: 0, um: false, gewusst: 0 };
