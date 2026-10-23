@@ -5,9 +5,10 @@ import { KLAUSUR_HAEUFIG } from "./oer/skript.js";
 import { OER_UEBERTRAGUNG } from "./oer/uebertragung.js";
 import { EST_AUFGABEN } from "./est/aufgaben.js";
 import { BSR_TEIL2 } from "./bilr/teil2.js";
+import { BSR_TEIL1_ZUSATZ } from "./bilr/teil1_zusatz.js";
 import { UST_AUFGABEN } from "./ust/aufgaben.js";
 import { LERNKARTEN as BSR_KARTEN } from "./lernkarten.js";
-import { THEMA, pruefungsThemen, Zufall } from "./kern.js";
+import { THEMA, pruefungsThemen, imTeil, Zufall } from "./kern.js";
 import { normenAusText } from "./oer/normtext.js";
 import { MARKIERUNG } from "./markierungen.js";
 
@@ -28,7 +29,7 @@ const mitNormen = (v) => {
   } };
 };
 
-export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...EST_AUFGABEN, ...BSR_TEIL2, ...UST_AUFGABEN].map(mitNormen);
+export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...BSR_TEIL1_ZUSATZ, ...EST_AUFGABEN, ...BSR_TEIL2, ...UST_AUFGABEN].map(mitNormen);
 
 export const vorlagenFuer = (thema) => ALLE.filter((v) => v.thema === thema);
 export const fachVon = (vorlage) => THEMA[vorlage.thema].fach;
@@ -73,8 +74,8 @@ function gewichtet(pool, anzahl, r) {
   return out;
 }
 
-export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false) {
-  const alle = pruefungsThemen(fach).map((t) => t.id);
+export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false, teil = "beide") {
+  const alle = pruefungsThemen(fach).filter((t) => imTeil(t, teil)).map((t) => t.id);
   if (fach === "oer") {
     // Klausurstruktur ÖR: ca. 75 % Frage-Antwort (davon häufige Klausurthemen doppelt gewichtet), 25 % Übertragungsaufgaben
     const ue = fragen(alle, Math.round(anzahl * 0.25), r, "uebertragung");
@@ -89,8 +90,17 @@ export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false) {
     const qa = fragen(alle, anzahl - re.length - fa.length, r, "qa", ohneFaelle);
     return r.mischen([...re, ...fa, ...qa]);
   }
-  const b = fragen(alle, Math.ceil(anzahl * 0.6), r, "buchung");
-  const rest = fragen(alle, anzahl - b.length, r);
+  if (fach === "bsr" && teil === "beide") {
+    // Wie die Semesterklausur: Teil I (Buchführung) ca. 25 %, Teil II (Bilanzierung und Bewertung) ca. 75 %
+    const t1 = pruefungsThemen(fach).filter((t) => t.teil === 1).map((t) => t.id), t2 = alle.filter((id) => !t1.includes(id));
+    const anz1 = Math.round(anzahl * 0.25), b1 = fragen(t1, Math.ceil(anz1 * 0.6), r, "buchung");
+    const teil1 = [...b1, ...fragen(t1, anz1 - b1.length, r)];
+    const b2 = fragen(t2, Math.round((anzahl - anz1) * 0.4), r, "buchung");
+    return r.mischen([...teil1, ...b2, ...fragen(t2, anzahl - anz1 - b2.length, r, null, ohneFaelle)]);
+  }
+  // Teil I: Schwerpunkt Buchungssätze (ca. 60 %); Teil II: ca. 40 % Buchungen, Rest Würdigung und Berechnung
+  const b = fragen(alle, Math.ceil(anzahl * (teil === "2" ? 0.4 : 0.6)), r, "buchung");
+  const rest = fragen(alle, anzahl - b.length, r, null, ohneFaelle);
   return r.mischen([...b, ...rest]);
 }
 

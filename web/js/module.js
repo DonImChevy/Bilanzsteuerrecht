@@ -2,7 +2,7 @@
 // farbe = Akzentfarbe des Moduls (hell/dunkel), icon = Name in ICONS (ui.js).
 
 export const MODULE = [
-  { id: "bsr", titel: "Bilanzrecht", kurz: "BilR", unter: "Bilanzsteuerrecht · Buchführung Teil I", icon: "tkonto", farbe: "#4f46e5", farbeDunkel: "#8b8cf8" },
+  { id: "bsr", titel: "Bilanzrecht", kurz: "BilR", unter: "Bilanzsteuerrecht · Teil I und II", icon: "tkonto", farbe: "#4f46e5", farbeDunkel: "#8b8cf8" },
   { id: "oer", titel: "Öffentliches Recht", kurz: "ÖR", unter: "Staatsrecht · GG, BWahlG, PartG", icon: "saeulen", farbe: "#e11d48", farbeDunkel: "#fb7185" },
   { id: "est", titel: "Einkommensteuer", kurz: "ESt", unter: "EStG · Grundstudium I", icon: "person", farbe: "#059669", farbeDunkel: "#34d399" },
   { id: "ust", titel: "Umsatzsteuer", kurz: "USt", unter: "UStG · Grundstudium I", icon: "prozent", farbe: "#d97706", farbeDunkel: "#fbbf24" },

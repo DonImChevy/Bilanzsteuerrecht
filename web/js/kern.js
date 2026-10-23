@@ -3,29 +3,29 @@ import * as G from "./geld.js";
 import { pruefeOffen } from "./offen.js";
 
 export const THEMEN = [
-  { id: "buchfuehrungspflicht", titel: "Buchführungspflicht", unter: "§§ 238, 241a HGB, §§ 140, 141 AO", icon: "📕", fach: "bsr" },
-  { id: "inventurBilanz", titel: "Inventur, Inventar & Bilanz", unter: "§§ 240, 242, 247, 257 HGB", icon: "📋", fach: "bsr" },
-  { id: "bilanzveraenderungen", titel: "Bilanzveränderungen", unter: "Aktivtausch, Passivtausch, Mehrung, Minderung", icon: "⇄", fach: "bsr" },
-  { id: "bestandskonten", titel: "Bestandskonten", unter: "Aktiv- und Passivkonten buchen", icon: "🗂️", fach: "bsr" },
-  { id: "erfolgskonten", titel: "Erfolgskonten", unter: "Aufwand und Ertrag", icon: "📈", fach: "bsr" },
-  { id: "privatkonten", titel: "Privatkonten", unter: "Entnahmen und Einlagen", icon: "👤", fach: "bsr" },
-  { id: "warenkonten", titel: "Viergeteiltes Warenkonto", unter: "WBK, WEK, BVK, WVK", icon: "📦", fach: "bsr" },
-  { id: "warenunterkonten", titel: "Rabatte, Skonti, Boni & Co.", unter: "Bezugskosten, Rücksendungen, Nachlässe", icon: "％", fach: "bsr" },
-  { id: "umsatzsteuer", titel: "Umsatzsteuer & Vorsteuer", unter: "Nettomethode, Entgeltsminderung, Abschluss", icon: "€", fach: "bsr" },
-  { id: "abschluss", titel: "Eröffnung & Abschluss", unter: "EBK, SBK, GuV, vorbereitende Buchungen", icon: "✅", fach: "bsr" },
-  { id: "kalkulation", titel: "Kalkulation", unter: "Rohgewinn, Aufschlagsätze, Einstandspreis", icon: "🧮", fach: "bsr" },
-  { id: "gewinnermittlung", titel: "Gewinnermittlung & GuV/BVV", unter: "§ 4 I 1 EStG, Mehr- und Weniger-Rechnung", icon: "Σ", fach: "bsr" },
-  { id: "grundbegriffe", titel: "Grundbegriffe", unter: "Auszahlung, Ausgabe, Aufwand, Kosten", icon: "📖", fach: "bsr" },
-  { id: "buecher", titel: "Grund-, Haupt- & Nebenbücher", unter: "Journal, Kassenbericht, Belege", icon: "📚", fach: "bsr" },
+  { id: "buchfuehrungspflicht", titel: "Buchführungspflicht", unter: "§§ 238, 241a HGB, §§ 140, 141 AO", icon: "📕", fach: "bsr", teil: 1 },
+  { id: "inventurBilanz", titel: "Inventur, Inventar & Bilanz", unter: "§§ 240, 242, 247, 257 HGB", icon: "📋", fach: "bsr", teil: 1 },
+  { id: "bilanzveraenderungen", titel: "Bilanzveränderungen", unter: "Aktivtausch, Passivtausch, Mehrung, Minderung", icon: "⇄", fach: "bsr", teil: 1 },
+  { id: "bestandskonten", titel: "Bestandskonten", unter: "Aktiv- und Passivkonten buchen", icon: "🗂️", fach: "bsr", teil: 1 },
+  { id: "erfolgskonten", titel: "Erfolgskonten", unter: "Aufwand und Ertrag", icon: "📈", fach: "bsr", teil: 1 },
+  { id: "privatkonten", titel: "Privatkonten", unter: "Entnahmen und Einlagen", icon: "👤", fach: "bsr", teil: 1 },
+  { id: "warenkonten", titel: "Viergeteiltes Warenkonto", unter: "WBK, WEK, BVK, WVK", icon: "📦", fach: "bsr", teil: 1 },
+  { id: "warenunterkonten", titel: "Rabatte, Skonti, Boni & Co.", unter: "Bezugskosten, Rücksendungen, Nachlässe", icon: "％", fach: "bsr", teil: 1 },
+  { id: "umsatzsteuer", titel: "Umsatzsteuer & Vorsteuer", unter: "Nettomethode, Entgeltsminderung, Abschluss", icon: "€", fach: "bsr", teil: 1 },
+  { id: "abschluss", titel: "Eröffnung & Abschluss", unter: "EBK, SBK, GuV, vorbereitende Buchungen", icon: "✅", fach: "bsr", teil: 1 },
+  { id: "kalkulation", titel: "Kalkulation", unter: "Rohgewinn, Aufschlagsätze, Einstandspreis", icon: "🧮", fach: "bsr", teil: 1 },
+  { id: "gewinnermittlung", titel: "Gewinnermittlung & GuV/BVV", unter: "§ 4 I 1 EStG, Mehr- und Weniger-Rechnung", icon: "Σ", fach: "bsr", teil: 1 },
+  { id: "grundbegriffe", titel: "Grundbegriffe", unter: "Auszahlung, Ausgabe, Aufwand, Kosten", icon: "📖", fach: "bsr", teil: 1 },
+  { id: "buecher", titel: "Grund-, Haupt- & Nebenbücher", unter: "Journal, Kassenbericht, Belege", icon: "📚", fach: "bsr", teil: 1 },
   // Bilanzsteuerrecht Teil II (Übungen Teil II, Semesterklausuren)
-  { id: "bsr-gob", titel: "GoB, Betriebsvermögen & Bewertung", unter: "Teil II · § 252 HGB, § 5 I EStG, R 4.2 EStR, § 4 V Nr. 1 EStG", icon: "🧭", fach: "bsr" },
-  { id: "bsr-zurechnung", titel: "Zurechnung & Zugangszeitpunkt", unter: "Teil II · § 39 AO, § 246 HGB, § 9a EStDV, § 449 BGB", icon: "🔑", fach: "bsr" },
-  { id: "bsr-ak", titel: "Anschaffungskosten", unter: "Teil II · § 255 I HGB, § 9b EStG", icon: "🏷️", fach: "bsr" },
-  { id: "bsr-grundstueck", titel: "Grundstückserwerb & Gebäude-AfA", unter: "Teil II · § 255 HGB, § 7 IV EStG", icon: "🏠", fach: "bsr" },
-  { id: "bsr-afa", titel: "Abschreibungen & GWG", unter: "Teil II · § 253 III HGB, § 6 II, IIa, § 7 I EStG", icon: "📉", fach: "bsr" },
-  { id: "bsr-teilwert", titel: "Teilwert & Wertaufholung", unter: "Teil II · § 253 III–V HGB, § 6 I Nr. 1, 2 EStG", icon: "⚖️", fach: "bsr" },
-  { id: "bsr-abgrenzung", titel: "Rechnungsabgrenzung & Verbindlichkeiten", unter: "Teil II · §§ 250, 252, 256a HGB, § 5 V EStG", icon: "📆", fach: "bsr" },
-  { id: "bsr-entnahme-einlage", titel: "Entnahmen & Einlagen", unter: "Teil II · § 4 I, § 6 I Nr. 4, 5 EStG", icon: "🔄", fach: "bsr" },
+  { id: "bsr-gob", titel: "GoB, Betriebsvermögen & Bewertung", unter: "§ 252 HGB, § 5 I EStG, R 4.2 EStR, § 4 V Nr. 1 EStG", icon: "🧭", fach: "bsr", teil: 2 },
+  { id: "bsr-zurechnung", titel: "Zurechnung & Zugangszeitpunkt", unter: "§ 39 AO, § 246 HGB, § 9a EStDV, § 449 BGB", icon: "🔑", fach: "bsr", teil: 2 },
+  { id: "bsr-ak", titel: "Anschaffungskosten", unter: "§ 255 I HGB, § 9b EStG", icon: "🏷️", fach: "bsr", teil: 2 },
+  { id: "bsr-grundstueck", titel: "Grundstückserwerb & Gebäude-AfA", unter: "§ 255 HGB, § 7 IV EStG", icon: "🏠", fach: "bsr", teil: 2 },
+  { id: "bsr-afa", titel: "Abschreibungen & GWG", unter: "§ 253 III HGB, § 6 II, IIa, § 7 I EStG", icon: "📉", fach: "bsr", teil: 2 },
+  { id: "bsr-teilwert", titel: "Teilwert & Wertaufholung", unter: "§ 253 III–V HGB, § 6 I Nr. 1, 2 EStG", icon: "⚖️", fach: "bsr", teil: 2 },
+  { id: "bsr-abgrenzung", titel: "Rechnungsabgrenzung & Verbindlichkeiten", unter: "§§ 250, 252, 256a HGB, § 5 V EStG", icon: "📆", fach: "bsr", teil: 2 },
+  { id: "bsr-entnahme-einlage", titel: "Entnahmen & Einlagen", unter: "§ 4 I, § 6 I Nr. 4, 5 EStG", icon: "🔄", fach: "bsr", teil: 2 },
   // Öffentliches Recht (Unterrichtsskript ÖR GS I – Kapitel 1 Staatsrecht und 2 Gesetzgebung)
   { id: "oer-staatsziele", titel: "Staat & Staatsformmerkmale", unter: "Skript 1.3–1.4.1 · Drei-Elemente-Lehre, Art. 20, 28, 79 GG", icon: "📜", fach: "oer" },
   { id: "oer-republik", titel: "Republik, Sozialstaat & Staatsziele", unter: "Skript 1.4.2.4–1.4.2.6 · Art. 20 I, 20a GG", icon: "🏛️", fach: "oer" },
@@ -76,6 +76,8 @@ export const FAECHER = {
 export const themenFuer = (fach) => THEMEN.filter((t) => t.fach === fach);
 /** Themen für Klausur und gemischte Übungen – ohne „Zusatzwissen“. */
 export const pruefungsThemen = (fach) => themenFuer(fach).filter((t) => !t.zusatz);
+/** Bilanzrecht ist in Teil I (Buchführung) und Teil II (Bilanzierung und Bewertung) geteilt; teil = "1", "2" oder "beide". */
+export const imTeil = (thema, teil = "beide") => teil === "beide" || !thema.teil || String(thema.teil) === String(teil);
 
 // ---------- Zufall (mulberry32, reproduzierbar) ----------
 export class Zufall {

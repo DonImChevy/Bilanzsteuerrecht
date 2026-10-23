@@ -2,7 +2,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import * as G from "../js/geld.js";
-import { Zufall, pruefeBuchung, bewerte, satz, summe, THEMEN, loesungText } from "../js/kern.js";
+import { Zufall, pruefeBuchung, bewerte, satz, summe, THEMEN, THEMA, loesungText } from "../js/kern.js";
 import { ALLE, fragen, klausur, vorlagenFuer, LERNKARTEN, kartenFuer } from "../js/katalog.js";
 import { norm } from "../js/oer/normtext.js";
 import { NORMEN } from "../js/oer/normen.js";
@@ -106,7 +106,13 @@ test("Alle Vorlagen erzeugen lösbare Aufgaben", () => {
 test("Klausur und Übung", () => {
   const k = klausur(20, new Zufall(42));
   assert.equal(k.length, 20);
-  assert.ok(k.filter((f) => f.typ === "buchung").length >= 12);
+  assert.ok(k.filter((f) => f.typ === "buchung").length >= 8);
+  // Bilanzrecht Teil I / Teil II: Klausur nur aus dem gewählten Skriptteil, „beide“ wie die Semesterklausur (ca. 25 % Teil I)
+  const teilVon = (f) => THEMA[f.thema].teil;
+  const k1 = klausur(20, new Zufall(42), "bsr", false, "1"), k2 = klausur(20, new Zufall(42), "bsr", false, "2");
+  assert.ok(k1.every((f) => teilVon(f) === 1) && k1.filter((f) => f.typ === "buchung").length >= 12);
+  assert.ok(k2.every((f) => teilVon(f) === 2) && k2.length === 20);
+  assert.equal(k.filter((f) => teilVon(f) === 1).length, 5);
   const n = vorlagenFuer("buchfuehrungspflicht").length;
   assert.equal(new Set(fragen(["buchfuehrungspflicht"], n, new Zufall(7)).map((f) => f.id)).size, n);
 });

@@ -103,6 +103,7 @@ const ak = [
     { text: "Für den neuen Firmenwagen wird die Kfz-Steuer für das laufende Jahr abgebucht.", richtig: 2, erkl: "Die Kfz-Steuer ist laufender Aufwand für die Nutzung → Betriebsausgabe (§ 4 Abs. 4 EStG); Vorauszahlungen über den Stichtag hinaus sind aktiv abzugrenzen.", normen: ["EStG 4 4"] },
     { text: "Der Unternehmer absolviert mit dem neuen Firmenwagen ein Fahrsicherheitstraining für 250 € zzgl. USt.", richtig: 2, erkl: "Das Training macht das Fahrzeug nicht betriebsbereit → sofort abziehbare Betriebsausgabe.", normen: ["EStG 4 4"] },
     { text: "Der Unternehmer bezahlt die Rechnung über eine Maschine unter Abzug von 3 % Skonto.", richtig: 1, erkl: "Skonto ist eine Anschaffungspreisminderung (§ 255 Abs. 1 S. 3 HGB) – beim Anlagevermögen direkt auf dem Anlagekonto; die Vorsteuer ist zu berichtigen (§ 17 Abs. 1 UStG).", normen: ["HGB 255 1", "UStG 17 1"] },
+    { text: "Ein Versicherungsvertreter (steuerfreie Umsätze nach § 4 Nr. 11 UStG) kauft für seinen Betrieb einen Pkw für 40.000 € zzgl. 7.600 € USt.", richtig: 0, erkl: "Die Vorsteuer ist nach § 15 Abs. 2 UStG nicht abziehbar und gehört deshalb zu den Anschaffungskosten (§ 9b Abs. 1 EStG Umkehrschluss): AK = 47.600 €.", normen: ["EStG 9b 1"] },
     { text: "Die Vorsteuer aus der Rechnung über eine Maschine ist voll abziehbar.", richtig: 3, erkl: "Abziehbare Vorsteuer gehört nicht zu den Anschaffungskosten (§ 9b Abs. 1 EStG); sie ist eine Forderung gegenüber dem Finanzamt und kein Aufwand.", normen: ["EStG 9b 1"] },
     { text: "Für ein Darlehen, mit dem die Maschine finanziert wurde, fallen im Jahr 6.000 € Zinsen an.", richtig: 2, erkl: "Finanzierungskosten gehören nicht zu den Anschaffungskosten → Betriebsausgabe (Zinsaufwand).", normen: ["EStG 4 4"] },
     { text: "Der Unternehmer besucht im Februar eine Fachmesse, um sich allgemein über Produktionsmaschinen zu informieren; im Juli kauft er eine Maschine eines Ausstellers.", richtig: 2, erkl: "Kosten vor der konkreten Erwerbsentscheidung sind keine Anschaffungsnebenkosten → Reisekosten als Betriebsausgabe.", normen: ["EStG 4 4"] },
@@ -325,6 +326,18 @@ const afa = [
   }),
 ];
 
+// Anlagengitter (Anlagenspiegel, § 284 Abs. 3 HGB): Entwicklung von AK und kumulierter AfA
+afa.push(V("t2-anlagengitter", "bsr-afa", (r) => {
+  const ak = r.betrag(30000, 300000, 6000), nd = r.wahl([5, 6, 8, 10]), jahre = r.zahl(1, nd - 2), zugang = r.muenze() ? r.betrag(6000, 60000, 1200) : 0;
+  const afaAlt = ak / nd, kumAlt = afaAlt * jahre, afaZu = zugang ? zugang / 5 * 6 / 12 : 0, kumNeu = kumAlt + afaAlt + afaZu;
+  const bwNeu = ak + zugang - kumNeu, frageBw = r.muenze();
+  return rechnen("t2-anlagengitter", "bsr-afa",
+    `Anlagengitter „Maschinen“ zum 31.12.02 (lineare AfA, volle Jahre):\n• Anschaffungskosten Stand 01.01.02: ${eur(ak)} (Nutzungsdauer ${nd} Jahre, angeschafft am 02.01. vor ${jahre} Jahr${jahre > 1 ? "en" : ""})\n• Kumulierte Abschreibungen Stand 01.01.02: ${eur(kumAlt)}${zugang ? `\n• Zugang 01.07.02: eine weitere Maschine für ${eur(zugang)} (Nutzungsdauer 5 Jahre)` : "\n• Keine Zu- und Abgänge in 02"}\n\n${frageBw ? "Wie hoch ist der Buchwert der Maschinen zum 31.12.02 (in €)?" : "Wie hoch sind die kumulierten Abschreibungen zum 31.12.02 (in €)?"}`,
+    frageBw ? bwNeu : kumNeu,
+    `Das Anlagengitter (§ 284 Abs. 3 HGB) entwickelt Anschaffungskosten und kumulierte Abschreibungen getrennt.\nAK 31.12.02: ${zugang ? `${eur(ak)} + Zugang ${eur(zugang)} = ` : ""}${eur(ak + zugang)}.\nAbschreibungen 02: ${eur(ak)} / ${nd} = ${eur(afaAlt)}${zugang ? ` + ${eur(zugang)} / 5 × 6/12 = ${eur(afaZu)} (zeitanteilig, § 7 Abs. 1 S. 4 EStG), zusammen ${eur(afaAlt + afaZu)}` : ""}.\nKumulierte Abschreibungen 31.12.02: ${eur(kumAlt)} + ${eur(afaAlt + afaZu)} = ${eur(kumNeu)}.\nBuchwert 31.12.02 = AK − kumulierte AfA = ${eur(bwNeu)} (Buchwert 31.12.01: ${eur(ak - kumAlt)}).`,
+    "Folien Teil II – Anlagengitter");
+}));
+
 // ======================================================================= Teilwert und Wertaufholung
 const teilwert = [
   A("t2-teilwert", "bsr-teilwert",
@@ -463,6 +476,21 @@ const abgrenzung = [
       `Auf 02 entfallen ${12 - monate(m)} Monate: ${eur(b)} × ${12 - monate(m)}/12 = ${eur(Math.round(arap))} → ARAP an Kfz-Kosten (§ 250 Abs. 1 HGB, § 5 Abs. 5 S. 1 Nr. 1 EStG).`,
       { quelle: Q + " – Rechnungsabgrenzungsposten" });
   }),
+  V("t2-fremdwaehrung-ware", "bsr-abgrenzung", (r) => {
+    const usd = r.betrag(50000, 200000, 10000), k0 = r.wahl([1.1, 1.15, 1.2, 1.25]), hoch = r.muenze();
+    const k1 = Math.round((hoch ? k0 * r.wahl([0.86, 0.9, 0.94]) : k0 * r.wahl([1.04, 1.08])) * 100) / 100;
+    const k2 = Math.round(k0 * r.wahl([0.92, 0.96, 1.02]) * 100) / 100, hb = r.muenze();
+    const e0 = usd / k0, e1 = usd / k1, e2 = usd / k2, kurs = (k) => k.toFixed(2).replace(".", ","), dollar = (c) => eur(c).replace("€", "USD");
+    const stb = Math.max(e0, Math.min(e1, e2)), wert = hb ? e1 : stb;
+    return rechnen("t2-fremdwaehrung-ware", "bsr-abgrenzung",
+      `Ein Händler kauft am 11.11.01 Waren für ${dollar(usd)} auf Ziel; Zahlung am 15.02.02, die Bilanz wird am 31.03.02 aufgestellt. Devisenkassamittelkurse (1 € = … USD): 11.11.01 ${kurs(k0)}; 31.12.01 ${kurs(k1)}; 15.02.02 ${kurs(k2)}. Er möchte einen möglichst niedrigen Gewinn ausweisen.\n\nMit welchem Wert ist die Verbindlichkeit in der ${hb ? "Handelsbilanz" : "Steuerbilanz"} 31.12.01 anzusetzen (in €)?`,
+      wert,
+      `Kurswerte: 11.11.01 ${eur(Math.round(e0))}; 31.12.01 ${eur(Math.round(e1))}; 15.02.02 ${eur(Math.round(e2))}.\n` +
+        (hb
+          ? `Handelsbilanz: Restlaufzeit bis zu einem Jahr → Stichtagskurs, auch wenn der Wert gesunken ist (§ 256a S. 2 HGB): ${eur(Math.round(e1))}.`
+          : `Steuerbilanz (§ 6 Abs. 1 Nr. 3 i. V. m. Nr. 2 EStG): Ein gesunkener Erfüllungsbetrag darf nicht angesetzt werden (§ 252 Abs. 1 Nr. 4 HGB). Ein höherer nur, soweit die Werterhöhung voraussichtlich dauerhaft ist – bei Verbindlichkeiten des laufenden Geschäftsverkehrs, soweit sie bis zur Tilgung bzw. Aufstellung anhält (BMF 02.09.2016, Rn. 36) → ${eur(Math.round(stb))}.`),
+      "Folien Teil II – Verbindlichkeiten");
+  }),
   V("t2-fremdwaehrung", "bsr-abgrenzung", (r) => {
     const usd = r.betrag(50000, 300000, 10000), k0 = r.wahl([0.95, 1, 1.05, 1.1]), k1 = Math.round(k0 * r.wahl([0.96, 0.98, 1.02, 1.04]) * 10000) / 10000;
     const kurz = r.muenze(), hb = r.wahl([true, true, false]);
@@ -483,6 +511,25 @@ const abgrenzung = [
 
 // ======================================================================= Entnahmen und Einlagen
 const privat = [
+  V("t2-fahrten-wohnung", "bsr-entnahme-einlage", (r) => {
+    const blp = r.betrag(25000, 70000, 1) + r.zahl(0, 99), abger = Math.floor(blp / 10000) * 10000, km = r.zahl(5, 35), tage = r.wahl([200, 210, 220, 230]);
+    const methode = r.wahl(["pauschal", "pauschal", "fahrtenbuch"]);
+    const ep = tage * km * 38;
+    if (methode === "pauschal") {
+      const kosten = Math.round(abger * 0.0003 * km * 12), nicht = Math.max(0, kosten - ep);
+      return rechnen("t2-fahrten-wohnung", "bsr-entnahme-einlage",
+        `Ein Unternehmer nutzt seinen betrieblichen Pkw (Bruttolistenpreis ${eur(blp)}, kein Fahrtenbuch) auch für Fahrten zwischen Wohnung und Betrieb: einfache Entfernung ${km} km, ${tage} Tage im Jahr.\n\nWie hoch sind die nicht abziehbaren Betriebsausgaben nach § 4 Abs. 5 S. 1 Nr. 6 EStG (in €)?`,
+        nicht,
+        `0,03-%-Methode: ${eur(abger)} (abgerundet) × 0,03 % × ${km} km × 12 Monate = ${eur(kosten)}\n− abziehbar wie die Entfernungspauschale: ${tage} Tage × ${km} km × 0,38 € = ${eur(ep)}\n= nicht abziehbar ${eur(nicht)} → keine Buchung, sondern außerbilanzielle Hinzurechnung. Umsatzsteuerlich zählen die Fahrten zur unternehmerischen Nutzung (keine Korrektur).`,
+        "Folien Teil II – Nichtabzugsfähige Betriebsausgaben");
+    }
+    const kfz = r.betrag(8000, 20000, 100), gesamtKm = r.wahl([20000, 25000, 30000]), wegKm = tage * km * 2, anteil = Math.round(kfz * wegKm / gesamtKm), nicht = Math.max(0, anteil - ep);
+    return rechnen("t2-fahrten-wohnung", "bsr-entnahme-einlage",
+      `Ein Unternehmer führt für seinen betrieblichen Pkw ein ordnungsgemäßes Fahrtenbuch. Gesamtkosten des Jahres einschließlich AfA: ${eur(kfz)}; Jahresfahrleistung ${G.text(gesamtKm * 100).replace(",00", "")} km. Fahrten zwischen Wohnung und Betrieb an ${tage} Tagen, einfache Entfernung ${km} km.\n\nWie hoch sind die nicht abziehbaren Betriebsausgaben nach § 4 Abs. 5 S. 1 Nr. 6 EStG (in €)?`,
+      nicht,
+      `Fahrtenbuchmethode: gefahrene km Wohnung–Betrieb ${tage} × ${km} km × 2 = ${G.text(wegKm * 100).replace(",00", "")} km\nKosten: ${eur(kfz)} × ${G.text(wegKm * 100).replace(",00", "")}/${G.text(gesamtKm * 100).replace(",00", "")} km = ${eur(anteil)}\n− abziehbar: ${tage} × ${km} km × 0,38 € = ${eur(ep)}\n= nicht abziehbar ${eur(nicht)} → außerbilanzielle Hinzurechnung.`,
+      "Folien Teil II – Nichtabzugsfähige Betriebsausgaben");
+  }),
   A("t2-entnahme-einlage", "bsr-entnahme-einlage",
     "Was sind Entnahmen und Einlagen, wie werden sie bewertet, und wie wirken sie sich auf den Gewinn aus?",
     "• Entnahmen (§ 4 Abs. 1 S. 2 EStG): alle Wirtschaftsgüter (Geld, Waren, Erzeugnisse, Nutzungen und Leistungen), die der Unternehmer für sich, seinen Haushalt oder andere betriebsfremde Zwecke entnimmt. Bewertung mit dem Teilwert (§ 6 Abs. 1 Nr. 4 S. 1 EStG); private Kfz-Nutzung pauschal nach der 1-%-Regelung oder per Fahrtenbuch.\n• Einlagen (§ 4 Abs. 1 S. 8 EStG): alle Wirtschaftsgüter, die der Unternehmer dem Betrieb zuführt – auch die Bezahlung betrieblicher Ausgaben von einem privaten Konto. Bewertung mit dem Teilwert (§ 6 Abs. 1 Nr. 5 EStG), höchstens mit den (um AfA geminderten) Anschaffungs- oder Herstellungskosten, wenn das Wirtschaftsgut innerhalb der letzten drei Jahre angeschafft wurde.\n• Gewinnauswirkung: Entnahmen und Einlagen sind betrieblich nicht veranlasst und dürfen den Gewinn nicht beeinflussen – beim Betriebsvermögensvergleich werden Entnahmen hinzugerechnet und Einlagen abgezogen (§ 4 Abs. 1 S. 1 EStG). Ein Ertrag entsteht nur bei Sach- und Nutzungsentnahmen über die Ertragskonten (z. B. Warenentnahmen, private Kfz-Nutzung).",
