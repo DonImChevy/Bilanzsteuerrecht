@@ -724,12 +724,14 @@ function themenListe() {
   const q = norma(state.themenFilter.trim());
   const liste = themenImTeil(state.fach).filter((t) => !q || norma(`${t.titel} ${t.unter}`).includes(q));
   if (!liste.length) return `<div class="leer-zustand" style="padding:20px">${ic("suche")}<div class="sub">Kein Thema gefunden.</div></div>`;
-  return `<div class="liste">${liste.map((t) => {
-    const z = zaehler(t.id), q2 = quote(z), n = vorlagenFuer(t.id).length;
-    return `<button class="zeile" data-a="thema" data-v="${t.id}">
-      <span class="thema-icon">${t.icon}</span>
-      <span class="grow"><div style="font-weight:600">${esc(t.titel)}</div><div class="sub">${esc(t.unter)} · ${n} Aufgaben</div></span>
-      ${z.b ? `<span class="mini-ring" style="--p:${Math.round(q2 * 100)};--farbe:${farbe(q2)}"><span>${Math.round(q2 * 100)}</span></span>` : `<span class="pille m">neu</span>`}</button>`;
+  return `<div class="themen-karten">${liste.map((t, i) => {
+    const z = zaehler(t.id), q2 = quote(z), n = vorlagenFuer(t.id).length, p = Math.round(q2 * 100);
+    const status = z.b ? `<span class="tk-status" style="--farbe:${farbe(q2)}">${p} %</span>` : `<span class="tk-status neu">neu</span>`;
+    return `<button class="themen-karte${z.b ? "" : " frisch"}" data-a="thema" data-v="${t.id}" style="--farbe:${z.b ? farbe(q2) : "var(--m)"};--i:${Math.min(i, 12)}">
+      <span class="tk-icon">${t.icon}<i>${i + 1}</i></span>
+      <span class="tk-text"><b>${esc(t.titel)}</b><span class="sub">${esc(t.unter)}</span>
+        <span class="tk-fuss"><span class="tk-balken"><span style="width:${z.b ? Math.max(p, 4) : 0}%"></span></span><span class="tk-n">${n} Aufgaben</span></span></span>
+      ${status}</button>`;
   }).join("")}</div>`;
 }
 
