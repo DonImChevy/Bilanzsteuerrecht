@@ -5,6 +5,7 @@
 //   angezeigt wird die Summe aller Geräte. Was seit dem letzten Abgleich dazukam, ergibt sich aus dem
 //   Vergleich mit dem Stand direkt nach dem letzten Abgleich („basis“).
 // • Lernkartei (lern) und gewusste Lernkarten: pro Aufgabe gewinnt der neueste Eintrag (Zeitstempel t).
+// • Lernpfade (pfad): je Block gewinnt die beste Sternzahl. Einstellungen und „Weiterlernen“ (zuletzt): der neueste Stand.
 import { SYNC_SERVER } from "./sync-config.js";
 
 export const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // ohne 0/O und 1/I
@@ -62,6 +63,21 @@ export function neuester(a = {}, b = {}) {
   return out;
 }
 
+/** Lernpfad-Fortschritt {fach: {block: {sterne, t}}} vereinen: je Block die beste Sternzahl, bei Gleichstand der neuere Eintrag. */
+export function pfadVereinen(a = {}, b = {}) {
+  const out = {};
+  for (const quelle of [a, b]) for (const [fach, bloecke] of Object.entries(quelle || {})) {
+    out[fach] ||= {};
+    for (const [id, e] of Object.entries(bloecke || {})) {
+      const da = out[fach][id];
+      if (!da || e.sterne > da.sterne || (e.sterne === da.sterne && (e.t || 0) > (da.t || 0))) out[fach][id] = e;
+    }
+  }
+  return out;
+}
+/** Von zwei Ständen mit Zeitstempel t den neueren (Einstellungen, zuletzt). */
+export const neuerer = (a, b) => ((b?.t || 0) > (a?.t || 0) ? b : a) ?? null;
+
 /** Änderungen an den gewussten Lernkarten seit `basisKarten` als Einträge {g, t}. */
 export function kartenAenderungen(karten = [], basisKarten = null, jetzt = Date.now()) {
   const neu = new Set(karten), alt = new Set(basisKarten || []), out = {};
@@ -75,7 +91,8 @@ export function gesamt(daten) {
   let s = LEER();
   for (const g of Object.values(daten.geraete || {})) s = addiere(s, { proThema: g.proThema || {}, tage: g.tage || {}, klausuren: g.klausuren || [] });
   s.klausuren.sort((a, b) => a.datum - b.datum);
-  return { ...s, lern: daten.lern || {}, karten: Object.entries(daten.karten || {}).filter(([, e]) => e.g).map(([id]) => id) };
+  return { ...s, lern: daten.lern || {}, karten: Object.entries(daten.karten || {}).filter(([, e]) => e.g).map(([id]) => id),
+    pfad: daten.pfad || {}, einstellungen: daten.einstellungen || null, zuletzt: daten.zuletzt || null };
 }
 
 /**
@@ -96,6 +113,9 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       geraete: { ...d.geraete, [lokal.geraet]: eigen },
       lern: neuester(d.lern, vorher.lern),
       karten: neuester(d.karten, karten),
+      pfad: pfadVereinen(d.pfad, vorher.pfad),
+      einstellungen: neuerer(d.einstellungen, vorher.einstellungen),
+      zuletzt: neuerer(d.zuletzt, vorher.zuletzt),
     };
     const version = await server.speichern(lokal.code, daten, alt?.version || 0);
     if (version == null) continue; // ein anderes Gerät war schneller – neu holen und erneut zusammenführen
@@ -106,6 +126,9 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       const waehrend = differenz(statJetzt, beitrag(vorher));
       const s = addiere({ ...statJetzt, ...g }, waehrend);
       s.lern = neuester(g.lern, statJetzt.lern);
+      s.pfad = pfadVereinen(g.pfad, statJetzt.pfad);
+      s.einstellungen = neuerer(g.einstellungen, statJetzt.einstellungen);
+      s.zuletzt = neuerer(g.zuletzt, statJetzt.zuletzt);
       const kNeu = kartenAenderungen(statJetzt.karten, vorher.karten, jetzt);
       const kSet = new Set(g.karten);
       for (const [id, e] of Object.entries(kNeu)) if (e.g) kSet.add(id); else kSet.delete(id);

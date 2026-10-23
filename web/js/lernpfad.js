@@ -1,22 +1,37 @@
 // Lernpfad-Modus: eigene Vollbild-Welt mit Karte (Stationen auf einem Pfad) und in sich geschlossenen Blöcken
 // (Intro → Lernkarten → Fragen → Abschluss). Inhalte je Modul in PFADE; Fortschritt (beste Sterne je Block) in localStorage.
 import { PFAD_UST } from "./ust/pfad.js";
+import { PFAD_EST } from "./est/pfad.js";
+import { PFAD_OER } from "./oer/pfad.js";
+import { PFAD_BSR1, PFAD_BSR2 } from "./bilr/pfad.js";
 import * as G from "./geld.js";
 
-export const PFADE = { ust: { titel: "Umsatzsteuer", untertitel: "Vom System bis zur Vorsteuer – Block für Block", bloecke: PFAD_UST } };
+// Schlüssel = Modul; Bilanzrecht je nach Auswahl Teil I (bsr1), Teil II (bsr2) oder beide (bsr).
+export const PFADE = {
+  ust: { titel: "Umsatzsteuer", untertitel: "Vom System bis zur Vorsteuer – Block für Block", bloecke: PFAD_UST },
+  est: { titel: "Einkommensteuer", untertitel: "Von der Steuerpflicht bis zur Entfernungspauschale", bloecke: PFAD_EST },
+  oer: { titel: "Öffentliches Recht", untertitel: "Vom Staat bis zum Gesetz – Staatsrecht Schritt für Schritt", bloecke: PFAD_OER },
+  bsr1: { titel: "Bilanzrecht Teil I", untertitel: "Buchführung – vom Geschäftsvorfall bis zum Abschluss", bloecke: PFAD_BSR1 },
+  bsr2: { titel: "Bilanzrecht Teil II", untertitel: "Bilanzierung und Bewertung – vom Betriebsvermögen bis zur Einlage", bloecke: PFAD_BSR2 },
+  bsr: { titel: "Bilanzrecht", untertitel: "Teil I und II – Buchführung, Bilanzierung und Bewertung", bloecke: [...PFAD_BSR1, ...PFAD_BSR2] },
+};
+/** Fortschritt wird je Modul gespeichert – Teil I, Teil II und „beide“ teilen sich die Sterne. */
+const speicherVon = (schluessel) => (schluessel.startsWith("bsr") ? "bsr" : schluessel);
+/** Lernpfad-Schlüssel für ein Modul (Bilanzrecht abhängig vom gewählten Skriptteil). */
+export const pfadSchluessel = (fach, teil = "beide") => (fach === "bsr" ? { 1: "bsr1", 2: "bsr2" }[teil] || "bsr" : fach);
 
-const SPEICHER = "bsr.pfad.v1";
-export function fortschrittLesen() {
-  try { return JSON.parse(localStorage.getItem(SPEICHER) || "{}"); } catch (_) { return {}; }
-}
-function fortschrittSchreiben(f) { try { localStorage.setItem(SPEICHER, JSON.stringify(f)); } catch (_) { /* egal */ } }
-export function sterneSpeichern(fach, id, sterne) {
-  const f = fortschrittLesen(), alt = f[fach]?.[id]?.sterne || 0;
+// Speicher stellt die App bereit (Lernstand stat.pfad – wird mit dem Sync-Code abgeglichen).
+let speicher = { lesen: () => ({}), schreiben: () => {} };
+export const pfadSpeicherSetzen = (s) => { speicher = s; };
+export const fortschrittLesen = () => speicher.lesen() || {};
+const fortschrittSchreiben = (f) => speicher.schreiben(f);
+export function sterneSpeichern(schluessel, id, sterne) {
+  const fach = speicherVon(schluessel), f = fortschrittLesen(), alt = f[fach]?.[id]?.sterne || 0;
   f[fach] = { ...(f[fach] || {}), [id]: { sterne: Math.max(alt, sterne), t: Date.now() } };
   fortschrittSchreiben(f);
 }
 export const pfadStand = (fach) => {
-  const f = fortschrittLesen()[fach] || {}, b = PFADE[fach]?.bloecke || [];
+  const f = fortschrittLesen()[speicherVon(fach)] || {}, b = PFADE[fach]?.bloecke || [];
   return { fertig: b.filter((x) => f[x.id]).length, sterne: b.reduce((a, x) => a + (f[x.id]?.sterne || 0), 0), gesamt: b.length, f };
 };
 
@@ -49,6 +64,11 @@ const ART = {
   merksatz: ["Merksatz", "✦", "amber"], erklaerung: ["So funktioniert's", "◆", "cyan"],
   beispiel: ["Beispiel", "▲", "gruen"], klausur: ["Klausursatz", "✎", "pink"],
 };
+/** „Block 3“ bzw. bei Bilanzrecht „Teil II · Block 3“ (gezählt innerhalb des Teils). */
+const blockNr = (alle, x) => {
+  const gleich = alle.filter((y) => y.teil === x.teil);
+  return `${x.teil ? `Teil ${x.teil === 1 ? "I" : "II"} · ` : ""}Block ${gleich.indexOf(x) + 1}`;
+};
 const X = [70, 77, 70, 30, 23, 30]; // Zickzack der Stationen (Prozent der Breite); Beschriftung jeweils auf der freien Seite
 
 export function kartenView(fach, { esc, ic, normLabel }) {
@@ -70,7 +90,7 @@ export function kartenView(fach, { esc, ic, normLabel }) {
       ${zustand === "aktiv" ? `<div class="pf-blase">${s ? "Wiederholen" : st.fertig ? "Weiter" : "Start"}</div>` : ""}
       <button class="pf-knoten" data-a="pfadBlock" data-v="${x.id}" aria-label="${esc(x.titel)}"><span class="pf-icon">${x.icon}</span>${zustand === "fertig" ? `<span class="pf-haken">${ic("haken", "klein")}</span>` : ""}</button>
       <div class="pf-sterne">${[1, 2, 3].map((k) => `<i class="${k <= s ? "an" : ""}">★</i>`).join("")}</div>
-      <button class="pf-label ${links ? "links" : "rechts"}" data-a="pfadBlock" data-v="${x.id}"><span class="pf-nr">Block ${i + 1}</span><b>${esc(x.titel)}</b><span>${esc(x.kurz)}</span></button>
+      <button class="pf-label ${links ? "links" : "rechts"}" data-a="pfadBlock" data-v="${x.id}"><span class="pf-nr">${blockNr(b, x)}</span><b>${esc(x.titel)}</b><span>${esc(x.kurz)}</span></button>
     </div>`;
   }).join("");
   return `<div class="vollbild pfad">
@@ -103,7 +123,7 @@ export function blockView(fach, z, { esc, ic, normLabel, konfetti }) {
   let inhalt, fuss = "";
   if (z.schritt === 0) {
     inhalt = `<div class="pf-intro"><div class="pf-orb"><span>${b.icon}</span></div>
-      <div class="pf-ueber">Block ${PFADE[fach].bloecke.indexOf(b) + 1} · ${esc(b.kurz)}</div><h1 class="pf-titel">${esc(b.titel)}</h1>
+      <div class="pf-ueber">${blockNr(PFADE[fach].bloecke, b)} · ${esc(b.kurz)}</div><h1 class="pf-titel">${esc(b.titel)}</h1>
       <div class="pf-fakten"><span><b>${k}</b> Lernkarten</span><span><b>${b.fragen.length}</b> Fragen</span><span><b>~${Math.max(2, Math.round((k * 40 + b.fragen.length * 30) / 60))}</b> Min.</span></div>
       <div class="pf-normen">${normen}</div>
       <p class="pf-unter">Erst lesen, dann prüfen: Alles, was gefragt wird, steht auf den Karten dieses Blocks.</p></div>`;
@@ -122,8 +142,8 @@ export function blockView(fach, z, { esc, ic, normLabel, konfetti }) {
         return `<button class="pf-option${cls}" data-a="pfadWahl" data-v="${oi}" ${a ? "disabled" : ""} style="--i:${pos}"><span class="pf-buchst">${buchst[pos]}</span>${esc(q.optionen[oi])}</button>`;
       }).join("")}</div>`;
     } else {
-      feld = `<div class="pf-zahl${a ? (a.ok ? " richtig" : " falsch") : ""}"><input id="pfadZahl" inputmode="decimal" autocomplete="off" placeholder="0,00" value="${a ? esc(a.eingabe) : ""}" ${a ? "disabled" : ""}><span>€</span></div>
-        ${a && !a.ok ? `<div class="pf-loesung">Richtig: <b>${G.euro(q.cent)}</b></div>` : ""}`;
+      feld = `<div class="pf-zahl${a ? (a.ok ? " richtig" : " falsch") : ""}"><input id="pfadZahl" inputmode="decimal" autocomplete="off" placeholder="0,00" value="${a ? esc(a.eingabe) : ""}" ${a ? "disabled" : ""}><span>${q.einheit || "€"}</span></div>
+        ${a && !a.ok ? `<div class="pf-loesung">Richtig: <b>${q.einheit ? `${G.text(q.cent).replace(/,00$/, "")} ${q.einheit}` : G.euro(q.cent)}</b></div>` : ""}`;
     }
     inhalt = `<div class="pf-frage"><div class="pf-tag frage"><span>?</span>Frage ${qi + 1} von ${b.fragen.length}</div><h2>${esc(q.frage)}</h2>${feld}
       ${a ? `<div class="pf-erkl ${a.ok ? "ok" : "err"}"><b>${a.ok ? "Richtig!" : "Nicht ganz."}</b> ${esc(q.erkl)}</div>` : ""}</div>`;

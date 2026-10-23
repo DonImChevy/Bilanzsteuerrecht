@@ -398,6 +398,22 @@ test("Synchronisierung: zwei Geräte, nichts doppelt, nichts verloren", async ()
   [handy, lh] = await sync(handy, lh); [ipad, li] = await sync(ipad, li);
   assert.deepEqual(ipad.proThema["est-tarif"], { b: 18, r: 12 });
   assert.ok(ipad.lern.c1);
+  // Lernpfad (beste Sterne je Block), Einstellungen und „Weiterlernen“ (jeweils der neueste Stand)
+  handy.pfad = { ust: { system: { sterne: 2, t: 700 } } };
+  ipad.pfad = { ust: { system: { sterne: 3, t: 650 }, unternehmer: { sterne: 1, t: 660 } }, bsr: { "b1-pflicht": { sterne: 3, t: 670 } } };
+  handy.einstellungen = { ziel: "30", design: "dark", teil: "1", oerModus: "mc", t: 800 };
+  ipad.einstellungen = { ziel: "20", design: "system", teil: "beide", oerModus: "qa", t: 0 };
+  ipad.zuletzt = { fach: "ust", titel: "Vorsteuer", t: 900 };
+  [handy, lh] = await sync(handy, lh); [ipad, li] = await sync(ipad, li); [handy, lh] = await sync(handy, lh);
+  for (const st of [handy, ipad]) {
+    assert.equal(st.pfad.ust.system.sterne, 3);
+    assert.equal(st.pfad.ust.unternehmer.sterne, 1);
+    assert.equal(st.pfad.bsr["b1-pflicht"].sterne, 3);
+    assert.equal(st.einstellungen.ziel, "30");
+    assert.equal(st.einstellungen.teil, "1");
+    assert.equal(st.zuletzt.titel, "Vorsteuer");
+  }
+  assert.deepEqual(handy.proThema["est-tarif"], { b: 18, r: 12 }); // weiterhin nichts doppelt
 });
 
 test("Paare finden: Normen und Kurzerklärungen eindeutig", async () => {
@@ -410,10 +426,11 @@ test("Paare finden: Normen und Kurzerklärungen eindeutig", async () => {
   }
 });
 
-test("Lernpfad Umsatzsteuer: jeder Block in sich vollständig", async () => {
-  const { PFAD_UST } = await import("../js/ust/pfad.js");
+test("Lernpfade aller Module: jeder Block in sich vollständig", async () => {
+  const { PFADE } = await import("../js/lernpfad.js");
+  for (const fach of ["ust", "est", "oer", "bsr1", "bsr2"]) assert.ok(PFADE[fach]?.bloecke.length >= 8, "Lernpfad fehlt: " + fach);
   const ids = new Set();
-  for (const b of PFAD_UST) {
+  for (const b of ["ust", "est", "oer", "bsr1", "bsr2"].flatMap((f) => PFADE[f].bloecke)) {
     assert.ok(!ids.has(b.id), "doppelt: " + b.id); ids.add(b.id);
     assert.ok(b.karten.length >= 3 && b.fragen.length >= 3, b.id + ": zu wenig Karten oder Fragen");
     for (const r of b.normen) assert.ok(norm(r), `${b.id}: Norm ${r} fehlt`);
