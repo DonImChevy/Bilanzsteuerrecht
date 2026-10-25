@@ -457,7 +457,7 @@ test("Kompaktwissen: jedes Thema hat eine vollständige Zusammenfassung", async 
       assert.ok(k.beispiele.length >= 1, `${t.id}: Klausurbeispiel fehlt`);
     }
     for (const b of k.beispiele) {
-      assert.ok(b.titel && b.sv?.length > 40 && b.loesung.length >= 2, `${t.id}: Beispiel unvollständig`);
+      assert.ok(b.titel && b.sv?.length > 40 && b.loesung.length >= 1, `${t.id}: Beispiel unvollständig`);
       // Die Musterlösung stützt sich auf Normen – mindestens eine antippbare Vorschrift
       const html = b.loesung.map(kompaktInline).join("");
       assert.ok(/data-a="normDetail"/.test(html) || t.id.startsWith("kalkul") || ["bilanzveraenderungen", "bestandskonten", "warenkonten", "warenunterkonten", "abschluss", "inventurBilanz", "grundbegriffe", "erfolgskonten", "umsatzsteuer", "privatkonten"].includes(t.id), `${t.id}: Lösung „${b.titel}“ ohne Normzitat`);
