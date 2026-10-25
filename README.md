@@ -13,6 +13,8 @@ Suche über alle Inhalte und Modul-Kacheln. Verfügbar:
   Zwei Antwortmodi: **Frage – Antwort** (selbst formulieren) oder **Multiple Choice** (jede Frage mit plausiblen
   Falschantworten aus benachbarten Normen, oft mehrere richtig) – umschaltbar im Reiter Üben und Klausur.
 
+**Kompaktwissen:** Zu jedem Thema aller vier Module eine Zusammenfassung zum Wiederholen – Kernsatz, wichtige Zahlen, das Wichtigste, Prüfungsschema, typische Klausurfälle, häufige Fehler und eine Musterformulierung; Paragrafen antippbar. Erreichbar über die Themenliste („Überblick“), die Modulseite, den Klausur-Tab („Vor der Klausur“ mit Klausuraufbau und Schwerpunkten), Nachschlagen/Normen, die Suche und direkt aus der Auswertung einer Aufgabe.
+
 In Vorbereitung (als „Bald verfügbar“ sichtbar):
 Abgabenordnung (AO), Bewertungsrecht (BewR), Privatrecht (PrivR). Neue Module werden in `web/js/module.js` eingetragen.
 

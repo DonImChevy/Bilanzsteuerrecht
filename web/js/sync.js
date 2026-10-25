@@ -6,6 +6,7 @@
 //   Vergleich mit dem Stand direkt nach dem letzten Abgleich („basis“).
 // • Lernkartei (lern) und gewusste Lernkarten: pro Aufgabe gewinnt der neueste Eintrag (Zeitstempel t).
 // • Lernpfade (pfad): je Block gewinnt die beste Sternzahl. Einstellungen und „Weiterlernen“ (zuletzt): der neueste Stand.
+// • Gelesene Zusammenfassungen (kompakt): Vereinigung, je Thema der neueste Zeitpunkt.
 import { SYNC_SERVER } from "./sync-config.js";
 
 export const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // ohne 0/O und 1/I
@@ -75,6 +76,12 @@ export function pfadVereinen(a = {}, b = {}) {
   }
   return out;
 }
+/** Gelesene Zusammenfassungen {thema: t} vereinen: was auf einem Gerät gelesen wurde, gilt überall als gelesen. */
+export function gelesenVereinen(a = {}, b = {}) {
+  const out = { ...(a || {}) };
+  for (const [id, t] of Object.entries(b || {})) if (!out[id] || t > out[id]) out[id] = t;
+  return out;
+}
 /** Von zwei Ständen mit Zeitstempel t den neueren (Einstellungen, zuletzt). */
 export const neuerer = (a, b) => ((b?.t || 0) > (a?.t || 0) ? b : a) ?? null;
 
@@ -92,7 +99,7 @@ export function gesamt(daten) {
   for (const g of Object.values(daten.geraete || {})) s = addiere(s, { proThema: g.proThema || {}, tage: g.tage || {}, klausuren: g.klausuren || [] });
   s.klausuren.sort((a, b) => a.datum - b.datum);
   return { ...s, lern: daten.lern || {}, karten: Object.entries(daten.karten || {}).filter(([, e]) => e.g).map(([id]) => id),
-    pfad: daten.pfad || {}, einstellungen: daten.einstellungen || null, zuletzt: daten.zuletzt || null };
+    pfad: daten.pfad || {}, kompakt: daten.kompakt || {}, einstellungen: daten.einstellungen || null, zuletzt: daten.zuletzt || null };
 }
 
 /**
@@ -114,6 +121,7 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       lern: neuester(d.lern, vorher.lern),
       karten: neuester(d.karten, karten),
       pfad: pfadVereinen(d.pfad, vorher.pfad),
+      kompakt: gelesenVereinen(d.kompakt, vorher.kompakt),
       einstellungen: neuerer(d.einstellungen, vorher.einstellungen),
       zuletzt: neuerer(d.zuletzt, vorher.zuletzt),
     };
@@ -127,6 +135,7 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       const s = addiere({ ...statJetzt, ...g }, waehrend);
       s.lern = neuester(g.lern, statJetzt.lern);
       s.pfad = pfadVereinen(g.pfad, statJetzt.pfad);
+      s.kompakt = gelesenVereinen(g.kompakt, statJetzt.kompakt);
       s.einstellungen = neuerer(g.einstellungen, statJetzt.einstellungen);
       s.zuletzt = neuerer(g.zuletzt, statJetzt.zuletzt);
       const kNeu = kartenAenderungen(statJetzt.karten, vorher.karten, jetzt);

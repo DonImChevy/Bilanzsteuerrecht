@@ -7,6 +7,7 @@ import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
 import { PAARE } from "./paare.js";
+import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, gelesenAnteil, lesezeit } from "./kompakt.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
@@ -17,7 +18,7 @@ import qrcode from "./lib/qrcode.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
-const LEER = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null, pfad: {}, einstellungen: null });
+const LEER = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null, pfad: {}, kompakt: {}, einstellungen: null });
 function laden() {
   let s = LEER();
   try {
@@ -193,6 +194,7 @@ const state = {
   sitzung: null,
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
+  kompakt: null, // Kompaktwissen: {id: Thema | null (Übersicht), fach, liste: aus der Übersicht geöffnet, ausSitzung}
   pfad: null, // Lernpfad-Modus: {fach, block: null | {id, schritt, fehler, antwort, start, reihen}}
   paare: null, // Spiel „Paare finden“: {links, rechts, weg, leben, wahl, start, ende, sperre}
   klausurAnzahl: 20,
@@ -434,17 +436,18 @@ function render() {
     const hilfe = { esc, ic, konfetti, normLabel: (r) => norm(r)?.label || r };
     html += state.pfad.block ? blockView(state.pfad.fach, state.pfad.block, hilfe) : kartenView(state.pfad.fach, hilfe);
   }
+  if (state.kompakt) html += kompaktEbene();
   if (state.sheet) html += sheetView();
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
-  const scrollVoll = animVoll ? 0 : app.querySelector(".vollbild .vb-inhalt")?.scrollTop || 0;
+  const scrollVoll = animVoll ? [] : [...app.querySelectorAll(".vollbild .vb-inhalt")].map((el) => el.scrollTop);
   const scrollSheet = animSheet ? 0 : app.querySelector(".sheet .vb-inhalt")?.scrollTop || 0;
   app.innerHTML = html;
-  if (scrollVoll) { const el = app.querySelector(".vollbild .vb-inhalt"); if (el) el.scrollTop = scrollVoll; }
+  if (scrollVoll.some(Boolean)) app.querySelectorAll(".vollbild .vb-inhalt").forEach((el, i) => { if (scrollVoll[i]) el.scrollTop = scrollVoll[i]; });
   if (scrollSheet) { const el = app.querySelector(".sheet .vb-inhalt"); if (el) el.scrollTop = scrollSheet; }
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
-  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.sheet ? "hidden" : "";
+  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.kompakt || state.sheet ? "hidden" : "";
   if (fokusId) {
     const el = document.querySelector(`[data-fokus="${fokusId}"]`);
     if (el) { el.focus(); if (pos && el.setSelectionRange) try { el.setSelectionRange(...pos); } catch (_) { /* egal */ } }
@@ -455,7 +458,7 @@ function render() {
 // Jede geöffnete Ebene (Unterseite, Übung, Rückschau, Lernkarten, Menü) bekommt einen Eintrag im Browserverlauf.
 // So schließt die Zurück-Geste (Android) bzw. Zurück-Taste die oberste Ebene, statt die App zu verlassen.
 let verlaufTiefe = 0, popIgnorieren = 0;
-const ansichtTiefe = () => (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.sheet ? 1 : 0);
+const ansichtTiefe = () => (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.sheet ? 1 : 0);
 function verlaufAbgleichen() {
   const t = ansichtTiefe();
   while (verlaufTiefe < t) { verlaufTiefe += 1; history.pushState({ tiefe: verlaufTiefe }, ""); }
@@ -464,6 +467,7 @@ function verlaufAbgleichen() {
 /** Oberste Ebene schließen (Zurück-Geste, Escape-Taste). */
 function ebeneZurueck() {
   if (state.sheet) AKTIONEN.sheetZu();
+  else if (state.kompakt) AKTIONEN.kompaktZu();
   else if (state.deck) AKTIONEN.deckZu();
   else if (state.paare) AKTIONEN.paareZu();
   else if (state.pfad?.block) AKTIONEN.pfadKarte();
@@ -483,7 +487,8 @@ const ansicht = {};
 const schluessel = {
   tab: () => state.tab + state.fach,
   voll: () => (state.sitzung ? "s" + state.sitzung.start + (state.sitzung.beendet ? "e" : "") : "") + (state.deck ? "d" + state.deck.karten.length : "") + (state.paare ? "p" + state.paare.start + (state.paare.ende ? "e" : "") : "")
-    + (state.pfad ? "f" + (state.pfad.block ? state.pfad.block.id + state.pfad.block.start + ":" + state.pfad.block.schritt : "karte") : ""),
+    + (state.pfad ? "f" + (state.pfad.block ? state.pfad.block.id + state.pfad.block.start + ":" + state.pfad.block.schritt : "karte") : "")
+    + (state.kompakt ? "k" + (state.kompakt.id || "liste") : ""),
   sheet: () => state.sheet?.art || "",
 };
 
@@ -596,6 +601,7 @@ function suchIndex() {
   const r = new Zufall(1);
   INDEX = {
     themen: THEMEN.map((t) => ({ t, such: norma(`${t.titel} ${t.unter} ${MODUL[t.fach].titel}`) })),
+    kompakt: Object.entries(KOMPAKT).map(([id, k]) => ({ t: THEMA[id], k, such: norma(`${THEMA[id].titel} ${kompaktText(k)}`) })),
     aufgaben: ALLE.map((v) => { const f = v.erzeugen(r); return { v, f, such: norma(`${f.text} ${f.antwort || ""} ${(f.optionen || []).join(" ")} ${THEMA[v.thema].titel}`) }; }),
     normen: NORMEN.map((n) => ({ n, label: n.g === "GG" ? (n.nr === "Präambel" ? "Präambel GG" : `Art. ${n.nr} GG`) : `§ ${n.nr} ${n.g}`,
       such: norma(`${n.g === "GG" ? "art" : "§"} ${n.nr} ${n.g} ${n.titel} ${n.abs.map((a) => a.text).join(" ")}`) })),
@@ -640,6 +646,7 @@ function suchErgebnisse(q) {
     normen = [...exakt, ...normen.filter((x) => !exakt.includes(x))].slice(0, 6);
   }
   const konten = beste(I.konten, 6);
+  const kompakt = beste(I.kompakt.filter((x) => !MODUL[x.t.fach].bald), 4);
   const module = I.module.filter(passt);
   const gruppe = (titel, inhalt) => `<div class="treffer-gruppe treffer"><div class="gruppe-titel">${titel}</div><div class="liste">${inhalt}</div></div>`;
   let html = "";
@@ -647,6 +654,8 @@ function suchErgebnisse(q) {
     <span class="symbol" style="background:${m.farbe};color:#fff">${ic(m.icon)}</span><span class="grow"><div>${markiere(m.titel, hl)}</div><div class="sub">${m.bald ? "Bald verfügbar" : m.unter}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
   if (themen.length) html += gruppe("Themen – direkt üben", themen.map(({ t }) => `<button class="zeile" data-a="thema" data-v="${t.id}">
     <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub">${MODUL[t.fach].kurz} · ${esc(t.unter)}</div></span><span class="chev">${ic("play", "klein fill")}</span></button>`).join(""));
+  if (kompakt.length) html += gruppe("Zusammenfassungen", kompakt.map(({ t, k }) => `<button class="zeile" data-a="kompakt" data-v="${t.id}">
+    <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${markiere(kompaktText(k), hl, true)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
   const normHtml = normen.length ? gruppe("Gesetzestexte", normen.map(({ n, label }) => `<button class="zeile" data-a="normDetail" data-v="${n.g} ${n.nr}">
     <span class="symbol">§</span><span class="grow"><div><b>${esc(label)}</b></div><div class="sub">${esc(n.titel || n.abs[0]?.text.slice(0, 80) + " …")}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join("")) : "";
   if (zitat) html += normHtml;
@@ -713,6 +722,7 @@ function tabLernen() {
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     ${pfadKachel()}
+    ${kompaktKachel()}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
     <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien", ust: "Themen · Skript & Klausurtechnik" }[state.fach] || { 1: "Themen · Skript Teil I", 2: "Themen · Skript Teil II", beide: "Themen · Skript Teil I und II" }[state.bilrTeil]}<span class="sub" style="text-transform:none;letter-spacing:0">${themenImTeil(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
@@ -727,11 +737,12 @@ function themenListe() {
   return `<div class="themen-karten">${liste.map((t, i) => {
     const z = zaehler(t.id), q2 = quote(z), n = vorlagenFuer(t.id).length, p = Math.round(q2 * 100);
     const status = z.b ? `<span class="tk-status" style="--farbe:${farbe(q2)}">${p} %</span>` : `<span class="tk-status neu">neu</span>`;
-    return `<button class="themen-karte${z.b ? "" : " frisch"}" data-a="thema" data-v="${t.id}" style="--farbe:${z.b ? farbe(q2) : "var(--m)"};--i:${Math.min(i, 12)}">
+    const lesen = KOMPAKT[t.id] ? `<button class="tk-lesen${stat.kompakt[t.id] ? " gelesen" : ""}" data-a="kompakt" data-v="${t.id}" aria-label="Zusammenfassung ${esc(t.titel)}">${stat.kompakt[t.id] ? ic("haken", "klein") : ic("akte", "klein")}Überblick</button>` : "";
+    return `<div class="themen-karte${z.b ? "" : " frisch"}" style="--farbe:${z.b ? farbe(q2) : "var(--m)"};--i:${Math.min(i, 12)}">
       <span class="tk-icon">${t.icon}<i>${i + 1}</i></span>
-      <span class="tk-text"><b>${esc(t.titel)}</b><span class="sub">${esc(t.unter)}</span>
+      <span class="tk-text"><button class="tk-haupt" data-a="thema" data-v="${t.id}"><b>${esc(t.titel)}</b></button><span class="sub">${esc(t.unter)}</span>
         <span class="tk-fuss"><span class="tk-balken"><span style="width:${z.b ? Math.max(p, 4) : 0}%"></span></span><span class="tk-n">${n} Aufgaben</span></span></span>
-      ${status}</button>`;
+      <span class="tk-rechts">${status}${lesen}</span></div>`;
   }).join("")}</div>`;
 }
 
@@ -744,6 +755,33 @@ function modusSchalter() {
     <div class="gruppe-fuss">${state.oerModus === "mc"
       ? "Ankreuzen statt formulieren – oft sind mehrere Antworten richtig. Ideal für unterwegs: lange Klausurfälle werden hier ausgelassen."
       : "Antwort selbst formulieren wie in der Klausur – automatisch geprüft nach Norm und Kernbegriffen, mit Musterantwort und Normzitat."}</div></div></div>`;
+}
+
+// ======================= Kompaktwissen =======================
+/** Themen eines Moduls mit Zusammenfassung (bei BilR im gewählten Teil). */
+const kompaktThemen = (fach) => themenImTeil(fach).filter((t) => KOMPAKT[t.id]);
+
+function kompaktEbene() {
+  const { id, fach, ausSitzung } = state.kompakt;
+  const themen = kompaktThemen(fach).length ? kompaktThemen(fach) : themenFuer(fach).filter((t) => KOMPAKT[t.id]);
+  if (!id) return bibliothekView(fach, themen, { ic, gelesen: stat.kompakt });
+  const i = themen.findIndex((t) => t.id === id);
+  return kompaktView(id, { ic, thema: THEMA[id], nachbarn: [themen[i - 1], themen[i + 1]], gelesen: stat.kompakt, ausSitzung });
+}
+
+/** Einstieg ins Kompaktwissen auf der Modulseite. */
+function kompaktKachel() {
+  const themen = kompaktThemen(state.fach);
+  if (!themen.length) return "";
+  const n = gelesenAnteil(themen, stat.kompakt);
+  const naechstes = themen.find((t) => !stat.kompakt[t.id]);
+  return `<div class="kompakt-kachel">
+    <button class="kk-haupt" data-a="kompaktListe">
+      <span class="kk-blatt" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="kk-text"><b>Kompaktwissen</b><span>${themen.length} Zusammenfassungen mit Klausurschwerpunkten${n ? ` · ${n} gelesen` : ""}</span></span>
+      <span class="kk-pfeil">${ic("pfeil")}</span></button>
+    ${naechstes ? `<button class="kk-weiter" data-a="kompakt" data-v="${naechstes.id}">${n ? "Weiterlesen" : "Erstes Thema lesen"}: ${esc(naechstes.titel)} · ${lesezeit(KOMPAKT[naechstes.id])} Min.</button>` : ""}
+  </div>`;
 }
 
 /** Einstieg in den Lernpfad-Modus (nur Module mit Lernpfad). */
@@ -796,6 +834,8 @@ function tabKlausur() {
           2: "Teil II: Bilanzierung und Bewertung – ca. 40 % Buchungssätze, dazu Berechnungen und Würdigung. Auswertung erst nach der Abgabe.",
           beide: "Wie die Semesterklausur: ca. 25 % Teil I (Buchführung) und 75 % Teil II (Bilanzierung und Bewertung). Auswertung erst nach der Abgabe." }[state.bilrTeil])}
     ${modusSchalter()}
+    ${KLAUSURPLAN[state.fach] ? `<button class="km-vorher" data-a="kompaktListe"><span class="km-vorher-icon">${ic("akte")}</span>
+      <span class="grow"><b>Vor der Klausur</b><span class="sub">Aufbau, Schwerpunkte und alle Zusammenfassungen zum Wiederholen</span></span>${ic("pfeil", "klein")}</button>` : ""}
     <div class="gruppe"><div class="gruppe-titel">Einstellungen</div><div class="liste">
       <div class="zeile"><span class="symbol">${ic("lernen")}</span><span class="grow"><b>Aufgaben</b></span>
         <span class="stepper"><button data-a="anzahl" data-v="-5" aria-label="weniger">−</button><b>${state.klausurAnzahl}</b><button data-a="anzahl" data-v="5" aria-label="mehr">+</button></span></div>
@@ -827,11 +867,12 @@ function tabKarten() {
     </div>
     <div class="liste" style="margin-top:12px"><div class="zeile"><span class="grow"><div style="display:flex;justify-content:space-between"><b>Gewusst</b><span class="sub mono">${LERNKARTEN.length - offen.length}/${LERNKARTEN.length}</span></div>
       <div class="balken"><span class="gut" style="width:${p}%"></span></div></span></div></div>
-    <div class="gruppe"><div class="gruppe-titel">Themen auswählen ${state.kartenThemen.size ? `<button class="link-klein" data-a="kartenKeine">Auswahl aufheben</button>` : `<button class="link-klein" data-a="kartenAlle">Alle</button>`}</div><div class="liste">
+    <div class="gruppe"><div class="gruppe-titel">Themen auswählen ${state.kartenThemen.size ? `<button class="link-klein" data-a="kartenKeine">Auswahl aufheben</button>` : `<button class="link-klein" data-a="kartenAlle">Alle</button>`}</div><div class="stapel-wahl">
       ${themen.map((t) => {
-        const ks = LERNKARTEN.filter((k) => k.thema === t.id), an = state.kartenThemen.has(t.id);
-        return `<button class="zeile" data-a="kartenThema" data-v="${t.id}"><span class="haekchen ${an ? "an" : ""}">${an ? ic("haken", "klein") : ""}</span>
-          <span class="thema-icon" style="width:34px;height:34px;font-size:17px">${t.icon}</span><span class="grow">${esc(t.titel)}</span><span class="sub mono">${ks.filter((k) => gewusst.has(k.id)).length}/${ks.length}</span></button>`;
+        const ks = LERNKARTEN.filter((k) => k.thema === t.id), an = state.kartenThemen.has(t.id), g = ks.filter((k) => gewusst.has(k.id)).length;
+        return `<button class="stapel${an ? " an" : ""}" data-a="kartenThema" data-v="${t.id}" aria-pressed="${an}"><span class="st-icon">${t.icon}</span>
+          <b>${esc(t.titel)}</b><span class="st-fuss"><span class="tk-balken"><span style="width:${ks.length ? (g / ks.length) * 100 : 0}%"></span></span><span class="tk-n">${g}/${ks.length}</span></span>
+          <span class="st-haken">${ic("haken", "klein")}</span></button>`;
       }).join("")}
     </div></div>
     ${state.kartenThemen.size ? `<button class="knopf" data-a="deck" data-v="auswahl">${ic("play", "fill")} ${state.kartenThemen.size} ${state.kartenThemen.size === 1 ? "Thema" : "Themen"} lernen</button>` : ""}`;
@@ -849,7 +890,15 @@ function tabNachschlagenBilr() {
       <div class="gruppe-fuss" style="margin:0 4px 4px">Die in den Aufgaben zitierten Vorschriften im Wortlaut – lange Paragrafen als Auszug.</div>
       <div id="normListe">${normenListe()}</div>`;
   }
-  return `${seitenKopf("Nachschlagen")}${segment}${kontenInhalt()}`;
+  return `${seitenKopf("Nachschlagen")}${segment}${kompaktZeile()}${kontenInhalt()}`;
+}
+
+/** Zeile „Kompaktwissen“ in Nachschlagen/Normen. */
+function kompaktZeile() {
+  const themen = kompaktThemen(state.fach);
+  if (!themen.length) return "";
+  return `<button class="km-vorher" data-a="kompaktListe" style="margin-bottom:12px"><span class="km-vorher-icon">${ic("akte")}</span>
+    <span class="grow"><b>Kompaktwissen</b><span class="sub">${themen.length} Zusammenfassungen · ${gelesenAnteil(themen, stat.kompakt)} gelesen</span></span>${ic("pfeil", "klein")}</button>`;
 }
 
 function kontenInhalt() {
@@ -888,6 +937,7 @@ function normenListe() {
 function tabNormen() {
   return `
     ${seitenKopf("Normen", "Alle lehrplanrelevanten Vorschriften im Wortlaut – auch offline.")}
+    ${kompaktZeile()}
     <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="${state.fach === "est" ? "Suchen, z. B. Entfernungspauschale, § 11, Wohnsitz" : state.fach === "ust" ? "Suchen, z. B. Vorsteuer, § 4, Kleinunternehmer" : "Suchen, z. B. Bundesrat, Art. 63, Wahlrecht"}" autocomplete="off" value="${esc(state.normSuche)}"></div>
     <div id="normListe">${normenListe()}</div>`;
 }
@@ -1087,6 +1137,13 @@ function zahlView(f, antwort, b, lock) {
 }
 
 function auswertungView(f, b) {
+  const html = auswertungInhalt(f, b);
+  const x = s();
+  if (!KOMPAKT[f.thema] || (x?.modus === "klausur" && !x.beendet)) return html;
+  const link = `<button class="km-link" data-a="kompaktSitzung" data-v="${f.thema}">${ic("akte", "klein")}<span><b>Überblick: ${esc(THEMA[f.thema].titel)}</b><span class="sub">Das Wichtigste in ${lesezeit(KOMPAKT[f.thema])} Min. – danach geht es hier weiter</span></span></button>`;
+  return html.replace(/<\/div><\/div>\s*$/, `${link}</div></div>`);
+}
+function auswertungInhalt(f, b) {
   let extra = "";
   if (f.typ === "zahl") {
     extra = `${b.lesbar === false ? `<div class="sub">Deine Eingabe konnte nicht als Zahl gelesen werden.</div>` : ""}<div class="loesung"><b>Lösung: ${esc(loesungText(f))}</b></div>`;
@@ -1419,14 +1476,21 @@ function sheetView() {
     <div class="vb-inhalt">${inhalt}</div></div></div>`;
 }
 
+/** Seite, auf der ein Konto zunimmt bzw. gebucht wird – im Kontenplan als leuchtende T-Konto-Seite. */
+const MEHRUNG = { aktiv: "soll", aufwand: "soll", passiv: "haben", eigenkapital: "haben", ertrag: "haben", erfolg: "beide" };
+/** Unter- und Privatkonten werden auf der Gegenseite ihrer Kontoart gebucht (vgl. HINWEISE in konten.js). */
+const BUCHUNGSSEITE = { erloesschmaelerungen: ["soll", "WVK"], gewaehrteSkonti: ["soll", "WVK"], gewaehrteBoni: ["soll", "WVK"], preisnachlaesse: ["haben", "WEK"], erhalteneSkonti: ["haben", "WEK"], erhalteneBoni: ["haben", "WEK"], privatentnahmen: ["soll", "EK"], privateinlagen: ["haben", "EK"] };
+const kontoSeite = (k) => BUCHUNGSSEITE[k.id]?.[0] || MEHRUNG[k.art] || "keine";
+const kontoArtText = (k) => { const b = BUCHUNGSSEITE[k.id]; return b ? `Unterkonto des ${b[1]} · Buchung im ${b[0] === "soll" ? "Soll" : "Haben"}` : k.artName; };
+
 function kontoListe(aktion) {
   const q = norma(state.kontoSuche.trim());
   const passt = (k) => !q || norma(k.name).includes(q) || norma(k.kurz).includes(q);
   const html = KLASSEN.map((kl) => {
     const ks = kontenInKlasse(kl).filter(passt);
     if (!ks.length) return "";
-    return `<div class="gruppe"><div class="gruppe-titel">${KLASSEN_TITEL[kl]}</div><div class="liste">
-      ${ks.map((k) => `<button class="zeile" data-a="${aktion}" data-v="${k.id}"><span class="grow">${esc(k.name)}</span><span class="badge art-${k.art}">${k.artKurz}</span>${aktion === "kontoDetail" ? `<span class="chev">${ic("pfeil", "klein")}</span>` : ""}</button>`).join("")}</div></div>`;
+    return `<div class="gruppe"><div class="gruppe-titel">${KLASSEN_TITEL[kl]}</div><div class="t-konten">
+      ${ks.map((k) => `<button class="t-konto art-${k.art} mehrt-${kontoSeite(k)}" data-a="${aktion}" data-v="${k.id}"><span class="t-text"><b>${esc(k.name)}</b><span class="t-art">${kontoArtText(k)}</span></span><span class="t-seiten" aria-hidden="true"><span>S</span><span>H</span></span></button>`).join("")}</div></div>`;
   }).join("");
   return html || `<div class="leer-zustand">${ic("suche")}<div><b>Kein Konto gefunden</b></div></div>`;
 }
@@ -1661,6 +1725,22 @@ const AKTIONEN = {
     render();
   },
   deckZu: () => { state.deck = null; render(); },
+  kompakt: (v) => {
+    if (!KOMPAKT[v]) return;
+    const vorher = state.kompakt;
+    state.kompakt = { id: v, fach: THEMA[v].fach, liste: !!vorher?.liste || (vorher && !vorher.id), ausSitzung: false };
+    if (!stat.kompakt[v]) { stat.kompakt[v] = Date.now(); speichern(); }
+    render();
+  },
+  kompaktSitzung: (v) => {
+    if (!KOMPAKT[v]) return;
+    state.kompakt = { id: v, fach: THEMA[v].fach, liste: false, ausSitzung: true };
+    if (!stat.kompakt[v]) { stat.kompakt[v] = Date.now(); speichern(); }
+    render();
+  },
+  kompaktListe: () => { state.kompakt = { id: null, fach: state.fach, liste: true }; render(); },
+  kompaktZu: () => { state.kompakt = state.kompakt?.id && state.kompakt.liste ? { id: null, fach: state.kompakt.fach, liste: true } : null; render(); },
+  kompaktUeben: (v) => { state.kompakt = null; AKTIONEN.thema(v); },
   pfadOeffnen: () => { state.pfad = { fach: pfadSchluessel(state.fach, teilVon(state.fach)), block: null }; render(); },
   pfadZu: () => { state.pfad = null; render(); },
   pfadKarte: () => { if (state.pfad) state.pfad.block = null; render(); },
@@ -1750,6 +1830,7 @@ app.addEventListener("keydown", (e) => {
     if (erster) erster.click();
   }
   if (e.target.id === "homeSuche") e.target.blur();
+  if (e.target.classList.contains("km-norm")) { e.preventDefault(); e.target.click(); }
   if (e.target.id === "pfadZahl") { e.preventDefault(); AKTIONEN.pfadPruefen(); }
 });
 
