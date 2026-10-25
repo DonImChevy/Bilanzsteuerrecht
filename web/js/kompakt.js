@@ -4,29 +4,57 @@ import { KOMPAKT_UST, KLAUSUR_UST } from "./ust/kompakt.js";
 import { KOMPAKT_BSR, KLAUSUR_BSR } from "./bilr/kompakt.js";
 import { KOMPAKT_EST, KLAUSUR_EST } from "./est/kompakt.js";
 import { KOMPAKT_OER, KLAUSUR_OER } from "./oer/kompakt.js";
-import { normenAusText } from "./oer/normtext.js";
+import { BEISPIELE_UST } from "./ust/beispiele.js";
+import { BEISPIELE_BSR } from "./bilr/beispiele.js";
+import { BEISPIELE_EST } from "./est/beispiele.js";
+import { BEISPIELE_OER } from "./oer/beispiele.js";
+import { normenAusText, norm } from "./oer/normtext.js";
 
-export const KOMPAKT = { ...KOMPAKT_BSR, ...KOMPAKT_OER, ...KOMPAKT_EST, ...KOMPAKT_UST };
+const BEISPIELE = { ...BEISPIELE_BSR, ...BEISPIELE_OER, ...BEISPIELE_EST, ...BEISPIELE_UST };
+/** Zusammenfassung je Thema, ergänzt um die Klausurbeispiele (Sachverhalt + Musterlösung). */
+export const KOMPAKT = Object.fromEntries(Object.entries({ ...KOMPAKT_BSR, ...KOMPAKT_OER, ...KOMPAKT_EST, ...KOMPAKT_UST })
+  .map(([id, k]) => [id, { ...k, beispiele: BEISPIELE[id] || [] }]));
 export const KLAUSURPLAN = { bsr: KLAUSUR_BSR, oer: KLAUSUR_OER, est: KLAUSUR_EST, ust: KLAUSUR_UST };
 
 /** Alle Texte einer Zusammenfassung (für Suche und Lesezeit). */
 export function kompaktText(k) {
-  return [k.satz, ...(k.zahlen || []).flat(), ...(k.punkte || []), ...(k.schema || []), ...(k.klausur || []), ...(k.fallen || []), k.formulierung || ""]
+  return [k.satz, ...(k.zahlen || []).flat(), ...(k.punkte || []), ...(k.schema || []), ...(k.fallen || []),
+    ...(k.beispiele || []).flatMap((b) => [b.titel, b.sv, b.aufgabe || "", ...b.loesung])]
     .join(" ").replace(/\*\*/g, "");
 }
 /** Lesezeit in Minuten (ca. 170 Wörter je Minute für Lernstoff). */
 export const lesezeit = (k) => Math.max(1, Math.round(kompaktText(k).split(/\s+/).length / 170));
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const ZITAT = /(§§?|Art\.)\s?[^§*():;„“<>]{0,48}?\b(HGB|AO|EStG|UStG|BWahlG|PartG|GG)\b/g;
+const ZITAT = /(§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|EStDV)\b/g;
 
 /** Fließtext: **fett** wird zum Textmarker, Normzitate werden antippbar (öffnen den Gesetzestext). */
 export function kompaktInline(text) {
   let h = esc(text).replace(ZITAT, (m) => {
-    const ref = normenAusText(m.replace(/&amp;/g, "&"))[0];
+    // BGB und EStDV erkennt normenAusText nicht – einfache Zitate („§ 449 BGB“, „§ 9a EStDV“) direkt auflösen
+    const einfach = /^§\s?(\d+[a-z]?)(?:\s+Abs\.\s?(\d+))?.*\b(BGB|EStDV)$/.exec(m);
+    const ref = einfach ? [`${einfach[3]} ${einfach[1]}${einfach[2] ? " " + einfach[2] : ""}`, `${einfach[3]} ${einfach[1]}`].find((r) => norm(r))
+      : normenAusText(m.replace(/&amp;/g, "&"))[0];
     return ref ? `<span class="km-norm" role="button" tabindex="0" data-a="normDetail" data-v="${esc(ref)}">${m}</span>` : m;
   });
-  return h.replace(/\*\*(.+?)\*\*/g, '<mark class="km">$1</mark>');
+  // Zahl und Einheit nicht trennen („3 %“, „1.500 €“)
+  return h.replace(/(\d) (%|€)/g, "$1&nbsp;$2").replace(/\*\*(.+?)\*\*/g, '<mark class="km">$1</mark>');
+}
+
+/** Eine Zeile der Musterlösung: „BS: …“ wird als Buchungssatz dargestellt, „→ GuV … · BVV …“ als Gewinnauswirkung. */
+function loesungZeile(z) {
+  if (!z.startsWith("BS:")) return `<p>${kompaktInline(z)}</p>`;
+  const [satz, wirkung] = z.slice(3).trim().split(" → ");
+  return `<div class="km-bs"><span class="km-bs-tag">BS</span><span class="km-bs-text">${kompaktInline(satz)}</span>${wirkung ? `<span class="km-bs-wirkung">${kompaktInline(wirkung)}</span>` : ""}</div>`;
+}
+
+/** Klausurbeispiel: Sachverhalt wie im Aufgabenblatt, darunter die Lösung auf Klausurpapier. */
+function beispielView(b, i) {
+  return `<article class="km-bsp">
+    <div class="km-bsp-kopf"><span class="km-bsp-nr">Klausurbeispiel ${i + 1}</span><h4>${esc(b.titel)}</h4></div>
+    <div class="km-sv"><span class="km-etikett">Sachverhalt</span><p>${kompaktInline(b.sv)}</p>${b.aufgabe ? `<p class="km-aufgabe"><b>Aufgabe:</b> ${kompaktInline(b.aufgabe)}</p>` : ""}</div>
+    <div class="km-loesung"><span class="km-etikett">Lösung – so schreibst du es in der Klausur</span>${b.loesung.map(loesungZeile).join("")}</div>
+  </article>`;
 }
 
 /** Gelesen-Status: {thema: Zeitpunkt}. */
@@ -34,7 +62,8 @@ export const gelesenAnteil = (themen, gelesen = {}) => themen.filter((t) => KOMP
 
 /**
  * Lese-Ansicht eines Themas. h = { ic, thema, nachbarn: [vorher, nachher], gelesen, ausSitzung }.
- * Aufbau als „Spickzettel“: ein Satz als Kern, Zahlen, das Wichtigste mit Textmarker, Schema, Klausur, Fallen, Formulierung.
+ * Aufbau als „Spickzettel“: ein Satz als Kern, Zahlen, Schema, das Wichtigste mit Textmarker, Fallen und zum Schluss
+ * Klausurbeispiele mit Musterlösung, in der jede Aussage ihre Norm trägt.
  */
 export function kompaktView(id, h) {
   const k = KOMPAKT[id], t = h.thema;
@@ -51,9 +80,8 @@ export function kompaktView(id, h) {
       ${k.zahlen?.length ? `<div class="km-zahlen">${k.zahlen.map(([w, b]) => `<div><b>${esc(w)}</b><span>${kompaktInline(b)}</span></div>`).join("")}</div>` : ""}
       ${abschnitt("km-schema", "Prüfungsschema", k.schema?.length ? `<ol class="km-schritte">${k.schema.map((s) => `<li>${kompaktInline(s)}</li>`).join("")}</ol>` : "")}
       ${abschnitt("km-kern", "Das Wichtigste", liste(k.punkte))}
-      ${abschnitt("km-klausur", "So kommt es in der Klausur", liste(k.klausur))}
       ${abschnitt("km-fallen", "Typische Fehler", liste(k.fallen))}
-      ${k.formulierung ? `<section class="km-abschnitt km-formulierung"><h3>So formulierst du in der Klausur</h3><blockquote>${kompaktInline(k.formulierung)}</blockquote></section>` : ""}
+      ${abschnitt("km-beispiele", k.beispiele.length === 1 ? "Klausurbeispiel" : "Klausurbeispiele", k.beispiele.map(beispielView).join(""))}
       <p class="km-hinweis">Die Zusammenfassung gibt einen Überblick über die klausurrelevanten Punkte – sie ersetzt nicht das Skript. Paragrafen antippen, um den Gesetzestext zu lesen.</p>
     </div>
     <div class="vb-fuss km-fuss">
@@ -76,7 +104,7 @@ export function bibliothekView(fach, themen, h) {
       <div class="mitte">Kompaktwissen</div><span class="km-zeit">${n}/${mit.length}</span></div>
     <div class="vb-inhalt km-inhalt">
       <header class="km-bib-kopf"><h2>Das Wichtigste für die Klausur</h2>
-        <p class="sub">${mit.length} Zusammenfassungen – je ein paar Minuten. Ideal zum Wiederholen vor dem Üben und in den Tagen vor der Klausur.</p>
+        <p class="sub">${mit.length} Zusammenfassungen mit Klausurbeispielen und Musterlösungen – jede Aussage mit ihrer Norm. Ideal zum Wiederholen vor dem Üben und in den Tagen vor der Klausur.</p>
         <div class="km-fortschritt" role="progressbar" aria-valuemin="0" aria-valuemax="${mit.length}" aria-valuenow="${n}"><span style="width:${mit.length ? (n / mit.length) * 100 : 0}%"></span></div></header>
       ${plan ? `<section class="km-plan"><h3>${esc(plan.titel)}</h3>
         <ul class="km-liste">${plan.aufbau.map((p) => `<li>${kompaktInline(p)}</li>`).join("")}</ul>
@@ -86,7 +114,7 @@ export function bibliothekView(fach, themen, h) {
         return `<button class="km-eintrag${g ? " gelesen" : ""}" data-a="kompakt" data-v="${t.id}">
           <span class="km-eintrag-icon">${t.icon}</span>
           <span class="km-eintrag-text"><b>${esc(t.titel)}</b><span>${kompaktInline(KOMPAKT[t.id].satz).replace(/<span class="km-norm"[^>]*>(.*?)<\/span>/g, "$1")}</span></span>
-          <span class="km-eintrag-meta">${top.has(t.id) ? `<i class="km-top" title="Klausurschwerpunkt">Schwerpunkt</i>` : ""}${g ? h.ic("haken", "klein") : `${lesezeit(KOMPAKT[t.id])} Min.`}</span></button>`;
+          <span class="km-eintrag-meta">${top.has(t.id) ? `<i class="km-top" title="Klausurschwerpunkt">Schwerpunkt</i>` : ""}${g ? h.ic("haken", "klein") : `${lesezeit(KOMPAKT[t.id])} Min.`}${KOMPAKT[t.id].beispiele.length ? `<span class="km-bsp-zahl">${KOMPAKT[t.id].beispiele.length} ${KOMPAKT[t.id].beispiele.length === 1 ? "Beispiel" : "Beispiele"}</span>` : ""}</span></button>`;
       }).join("")}</div>
     </div></div>`;
 }
