@@ -1,5 +1,5 @@
 // Automatisch erzeugt aus den Gesetzestexten (tools/bilr_normen.py) – nicht von Hand ändern.
-// Quelle: www.gesetze-im-internet.de. EStG: zuletzt geändert durch Artikel 7 des Gesetzes vom 29. Juni 2026 (BGBl. 2026 I Nr. 197) · AO: zuletzt geändert durch Artikel 15 Absatz 6 des Gesetzes vom 3. Juli 2026 (BGBl. 2026 I Nr. 199)
+// Quelle: www.gesetze-im-internet.de. EStG: zuletzt geändert durch Artikel 1 des Gesetzes vom 15. Oktober 2026 (BGBl. 2026 I Nr. 307) · AO: zuletzt geändert durch Artikel 15 Absatz 6 des Gesetzes vom 3. Juli 2026 (BGBl. 2026 I Nr. 199)
 export const NORMEN_EST = [
 {
 "g": "EStG",
@@ -312,6 +312,240 @@ export const NORMEN_EST = [
 "auszug": true
 },
 {
+"g": "EStG",
+"nr": "15",
+"titel": "Einkünfte aus Gewerbebetrieb",
+"abs": [
+{
+"abs": "1",
+"text": "Einkünfte aus Gewerbebetrieb sind\n1. Einkünfte aus gewerblichen Unternehmen. Dazu gehören auch Einkünfte aus gewerblicher Bodenbewirtschaftung, z. B. aus Bergbauunternehmen und aus Betrieben zur Gewinnung von Torf, Steinen und Erden, soweit sie nicht land- oder forstwirtschaftliche Nebenbetriebe sind;\n2. die Gewinnanteile der Gesellschafter einer Offenen Handelsgesellschaft, einer Kommanditgesellschaft und einer anderen Gesellschaft, bei der der Gesellschafter als Unternehmer (Mitunternehmer) des Betriebs anzusehen ist, und die Vergütungen, die der Gesellschafter von der Gesellschaft für seine Tätigkeit im Dienst der Gesellschaft oder für die Hingabe von Darlehen oder für die Überlassung von Wirtschaftsgütern bezogen hat. Der mittelbar über eine oder mehrere Personengesellschaften beteiligte Gesellschafter steht dem unmittelbar beteiligten Gesellschafter gleich; er ist als Mitunternehmer des Betriebs der Gesellschaft anzusehen, an der er mittelbar beteiligt ist, wenn er und die Personengesellschaften, die seine Beteiligung vermitteln, jeweils als Mitunternehmer der Betriebe der Personengesellschaften anzusehen sind, an denen sie unmittelbar beteiligt sind;\n3. die Gewinnanteile der persönlich haftenden Gesellschafter einer Kommanditgesellschaft auf Aktien, soweit sie nicht auf Anteile am Grundkapital entfallen, und die Vergütungen, die der persönlich haftende Gesellschafter von der Gesellschaft für seine Tätigkeit im Dienst der Gesellschaft oder für die Hingabe von Darlehen oder für die Überlassung von Wirtschaftsgütern bezogen hat. Satz 1 Nummer 2 und 3 gilt auch für Vergütungen, die als nachträgliche Einkünfte (§ 24 Nummer 2) bezogen werden. § 13 Absatz 5 gilt entsprechend, sofern das Grundstück im Veranlagungszeitraum 1986 zu einem gewerblichen Betriebsvermögen gehört hat."
+},
+{
+"abs": "2",
+"text": "Eine selbständige nachhaltige Betätigung, die mit der Absicht, Gewinn zu erzielen, unternommen wird und sich als Beteiligung am allgemeinen wirtschaftlichen Verkehr darstellt, ist Gewerbebetrieb, wenn die Betätigung weder als Ausübung von Land- und Forstwirtschaft noch als Ausübung eines freien Berufs noch als eine andere selbständige Arbeit anzusehen ist. Eine durch die Betätigung verursachte Minderung der Steuern vom Einkommen ist kein Gewinn im Sinne des Satzes 1. Ein Gewerbebetrieb liegt, wenn seine Voraussetzungen im Übrigen gegeben sind, auch dann vor, wenn die Gewinnerzielungsabsicht nur ein Nebenzweck ist."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "19",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Zu den Einkünften aus nichtselbständiger Arbeit gehören\n1. Gehälter, Löhne, Gratifikationen, Tantiemen und andere Bezüge und Vorteile für eine Beschäftigung im öffentlichen oder privaten Dienst;\n1a. Zuwendungen des Arbeitgebers an seinen Arbeitnehmer und dessen Begleitpersonen anlässlich von Veranstaltungen auf betrieblicher Ebene mit gesellschaftlichem Charakter (Betriebsveranstaltung). Zuwendungen im Sinne des Satzes 1 sind alle Aufwendungen des Arbeitgebers einschließlich Umsatzsteuer unabhängig davon, ob sie einzelnen Arbeitnehmern individuell zurechenbar sind oder ob es sich um einen rechnerischen Anteil an den Kosten der Betriebsveranstaltung handelt, die der Arbeitgeber gegenüber Dritten für den äußeren Rahmen der Betriebsveranstaltung aufwendet. Soweit solche Zuwendungen den Betrag von 110 Euro je Betriebsveranstaltung und teilnehmenden Arbeitnehmer nicht übersteigen, gehören sie nicht zu den Einkünften aus nichtselbständiger Arbeit, wenn die Teilnahme an der Betriebsveranstaltung allen Angehörigen des Betriebs oder eines Betriebsteils offensteht. Satz 3 gilt für bis zu zwei Betriebsveranstaltungen jährlich. Die Zuwendungen im Sinne des Satzes 1 sind abweichend von § 8 Absatz 2 mit den anteilig auf den Arbeitnehmer und dessen Begleitpersonen entfallenden Aufwendungen des Arbeitgebers im Sinne des Satzes 2 anzusetzen;\n2. Wartegelder, Ruhegelder, Witwen- und Waisengelder und andere Bezüge und Vorteile aus früheren Dienstleistungen, auch soweit sie von Arbeitgebern ausgleichspflichtiger Personen an ausgleichsberechtigte Personen infolge einer nach § 10 oder § 14 des Versorgungsausgleichsgesetzes durchgeführten Teilung geleistet werden;\n3. laufende Beiträge und laufende Zuwendungen des Arbeitgebers aus einem bestehenden Dienstverhältnis an einen Pensionsfonds, eine Pensionskasse oder für eine Direktversicherung für eine betriebliche Altersversorgung. Zu den Einkünften aus nichtselbständiger Arbeit gehören auch Sonderzahlungen, die der Arbeitgeber neben den laufenden Beiträgen und Zuwendungen an eine solche Versorgungseinrichtung leistet, mit Ausnahme der Zahlungen des Arbeitgebers\na) zur erstmaligen Bereitstellung der Kapitalausstattung zur Erfüllung der Solvabilitätskapitalanforderung nach den §§ 89, 213, 234g oder 238 des Versicherungsaufsichtsgesetzes,\nb) zur Wiederherstellung einer angemessenen Kapitalausstattung nach unvorhersehbaren Verlusten oder zur Finanzierung der Verstärkung der Rechnungsgrundlagen auf Grund einer unvorhersehbaren und nicht nur vorübergehenden Änderung der Verhältnisse, wobei die Sonderzahlungen nicht zu einer Absenkung des laufenden Beitrags führen oder durch die Absenkung des laufenden Beitrags Sonderzahlungen ausgelöst werden dürfen,\nc) in der Rentenbezugszeit nach § 236 Absatz 2 des Versicherungsaufsichtsgesetzes oder\nd) in Form von Sanierungsgeldern; Sonderzahlungen des Arbeitgebers sind insbesondere Zahlungen an eine Pensionskasse anlässlich\na) seines Ausscheidens aus einer nicht im Wege der Kapitaldeckung finanzierten betrieblichen Altersversorgung oder\nb) des Wechsels von einer nicht im Wege der Kapitaldeckung zu einer anderen nicht im Wege der Kapitaldeckung finanzierten betrieblichen Altersversorgung. Von Sonderzahlungen im Sinne des Satzes 2 zweiter Halbsatz Buchstabe b ist bei laufenden und wiederkehrenden Zahlungen entsprechend dem periodischen Bedarf nur auszugehen, soweit die Bemessung der Zahlungsverpflichtungen des Arbeitgebers in das Versorgungssystem nach dem Wechsel die Bemessung der Zahlungsverpflichtung zum Zeitpunkt des Wechsels übersteigt. Sanierungsgelder sind Sonderzahlungen des Arbeitgebers an eine Pensionskasse anlässlich der Systemumstellung einer nicht im Wege der Kapitaldeckung finanzierten betrieblichen Altersversorgung auf der Finanzierungs- oder Leistungsseite, die der Finanzierung der zum Zeitpunkt der Umstellung bestehenden Versorgungsverpflichtungen oder Versorgungsanwartschaften dienen; bei laufenden und wiederkehrenden Zahlungen entsprechend dem periodischen Bedarf ist nur von Sanierungsgeldern auszugehen, soweit die Bemessung der Zahlungsverpflichtungen des Arbeitgebers in das Versorgungssystem nach der Systemumstellung die Bemessung der Zahlungsverpflichtung zum Zeitpunkt der Systemumstellung übersteigt. Es ist gleichgültig, ob es sich um laufende oder um einmalige Bezüge handelt und ob ein Rechtsanspruch auf sie besteht."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "20",
+"titel": "Einkünfte aus Kapitalvermögen",
+"abs": [
+{
+"abs": "1",
+"text": "Zu den Einkünften aus Kapitalvermögen gehören\n7. Erträge aus sonstigen Kapitalforderungen jeder Art, wenn die Rückzahlung des Kapitalvermögens oder ein Entgelt für die Überlassung des Kapitalvermögens zur Nutzung zugesagt oder geleistet worden ist, auch wenn die Höhe der Rückzahlung oder des Entgelts von einem ungewissen Ereignis abhängt. Dies gilt unabhängig von der Bezeichnung und der zivilrechtlichen Ausgestaltung der Kapitalanlage. Erstattungszinsen im Sinne des § 233a der Abgabenordnung sind Erträge im Sinne des Satzes 1;\n…"
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "21",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Einkünfte aus Vermietung und Verpachtung sind\n1. Einkünfte aus Vermietung und Verpachtung von unbeweglichem Vermögen, insbesondere von Grundstücken, Gebäuden, Gebäudeteilen, Schiffen, die in ein Schiffsregister eingetragen sind, und Rechten, die den Vorschriften des bürgerlichen Rechts über Grundstücke unterliegen (z. B. Erbbaurecht, Mineralgewinnungsrecht);\n2. Einkünfte aus Vermietung und Verpachtung von Sachinbegriffen, insbesondere von beweglichem Betriebsvermögen;\n3. Einkünfte aus zeitlich begrenzter Überlassung von Rechten, insbesondere von schriftstellerischen, künstlerischen und gewerblichen Urheberrechten, von gewerblichen Erfahrungen und von Gerechtigkeiten und Gefällen;\n4. Einkünfte aus der Veräußerung von Miet- und Pachtzinsforderungen, auch dann, wenn die Einkünfte im Veräußerungspreis von Grundstücken enthalten sind und die Miet- oder Pachtzinsen sich auf einen Zeitraum beziehen, in dem der Veräußerer noch Besitzer war. §§ 15a und 15b sind sinngemäß anzuwenden."
+},
+{
+"abs": "3",
+"text": "Einkünfte der in den Absätzen 1 und 2 bezeichneten Art sind Einkünften aus anderen Einkunftsarten zuzurechnen, soweit sie zu diesen gehören."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "23",
+"titel": "Private Veräußerungsgeschäfte",
+"abs": [
+{
+"abs": "1",
+"text": "Private Veräußerungsgeschäfte (§ 22 Nummer 2) sind\n1. Veräußerungsgeschäfte bei Grundstücken und Rechten, die den Vorschriften des bürgerlichen Rechts über Grundstücke unterliegen (z. B. Erbbaurecht, Mineralgewinnungsrecht), bei denen der Zeitraum zwischen Anschaffung und Veräußerung nicht mehr als zehn Jahre beträgt. Gebäude und Außenanlagen sind einzubeziehen, soweit sie innerhalb dieses Zeitraums errichtet, ausgebaut oder erweitert werden; dies gilt entsprechend für Gebäudeteile, die selbständige unbewegliche Wirtschaftsgüter sind, sowie für Eigentumswohnungen und im Teileigentum stehende Räume. Ausgenommen sind Wirtschaftsgüter, die im Zeitraum zwischen Anschaffung oder Fertigstellung und Veräußerung ausschließlich zu eigenen Wohnzwecken oder im Jahr der Veräußerung und in den beiden vorangegangenen Jahren zu eigenen Wohnzwecken genutzt wurden;\n1. die Einlage eines Wirtschaftsguts in das Betriebsvermögen, wenn die Veräußerung aus dem Betriebsvermögen innerhalb eines Zeitraums von zehn Jahren seit Anschaffung des Wirtschaftsguts erfolgt, und\n…"
+},
+{
+"abs": "3",
+"text": "Gewinn oder Verlust aus Veräußerungsgeschäften nach Absatz 1 ist der Unterschied zwischen Veräußerungspreis einerseits und den Anschaffungs- oder Herstellungskosten und den Werbungskosten andererseits. In den Fällen des Absatzes 1 Satz 5 Nummer 1 tritt an die Stelle des Veräußerungspreises der für den Zeitpunkt der Einlage nach § 6 Absatz 1 Nummer 5 angesetzte Wert, in den Fällen des Absatzes 1 Satz 5 Nummer 2 der gemeine Wert. In den Fällen des Absatzes 1 Satz 2 tritt an die Stelle der Anschaffungs4 oder Herstellungskosten der nach § 6 Absatz 1 Nummer 4 oder § 16 Absatz 3 angesetzte Wert. Die Anschaffungs- oder Herstellungskosten mindern sich um Absetzungen für Abnutzung, erhöhte Absetzungen und Sonderabschreibungen, soweit sie bei der Ermittlung der Einkünfte im Sinne des § 2 Absatz 1 Satz 1 Nummer 4 bis 7 abgezogen worden sind. Gewinne bleiben steuerfrei, wenn der aus den privaten Veräußerungsgeschäften erzielte Gesamtgewinn im Kalenderjahr weniger als 1 000 Euro betragen hat. In den Fällen des Absatzes 1 Satz 5 Nummer 1 sind Gewinne oder Verluste für das Kalenderjahr, in dem der Preis für die Veräußerung aus dem Betriebsvermögen zugeflossen ist, in den Fällen des Absatzes 1 Satz 5 Nummer 2 für das Kalenderjahr der verdeckten Einlage anzusetzen. Verluste dürfen nur bis zur Höhe des Gewinns, den der Steuerpflichtige im gleichen Kalenderjahr aus privaten Veräußerungsgeschäften erzielt hat, ausgeglichen werden; sie dürfen nicht nach § 10d abgezogen werden. Die Verluste mindern jedoch nach Maßgabe des § 10d die Einkünfte, die der Steuerpflichtige in dem unmittelbar vorangegangenen Veranlagungszeitraum oder in den folgenden Veranlagungszeiträumen aus privaten Veräußerungsgeschäften nach Absatz 1 erzielt hat oder erzielt; § 10d Absatz 4 gilt entsprechend."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "24b",
+"titel": "Entlastungsbetrag für Alleinerziehende",
+"abs": [
+{
+"abs": "1",
+"text": "Allein stehende Steuerpflichtige können einen Entlastungsbetrag von der Summe der Einkünfte abziehen, wenn zu ihrem Haushalt mindestens ein Kind gehört, für das ihnen ein Freibetrag nach § 32 Absatz 6 oder Kindergeld zusteht. Die Zugehörigkeit zum Haushalt ist anzunehmen, wenn das Kind in der Wohnung des allein stehenden Steuerpflichtigen gemeldet ist. Ist das Kind bei mehreren Steuerpflichtigen gemeldet, steht der Entlastungsbetrag nach Satz 1 demjenigen Alleinstehenden zu, der die Voraussetzungen auf Auszahlung des Kindergeldes nach § 64 Absatz 2 Satz 1 erfüllt oder erfüllen würde in Fällen, in denen nur ein Anspruch auf einen Freibetrag nach § 32 Absatz 6 besteht. Voraussetzung für die Berücksichtigung ist die Identifizierung des Kindes durch die an dieses Kind vergebene Identifikationsnummer (§ 139b der Abgabenordnung). Ist das Kind nicht nach einem Steuergesetz steuerpflichtig (§ 139a Absatz 2 der Abgabenordnung), ist es in anderer geeigneter Weise zu identifizieren. Die nachträgliche Vergabe der Identifikationsnummer wirkt auf Monate zurück, in denen die Voraussetzungen der Sätze 1 bis 3 vorliegen."
+},
+{
+"abs": "2",
+"text": "Gehört zum Haushalt des allein stehenden Steuerpflichtigen ein Kind im Sinne des Absatzes 1, beträgt der Entlastungsbetrag im Kalenderjahr 4 260 Euro. Für jedes weitere Kind im Sinne des Absatzes 1 erhöht sich der Betrag nach Satz 1 um 240 Euro je weiterem Kind."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "31",
+"titel": "Familienleistungsausgleich",
+"abs": [
+{
+"abs": "",
+"text": "Die steuerliche Freistellung eines Einkommensbetrags in Höhe des Existenzminimums eines Kindes einschließlich der Bedarfe für Betreuung und Erziehung oder Ausbildung wird im gesamten Veranlagungszeitraum entweder durch die Freibeträge nach § 32 Absatz 6 oder durch Kindergeld nach Abschnitt X bewirkt. Soweit das Kindergeld dafür nicht erforderlich ist, dient es der Förderung der Familie. Im laufenden Kalenderjahr wird Kindergeld als Steuervergütung monatlich gezahlt. Bewirkt der Anspruch auf Kindergeld für den gesamten Veranlagungszeitraum die nach Satz 1 gebotene steuerliche Freistellung nicht vollständig und werden deshalb bei der Veranlagung zur Einkommensteuer die Freibeträge nach § 32 Absatz 6 vom Einkommen abgezogen, erhöht sich die unter Abzug dieser Freibeträge ermittelte tarifliche Einkommensteuer um den Anspruch auf Kindergeld für den gesamten Veranlagungszeitraum; bei nicht zusammenveranlagten Eltern wird der Kindergeldanspruch im Umfang des Kinderfreibetrags angesetzt. Bei der Prüfung der Steuerfreistellung und der Hinzurechnung nach Satz 4 bleibt der Anspruch auf Kindergeld für Kalendermonate unberücksichtigt, in denen durch Bescheid der Familienkasse ein Anspruch auf Kindergeld festgesetzt, aber wegen § 70 Absatz 1 Satz 2 nicht ausgezahlt wurde. Satz 4 gilt entsprechend für mit dem Kindergeld vergleichbare Leistungen nach § 65. Besteht nach ausländischem Recht Anspruch auf Leistungen für Kinder, wird dieser insoweit nicht berücksichtigt, als er das inländische Kindergeld übersteigt."
+}
+]
+},
+{
+"g": "EStG",
+"nr": "33",
+"titel": "Außergewöhnliche Belastungen",
+"abs": [
+{
+"abs": "1",
+"text": "Erwachsen einem Steuerpflichtigen zwangsläufig größere Aufwendungen als der überwiegenden Mehrzahl der Steuerpflichtigen gleicher Einkommensverhältnisse, gleicher Vermögensverhältnisse und gleichen Familienstands (außergewöhnliche Belastung), so wird auf Antrag die Einkommensteuer dadurch ermäßigt, dass der Teil der Aufwendungen, der die dem Steuerpflichtigen zumutbare Belastung (Absatz 3) übersteigt, vom Gesamtbetrag der Einkünfte abgezogen wird."
+},
+{
+"abs": "2",
+"text": "Aufwendungen erwachsen dem Steuerpflichtigen zwangsläufig, wenn er sich ihnen aus rechtlichen, tatsächlichen oder sittlichen Gründen nicht entziehen kann und soweit die Aufwendungen den Umständen nach notwendig sind und einen angemessenen Betrag nicht übersteigen. Aufwendungen, die zu den Betriebsausgaben, Werbungskosten oder Sonderausgaben gehören, bleiben dabei außer Betracht; das gilt für Aufwendungen im Sinne des § 10 Absatz 1 Nummer 7 und 9 nur insoweit, als sie als Sonderausgaben abgezogen werden können. Aufwendungen, die durch Diätverpflegung entstehen, können nicht als außergewöhnliche Belastung berücksichtigt werden. Aufwendungen für die Führung eines Rechtsstreits (Prozesskosten) sind vom Abzug ausgeschlossen, es sei denn, es handelt sich um Aufwendungen ohne die der Steuerpflichtige Gefahr liefe, seine Existenzgrundlage zu verlieren und seine lebensnotwendigen Bedürfnisse in dem üblichen Rahmen nicht mehr befriedigen zu können."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "37",
+"titel": "Einkommensteuer-Vorauszahlung",
+"abs": [
+{
+"abs": "1",
+"text": "Der Steuerpflichtige hat am 10. März, 10. Juni, 10. September und 10. Dezember Vorauszahlungen auf die Einkommensteuer zu entrichten, die er für den laufenden Veranlagungszeitraum voraussichtlich schulden wird. Die Einkommensteuer-Vorauszahlung entsteht jeweils mit Beginn des Kalendervierteljahres, in dem die Vorauszahlungen zu entrichten sind, oder, wenn die Steuerpflicht erst im Laufe des Kalendervierteljahres begründet wird, mit Begründung der Steuerpflicht."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "38",
+"titel": "Erhebung der Lohnsteuer",
+"abs": [
+{
+"abs": "1",
+"text": "Bei Einkünften aus nichtselbständiger Arbeit wird die Einkommensteuer durch Abzug vom Arbeitslohn erhoben (Lohnsteuer), soweit der Arbeitslohn von einem Arbeitgeber gezahlt wird, der\n1. im Inland einen Wohnsitz, seinen gewöhnlichen Aufenthalt, seine Geschäftsleitung, seinen Sitz, eine Betriebsstätte oder einen ständigen Vertreter im Sinne der §§ 8 bis 13 der Abgabenordnung hat (inländischer Arbeitgeber) oder\n2. einem Dritten (Entleiher) Arbeitnehmer gewerbsmäßig zur Arbeitsleistung im Inland überlässt, ohne inländischer Arbeitgeber zu sein (ausländischer Verleiher). In den Fällen der internationalen Arbeitnehmerentsendung ist das nach Satz 1 Nummer 1 in Deutschland ansässige aufnehmende Unternehmen inländischer Arbeitgeber, wenn es den Arbeitslohn für die ihm geleistete Arbeit wirtschaftlich trägt oder nach dem Fremdvergleichsgrundsatz hätte tragen müssen; Voraussetzung hierfür ist nicht, dass das Unternehmen dem Arbeitnehmer den Arbeitslohn im eigenen Namen und für eigene Rechnung auszahlt. Der Lohnsteuer unterliegt auch der im Rahmen des Dienstverhältnisses von einem Dritten gewährte Arbeitslohn, wenn der Arbeitgeber weiß oder erkennen kann, dass derartige Vergütungen erbracht werden; dies ist insbesondere anzunehmen, wenn Arbeitgeber und Dritter verbundene Unternehmen im Sinne von § 15 des Aktiengesetzes sind."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "38a",
+"titel": "Höhe der Lohnsteuer",
+"abs": [
+{
+"abs": "1",
+"text": "Die Jahreslohnsteuer bemisst sich nach dem Arbeitslohn, den der Arbeitnehmer im Kalenderjahr bezieht (Jahresarbeitslohn). Laufender Arbeitslohn gilt in dem Kalenderjahr als bezogen, in dem der Lohnzahlungszeitraum endet; in den Fällen des § 39b Absatz 5 Satz 1 tritt der Lohnabrechnungszeitraum an die Stelle des Lohnzahlungszeitraums. Arbeitslohn, der nicht als laufender Arbeitslohn gezahlt wird (sonstige Bezüge), wird in dem Kalenderjahr bezogen, in dem er dem Arbeitnehmer zufließt."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "43",
+"titel": "Kapitalerträge mit Steuerabzug",
+"abs": [
+{
+"abs": "5",
+"text": "Für Kapitalerträge im Sinne des § 20, soweit sie der Kapitalertragsteuer unterlegen haben, ist die Einkommensteuer mit dem Steuerabzug abgegolten; die Abgeltungswirkung des Steuerabzugs tritt nicht ein, wenn der Gläubiger nach § 44 Absatz 1 Satz 10 und 11 und Absatz 5 in Anspruch genommen werden kann. Dies gilt nicht in Fällen des § 32d Absatz 2 und für Kapitalerträge, die zu den Einkünften aus Land- und Forstwirtschaft, aus Gewerbebetrieb, aus selbständiger Arbeit oder aus Vermietung und Verpachtung gehören. Auf Antrag des Gläubigers werden Kapitalerträge im Sinne des Satzes 1 in die besondere Besteuerung von Kapitalerträgen nach § 32d einbezogen. Eine vorläufige Festsetzung der Einkommensteuer im Sinne des § 165 Absatz 1 Satz 2 Nummer 2 bis 4 der Abgabenordnung umfasst auch Einkünfte im Sinne des Satzes 1, für die der Antrag nach Satz 3 nicht gestellt worden ist."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "49",
+"titel": "Beschränkt steuerpflichtige Einkünfte",
+"abs": [
+{
+"abs": "1",
+"text": "Inländische Einkünfte im Sinne der beschränkten Einkommensteuerpflicht (§ 1 Absatz 4) sind\n4. Einkünfte aus nichtselbständiger Arbeit (§ 19), die\na) im Inland ausgeübt oder verwertet wird oder worden ist. Die nichtselbständige Arbeit gilt dabei auch als im Inland ausgeübt oder verwertet, soweit die Tätigkeit im Ansässigkeitsstaat des Steuerpflichtigen oder in einem oder mehreren anderen Staaten ausgeübt wird und ein mit dem Ansässigkeitsstaat abgeschlossenes Abkommen zur Vermeidung der Doppelbesteuerung oder eine zwischenstaatliche Vereinbarung für diese im Ansässigkeitsstaat oder in einem oder mehreren anderen Staaten ausgeübte Tätigkeit Deutschland ein Besteuerungsrecht zuweist. Satz 2 gilt nicht für Deutschland entsprechend Satz 2 zugewiesener Besteuerungsrechte hinsichtlich der Einkünfte aus einer an Bord eines Schiffes im internationalen Verkehr ausgeübten nichtselbständigen Arbeit,\n…"
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "10",
+"titel": "Sonderausgaben",
+"abs": [
+{
+"abs": "1",
+"text": "Sonderausgaben sind die folgenden Aufwendungen, wenn sie weder Betriebsausgaben noch Werbungskosten sind oder wie Betriebsausgaben oder Werbungskosten behandelt werden:\n2. a) Beiträge zu den gesetzlichen Rentenversicherungen oder zur landwirtschaftlichen Alterskasse sowie zu berufsständischen Versorgungseinrichtungen, die den gesetzlichen Rentenversicherungen vergleichbare Leistungen erbringen;\nb) Beiträge des Steuerpflichtigen aa) zum Aufbau einer eigenen kapitalgedeckten Altersversorgung, wenn der Vertrag nur die Zahlung einer monatlichen, auf das Leben des Steuerpflichtigen bezogenen lebenslangen Leibrente nicht vor Vollendung des 62. Lebensjahres oder zusätzlich die ergänzende Absicherung des Eintritts der Berufsunfähigkeit (Berufsunfähigkeitsrente), der verminderten Erwerbsfähigkeit (Erwerbsminderungsrente) oder von Hinterbliebenen (Hinterbliebenenrente) vorsieht. Hinterbliebene in diesem Sinne sind der Ehegatte des Steuerpflichtigen und die Kinder, für die er Anspruch auf Kindergeld oder auf einen Freibetrag nach § 32 Absatz 6 hat. Der Anspruch auf Waisenrente darf längstens für den Zeitraum bestehen, in dem der Rentenberechtigte die Voraussetzungen für die Berücksichtigung als Kind im Sinne des § 32 erfüllt; bb) für seine Absicherung gegen den Eintritt der Berufsunfähigkeit oder der verminderten Erwerbsfähigkeit (Versicherungsfall), wenn der Vertrag nur die Zahlung einer monatlichen, auf das Leben des Steuerpflichtigen bezogenen lebenslangen Leibrente für einen Versicherungsfall vorsieht, der bis zur Vollendung des 67. Lebensjahres eingetreten ist. Der Vertrag kann die Beendigung der Rentenzahlung wegen eines medizinisch begründeten Wegfalls der Berufsunfähigkeit oder der verminderten Erwerbsfähigkeit vorsehen. Die Höhe der zugesagten Rente kann vom Alter des Steuerpflichtigen bei Eintritt des Versicherungsfalls abhängig gemacht werden, wenn der Steuerpflichtige das 55. Lebensjahr vollendet hat. Die Ansprüche nach Buchstabe b dürfen nicht vererblich, nicht übertragbar, nicht beleihbar, nicht veräußerbar und nicht kapitalisierbar sein. Anbieter und Steuerpflichtiger können vereinbaren, dass bis zu zwölf Monatsleistungen in einer Auszahlung zusammengefasst werden oder eine Kleinbetragsrente im Sinne von § 93 Absatz 3 Satz 2 oder 4 abgefunden wird. Bei der Berechnung der Kleinbetragsrente sind alle bei einem Anbieter bestehenden Verträge des Steuerpflichtigen jeweils nach Buchstabe b Doppelbuchstabe aa oder Doppelbuchstabe bb zusammenzurechnen. Neben den genannten Auszahlungsformen darf kein weiterer Anspruch auf Auszahlungen bestehen. Zu den Beiträgen nach den Buchstaben a und b ist der nach § 3 Nummer 62 steuerfreie Arbeitgeberanteil zur gesetzlichen Rentenversicherung und ein diesem gleichgestellter steuerfreier Zuschuss des Arbeitgebers hinzuzurechnen. Beiträge nach § 168 Absatz 1 Nummer 1b oder 1c oder nach § 172 Absatz 3 oder 3a des Sechsten Buches Sozialgesetzbuch werden abweichend von Satz 6 nur auf Antrag des Steuerpflichtigen hinzugerechnet;\n3. Beiträge zu\na) Krankenversicherungen, soweit diese zur Erlangung eines durch das Zwölfte Buch Sozialgesetzbuch bestimmten sozialhilfegleichen Versorgungsniveaus erforderlich sind und sofern auf die Leistungen ein Anspruch besteht. Für Beiträge zur gesetzlichen Krankenversicherung sind dies die nach dem Dritten Titel des Ersten Abschnitts des Achten Kapitels des Fünften Buches Sozialgesetzbuch oder die nach dem Sechsten Abschnitt des Zweiten Gesetzes über die Krankenversicherung der Landwirte festgesetzten Beiträge. Für Beiträge zu einer privaten Krankenversicherung sind dies die Beitragsanteile, die auf Vertragsleistungen entfallen, die, mit Ausnahme der auf das Krankengeld entfallenden Beitragsanteile, in Art, Umfang und Höhe den Leistungen nach dem Dritten Kapitel des Fünften Buches Sozialgesetzbuch vergleichbar sind; § 158 Absatz 2 des Versicherungsaufsichtsgesetzes gilt entsprechend. Wenn sich aus den Krankenversicherungsbeiträgen nach Satz 2 ein Anspruch auf Krankengeld oder ein Anspruch auf eine Leistung, die anstelle von Krankengeld gewährt wird, ergeben kann, ist der jeweilige Beitrag um 4 Prozent zu vermindern;\nb) gesetzlichen Pflegeversicherungen (soziale Pflegeversicherung und private PflegePflichtversicherung). Als eigene Beiträge des Steuerpflichtigen können auch eigene Beiträge im Sinne der Buchstaben a oder b eines Kindes behandelt werden, wenn der Steuerpflichtige die Beiträge des Kindes, für das ein Anspruch auf einen Freibetrag nach § 32 Absatz 6 oder auf Kindergeld besteht, durch Leistungen in Form von Bar- oder Sachunterhalt wirtschaftlich getragen hat, unabhängig von Einkünften oder Bezügen des Kindes; Voraussetzung für die Berücksichtigung beim Steuerpflichtigen ist die Angabe der erteilten Identifikationsnummer (§ 139b der Abgabenordnung) des Kindes in der Einkommensteuererklärung des Steuerpflichtigen. Satz 2 gilt entsprechend, wenn der Steuerpflichtige die Beiträge für ein unterhaltsberechtigtes Kind trägt, welches nicht selbst Versicherungsnehmer ist, sondern der andere Elternteil. Hat der Steuerpflichtige in den Fällen des Absatzes 1a Nummer 1 eigene Beiträge im Sinne des Buchstaben a oder des Buchstaben b zum Erwerb einer Krankenversicherung oder gesetzlichen Pflegeversicherung für einen geschiedenen oder dauernd getrennt lebenden unbeschränkt einkommensteuerpflichtigen Ehegatten geleistet, dann werden diese abweichend von Satz 1 als eigene Beiträge des geschiedenen oder dauernd getrennt lebenden unbeschränkt einkommensteuerpflichtigen Ehegatten behandelt. Beiträge, die für nach Ablauf des Veranlagungszeitraums beginnende Beitragsjahre geleistet werden und in der Summe das Dreifache der auf den Veranlagungszeitraum entfallenden Beiträge überschreiten, sind in dem Veranlagungszeitraum anzusetzen, für den sie geleistet wurden;\n4. gezahlte Kirchensteuer; dies gilt nicht, soweit die Kirchensteuer als Zuschlag zur Kapitalertragsteuer oder als Zuschlag auf die nach dem gesonderten Tarif des § 32d Absatz 1 ermittelte Einkommensteuer gezahlt wurde;\n…"
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "10c",
+"titel": "Sonderausgaben-Pauschbetrag",
+"abs": [
+{
+"abs": "",
+"text": "Für Sonderausgaben nach § 10 Absatz 1 Nummer 4, 5, 7 und 9 sowie Absatz 1a und nach § 10b wird ein Pauschbetrag von 36 Euro abgezogen (Sonderausgaben-Pauschbetrag), wenn der Steuerpflichtige nicht höhere Aufwendungen nachweist. Im Fall der Zusammenveranlagung von Ehegatten verdoppelt sich der Sonderausgaben-Pauschbetrag."
+}
+]
+},
+{
+"g": "EStG",
+"nr": "32b",
+"titel": "Progressionsvorbehalt",
+"abs": [
+{
+"abs": "1",
+"text": "Hat ein zeitweise oder während des gesamten Veranlagungszeitraums unbeschränkt Steuerpflichtiger oder ein beschränkt Steuerpflichtiger, auf den § 50 Absatz 2 Satz 2 Nummer 4 Anwendung findet,\n1. a) Arbeitslosengeld, Teilarbeitslosengeld, Zuschüsse zum Arbeitsentgelt, Kurzarbeitergeld, Insolvenzgeld, Übergangsgeld, Qualifizierungsgeld nach dem Dritten Buch Sozialgesetzbuch; Insolvenzgeld, das nach § 170 Absatz 1 des Dritten Buches Sozialgesetzbuch einem Dritten zusteht, ist dem Arbeitnehmer zuzurechnen,\nb) Krankengeld, Mutterschaftsgeld, Verletztengeld, Übergangsgeld oder vergleichbare Lohnersatzleistungen nach dem Fünften, Sechsten oder Siebten Buch Sozialgesetzbuch, der Reichsversicherungsordnung, dem Gesetz über die Krankenversicherung der Landwirte oder dem Zweiten Gesetz über die Krankenversicherung der Landwirte,\nc) Mutterschaftsgeld, Zuschuss zum Mutterschaftsgeld, die Sonderunterstützung nach dem Mutterschutzgesetz sowie den Zuschuss bei Beschäftigungsverboten für die Zeit vor oder nach einer Entbindung sowie für den Entbindungstag während einer Elternzeit nach beamtenrechtlichen Vorschriften,\nd) Arbeitslosenbeihilfe nach dem Soldatenversorgungsgesetz,\ne) Entschädigungen für Verdienstausfall nach dem Infektionsschutzgesetz vom 20. Juli 2000 (BGBl. I S. 1045),\nf) Krankengeld der Sozialen Entschädigung, Übergangsgeld nach dem Vierzehnten Buch Sozialgesetzbuch, Krankengeld der Soldatenentschädigung oder Übergangsgeld nach dem Soldatenentschädigungsgesetz,\ng) nach § 3 Nummer 28 steuerfreie Aufstockungsbeträge oder Zuschläge sowie nach § 3 Nummer 28a steuerfreie Zuschüsse,\nh) Leistungen an Arbeitnehmerinnen und Arbeitnehmer nach § 5 des Unterhaltssicherungsgesetzes,\ni) nach § 3 Nummer 60 steuerfreie Anpassungsgelder,\nj) Elterngeld nach dem Bundeselterngeld- und Elternzeitgesetz,\nk) nach § 3 Nummer 2 Buchstabe e steuerfreie Leistungen, wenn vergleichbare Leistungen inländischer öffentlicher Kassen nach den Buchstaben a bis j dem Progressionsvorbehalt unterfallen, oder\n2. ausländische Einkünfte, die im Veranlagungszeitraum nicht der deutschen Einkommensteuer unterlegen haben; dies gilt nur für Fälle der zeitweisen unbeschränkten Steuerpflicht einschließlich der in § 2 Absatz 7 Satz 3 geregelten Fälle; ausgenommen sind Einkünfte, die nach einem sonstigen zwischenstaatlichen Übereinkommen im Sinne der Nummer 4 steuerfrei sind und die nach diesem Übereinkommen nicht unter dem Vorbehalt der Einbeziehung bei der Berechnung der Einkommensteuer stehen,\n3. Einkünfte, die nach einem Abkommen zur Vermeidung der Doppelbesteuerung steuerfrei sind,\n4. Einkünfte, die nach einem sonstigen zwischenstaatlichen Übereinkommen unter dem Vorbehalt der Einbeziehung bei der Berechnung der Einkommensteuer steuerfrei sind,\n5. Einkünfte, die bei Anwendung von § 1 Absatz 3 oder § 1a oder § 50 Absatz 2 Satz 2 Nummer 4 im Veranlagungszeitraum bei der Ermittlung des zu versteuernden Einkommens unberücksichtigt bleiben, weil sie nicht der deutschen Einkommensteuer oder einem Steuerabzug unterliegen; ausgenommen sind Einkünfte, die nach einem sonstigen zwischenstaatlichen Übereinkommen im Sinne der Nummer 4 steuerfrei sind und die nach diesem Übereinkommen nicht unter dem Vorbehalt der Einbeziehung bei der Berechnung der Einkommensteuer stehen, bezogen, so ist auf das nach § 32a Absatz 1 zu versteuernde Einkommen ein besonderer Steuersatz anzuwenden. Satz 1 Nummer 3 gilt nicht für Einkünfte\n1. aus einer anderen als in einem Drittstaat belegenen land- und forstwirtschaftlichen Betriebsstätte,\n2. aus einer anderen als in einem Drittstaat belegenen gewerblichen Betriebsstätte, die nicht die Voraussetzungen des § 2a Absatz 2 Satz 1 erfüllt,\n3. aus der Vermietung oder der Verpachtung von unbeweglichem Vermögen oder von Sachinbegriffen, wenn diese in einem anderen Staat als in einem Drittstaat belegen sind, oder\n4. aus der entgeltlichen Überlassung von Schiffen, sofern diese ausschließlich oder fast ausschließlich in einem anderen als einem Drittstaat eingesetzt worden sind, es sei denn, es handelt sich um Handelsschiffe, die\na) von einem Vercharterer ausgerüstet überlassen oder\nb) an in einem anderen als in einem Drittstaat ansässige Ausrüster, die die Voraussetzungen des § 510 Absatz 1 des Handelsgesetzbuchs erfüllen, überlassen oder\nc) insgesamt nur vorübergehend an in einem Drittstaat ansässige Ausrüster, die die Voraussetzungen des § 510 Absatz 1 des Handelsgesetzbuchs erfüllen, überlassen worden sind, oder\n5. aus dem Ansatz des niedrigeren Teilwerts oder der Übertragung eines zu einem Betriebsvermögen gehörenden Wirtschaftsguts im Sinne der Nummern 3 und 4. § 2a Absatz 2a und § 15b sind sinngemäß anzuwenden."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "33b",
+"titel": "Pauschbeträge für Menschen mit Behinderungen, Hinterbliebene und Pflegepersonen",
+"abs": [
+{
+"abs": "1",
+"text": "Wegen der Aufwendungen für die Hilfe bei den gewöhnlichen und regelmäßig wiederkehrenden Verrichtungen des täglichen Lebens, für die Pflege sowie für einen erhöhten Wäschebedarf können Menschen mit Behinderungen unter den Voraussetzungen des Absatzes 2 anstelle einer Steuerermäßigung nach § 33 einen Pauschbetrag nach Absatz 3 geltend machen (Behinderten-Pauschbetrag). Das Wahlrecht kann für die genannten Aufwendungen im jeweiligen Veranlagungszeitraum nur einheitlich ausgeübt werden."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "43a",
+"titel": "Bemessung der Kapitalertragsteuer",
+"abs": [
+{
+"abs": "1",
+"text": "Die Kapitalertragsteuer beträgt\n1. in den Fällen des § 43 Absatz 1 Satz 1 Nummer 1 bis 7a und 8 bis 12 sowie Satz 2: 25 Prozent des Kapitalertrags;\n2. in den Fällen des § 43 Absatz 1 Satz 1 Nummer 7b und 7c: 15 Prozent des Kapitalertrags. Im Fall einer Kirchensteuerpflicht ermäßigt sich die Kapitalertragsteuer um 25 Prozent der auf die Kapitalerträge entfallenden Kirchensteuer. § 32d Absatz 1 Satz 4 und 5 gilt entsprechend."
+}
+],
+"auszug": true
+},
+{
 "g": "AO",
 "nr": "8",
 "titel": "Wohnsitz",
@@ -332,5 +566,29 @@ export const NORMEN_EST = [
 "text": "Den gewöhnlichen Aufenthalt hat jemand dort, wo er sich unter Umständen aufhält, die erkennen lassen, dass er an diesem Ort oder in diesem Gebiet nicht nur vorübergehend verweilt. Als gewöhnlicher Aufenthalt im Geltungsbereich dieses Gesetzes ist stets und von Beginn an ein zeitlich zusammenhängender Aufenthalt von mehr als sechs Monaten Dauer anzusehen; kurzfristige Unterbrechungen bleiben unberücksichtigt. Satz 2 gilt nicht, wenn der Aufenthalt ausschließlich zu Besuchs-, Erholungs-, Kur- oder ähnlichen privaten Zwecken genommen wird und nicht länger als ein Jahr dauert."
 }
 ]
+},
+{
+"g": "AO",
+"nr": "149",
+"titel": "Abgabe der Steuererklärungen",
+"abs": [
+{
+"abs": "2",
+"text": "Soweit die Steuergesetze nichts anderes bestimmen, sind Steuererklärungen, die sich auf ein Kalenderjahr oder auf einen gesetzlich bestimmten Zeitpunkt beziehen, spätestens sieben Monate nach Ablauf des Kalenderjahres oder sieben Monate nach dem gesetzlich bestimmten Zeitpunkt abzugeben. Bei Steuerpflichtigen, die den Gewinn aus Land- und Forstwirtschaft nach einem vom Kalenderjahr abweichenden Wirtschaftsjahr ermitteln, endet die Frist nicht vor Ablauf des siebten Monats, der auf den Schluss des in dem Kalenderjahr begonnenen Wirtschaftsjahres folgt."
+}
+],
+"auszug": true
+},
+{
+"g": "AO",
+"nr": "169",
+"titel": "Festsetzungsfrist",
+"abs": [
+{
+"abs": "2",
+"text": "Die Festsetzungsfrist beträgt:\n1. ein Jahr für Verbrauchsteuern und Verbrauchsteuervergütungen,\n2. vier Jahre für Steuern und Steuervergütungen, die keine Steuern oder Steuervergütungen im Sinne der Nummer 1 oder Einfuhr- und Ausfuhrabgaben nach Artikel 5 Nummer 20 und 21 des Zollkodex der Union sind. Die Festsetzungsfrist beträgt zehn Jahre, soweit eine Steuer hinterzogen, und fünf Jahre, soweit sie leichtfertig verkürzt worden ist. Dies gilt auch dann, wenn die Steuerhinterziehung oder leichtfertige Steuerverkürzung nicht durch den Steuerschuldner oder eine Person begangen worden ist, deren er sich zur Erfüllung seiner steuerlichen Pflichten bedient, es sei denn, der Steuerschuldner weist nach, dass er durch die Tat keinen Vermögensvorteil erlangt hat und dass sie auch nicht darauf beruht, dass er die im Verkehr erforderlichen Vorkehrungen zur Verhinderung von Steuerverkürzungen unterlassen hat."
+}
+],
+"auszug": true
 }
 ];

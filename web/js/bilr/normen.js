@@ -1,5 +1,5 @@
 // Automatisch erzeugt aus den Gesetzestexten (tools/bilr_normen.py) – nicht von Hand ändern.
-// Quelle: www.gesetze-im-internet.de. HGB: zuletzt geändert durch Artikel 4 des Gesetzes vom 4. Februar 2026 (BGBl. 2026 I Nr. 33) · AO: zuletzt geändert durch Artikel 15 Absatz 6 des Gesetzes vom 3. Juli 2026 (BGBl. 2026 I Nr. 199) · EStG: zuletzt geändert durch Artikel 7 des Gesetzes vom 29. Juni 2026 (BGBl. 2026 I Nr. 197) · UStG: zuletzt geändert durch Artikel 5 des Gesetzes vom 29. Juni 2026 (BGBl. 2026 I Nr. 197)
+// Quelle: www.gesetze-im-internet.de. HGB: zuletzt geändert durch Artikel 4 des Gesetzes vom 4. Februar 2026 (BGBl. 2026 I Nr. 33) · AO: zuletzt geändert durch Artikel 15 Absatz 6 des Gesetzes vom 3. Juli 2026 (BGBl. 2026 I Nr. 199) · EStG: zuletzt geändert durch Artikel 1 des Gesetzes vom 15. Oktober 2026 (BGBl. 2026 I Nr. 307) · UStG: zuletzt geändert durch Artikel 5 des Gesetzes vom 29. Juni 2026 (BGBl. 2026 I Nr. 197)
 export const NORMEN_BILR = [
 {
 "g": "HGB",
@@ -363,6 +363,37 @@ export const NORMEN_BILR = [
 "auszug": true
 },
 {
+"g": "HGB",
+"nr": "241",
+"titel": "Inventurvereinfachungsverfahren",
+"abs": [
+{
+"abs": "1",
+"text": "Bei der Aufstellung des Inventars darf der Bestand der Vermögensgegenstände nach Art, Menge und Wert auch mit Hilfe anerkannter mathematisch-statistischer Methoden auf Grund von Stichproben ermittelt werden. Das Verfahren muß den Grundsätzen ordnungsmäßiger Buchführung entsprechen. Der Aussagewert des auf diese Weise aufgestellten Inventars muß dem Aussagewert eines auf Grund einer körperlichen Bestandsaufnahme aufgestellten Inventars gleichkommen."
+},
+{
+"abs": "2",
+"text": "Bei der Aufstellung des Inventars für den Schluß eines Geschäftsjahrs bedarf es einer körperlichen Bestandsaufnahme der Vermögensgegenstände für diesen Zeitpunkt nicht, soweit durch Anwendung eines den Grundsätzen ordnungsmäßiger Buchführung entsprechenden anderen Verfahrens gesichert ist, daß der Bestand der Vermögensgegenstände nach Art, Menge und Wert auch ohne die körperliche Bestandsaufnahme für diesen Zeitpunkt festgestellt werden kann."
+},
+{
+"abs": "3",
+"text": "In dem Inventar für den Schluß eines Geschäftsjahrs brauchen Vermögensgegenstände nicht verzeichnet zu werden, wenn\n1. der Kaufmann ihren Bestand auf Grund einer körperlichen Bestandsaufnahme oder auf Grund eines nach Absatz 2 zulässigen anderen Verfahrens nach Art, Menge und Wert in einem besonderen Inventar verzeichnet hat, das für einen Tag innerhalb der letzten drei Monate vor oder der ersten beiden Monate nach dem Schluß des Geschäftsjahrs aufgestellt ist, und\n2. auf Grund des besonderen Inventars durch Anwendung eines den Grundsätzen ordnungsmäßiger Buchführung entsprechenden Fortschreibungs- oder Rückrechnungsverfahrens gesichert ist, daß der am Schluß des Geschäftsjahrs vorhandene Bestand der Vermögensgegenstände für diesen Zeitpunkt ordnungsgemäß bewertet werden kann."
+}
+]
+},
+{
+"g": "HGB",
+"nr": "249",
+"titel": "Rückstellungen",
+"abs": [
+{
+"abs": "1",
+"text": "Rückstellungen sind für ungewisse Verbindlichkeiten und für drohende Verluste aus schwebenden Geschäften zu bilden. Ferner sind Rückstellungen zu bilden für\n1. im Geschäftsjahr unterlassene Aufwendungen für Instandhaltung, die im folgenden Geschäftsjahr innerhalb von drei Monaten, oder für Abraumbeseitigung, die im folgenden Geschäftsjahr nachgeholt werden,\n2. Gewährleistungen, die ohne rechtliche Verpflichtung erbracht werden."
+}
+],
+"auszug": true
+},
+{
 "g": "AO",
 "nr": "39",
 "titel": "Zurechnung",
@@ -546,6 +577,18 @@ export const NORMEN_BILR = [
 {
 "abs": "1",
 "text": "Einkünfte aus selbständiger Arbeit sind\n1. Einkünfte aus freiberuflicher Tätigkeit. Zu der freiberuflichen Tätigkeit gehören die selbständig ausgeübte wissenschaftliche, künstlerische, schriftstellerische, unterrichtende oder erzieherische Tätigkeit, die selbständige Berufstätigkeit der Ärzte, Zahnärzte, Tierärzte, Rechtsanwälte, Notare, Patentanwälte, Vermessungsingenieure, Ingenieure, Architekten, Handelschemiker, Wirtschaftsprüfer, Steuerberater, beratenden Volks- und Betriebswirte, vereidigten Buchprüfer, Steuerbevollmächtigten, Heilpraktiker, Dentisten, Krankengymnasten, Journalisten, Bildberichterstatter, Dolmetscher, Übersetzer, Lotsen und ähnlicher Berufe. Ein Angehöriger eines freien Berufs im Sinne der Sätze 1 und 2 ist auch dann freiberuflich tätig, wenn er sich der Mithilfe fachlich vorgebildeter Arbeitskräfte bedient; Voraussetzung ist, dass er auf Grund eigener Fachkenntnisse leitend und eigenverantwortlich tätig wird. Eine Vertretung im Fall vorübergehender Verhinderung steht der Annahme einer leitenden und eigenverantwortlichen Tätigkeit nicht entgegen;\n2. Einkünfte der Einnehmer einer staatlichen Lotterie, wenn sie nicht Einkünfte aus Gewerbebetrieb sind;\n3. Einkünfte aus sonstiger selbständiger Arbeit, z. B. Vergütungen für die Vollstreckung von Testamenten, für Vermögensverwaltung und für die Tätigkeit als Aufsichtsratsmitglied;\n4. Einkünfte, die ein Beteiligter an einer vermögensverwaltenden Gesellschaft oder Gemeinschaft, deren Zweck im Erwerb, Halten und in der Veräußerung von Anteilen an Kapitalgesellschaften besteht, als Vergütung für Leistungen zur Förderung des Gesellschafts- oder Gemeinschaftszwecks erzielt, wenn der Anspruch auf die Vergütung unter der Voraussetzung eingeräumt worden ist, dass die Gesellschafter oder Gemeinschafter ihr eingezahltes Kapital vollständig zurückerhalten haben; § 15 Absatz 3 ist nicht anzuwenden."
+}
+],
+"auszug": true
+},
+{
+"g": "EStG",
+"nr": "4a",
+"titel": "Gewinnermittlungszeitraum, Wirtschaftsjahr",
+"abs": [
+{
+"abs": "1",
+"text": "Bei Land- und Forstwirten und bei Gewerbetreibenden ist der Gewinn nach dem Wirtschaftsjahr zu ermitteln. Wirtschaftsjahr ist\n1. bei Land- und Forstwirten der Zeitraum vom 1. Juli bis zum 30. Juni. Durch Rechtsverordnung kann für einzelne Gruppen von Land- und Forstwirten ein anderer Zeitraum bestimmt werden, wenn das aus wirtschaftlichen Gründen erforderlich ist;\n2. bei Gewerbetreibenden, deren Firma im Handelsregister eingetragen ist, der Zeitraum, für den sie\n3. bei anderen Gewerbetreibenden das Kalenderjahr. Sind sie gleichzeitig buchführende Land- und Forstwirte, so können sie mit Zustimmung des Finanzamts den nach Nummer 1 maßgebenden Zeitraum als Wirtschaftsjahr für den Gewerbebetrieb bestimmen, wenn sie für den Gewerbebetrieb Bücher führen und für diesen Zeitraum regelmäßig Abschlüsse machen. regelmäßig Abschlüsse machen. Die Umstellung des Wirtschaftsjahres auf einen vom Kalenderjahr abweichenden Zeitraum ist steuerlich nur wirksam, wenn sie im Einvernehmen mit dem Finanzamt vorgenommen wird;"
 }
 ],
 "auszug": true

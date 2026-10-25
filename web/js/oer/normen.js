@@ -1316,6 +1316,56 @@ export const NORMEN = [
 ]
 },
 {
+"g": "GG",
+"nr": "18",
+"titel": "",
+"abs": [
+{
+"abs": "",
+"text": "Wer die Freiheit der Meinungsäußerung, insbesondere die Pressefreiheit (Artikel 5 Abs. 1), die Lehrfreiheit (Artikel 5 Abs. 3), die Versammlungsfreiheit (Artikel 8), die Vereinigungsfreiheit (Artikel 9), das Brief-, Post- und Fernmeldegeheimnis (Artikel 10), das Eigentum (Artikel 14) oder das Asylrecht (Artikel 16a) zum Kampfe gegen die freiheitliche demokratische Grundordnung mißbraucht, verwirkt diese Grundrechte. Die Verwirkung und ihr Ausmaß werden durch das Bundesverfassungsgericht ausgesprochen."
+}
+]
+},
+{
+"g": "GG",
+"nr": "108",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Zölle, Finanzmonopole, die bundesgesetzlich geregelten Verbrauchsteuern einschließlich der Einfuhrumsatzsteuer, die Kraftfahrzeugsteuer und sonstige auf motorisierte Verkehrsmittel bezogene Verkehrsteuern ab dem 1. Juli 2009 sowie die Abgaben im Rahmen der Europäischen Gemeinschaften werden durch Bundesfinanzbehörden verwaltet. Der Aufbau dieser Behörden wird durch Bundesgesetz geregelt. Soweit Mittelbehörden eingerichtet sind, werden deren Leiter im Benehmen mit den Landesregierungen bestellt."
+},
+{
+"abs": "2",
+"text": "Die übrigen Steuern werden durch Landesfinanzbehörden verwaltet. Der Aufbau dieser Behörden und die einheitliche Ausbildung der Beamten können durch Bundesgesetz mit Zustimmung des Bundesrates geregelt werden. Soweit Mittelbehörden eingerichtet sind, werden deren Leiter im Einvernehmen mit der Bundesregierung bestellt."
+},
+{
+"abs": "3",
+"text": "Verwalten die Landesfinanzbehörden Steuern, die ganz oder zum Teil dem Bund zufließen, so werden sie im Auftrage des Bundes tätig. Artikel 85 Abs. 3 und 4 gilt mit der Maßgabe, daß an die Stelle der Bundesregierung der Bundesminister der Finanzen tritt."
+},
+{
+"abs": "4",
+"text": "Durch Bundesgesetz, das der Zustimmung des Bundesrates bedarf, kann bei der Verwaltung von Steuern ein Zusammenwirken von Bundes- und Landesfinanzbehörden sowie für Steuern, die unter Absatz 1 fallen, die Verwaltung durch Landesfinanzbehörden und für andere Steuern die Verwaltung durch Bundesfinanzbehörden vorgesehen werden, wenn und soweit dadurch der Vollzug der Steuergesetze erheblich verbessert oder erleichtert wird. Für die den Gemeinden (Gemeindeverbänden) allein zufließenden Steuern kann die den Landesfinanzbehörden zustehende Verwaltung durch die Länder ganz oder zum Teil den Gemeinden (Gemeindeverbänden) übertragen werden. Das Bundesgesetz nach Satz 1 kann für ein Zusammenwirken von Bund und Ländern bestimmen, dass bei Zustimmung einer im Gesetz genannten Mehrheit Regelungen für den Vollzug von Steuergesetzen für alle Länder verbindlich werden."
+},
+{
+"abs": "4a",
+"text": "Durch Bundesgesetz, das der Zustimmung des Bundesrates bedarf, können bei der Verwaltung von Steuern, die unter Absatz 2 fallen, ein Zusammenwirken von Landesfinanzbehörden und eine länderübergreifende Übertragung von Zuständigkeiten auf Landesfinanzbehörden eines oder mehrerer Länder im Einvernehmen mit den betroffenen Ländern vorgesehen werden, wenn und soweit dadurch der Vollzug der Steuergesetze erheblich verbessert oder erleichtert wird. Die Kostentragung kann durch Bundesgesetz geregelt werden."
+},
+{
+"abs": "5",
+"text": "Das von den Bundesfinanzbehörden anzuwendende Verfahren wird durch Bundesgesetz geregelt. Das von den Landesfinanzbehörden und in den Fällen des Absatzes 4 Satz 2 von den Gemeinden (Gemeindeverbänden) anzuwendende Verfahren kann durch Bundesgesetz mit Zustimmung des Bundesrates geregelt werden."
+},
+{
+"abs": "6",
+"text": "Die Finanzgerichtsbarkeit wird durch Bundesgesetz einheitlich geregelt."
+},
+{
+"abs": "7",
+"text": "Die Bundesregierung kann allgemeine Verwaltungsvorschriften erlassen, und zwar mit Zustimmung des Bundesrates, soweit die Verwaltung den Landesfinanzbehörden oder Gemeinden (Gemeindeverbänden) obliegt."
+}
+]
+},
+{
 "g": "BWahlG",
 "nr": "1",
 "titel": "Zusammensetzung des Deutschen Bundestages und Wahlrechtsgrundsätze",

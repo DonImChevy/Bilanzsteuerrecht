@@ -267,5 +267,88 @@ export const NORMEN_UST = [
 }
 ],
 "auszug": true
+},
+{
+"g": "UStG",
+"nr": "3b",
+"titel": "Ort der Beförderungsleistungen und der damit zusammenhängenden sonstigen Leistungen",
+"abs": [
+{
+"abs": "1",
+"text": "Eine Beförderung einer Person wird dort ausgeführt, wo die Beförderung bewirkt wird. Erstreckt sich eine solche Beförderung nicht nur auf das Inland, fällt nur der Teil der Leistung unter dieses Gesetz, der auf das Inland entfällt. Die Sätze 1 und 2 gelten entsprechend für die Beförderung von Gegenständen, die keine innergemeinschaftliche Beförderung eines Gegenstands im Sinne des Absatzes 3 ist, wenn der Empfänger weder ein Unternehmer, für dessen Unternehmen die Leistung bezogen wird, noch eine nicht unternehmerisch tätige juristische Person ist, der eine Umsatzsteuer-Identifikationsnummer erteilt worden ist. Die Bundesregierung kann mit Zustimmung des Bundesrates durch Rechtsverordnung zur Vereinfachung des Besteuerungsverfahrens bestimmen, dass bei Beförderungen, die sich sowohl auf das Inland als auch auf das Ausland erstrecken (grenzüberschreitende Beförderungen),\n1. kurze inländische Beförderungsstrecken als ausländische und kurze ausländische Beförderungsstrecken als inländische angesehen werden;\n2. Beförderungen über kurze Beförderungsstrecken in den in § 1 Abs. 3 bezeichneten Gebieten nicht wie Umsätze im Inland behandelt werden."
+}
+],
+"auszug": true
+},
+{
+"g": "UStG",
+"nr": "13b",
+"titel": "Leistungsempfänger als Steuerschuldner",
+"abs": [
+{
+"abs": "2",
+"text": "Für folgende steuerpflichtige Umsätze entsteht die Steuer mit Ausstellung der Rechnung, spätestens jedoch mit Ablauf des der Ausführung der Leistung folgenden Kalendermonats:\n1. Werklieferungen und nicht unter Absatz 1 fallende sonstige Leistungen eines im Ausland ansässigen Unternehmers;\n2. Lieferungen sicherungsübereigneter Gegenstände durch den Sicherungsgeber an den Sicherungsnehmer außerhalb des Insolvenzverfahrens;\n3. Umsätze, die unter das Grunderwerbsteuergesetz fallen;\n4. Bauleistungen, einschließlich Werklieferungen und sonstigen Leistungen im Zusammenhang mit Grundstücken, die der Herstellung, Instandsetzung, Instandhaltung, Änderung oder Beseitigung von Bauwerken dienen, mit Ausnahme von Planungs- und Überwachungsleistungen. Als Grundstücke gelten insbesondere auch Sachen, Ausstattungsgegenstände und Maschinen, die auf Dauer in einem Gebäude oder Bauwerk installiert sind und die nicht bewegt werden können, ohne das Gebäude oder Bauwerk zu zerstören oder zu verändern. Nummer 1 bleibt unberührt;\n5. Lieferungen\na) der in § 3g Absatz 1 Satz 1 genannten Gegenstände eines im Ausland ansässigen Unternehmers unter den Bedingungen des § 3g und\nb) von Gas über das Erdgasnetz und von Elektrizität, die nicht unter Buchstabe a fallen;\n6. Übertragung von Berechtigungen nach § 3 Nummer 3 des Treibhausgas-Emissionshandelsgesetzes, Emissionsreduktionseinheiten nach § 2 Nummer 20 des Projekt-Mechanismen-Gesetzes, zertifizierten Emissionsreduktionen nach § 2 Nummer 21 des Projekt-Mechanismen-Gesetzes, Emissionszertifikaten nach § 3 Nummer 2 des Brennstoffemissionshandelsgesetzes sowie von Gas- und Elektrizitätszertifikaten;\n7. Lieferungen der in der Anlage 3 bezeichneten Gegenstände;\n8. Reinigen von Gebäuden und Gebäudeteilen. Nummer 1 bleibt unberührt;\n9. Lieferungen von Gold mit einem Feingehalt von mindestens 325 Tausendstel, in Rohform oder als Halbzeug (aus Position 7108 des Zolltarifs) und von Goldplattierungen mit einem Goldfeingehalt von mindestens 325 Tausendstel (aus Position 7109);\n10. Lieferungen von Mobilfunkgeräten, Tablet-Computern und Spielekonsolen sowie von integrierten Schaltkreisen vor Einbau in einen zur Lieferung auf der Einzelhandelsstufe geeigneten Gegenstand, wenn die Summe der für sie in Rechnung zu stellenden Entgelte im Rahmen eines wirtschaftlichen Vorgangs mindestens 5 000 Euro beträgt; nachträgliche Minderungen des Entgelts bleiben dabei unberücksichtigt;\n11. Lieferungen der in der Anlage 4 bezeichneten Gegenstände, wenn die Summe der für sie in Rechnung zu stellenden Entgelte im Rahmen eines wirtschaftlichen Vorgangs mindestens 5 000 Euro beträgt; nachträgliche Minderungen des Entgelts bleiben dabei unberücksichtigt;\n12. sonstige Leistungen auf dem Gebiet der Telekommunikation. Nummer 1 bleibt unberührt."
+},
+{
+"abs": "5",
+"text": "In den in den Absätzen 1 und 2 Nummer 1 bis 3 genannten Fällen schuldet der Leistungsempfänger die Steuer, wenn er ein Unternehmer oder eine juristische Person ist; in den in Absatz 2 Nummer 5 Buchstabe a, Nummer 6, 7, 9 bis 11 genannten Fällen schuldet der Leistungsempfänger die Steuer, wenn er ein Unternehmer ist. In den in Absatz 2 Nummer 4 Satz 1 genannten Fällen schuldet der Leistungsempfänger die Steuer unabhängig davon, ob er sie für eine von ihm erbrachte Leistung im Sinne des Absatzes 2 Nummer 4 Satz 1 verwendet, wenn er ein Unternehmer ist, der nachhaltig entsprechende Leistungen erbringt; davon ist auszugehen, wenn ihm das zuständige Finanzamt eine im Zeitpunkt der Ausführung des Umsatzes gültige auf längstens drei Jahre befristete Bescheinigung, die nur mit Wirkung für die Zukunft widerrufen oder zurückgenommen werden kann, darüber erteilt hat, dass er ein Unternehmer ist, der entsprechende Leistungen erbringt. Bei den in Absatz 2 Nummer 5 Buchstabe b genannten Lieferungen von Erdgas schuldet der Leistungsempfänger die Steuer, wenn er ein Wiederverkäufer von Erdgas im Sinne des § 3g ist. Bei den in Absatz 2 Nummer 5 Buchstabe b genannten Lieferungen von Elektrizität schuldet der Leistungsempfänger in den Fällen die Steuer, in denen der liefernde Unternehmer und der Leistungsempfänger Wiederverkäufer von Elektrizität im Sinne des § 3g sind. In den in Absatz 2 Nummer 8 Satz 1 genannten Fällen schuldet der Leistungsempfänger die Steuer unabhängig davon, ob er sie für eine von ihm erbrachte Leistung im Sinne des Absatzes 2 Nummer 8 Satz 1 verwendet, wenn er ein Unternehmer ist, der nachhaltig entsprechende Leistungen erbringt; davon ist auszugehen, wenn ihm das zuständige Finanzamt eine im Zeitpunkt der Ausführung des Umsatzes gültige auf längstens drei Jahre befristete Bescheinigung, die nur mit Wirkung für die Zukunft widerrufen oder zurückgenommen werden kann, darüber erteilt hat, dass er ein Unternehmer ist, der entsprechende Leistungen erbringt. Bei den in Absatz 2 Nummer 12 Satz 1 genannten Leistungen schuldet der Leistungsempfänger die Steuer, wenn er ein Unternehmer ist, dessen Haupttätigkeit in Bezug auf den Erwerb dieser Leistungen in deren Erbringung besteht und dessen eigener Verbrauch dieser Leistungen von untergeordneter Bedeutung ist; davon ist auszugehen, wenn ihm das zuständige Finanzamt eine im Zeitpunkt der Ausführung des Umsatzes gültige auf längstens drei Jahre befristete Bescheinigung, die nur mit Wirkung für die Zukunft widerrufen oder zurückgenommen werden kann, darüber erteilt hat, dass er ein Unternehmer ist, der entsprechende Leistungen erbringt. Die Sätze 1 bis 6 gelten vorbehaltlich des Satzes 11 auch, wenn die Leistung für den nichtunternehmerischen Bereich bezogen wird. Sind Leistungsempfänger und leistender Unternehmer in Zweifelsfällen übereinstimmend vom Vorliegen der Voraussetzungen des Absatzes 2 Nummer 4, 5 Buchstabe b, Nummer 6 bis 12 ausgegangen, obwohl dies nach der Art der Umsätze unter Anlegung objektiver Kriterien nicht zutreffend war, gilt der Leistungsempfänger dennoch als Steuerschuldner, sofern dadurch keine Steuerausfälle entstehen. Die Sätze 2 und 5 gelten auch dann, wenn die entsprechenden Leistungen des Leistungsempfängers nach § 19 Absatz 1 oder 4 steuerfrei sind. Die Sätze 1 bis 9 gelten nicht, wenn ein in Absatz 2 Nummer 2, 7 oder 9 bis 11 genannter Gegenstand von dem Unternehmer, der die Lieferung bewirkt, unter den Voraussetzungen des § 25a geliefert wird. In den in Absatz 2 Nummer 4, 5 Buchstabe b und Nummer 7 bis 12 genannten Fällen schulden juristische Personen des öffentlichen Rechts die Steuer nicht, wenn sie die Leistung für den nichtunternehmerischen Bereich beziehen."
+}
+],
+"auszug": true
+},
+{
+"g": "UStG",
+"nr": "16",
+"titel": "Steuerberechnung, Besteuerungszeitraum und Einzelbesteuerung",
+"abs": [
+{
+"abs": "1",
+"text": "Die Steuer ist, soweit nicht § 20 gilt, nach vereinbarten Entgelten zu berechnen. Besteuerungszeitraum ist das Kalenderjahr. Bei der Berechnung der Steuer ist von der Summe der Umsätze nach § 1 Abs. 1 Nr. 1 und 5 auszugehen, soweit für sie die Steuer in dem Besteuerungszeitraum entstanden und die Steuerschuldnerschaft gegeben ist. Der Steuer sind die nach § 6a Abs. 4 Satz 2, nach § 14c sowie nach § 17 Abs. 1 Satz 6 geschuldeten Steuerbeträge hinzuzurechnen."
+}
+],
+"auszug": true
+},
+{
+"g": "UStG",
+"nr": "18",
+"titel": "Besteuerungsverfahren",
+"abs": [
+{
+"abs": "1",
+"text": "Der Unternehmer hat vorbehaltlich des § 18i Absatz 3, des § 18j Absatz 4, des § 18k Absatz 4 und des § 19 Absatz 1 Satz 2 bis zum zehnten Tag nach Ablauf jedes Voranmeldungszeitraums eine Voranmeldung nach amtlich vorgeschriebenem Datensatz über die amtlich bestimmte Schnittstelle zu übermitteln, in der er die Steuer für den Voranmeldungszeitraum (Vorauszahlung) selbst zu berechnen hat. Auf Antrag kann das Finanzamt zur Vermeidung von unbilligen Härten auf eine elektronische Übermittlung verzichten; in diesem Fall hat der Unternehmer eine Voranmeldung nach amtlich vorgeschriebenem Vordruck abzugeben. § 16 Abs. 1 und 2 und § 17 sind entsprechend anzuwenden. Die Vorauszahlung ist am zehnten Tag nach Ablauf des Voranmeldungszeitraums fällig und bis dahin vom Unternehmer zu entrichten."
+},
+{
+"abs": "2",
+"text": "Voranmeldungszeitraum ist das Kalendervierteljahr. Beträgt die Steuer für das vorangegangene Kalenderjahr mehr als 9 000 Euro, ist der Kalendermonat Voranmeldungszeitraum. Beträgt die Steuer für das vorangegangene Kalenderjahr nicht mehr als 2 000 Euro, kann das Finanzamt den Unternehmer von der Verpflichtung zur Abgabe der Voranmeldungen und Entrichtung der Vorauszahlungen befreien. Nimmt der Unternehmer seine berufliche oder gewerbliche Tätigkeit auf, ist im laufenden und folgenden Kalenderjahr Voranmeldungszeitraum der Kalendermonat. Daneben ist im laufenden und folgenden Kalenderjahr in folgenden Fällen Voranmeldungszeitraum der Kalendermonat:\n1. bei im Handelsregister eingetragenen, noch nicht gewerblich oder beruflich tätig gewesenen juristischen Personen oder Personengesellschaften, die objektiv belegbar die Absicht haben, eine gewerbliche oder berufliche Tätigkeit selbständig auszuüben (Vorratsgesellschaften), und zwar ab dem Zeitpunkt des Beginns der tatsächlichen Ausübung dieser Tätigkeit, und\n2. bei der Übernahme von juristischen Personen oder Personengesellschaften, die bereits gewerblich oder beruflich tätig gewesen sind und zum Zeitpunkt der Übernahme ruhen oder nur geringfügig gewerblich oder beruflich tätig sind (Firmenmantel), und zwar ab dem Zeitpunkt der Übernahme. Für die Besteuerungszeiträume 2021 bis 2026 ist abweichend von Satz 4 in den Fällen, in denen der Unternehmer seine gewerbliche oder berufliche Tätigkeit nur in einem Teil des vorangegangenen Kalenderjahres ausgeübt hat, die tatsächliche Steuer in eine Jahressteuer umzurechnen und in den Fällen, in denen der Unternehmer seine gewerbliche oder berufliche Tätigkeit im laufenden Kalenderjahr aufnimmt, die voraussichtliche Steuer des laufenden Kalenderjahres maßgebend."
+}
+],
+"auszug": true
+},
+{
+"g": "UStG",
+"nr": "20",
+"titel": "Berechnung der Steuer nach vereinnahmten Entgelten",
+"abs": [
+{
+"abs": "",
+"text": "Das Finanzamt kann auf Antrag gestatten, dass ein Unternehmer,\n1. dessen Gesamtumsatz (§ 19 Absatz 2) im vorangegangenen Kalenderjahr nicht mehr als 800 000 Euro betragen hat, oder\n2. der von der Verpflichtung, Bücher zu führen und auf Grund jährlicher Bestandsaufnahmen regelmäßig Abschlüsse zu machen, nach § 148 der Abgabenordnung befreit ist, oder\n3. soweit er Umsätze aus einer Tätigkeit als Angehöriger eines freien Berufs im Sinne des § 18 Abs. 1 Nr. 1 des Einkommensteuergesetzes ausführt, oder\n4. der eine juristische Person des öffentlichen Rechts ist, soweit er nicht freiwillig Bücher führt und auf Grund jährlicher Bestandsaufnahmen regelmäßig Abschlüsse macht oder hierzu gesetzlich verpflichtet ist, die Steuer nicht nach den vereinbarten Entgelten (§ 16 Abs. 1 Satz 1), sondern nach den vereinnahmten Entgelten berechnet. Erstreckt sich die Befreiung nach Satz 1 Nr. 2 nur auf einzelne Betriebe des Unternehmers und liegt die Voraussetzung nach Satz 1 Nr. 1 nicht vor, so ist die Erlaubnis zur Berechnung der Steuer nach den vereinnahmten Entgelten auf diese Betriebe zu beschränken. Wechselt der Unternehmer die Art der Steuerberechnung, so dürfen Umsätze nicht doppelt erfasst werden oder unversteuert bleiben."
+}
+]
+},
+{
+"g": "UStG",
+"nr": "25a",
+"titel": "Differenzbesteuerung",
+"abs": [
+{
+"abs": "1",
+"text": "Für die Lieferungen im Sinne des § 1 Abs. 1 Nr. 1 von beweglichen körperlichen Gegenständen gilt eine Besteuerung nach Maßgabe der nachfolgenden Vorschriften (Differenzbesteuerung), wenn folgende Voraussetzungen erfüllt sind:\n1. Der Unternehmer ist ein Wiederverkäufer. Als Wiederverkäufer gilt, wer gewerbsmäßig mit beweglichen körperlichen Gegenständen handelt oder solche Gegenstände im eigenen Namen öffentlich versteigert.\n2. Die Gegenstände wurden an den Wiederverkäufer im Gemeinschaftsgebiet geliefert. Für diese Lieferung wurde\n3. a) Umsatzsteuer nicht geschuldet oder\nb) die Differenzbesteuerung vorgenommen. Die Gegenstände sind keine Edelsteine (aus Positionen 71 02 und 71 03 des Zolltarifs) oder Edelmetalle (aus Positionen 71 06, 71 08, 71 10 und 71 12 des Zolltarifs)."
+},
+{
+"abs": "3",
+"text": "Der Umsatz wird nach dem Betrag bemessen, um den der Verkaufspreis den Einkaufspreis für den Gegenstand übersteigt; bei Lieferungen im Sinne des § 3 Abs. 1b und in den Fällen des § 10 Abs. 5 tritt an die Stelle des Verkaufspreises der Wert nach § 10 Abs. 4 Nr. 1. Lässt sich der Einkaufspreis eines Kunstgegenstandes (Nummer 53 der Anlage 2) nicht ermitteln oder ist der Einkaufspreis unbedeutend, wird der Betrag, nach dem sich der Umsatz bemisst, mit 30 Prozent des Verkaufspreises angesetzt. Die Umsatzsteuer gehört nicht zur Bemessungsgrundlage. Im Fall des Absatzes 2 Satz 1 Nr. 1 gilt als Einkaufspreis der Wert im Sinne des § 11 Abs. 1 zuzüglich der Einfuhrumsatzsteuer. Im Fall des Absatzes 2 Satz 1 Nr. 2 schließt der Einkaufspreis die Umsatzsteuer des Lieferers ein."
+}
+],
+"auszug": true
 }
 ];

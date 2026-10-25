@@ -7,6 +7,7 @@ import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
 import { PAARE } from "./paare.js";
+import { gliederungView } from "./bilr/gliederung.js";
 import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, gelesenAnteil, lesezeit } from "./kompakt.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
@@ -1410,8 +1411,11 @@ function sheetView() {
   } else if (sh.art === "norm") {
     const n = norm(sh.ref);
     titel = n.label;
+    // § 266 HGB: Absatz 1 als Text, das Gliederungsschema (Abs. 2, 3) als Grafik
+    const schema = sh.ref.startsWith("HGB 266");
     inhalt = `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
-      ${n.absaetze.map((a) => `<p style="margin:8px 0;line-height:1.55">${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</span></div></div>
+      ${(schema ? n.absaetze.filter((a) => a.abs === "1") : n.absaetze).map((a) => `<p style="margin:8px 0;line-height:1.55">${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</span></div></div>
+      ${schema ? gliederungView() : ""}
       <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: www.gesetze-im-internet.de</div>`;
   } else if (sh.art === "punktesammler") {
     titel = "Punkte sammeln";
