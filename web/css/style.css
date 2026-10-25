@@ -853,3 +853,38 @@ h1.titel { font-size: 32px; letter-spacing: -0.9px; background: linear-gradient(
   color: var(--farbe); background: color-mix(in srgb, var(--farbe) 14%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--farbe) 30%, transparent); }
 .tk-status.neu { color: #fff; background: linear-gradient(135deg, var(--m-licht), var(--fill)); box-shadow: 0 6px 14px -6px var(--fill); text-transform: uppercase; font-size: 10px; letter-spacing: 0.6px; }
 .screen.anim .themen-karte { animation: aufKarte 0.45s cubic-bezier(.2,1,.4,1) both; animation-delay: calc(var(--i) * 35ms + 120ms); }
+
+/* Kontenplan: jedes Konto mit kleinem T-Konto – die Seite, auf der es zunimmt, leuchtet in der Farbe der Kontoart */
+.t-konten { display: grid; gap: 8px; }
+.t-konto { --k: var(--text2); display: flex; align-items: center; gap: 14px; width: 100%; text-align: left; padding: 11px 14px 11px 16px; border-radius: 18px;
+  background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); transition: transform 0.12s, box-shadow 0.2s; }
+.t-konto:active { transform: scale(0.98); }
+.t-konto:focus-visible, .stapel:focus-visible, .themen-karte:focus-visible { outline: 2.5px solid var(--m); outline-offset: 2px; }
+.t-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.t-text b { font-size: 15.5px; font-weight: 700; line-height: 1.3; }
+.t-art { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 650; color: var(--k); }
+.t-art::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 50%; background: var(--k); box-shadow: 0 0 8px var(--k); }
+.t-seiten { flex: none; display: grid; grid-template-columns: 1fr 1fr; width: 64px; height: 38px; border-top: 2px solid color-mix(in srgb, var(--text) 30%, transparent); }
+.t-seiten > span { display: flex; align-items: flex-start; padding: 3px 5px; font-size: 10.5px; font-weight: 800; color: var(--text3); border-radius: 0 0 0 8px; }
+.t-seiten > span + span { justify-content: flex-end; border-left: 2px solid color-mix(in srgb, var(--text) 30%, transparent); border-radius: 0 0 8px 0; }
+.mehrt-soll .t-seiten > span:first-child, .mehrt-haben .t-seiten > span:last-child, .mehrt-beide .t-seiten > span {
+  color: var(--k); background: linear-gradient(180deg, color-mix(in srgb, var(--k) 26%, transparent), color-mix(in srgb, var(--k) 5%, transparent)); box-shadow: inset 0 2px 10px -4px color-mix(in srgb, var(--k) 70%, transparent); }
+.t-konto.art-aktiv { --k: #2563eb; } .t-konto.art-passiv { --k: #8b3fd9; } .t-konto.art-eigenkapital, .t-konto.art-privat { --k: #0d9488; }
+.t-konto.art-aufwand { --k: #dc2626; } .t-konto.art-ertrag { --k: #16a34a; } .t-konto.art-erfolg { --k: #d97706; }
+.t-konto[class*="art-"] { background: var(--glas); color: var(--text); padding: 11px 14px 11px 16px; font-size: inherit; border-radius: 18px; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .t-konto.art-aktiv { --k: #60a5fa; } :root:not([data-theme="light"]) .t-konto.art-passiv { --k: #c084fc; } :root:not([data-theme="light"]) .t-konto.art-aufwand { --k: #f87171; } :root:not([data-theme="light"]) .t-konto.art-ertrag { --k: #4ade80; } :root:not([data-theme="light"]) .t-konto.art-eigenkapital, :root:not([data-theme="light"]) .t-konto.art-privat { --k: #2dd4bf; } :root:not([data-theme="light"]) .t-konto.art-erfolg { --k: #fbbf24; } }
+:root[data-theme="dark"] .t-konto.art-aktiv { --k: #60a5fa; } :root[data-theme="dark"] .t-konto.art-passiv { --k: #c084fc; } :root[data-theme="dark"] .t-konto.art-aufwand { --k: #f87171; } :root[data-theme="dark"] .t-konto.art-ertrag { --k: #4ade80; } :root[data-theme="dark"] .t-konto.art-eigenkapital, :root[data-theme="dark"] .t-konto.art-privat { --k: #2dd4bf; } :root[data-theme="dark"] .t-konto.art-erfolg { --k: #fbbf24; }
+
+/* Lernkarten: Themen als Kartenstapel zum Antippen */
+.stapel-wahl { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.stapel { position: relative; display: flex; flex-direction: column; gap: 8px; text-align: left; padding: 12px; border-radius: 18px; min-height: 118px;
+  background: var(--glas); border: 1.5px solid var(--glas-rand); box-shadow: var(--schatten), 4px 4px 0 -1px color-mix(in srgb, var(--glas-stark) 80%, transparent), 4px 4px 0 0 var(--glas-linie);
+  backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); transition: transform 0.15s cubic-bezier(.2,.9,.3,1.2), border-color 0.15s, box-shadow 0.2s; }
+.stapel:active { transform: scale(0.97); }
+.stapel b { font-size: 14.5px; font-weight: 700; line-height: 1.25; flex: 1; }
+.st-icon { width: 36px; height: 36px; border-radius: 12px; display: grid; place-items: center; font-size: 19px; background: color-mix(in srgb, var(--m) 12%, var(--glas-stark)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--m) 20%, transparent); }
+.st-fuss { display: flex; align-items: center; gap: 8px; }
+.stapel { --farbe: var(--ok); }
+.st-haken { position: absolute; top: 10px; right: 10px; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; color: transparent; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--text) 22%, transparent); transition: background 0.15s, transform 0.2s cubic-bezier(.2,1.4,.4,1); }
+.stapel.an { border-color: var(--m); background: color-mix(in srgb, var(--m) 10%, var(--glas-stark)); box-shadow: 0 0 0 4px color-mix(in srgb, var(--m) 14%, transparent), var(--schatten-hoch); transform: translateY(-2px); }
+.stapel.an .st-haken { color: #fff; background: linear-gradient(135deg, var(--m-licht), var(--fill)); box-shadow: 0 4px 10px -3px var(--fill); transform: scale(1.08); }

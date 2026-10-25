@@ -827,11 +827,12 @@ function tabKarten() {
     </div>
     <div class="liste" style="margin-top:12px"><div class="zeile"><span class="grow"><div style="display:flex;justify-content:space-between"><b>Gewusst</b><span class="sub mono">${LERNKARTEN.length - offen.length}/${LERNKARTEN.length}</span></div>
       <div class="balken"><span class="gut" style="width:${p}%"></span></div></span></div></div>
-    <div class="gruppe"><div class="gruppe-titel">Themen auswählen ${state.kartenThemen.size ? `<button class="link-klein" data-a="kartenKeine">Auswahl aufheben</button>` : `<button class="link-klein" data-a="kartenAlle">Alle</button>`}</div><div class="liste">
+    <div class="gruppe"><div class="gruppe-titel">Themen auswählen ${state.kartenThemen.size ? `<button class="link-klein" data-a="kartenKeine">Auswahl aufheben</button>` : `<button class="link-klein" data-a="kartenAlle">Alle</button>`}</div><div class="stapel-wahl">
       ${themen.map((t) => {
-        const ks = LERNKARTEN.filter((k) => k.thema === t.id), an = state.kartenThemen.has(t.id);
-        return `<button class="zeile" data-a="kartenThema" data-v="${t.id}"><span class="haekchen ${an ? "an" : ""}">${an ? ic("haken", "klein") : ""}</span>
-          <span class="thema-icon" style="width:34px;height:34px;font-size:17px">${t.icon}</span><span class="grow">${esc(t.titel)}</span><span class="sub mono">${ks.filter((k) => gewusst.has(k.id)).length}/${ks.length}</span></button>`;
+        const ks = LERNKARTEN.filter((k) => k.thema === t.id), an = state.kartenThemen.has(t.id), g = ks.filter((k) => gewusst.has(k.id)).length;
+        return `<button class="stapel${an ? " an" : ""}" data-a="kartenThema" data-v="${t.id}" aria-pressed="${an}"><span class="st-icon">${t.icon}</span>
+          <b>${esc(t.titel)}</b><span class="st-fuss"><span class="tk-balken"><span style="width:${ks.length ? (g / ks.length) * 100 : 0}%"></span></span><span class="tk-n">${g}/${ks.length}</span></span>
+          <span class="st-haken">${ic("haken", "klein")}</span></button>`;
       }).join("")}
     </div></div>
     ${state.kartenThemen.size ? `<button class="knopf" data-a="deck" data-v="auswahl">${ic("play", "fill")} ${state.kartenThemen.size} ${state.kartenThemen.size === 1 ? "Thema" : "Themen"} lernen</button>` : ""}`;
@@ -1419,14 +1420,21 @@ function sheetView() {
     <div class="vb-inhalt">${inhalt}</div></div></div>`;
 }
 
+/** Seite, auf der ein Konto zunimmt bzw. gebucht wird – im Kontenplan als leuchtende T-Konto-Seite. */
+const MEHRUNG = { aktiv: "soll", aufwand: "soll", passiv: "haben", eigenkapital: "haben", ertrag: "haben", erfolg: "beide" };
+/** Unter- und Privatkonten werden auf der Gegenseite ihrer Kontoart gebucht (vgl. HINWEISE in konten.js). */
+const BUCHUNGSSEITE = { erloesschmaelerungen: ["soll", "WVK"], gewaehrteSkonti: ["soll", "WVK"], gewaehrteBoni: ["soll", "WVK"], preisnachlaesse: ["haben", "WEK"], erhalteneSkonti: ["haben", "WEK"], erhalteneBoni: ["haben", "WEK"], privatentnahmen: ["soll", "EK"], privateinlagen: ["haben", "EK"] };
+const kontoSeite = (k) => BUCHUNGSSEITE[k.id]?.[0] || MEHRUNG[k.art] || "keine";
+const kontoArtText = (k) => { const b = BUCHUNGSSEITE[k.id]; return b ? `Unterkonto des ${b[1]} · Buchung im ${b[0] === "soll" ? "Soll" : "Haben"}` : k.artName; };
+
 function kontoListe(aktion) {
   const q = norma(state.kontoSuche.trim());
   const passt = (k) => !q || norma(k.name).includes(q) || norma(k.kurz).includes(q);
   const html = KLASSEN.map((kl) => {
     const ks = kontenInKlasse(kl).filter(passt);
     if (!ks.length) return "";
-    return `<div class="gruppe"><div class="gruppe-titel">${KLASSEN_TITEL[kl]}</div><div class="liste">
-      ${ks.map((k) => `<button class="zeile" data-a="${aktion}" data-v="${k.id}"><span class="grow">${esc(k.name)}</span><span class="badge art-${k.art}">${k.artKurz}</span>${aktion === "kontoDetail" ? `<span class="chev">${ic("pfeil", "klein")}</span>` : ""}</button>`).join("")}</div></div>`;
+    return `<div class="gruppe"><div class="gruppe-titel">${KLASSEN_TITEL[kl]}</div><div class="t-konten">
+      ${ks.map((k) => `<button class="t-konto art-${k.art} mehrt-${kontoSeite(k)}" data-a="${aktion}" data-v="${k.id}"><span class="t-text"><b>${esc(k.name)}</b><span class="t-art">${kontoArtText(k)}</span></span><span class="t-seiten" aria-hidden="true"><span>S</span><span>H</span></span></button>`).join("")}</div></div>`;
   }).join("");
   return html || `<div class="leer-zustand">${ic("suche")}<div><b>Kein Konto gefunden</b></div></div>`;
 }
