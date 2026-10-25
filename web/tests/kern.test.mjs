@@ -444,3 +444,32 @@ test("Lernpfade aller Module: jeder Block in sich vollständig", async () => {
     }
   }
 });
+
+test("Kompaktwissen: jedes Thema hat eine vollständige Zusammenfassung", async () => {
+  const { KOMPAKT, KLAUSURPLAN, kompaktInline, lesezeit } = await import("../js/kompakt.js");
+  for (const t of THEMEN) {
+    const k = KOMPAKT[t.id];
+    assert.ok(k, `Zusammenfassung fehlt: ${t.id}`);
+    assert.ok(k.satz?.length > 40, `${t.id}: Kernsatz fehlt`);
+    assert.ok(k.punkte?.length >= 3, `${t.id}: zu wenige Punkte`);
+    if (t.id !== "oer-zusatz") assert.ok(k.fallen?.length >= 1 && k.klausur?.length >= 1, `${t.id}: Klausur/Fehler fehlen`);
+    for (const z of k.zahlen || []) assert.equal(z.length, 2, `${t.id}: Zahl ohne Bedeutung`);
+    // **fett** muss paarig sein, sonst bleibt ein Sternchen stehen
+    for (const text of [k.satz, ...(k.punkte || []), ...(k.klausur || []), ...(k.fallen || []), ...(k.schema || []), k.formulierung || ""])
+      assert.ok(!kompaktInline(text).includes("*"), `${t.id}: unpaariges ** in „${text.slice(0, 50)}“`);
+    assert.ok(lesezeit(k) >= 1);
+  }
+  for (const id of Object.keys(KOMPAKT)) assert.ok(THEMA[id], `Zusammenfassung ohne Thema: ${id}`);
+  for (const fach of ["bsr", "oer", "est", "ust"]) for (const id of KLAUSURPLAN[fach].top) assert.equal(THEMA[id].fach, fach);
+  // Normzitate werden antippbar und zeigen auf vorhandene Vorschriften
+  const html = kompaktInline("nach § 4 Nr. 12 a UStG und Art. 20 Abs. 3 GG");
+  assert.match(html, /data-a="normDetail" data-v="UStG 4[^"]*"/);
+  assert.match(html, /data-v="GG 20 3"/);
+  for (const [, ref] of html.matchAll(/data-v="([^"]+)"/g)) assert.ok(norm(ref), ref);
+});
+
+test("Synchronisierung: gelesene Zusammenfassungen werden vereinigt", async () => {
+  const { gelesenVereinen } = await import("../js/sync.js");
+  assert.deepEqual(gelesenVereinen({ a: 1, b: 5 }, { b: 3, c: 2 }), { a: 1, b: 5, c: 2 });
+  assert.deepEqual(gelesenVereinen(undefined, { x: 1 }), { x: 1 });
+});
