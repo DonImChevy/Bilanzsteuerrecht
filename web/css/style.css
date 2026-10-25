@@ -1042,3 +1042,34 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .tk-lesen .ic { width: 15px; height: 15px; }
 .tk-lesen.gelesen { color: var(--ok); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ok) 30%, transparent); }
 .themen-karte .tk-text { position: static; }
+
+/* § 266 HGB – Bilanzgliederung als Grafik in Kontoform: Aktiva | Passiva, Gliederungsebenen nach Gewicht und Farbe */
+.gliederung { margin: 12px 0 0; }
+.gl-legende { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0 4px 10px; font-size: 12px; font-weight: 650; color: var(--text2); }
+.gl-legende span { display: inline-flex; align-items: center; gap: 6px; }
+.gl-punkt { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+.gl-punkt.buchstabe { background: var(--m); box-shadow: 0 0 8px var(--m); }
+.gl-punkt.roemisch { background: color-mix(in srgb, var(--m) 50%, transparent); }
+.gl-punkt.arabisch { background: transparent; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--m) 55%, transparent); }
+.gl-konto { display: grid; grid-template-columns: 1fr; border-radius: 20px; overflow: hidden; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+@media (min-width: 640px) { .gl-konto { grid-template-columns: 1fr 1fr; } .gl-seite + .gl-seite { border-top: 0; border-left: 2px solid color-mix(in srgb, var(--text) 25%, transparent); } }
+.gl-seite { padding: 0 14px 14px; }
+.gl-seite + .gl-seite { border-top: 2px solid color-mix(in srgb, var(--text) 25%, transparent); }
+.gl-seite h4 { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 0 -14px 10px; padding: 12px 14px 10px; border-bottom: 2px solid color-mix(in srgb, var(--text) 25%, transparent);
+  background: linear-gradient(120deg, color-mix(in srgb, var(--m) 14%, transparent), transparent 70%); }
+.gl-seite h4 span { font-size: 18px; font-weight: 800; letter-spacing: -0.2px; }
+.gl-seite h4 small { font-size: 11.5px; font-weight: 650; color: var(--text3); }
+.gl-liste { list-style: none; margin: 0; padding: 0; }
+.gl-liste .gl-liste { margin: 4px 0 6px 12px; padding-left: 10px; border-left: 2px solid color-mix(in srgb, var(--m) 22%, transparent); }
+.gl-liste li { display: grid; grid-template-columns: auto 1fr; column-gap: 8px; align-items: baseline; }
+.gl-liste li > .gl-liste { grid-column: 1 / -1; }
+.gl-nr { font-variant-numeric: tabular-nums; text-align: right; min-width: 1.6em; }
+.gl-buchstabe { margin-top: 10px; }
+.gl-buchstabe > .gl-nr, .gl-buchstabe > .gl-text { font-size: 15.5px; font-weight: 800; }
+.gl-buchstabe > .gl-nr { color: var(--accent); }
+.gl-roemisch { margin-top: 6px; }
+.gl-roemisch > .gl-nr, .gl-roemisch > .gl-text { font-size: 14.5px; font-weight: 700; }
+.gl-roemisch > .gl-nr { color: color-mix(in srgb, var(--accent) 75%, var(--text2)); }
+.gl-arabisch { margin-top: 3px; }
+.gl-arabisch > .gl-nr, .gl-arabisch > .gl-text { font-size: 13px; font-weight: 500; color: var(--text2); line-height: 1.4; }
+.gliederung figcaption { margin: 10px 4px 0; font-size: 12.5px; line-height: 1.5; color: var(--text3); }
