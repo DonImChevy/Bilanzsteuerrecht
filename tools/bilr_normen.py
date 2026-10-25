@@ -17,10 +17,10 @@ AUSWAHL = {
     "HGB": {"1": None, "2": None, "3": None, "6": None, "238": None, "239": None, "240": None, "241a": None,
             "242": None, "243": None, "245": None, "246": ["1"], "247": None, "250": None, "252": ["1"],
             "253": ["1", "3", "4", "5"], "255": ["1", "2"], "256a": None, "257": None, "264": ["1"],
-            "268": ["5"], "277": ["1"]},
+            "268": ["5"], "277": ["1"], "241": None, "249": ["1"]},
     "AO": {"39": None, "140": None, "141": None, "146": ["1"], "147": ["1", "3"]},
     "EStG": {"4": ["1", "3"], "5": ["1", "5"], "6": ["1|1,2,3,4,5", "2", "2a"], "7": ["1", "4"], "9b": ["1"],
-             "12": None, "13a": ["1"], "18": ["1"]},
+             "12": None, "13a": ["1"], "18": ["1"], "4a": ["1"]},
     "UStG": {"1": ["1"], "3": ["1", "1b", "9"], "4": [""], "9": ["1"], "10": ["1", "4"],
              "12": ["1", "2|1,11"], "15": ["1"], "17": ["1", "2"], "19": ["1"]},
 }
@@ -29,8 +29,10 @@ AUSWAHL_EST = {
     "EStG": {"1": ["1", "4"], "2": None, "3": ["|15,26,26a,51,62"], "3c": ["1"], "4": ["4", "5|6b,6c"],
              "6": ["2"], "7": ["1"], "8": ["1"], "9": ["1", "2", "4"], "9a": None, "11": None, "12": None,
              "25": ["1", "3"], "26": None, "26a": ["1"], "26b": None, "32a": ["1", "5", "6"], "36": ["1", "2", "4"],
-             "46": ["2", "4"]},
-    "AO": {"8": None, "9": None},
+             "46": ["2", "4"], "15": ["1", "2"], "19": ["1"], "20": ["1|7"], "21": ["1", "3"], "23": ["1|1", "3"],
+             "24b": ["1", "2"], "31": None, "33": ["1", "2"], "37": ["1"], "38": ["1"], "38a": ["1"], "43": ["5"], "49": ["1|4"],
+             "10": ["1|2,3,4"], "10c": None, "32b": ["1"], "33b": ["1"], "43a": ["1"]},
+    "AO": {"8": None, "9": None, "149": ["2"], "169": ["2"]},
 }
 # Umsatzsteuer (Aufruf mit --ust → web/js/ust/normen.js, Export NORMEN_UST)
 AUSWAHL_UST = {
@@ -40,7 +42,7 @@ AUSWAHL_UST = {
              "3b": ["1"], "13b": ["2", "5"], "16": ["1"], "18": ["1", "2"], "20": None, "25a": ["1", "3"]},
 }
 # Paragrafen ohne amtliche Überschrift: Titel des Abschnitts
-TITEL = {("EStG", "3"): "Steuerfreie Einnahmen", ("EStG", "11"): "Vereinnahmung und Verausgabung",
+TITEL = {("EStG", "20"): "Einkünfte aus Kapitalvermögen", ("EStG", "10"): "Sonderausgaben", ("EStG", "3"): "Steuerfreie Einnahmen", ("EStG", "11"): "Vereinnahmung und Verausgabung",
          ("EStG", "12"): "Nicht abzugsfähige Ausgaben", ("EStG", "9b"): "Umsatzsteuerrechtlicher Vorsteuerabzug"}
 # Im PDF über einen Seitenumbruch verschobene Textteile (gehören zu § 3 Nr. 13 EStG)
 TEXT_KORREKTUR = {("UStG", "3a"): [(r"\n1\. 2\. Eine sonstige", "\n1. Eine sonstige"),
