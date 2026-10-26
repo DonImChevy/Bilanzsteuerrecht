@@ -918,7 +918,7 @@ const kartenVorschau = (e, um) => `<div class="mk-mini ${um ? "um" : ""}" data-a
 
 /** Stapel ansehen: alle Karten als kleine Doppelkarten (vorne | hinten), antippen zum Bearbeiten. */
 function stapelView(name) {
-  const ks = MK.kartenVon(meine(), state.fach).filter((k) => k.st === name);
+  const ks = MK.kartenVon(meine(), state.fach).filter((k) => k.st === name).sort((a, b) => a.e - b.e); // Reihenfolge wie angelegt bzw. importiert
   if (!ks.length) return `<div class="leer-zustand">${ic("karten")}<div><b>Der Stapel ist leer</b></div></div>`;
   const faellig = ks.filter((k) => MK.istFaellig(k)).length;
   return `<div class="kachel-grid" style="margin-bottom:14px">
@@ -1393,7 +1393,8 @@ function deckView() {
   // Eigene Karten und „Meine Fehler“: Text mit Textmarker und antippbaren Normen; fertige Lernkarten wie bisher
   const reich = !!k.art;
   const kopf = k.art === "eigen" ? k.kopf : k.art === "fehler" ? "Meine Fehler · " + THEMA[k.thema].titel : THEMA[k.thema].titel;
-  const vorne = reich ? kartenText(k.vorne) : esc(k.vorne), hinten = reich ? kartenText(k.hinten) : esc(k.hinten);
+  // Vorderseite: Normen nur hervorgehoben (Antippen dreht die Karte um), auf der Rückseite antippbar
+  const vorne = reich ? ohneLinks(kartenText(k.vorne)) : esc(k.vorne), hinten = reich ? kartenText(k.hinten) : esc(k.hinten);
   const lang = k.vorne.length > 90;
   return `<div class="vollbild">
     <div class="vb-kopf"><button class="rund" data-a="deckZu" aria-label="Beenden">${ic("kreuz")}</button><div class="sitzung-fortschritt"><span style="width:${(d.index / d.karten.length) * 100}%"></span></div>
