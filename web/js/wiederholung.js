@@ -14,9 +14,14 @@ export function tagPlus(zeit, tage) {
   return d.getTime();
 }
 
-/** Neuer Eintrag nach einer Antwort (t = Zeitpunkt der Antwort, für den Abgleich zwischen Geräten). */
+/**
+ * Neuer Eintrag nach einer Antwort (t = Zeitpunkt der Antwort, für den Abgleich zwischen Geräten).
+ * falsch: zuletzt falsch beantwortet (Stapel „Meine Fehler“) – Fach 1 allein reicht dafür nicht,
+ * dort landet auch eine Aufgabe, die beim ersten Mal richtig gelöst wurde.
+ */
 export function planen(eintrag, korrekt, jetzt = Date.now()) {
-  const fach = korrekt ? Math.min(FAECHER_MAX, (eintrag?.fach || 0) + 1) : 1;
+  if (!korrekt) return { fach: 1, faellig: tagPlus(jetzt, INTERVALLE[1]), t: jetzt, falsch: true };
+  const fach = Math.min(FAECHER_MAX, (eintrag?.fach || 0) + 1);
   return { fach, faellig: tagPlus(jetzt, INTERVALLE[fach]), t: jetzt };
 }
 

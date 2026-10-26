@@ -1073,3 +1073,99 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .gl-arabisch { margin-top: 3px; }
 .gl-arabisch > .gl-nr, .gl-arabisch > .gl-text { font-size: 13px; font-weight: 500; color: var(--text2); line-height: 1.4; }
 .gliederung figcaption { margin: 10px 4px 0; font-size: 12.5px; line-height: 1.5; color: var(--text3); }
+
+/* =====================================================================
+   Eigene Karteikarten: Knopf „+ Als Karte“, Stapel als aufgefächerte Karten, Karten mit Knicklinie
+   (vorne | hinten), Editor mit Vorschau zum Umdrehen. Farben nur über --m und Glas-Variablen.
+   ===================================================================== */
+.als-karte { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px 7px 9px; border-radius: 99px; font-size: 13.5px; font-weight: 700;
+  color: var(--m); background: color-mix(in srgb, var(--m) 9%, var(--glas-stark)); border: 1px dashed color-mix(in srgb, var(--m) 45%, transparent);
+  transition: transform 0.12s, background 0.15s; }
+.als-karte:active { transform: scale(0.95); }
+.als-karte .ic { width: 16px; height: 16px; stroke-width: 2.4; }
+.als-karte.mini { position: absolute; right: -4px; top: 0.05em; padding: 0; width: 30px; height: 30px; justify-content: center; border-radius: 10px; opacity: 0.55; }
+.als-karte.mini span { display: none; }
+.als-karte.mini:hover, .als-karte.mini:focus-visible { opacity: 1; }
+.km-liste li:has(> .als-karte.mini) { padding-right: 34px; }
+.mk-aufgabe-fuss, .mk-norm-fuss, .km-bsp-karte { display: flex; justify-content: flex-end; margin: 12px 0 2px; }
+.km-bsp-karte { margin: 0; padding: 10px 14px 14px; }
+
+/* Bereich „Meine Karten“ im Reiter Karten */
+.mk-bereich .kachel-grid { margin-top: 2px; }
+.mk-stapel-wahl { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px 14px; margin: 16px 4px 4px; }
+.mk-stapel { position: relative; text-align: left; min-height: 116px; padding: 0; isolation: isolate; transition: transform 0.15s cubic-bezier(.2,.9,.3,1.2); }
+.mk-stapel:active { transform: scale(0.97); }
+.mk-stapel:focus-visible { outline: 2.5px solid var(--m); outline-offset: 4px; border-radius: 16px; }
+/* zwei Blätter darunter – aufgefächert wie ein echter Kartenstapel */
+.mk-st-blatt { position: absolute; inset: 0; z-index: -1; border-radius: 16px; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.mk-st-blatt:nth-child(1) { transform: rotate(-4deg) translate(-3px, 5px); }
+.mk-st-blatt:nth-child(2) { transform: rotate(2.5deg) translate(3px, 3px); background: color-mix(in srgb, var(--m) 7%, var(--glas)); }
+.mk-st-inhalt { position: relative; display: flex; flex-direction: column; gap: 4px; height: 100%; min-height: 116px; padding: 14px 13px 12px; border-radius: 16px;
+  background: linear-gradient(180deg, var(--glas-stark), var(--glas)); border: 1px solid var(--glas-rand); box-shadow: var(--schatten-hoch);
+  backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%);
+  /* Karteikarten-Linien */
+  background-image: linear-gradient(180deg, var(--glas-stark), var(--glas)), repeating-linear-gradient(180deg, transparent 0 21px, color-mix(in srgb, var(--m) 10%, transparent) 21px 22px); background-blend-mode: normal; }
+.mk-st-inhalt::before { content: ""; position: absolute; left: 0; right: 0; top: 38px; border-top: 1.5px solid color-mix(in srgb, var(--err) 35%, transparent); }
+.mk-st-inhalt b { font-size: 15px; line-height: 1.25; padding-bottom: 8px; }
+.mk-st-fuss { margin-top: auto; display: flex; align-items: center; gap: 8px; }
+.mk-faellig { flex: none; font-size: 11.5px; font-weight: 800; padding: 3px 8px; border-radius: 99px; color: var(--warn); background: var(--warn-weak); }
+.mk-ok { flex: none; color: var(--ok); display: grid; }
+.mk-io { display: inline-flex; align-items: center; gap: 6px; margin: 16px 4px 0; color: var(--m); font-weight: 650; font-size: 14px; }
+.mk-io .ic { width: 16px; height: 16px; }
+.mk-leer { display: flex; align-items: center; gap: 16px; margin-top: 14px; padding: 16px; border-radius: 20px; background: var(--glas); border: 1px dashed var(--glas-rand); }
+.mk-leer .sub { margin-top: 4px; line-height: 1.4; }
+.mk-leer-karten { position: relative; flex: none; width: 58px; height: 64px; }
+.mk-leer-karten span { position: absolute; width: 44px; height: 54px; border-radius: 9px; display: grid; place-items: center; font-weight: 900; font-size: 20px; color: var(--m);
+  background: var(--glas-stark); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.mk-leer-karten span:first-child { left: 0; top: 6px; transform: rotate(-9deg); }
+.mk-leer-karten span:last-child { right: 0; top: 0; transform: rotate(7deg); background: color-mix(in srgb, var(--m) 12%, var(--glas-stark)); }
+
+/* Stapel-Ansicht: jede Karte zeigt Vorder- und Rückseite, getrennt durch eine Knicklinie */
+.mk-liste { display: grid; gap: 10px; padding-bottom: 20px; }
+.mk-karte { position: relative; display: grid; grid-template-columns: 1fr 1fr; text-align: left; border-radius: 16px; overflow: hidden;
+  background: var(--glas-stark); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); transition: transform 0.12s; }
+.mk-karte:active { transform: scale(0.985); }
+.mk-karte::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 4px; background: linear-gradient(180deg, var(--m-licht), var(--m)); }
+.mk-vorne, .mk-hinten { padding: 12px 14px 22px; font-size: 14px; line-height: 1.45; max-height: calc(6 * 1.45em + 34px); overflow: hidden; overflow-wrap: anywhere;
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - 30px), transparent calc(100% - 10px)); mask-image: linear-gradient(180deg, #000 calc(100% - 30px), transparent calc(100% - 10px)); }
+.mk-vorne { font-weight: 700; padding-left: 16px; }
+.mk-hinten { color: var(--text2); border-left: 1.5px dashed color-mix(in srgb, var(--text) 20%, transparent); }
+.mk-fach { position: absolute; right: 10px; bottom: 7px; display: flex; gap: 3px; }
+.mk-fach i, .mk-leitner i { width: 6px; height: 6px; border-radius: 50%; background: color-mix(in srgb, var(--text) 15%, transparent); }
+.mk-fach i.an { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+@media (max-width: 420px) { .mk-karte { grid-template-columns: 1fr; } .mk-vorne { padding-bottom: 10px; -webkit-mask-image: none; mask-image: none; } .mk-hinten { border-left: 0; border-top: 1.5px dashed color-mix(in srgb, var(--text) 20%, transparent); padding-left: 16px; } }
+
+/* Editor */
+.mk-editor { display: grid; gap: 16px; padding: 4px 2px 24px; }
+.mk-quelle { display: inline-flex; align-items: center; gap: 6px; justify-self: start; font-size: 13px; font-weight: 650; color: var(--m); padding: 5px 10px; border-radius: 99px; background: color-mix(in srgb, var(--m) 10%, transparent); }
+.mk-quelle .ic { width: 15px; height: 15px; }
+.mk-feld { display: grid; gap: 8px; }
+.mk-feld > span { font-size: 13px; font-weight: 800; letter-spacing: 0.4px; text-transform: uppercase; color: var(--text2); }
+.mk-feld > span small { text-transform: none; letter-spacing: 0; font-weight: 600; color: var(--text3); margin-left: 6px; }
+.offen-eingabe.mk-text { min-height: 0; }
+.mk-stapel-input { min-height: 0; padding: 11px 14px; font-size: 15px; }
+.mk-tipp { margin-top: -8px; font-size: 12.5px; color: var(--text3); }
+.mk-aktionen { display: grid; gap: 10px; }
+.rot-text { color: var(--err) !important; }
+.mk-datei { cursor: pointer; }
+
+/* Vorschau: kleine Karte zum Umdrehen */
+.mk-vorschau { perspective: 1000px; }
+.mk-mini { position: relative; display: grid; min-height: 150px; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(.2,.8,.2,1); cursor: pointer; }
+.mk-mini.um { transform: rotateY(180deg); }
+.mk-mini-seite { grid-area: 1 / 1; overflow: hidden; display: flex; flex-direction: column; gap: 8px; padding: 16px 16px 18px; border-radius: 18px; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  background: linear-gradient(160deg, var(--glas-stark), var(--glas)); border: 1px solid var(--glas-rand); box-shadow: var(--schatten-hoch); font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+.mk-mini-seite::before { content: ""; height: 4px; margin: -16px -16px 4px; border-radius: 18px 18px 0 0; background: linear-gradient(90deg, var(--m-licht), var(--m)); }
+.mk-mini-seite em { font-style: normal; font-size: 11.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; color: var(--m); }
+.mk-mini-seite.rueck { transform: rotateY(180deg); }
+.mk-mini:focus-visible { outline: 2.5px solid var(--m); outline-offset: 3px; border-radius: 18px; }
+
+/* Große Lernkarte: lange eigene Texte linksbündig */
+.karte .frage-gross.links { text-align: left; font-size: 18px; }
+.karte .seite { overflow-wrap: anywhere; }
+
+/* Lernpfad: eigener Knopf in Lernpfad-Farben (App-Styles treffen .pfad nicht) */
+.pfad .pf-merken { display: inline-flex; align-items: center; gap: 6px; margin-top: 14px; padding: 8px 13px 8px 10px; border-radius: 99px; font-size: 13.5px; font-weight: 750;
+  color: #fde68a; background: rgba(251, 191, 36, 0.1); border: 1px dashed rgba(251, 191, 36, 0.45); }
+.pfad .pf-merken .ic { width: 16px; height: 16px; stroke-width: 2.4; }
+.pfad .pf-merken:active { transform: scale(0.95); }

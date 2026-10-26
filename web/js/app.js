@@ -8,7 +8,8 @@ import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
 import { PAARE } from "./paare.js";
 import { gliederungView } from "./bilr/gliederung.js";
-import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, gelesenAnteil, lesezeit } from "./kompakt.js";
+import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, gelesenAnteil, lesezeit, kompaktInline } from "./kompakt.js";
+import * as MK from "./meinekarten.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
@@ -19,7 +20,7 @@ import qrcode from "./lib/qrcode.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
-const LEER = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null, pfad: {}, kompakt: {}, einstellungen: null });
+const LEER = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null, pfad: {}, kompakt: {}, meineKarten: {}, einstellungen: null });
 function laden() {
   let s = LEER();
   try {
@@ -434,7 +435,7 @@ function render() {
   if (state.deck) html += deckView();
   if (state.paare) html += paareView();
   if (state.pfad) {
-    const hilfe = { esc, ic, konfetti, normLabel: (r) => norm(r)?.label || r };
+    const hilfe = { esc, ic, konfetti, normLabel: (r) => norm(r)?.label || r, karteMerken: true };
     html += state.pfad.block ? blockView(state.pfad.fach, state.pfad.block, hilfe) : kartenView(state.pfad.fach, hilfe);
   }
   if (state.kompakt) html += kompaktEbene();
@@ -685,6 +686,9 @@ function tabLernen() {
     heute = `<div class="kachel breit"><span class="k-icon" style="background:var(--ok-weak);color:var(--ok)">${ic("haken")}</span>
       <span class="grow"><b>${n ? "Heute nichts zu wiederholen" : "Lernkartei startet mit deiner ersten Übung"}</b><div class="sub">${n ? `Nächste Wiederholung ${inTagen(n)}.` : "Jede Aufgabe kommt nach 1, 3, 7, 16 und 35 Tagen wieder."}</div></span></div>`;
   }
+  const mkFaellig = MK.faelligeKarten(meine(), state.fach).length;
+  if (mkFaellig) heute += `<button class="kachel breit" data-a="meineLernen" data-v="faellig"><span class="k-icon">${ic("karten")}</span>
+      <span class="grow"><b>${mkFaellig} ${mkFaellig === 1 ? "eigene Karteikarte" : "eigene Karteikarten"} fällig</b><div class="sub">Umdrehen, bewerten – dauert nur kurz</div></span><span class="rechts">${ic("pfeil")}</span></button>`;
   const kachel = (a, icon, titel, text, v = "") => `<button class="kachel" data-a="schnell" data-v="${a}" data-t="${v}"><span class="k-icon">${ic(icon)}</span><span class="k-text"><b>${titel}</b><span class="sub">${esc(text)}</span></span></button>`;
   const paareKachel = PAARE[state.fach] ? `<button class="kachel" data-a="paareStart"><span class="k-icon">${ic("karten")}</span><span class="k-text"><b>Paare finden</b><span class="sub">Klausurnormen und ihre Bedeutung</span></span></button>` : "";
   const schnell = state.fach === "oer"
@@ -767,7 +771,7 @@ function kompaktEbene() {
   const themen = kompaktThemen(fach).length ? kompaktThemen(fach) : themenFuer(fach).filter((t) => KOMPAKT[t.id]);
   if (!id) return bibliothekView(fach, themen, { ic, gelesen: stat.kompakt });
   const i = themen.findIndex((t) => t.id === id);
-  return kompaktView(id, { ic, thema: THEMA[id], nachbarn: [themen[i - 1], themen[i + 1]], gelesen: stat.kompakt, ausSitzung });
+  return kompaktView(id, { ic, thema: THEMA[id], nachbarn: [themen[i - 1], themen[i + 1]], gelesen: stat.kompakt, ausSitzung, alsKarte: alsKarteKnopf });
 }
 
 /** Einstieg ins Kompaktwissen auf der Modulseite. */
@@ -852,7 +856,122 @@ function tabKlausur() {
     </div></div>` : `<div class="leer-zustand">${ic("klausur")}<div><b>Noch keine Klausur geschrieben</b></div><div class="sub">Deine Ergebnisse erscheinen hier als Verlauf.</div></div>`}`;
 }
 
+// ======================= Eigene Karteikarten =======================
+// Selbst schreiben oder mit „+ Als Karte“ aus Aufgaben, Kompaktwissen, Normen und Lernpfad übernehmen (meinekarten.js).
+const meine = () => (stat.meineKarten ||= {});
+/** Kartentext: **fett** als Textmarker, Normzitate antippbar, Zeilenumbrüche bleiben. */
+const kartenText = (t) => kompaktInline(t).replace(/\n/g, "<br>");
+/** In Listen, die selbst angetippt werden: Normzitate nur hervorheben, nicht verlinken. */
+const ohneLinks = (html) => html.replace(/<span class="km-norm"[^>]*>(.*?)<\/span>/g, "<b>$1</b>");
+/** Knopf „+ Als Karte“ – quelle bestimmt, woraus der Entwurf entsteht (siehe AKTIONEN.alsKarte). */
+const alsKarteKnopf = (quelle, v = "", kl = "") => `<button class="als-karte ${kl}" data-a="alsKarte" data-q="${quelle}" data-v="${esc(v)}" aria-label="Als Karteikarte speichern" title="Als Karteikarte speichern">${ic("plus", "klein")}<span>Als Karte</span></button>`;
+/** Aufgabe → Karte: Vorderseite Aufgabentext, Rückseite Lösung (mit Erklärung). */
+function karteAusFrage(f) {
+  const vorne = (f.fall ? "Klausurfall: " : "") + f.text;
+  let hinten = "";
+  if (f.typ === "offen") hinten = f.antwort;
+  else if (f.typ === "zahl") hinten = "Lösung: " + loesungText(f);
+  else if (f.typ === "auswahl") hinten = f.richtig.map((i) => "✓ " + f.optionen[i]).join("\n");
+  else if (f.typ === "buchung") {
+    const l = f.loesungen[0];
+    hinten = l.soll.map(([k, c]) => `${K(k).name} ${G.text(c)}`).join("\n") + "\n" + l.haben.map(([k, c]) => `an ${K(k).name} ${G.text(c)}`).join("\n");
+  }
+  if (f.erklaerung && f.typ !== "offen") hinten += "\n\n" + f.erklaerung;
+  return { v: vorne, h: hinten, f: THEMA[f.thema].fach, q: THEMA[f.thema].titel };
+}
+/** Zuletzt falsch beantwortete Aufgaben des Moduls – ohne Grafikaufgaben. */
+function fehlerKarten(fach) {
+  return idsImTeil(fach).filter((id) => stat.lern[id]?.falsch).map((id) => ALLE.find((v) => v.id === id).erzeugen(new Zufall(1)))
+    .filter((f) => !f.grafik).map((f) => ({ id: f.id, fehler: true, thema: f.thema, ...karteAusFrage(f) }));
+}
+function karteOeffnen(entwurf) {
+  // Aus einem anderen Blatt (Gesetzestext, Stapel) geöffnet: Schließen führt dorthin zurück
+  const zurueck = state.sheet && state.sheet.art !== "karteEdit" ? state.sheet : null;
+  state.sheet = { art: "karteEdit", e: { f: state.fach, st: lies("bsr.stapel", MK.STANDARD_STAPEL), ...entwurf }, um: false, zurueck };
+  render();
+}
+/** Karteneditor: Vorder- und Rückseite, Stapel (vorhandene als Chips), Vorschau zum Umdrehen. */
+function karteEditView(sh) {
+  const e = sh.e, stapel = MK.stapelVon(meine(), e.f).map((s) => s.name);
+  if (!stapel.includes(MK.STANDARD_STAPEL)) stapel.unshift(MK.STANDARD_STAPEL);
+  return `<div class="mk-editor">
+    ${e.q ? `<div class="mk-quelle">${ic("akte", "klein")} Aus: ${esc(e.q)}</div>` : ""}
+    <label class="mk-feld"><span>Vorderseite <small>Frage oder Stichwort</small></span>
+      <textarea class="offen-eingabe mk-text" id="kVorne" data-fokus="kVorne" rows="3" maxlength="2000" placeholder="z. B. Wann gilt das Witwensplitting?">${esc(e.v || "")}</textarea></label>
+    <label class="mk-feld"><span>Rückseite <small>Antwort mit Norm</small></span>
+      <textarea class="offen-eingabe mk-text" id="kHinten" data-fokus="kHinten" rows="5" maxlength="2000" placeholder="z. B. Im Jahr nach dem Tod des Ehegatten (§ 32a Abs. 6 S. 1 Nr. 1 EStG).">${esc(e.h || "")}</textarea></label>
+    <div class="mk-tipp">**Wort** wird zum Textmarker · Paragrafen wie „§ 26 EStG“ werden antippbar.</div>
+    <div class="mk-feld"><span>Stapel</span>
+      <div class="chip-reihe mk-stapel-chips">${stapel.map((s) => `<button class="chip ${e.st === s ? "aktiv" : ""}" data-a="karteStapel" data-v="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+      <input class="offen-eingabe mk-stapel-input" id="kStapel" data-fokus="kStapel" maxlength="40" placeholder="Neuer Stapel, z. B. Fristen" value="${stapel.includes(e.st) ? "" : esc(e.st)}" autocomplete="off"></div>
+    <div class="mk-feld"><span>Vorschau <small>antippen zum Umdrehen</small></span>
+      <div class="mk-vorschau" id="kVorschau">${kartenVorschau(e, sh.um)}</div></div>
+    <div class="mk-aktionen">
+      <button class="knopf" id="kSpeichern" data-a="karteSpeichern" ${MK.entwurfOk(e) ? "" : "disabled"}>${ic("haken")} ${e.id ? "Änderungen speichern" : "Karte speichern"}</button>
+      ${e.id ? `<button class="knopf zweit rot-text" data-a="karteLoeschen" data-v="${e.id}">${ic("muell")} Karte löschen</button>` : ""}
+    </div></div>`;
+}
+const kartenVorschau = (e, um) => `<div class="mk-mini ${um ? "um" : ""}" data-a="karteVorschauDrehen" role="button" tabindex="0" aria-label="Vorschau umdrehen">
+    <div class="mk-mini-seite"><em>Vorne</em><div>${e.v ? kartenText(e.v) : `<span class="sub">Vorderseite …</span>`}</div></div>
+    <div class="mk-mini-seite rueck"><em>Hinten</em><div>${e.h ? kartenText(e.h) : `<span class="sub">Rückseite …</span>`}</div></div></div>`;
+
+/** Stapel ansehen: alle Karten als kleine Doppelkarten (vorne | hinten), antippen zum Bearbeiten. */
+function stapelView(name) {
+  const ks = MK.kartenVon(meine(), state.fach).filter((k) => k.st === name);
+  if (!ks.length) return `<div class="leer-zustand">${ic("karten")}<div><b>Der Stapel ist leer</b></div></div>`;
+  const faellig = ks.filter((k) => MK.istFaellig(k)).length;
+  return `<div class="kachel-grid" style="margin-bottom:14px">
+      <button class="kachel" data-a="meineLernen" data-v="${esc("st:" + name)}"><span class="k-icon">${ic("play", "fill")}</span><span class="k-text"><b>Alle lernen</b><span class="sub">${ks.length} Karten</span></span></button>
+      <button class="kachel" data-a="meineLernen" data-v="${esc("sf:" + name)}" ${faellig ? "" : "disabled"}><span class="k-icon" style="background:var(--warn-weak);color:var(--warn)">${ic("wiederholen")}</span><span class="k-text"><b>Fällige</b><span class="sub">${faellig} Karten</span></span></button></div>
+    <div class="mk-liste">${ks.map((k) => `<button class="mk-karte" data-a="karteBearbeiten" data-v="${k.id}" aria-label="Karte bearbeiten">
+      <span class="mk-vorne">${ohneLinks(kartenText(k.v))}</span><span class="mk-hinten">${ohneLinks(kartenText(k.h))}</span>
+      <span class="mk-fach" title="Lernkartei-Fach">${leitnerPunkte(k.l?.fach || 0)}</span></button>`).join("")}</div>`;
+}
+const leitnerPunkte = (n) => Array.from({ length: FAECHER_MAX }, (_, i) => `<i class="${i < n ? "an" : ""}"></i>`).join("");
+
+/** Export und Import der eigenen Karten (Datei zum Sichern, Weitergeben oder für Anki). */
+function kartenIoView() {
+  const n = MK.kartenVon(meine(), state.fach).length, alle = MK.kartenVon(meine()).length;
+  return `<div class="gruppe" style="margin-top:4px"><div class="gruppe-titel">Exportieren</div><div class="liste">
+      <button class="zeile" data-a="kartenExport" data-v="json" ${alle ? "" : "disabled"}><span class="symbol">${ic("export")}</span><span class="grow"><b>Als Datei sichern oder teilen</b><div class="sub">Alle ${alle} eigenen Karten (.json) – kann in der App wieder importiert werden, auch von anderen.</div></span></button>
+      <button class="zeile" data-a="kartenExport" data-v="anki" ${n ? "" : "disabled"}><span class="symbol">${ic("karten")}</span><span class="grow"><b>Für Anki & Co.</b><div class="sub">${n} Karten aus ${esc(MODUL[state.fach].titel)} als Textdatei (Vorderseite ⇥ Rückseite).</div></span></button>
+    </div></div>
+    <div class="gruppe"><div class="gruppe-titel">Importieren</div><div class="liste">
+      <label class="zeile mk-datei"><span class="symbol">${ic("plus")}</span><span class="grow"><b>Datei auswählen</b><div class="sub">.json aus dieser App oder Text/CSV mit Vorderseite und Rückseite je Zeile (getrennt durch Tab oder Semikolon). Neue Karten landen in ${esc(MODUL[state.fach].titel)}.</div></span>
+        <input type="file" id="kImport" accept=".json,.txt,.csv,.tsv,text/plain,application/json" hidden></label>
+    </div></div>
+    <div class="gruppe-fuss" style="margin:0 4px 20px">Doppelte Karten (gleicher Text) werden beim Import übersprungen. Der Lernstand wird nicht mit exportiert.</div>`;
+}
+function dateiSpeichern(name, inhalt, typ) {
+  const datei = new File([inhalt], name, { type: typ });
+  if (navigator.canShare?.({ files: [datei] })) { navigator.share({ files: [datei], title: name }).catch(() => {}); return; }
+  const url = URL.createObjectURL(datei), a = document.createElement("a");
+  a.href = url; a.download = name; document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
 // ======================= Tab: Karten =======================
+function meineKartenBereich() {
+  const m = meine(), alle = MK.kartenVon(m, state.fach), faellig = MK.faelligeKarten(m, state.fach), stapel = MK.stapelVon(m, state.fach);
+  const fehler = fehlerKarten(state.fach).length;
+  const stapelHtml = stapel.length ? `<div class="mk-stapel-wahl">${stapel.map((s) => `<button class="mk-stapel" data-a="stapelOeffnen" data-v="${esc(s.name)}">
+      <span class="mk-st-blatt" aria-hidden="true"></span><span class="mk-st-blatt" aria-hidden="true"></span>
+      <span class="mk-st-inhalt"><b>${esc(s.name)}</b><span class="sub">${s.n} ${s.n === 1 ? "Karte" : "Karten"}</span>
+        <span class="mk-st-fuss"><span class="tk-balken"><span style="width:${(s.gelernt / s.n) * 100}%"></span></span>${s.faellig ? `<span class="mk-faellig">${s.faellig} fällig</span>` : `<span class="mk-ok">${ic("haken", "klein")}</span>`}</span></span></button>`).join("")}</div>`
+    : `<div class="mk-leer"><div class="mk-leer-karten" aria-hidden="true"><span>§</span><span>?</span></div>
+        <div><b>Noch keine eigenen Karten</b><div class="sub">Schreib eine Karte oder tippe bei Aufgaben, im Kompaktwissen, in Gesetzestexten und im Lernpfad auf <b>„+ Als Karte“</b>.</div></div></div>`;
+  return `<section class="mk-bereich">
+    <div class="gruppe-titel">Meine Karten <span class="sub" style="text-transform:none;letter-spacing:0">${alle.length ? `${alle.length} · Lernkartei 1–3–7–16–35 Tage` : ""}</span></div>
+    <div class="kachel-grid">
+      <button class="kachel" data-a="meineLernen" data-v="faellig" ${faellig.length ? "" : "disabled"}><span class="k-icon" style="${faellig.length ? "background:var(--warn-weak);color:var(--warn)" : ""}">${ic("wiederholen")}</span><span class="k-text"><b>${faellig.length ? `${faellig.length} fällig` : "Nichts fällig"}</b><span class="sub">${faellig.length ? "Jetzt wiederholen" : alle.length ? "Alles im Plan" : "Erst Karten anlegen"}</span></span></button>
+      <button class="kachel" data-a="karteNeu"><span class="k-icon">${ic("karteNeu")}</span><span class="k-text"><b>Neue Karte</b><span class="sub">Selbst schreiben</span></span></button>
+    </div>
+    ${fehler ? `<button class="kachel breit mk-fehler" data-a="fehlerLernen" style="margin-top:10px"><span class="k-icon" style="background:var(--err-weak);color:var(--err)">${ic("ziel")}</span>
+      <span class="grow"><b>Meine Fehler</b><div class="sub">${fehler} falsch beantwortete ${fehler === 1 ? "Aufgabe" : "Aufgaben"} als Karten</div></span><span class="rechts">${ic("pfeil")}</span></button>` : ""}
+    ${stapelHtml}
+    <button class="link-klein mk-io" data-a="kartenIO">${ic("export", "klein")} Exportieren / Importieren</button>
+  </section>`;
+}
 function tabKarten() {
   const LERNKARTEN = kartenImTeil(state.fach);
   const gewusst = new Set(stat.karten);
@@ -860,7 +979,9 @@ function tabKarten() {
   const themen = themenImTeil(state.fach).filter((t) => LERNKARTEN.some((k) => k.thema === t.id));
   const p = Math.round(((LERNKARTEN.length - offen.length) / LERNKARTEN.length) * 100);
   return `
-    ${seitenKopf("Lernkarten", state.fach === "bsr" ? "Merksätze, Definitionen, Fristen und Formeln aus dem Skript." : "Jede Frage-Antwort-Aufgabe als Karte – Rückseite mit Musterantwort und Normzitat.")}
+    ${seitenKopf("Karteikarten", "Eigene Karten und fertige Lernkarten – Vorderseite lesen, umdrehen, ehrlich bewerten.")}
+    ${meineKartenBereich()}
+    <div class="gruppe-titel" style="margin-top:22px">Fertige Lernkarten <span class="sub" style="text-transform:none;letter-spacing:0">${state.fach === "bsr" ? "Merksätze, Definitionen, Fristen" : "Frage – Musterantwort"}</span></div>
     ${state.fach === "bsr" ? teilSchalter() : ""}
     <div class="kachel-grid">
       <button class="kachel" data-a="deck" data-v="alle"><span class="k-icon">${ic("mischen")}</span><span class="k-text"><b>Alle mischen</b><span class="sub">${LERNKARTEN.length} Karten</span></span></button>
@@ -1140,9 +1261,10 @@ function zahlView(f, antwort, b, lock) {
 function auswertungView(f, b) {
   const html = auswertungInhalt(f, b);
   const x = s();
-  if (!KOMPAKT[f.thema] || (x?.modus === "klausur" && !x.beendet)) return html;
-  const link = `<button class="km-link" data-a="kompaktSitzung" data-v="${f.thema}">${ic("akte", "klein")}<span><b>Überblick: ${esc(THEMA[f.thema].titel)}</b><span class="sub">Das Wichtigste in ${lesezeit(KOMPAKT[f.thema])} Min. – danach geht es hier weiter</span></span></button>`;
-  return html.replace(/<\/div><\/div>\s*$/, `${link}</div></div>`);
+  if (x?.modus === "klausur" && !x.beendet) return html;
+  const karte = f.grafik ? "" : `<div class="mk-aufgabe-fuss">${alsKarteKnopf("frage")}</div>`;
+  const link = KOMPAKT[f.thema] ? `<button class="km-link" data-a="kompaktSitzung" data-v="${f.thema}">${ic("akte", "klein")}<span><b>Überblick: ${esc(THEMA[f.thema].titel)}</b><span class="sub">Das Wichtigste in ${lesezeit(KOMPAKT[f.thema])} Min. – danach geht es hier weiter</span></span></button>` : "";
+  return html.replace(/<\/div><\/div>\s*$/, `${karte}${link}</div></div>`);
 }
 function auswertungInhalt(f, b) {
   let extra = "";
@@ -1266,14 +1388,21 @@ function deckView() {
         <button class="knopf" data-a="deckZu" style="max-width:300px;margin:12px auto">Fertig</button></div></div>`;
   }
   const k = d.karten[d.index];
+  // Eigene Karten und „Meine Fehler“: Text mit Textmarker und antippbaren Normen; fertige Lernkarten wie bisher
+  const reich = !!k.art;
+  const kopf = k.art === "eigen" ? k.kopf : k.art === "fehler" ? "Meine Fehler · " + THEMA[k.thema].titel : THEMA[k.thema].titel;
+  const vorne = reich ? kartenText(k.vorne) : esc(k.vorne), hinten = reich ? kartenText(k.hinten) : esc(k.hinten);
+  const lang = k.vorne.length > 90;
   return `<div class="vollbild">
-    <div class="vb-kopf"><button class="rund" data-a="deckZu" aria-label="Beenden">${ic("kreuz")}</button><div class="sitzung-fortschritt"><span style="width:${(d.index / d.karten.length) * 100}%"></span></div><span class="zaehler">${d.index + 1}/${d.karten.length}</span></div>
+    <div class="vb-kopf"><button class="rund" data-a="deckZu" aria-label="Beenden">${ic("kreuz")}</button><div class="sitzung-fortschritt"><span style="width:${(d.index / d.karten.length) * 100}%"></span></div>
+      ${k.art === "eigen" ? `<button class="rund" data-a="karteBearbeiten" data-v="${k.id}" aria-label="Karte bearbeiten">${ic("stift")}</button>` : ""}<span class="zaehler">${d.index + 1}/${d.karten.length}</span></div>
     <div class="vb-inhalt" style="display:flex;flex-direction:column">
       <div class="karte-buehne"><div class="karte ${d.um ? "um" : ""}" data-a="umdrehen">
-        <div class="seite"><div class="klein">${esc(THEMA[k.thema].titel)}</div><div class="${k.normen ? "frage-gross" : "gross"}">${esc(k.vorne)}</div><div class="sub" style="color:var(--text3);margin-top:24px">Tippen zum Umdrehen</div></div>
-        <div class="seite rueck"><div class="klein">${esc(k.vorne)}</div><div class="mittel-t ${k.normen ? "links" : ""}">${esc(k.hinten)}</div>
+        <div class="seite"><div class="klein">${esc(kopf)}</div><div class="${k.normen || lang ? "frage-gross" : "gross"}${reich && lang ? " links" : ""}">${vorne}</div><div class="sub" style="color:var(--text3);margin-top:24px">Tippen zum Umdrehen</div></div>
+        <div class="seite rueck"><div class="klein">${reich ? esc(kopf) : esc(k.vorne)}</div><div class="mittel-t ${k.normen || reich ? "links" : ""}">${hinten}</div>
           ${k.normen?.length ? `<div class="sub" style="margin-top:12px">${k.normen.map((r) => norm(r)?.label).filter(Boolean).map(esc).join(" · ")}</div>` : ""}</div>
       </div></div>
+      ${k.art === "fehler" ? `<div class="gruppe-fuss" style="text-align:center">„Gewusst“ holt die Aufgabe in der Lernkartei ein Fach weiter.</div>` : ""}
     </div>
     <div class="vb-fuss"><div class="reihe">${deckFuss(d.um)}</div></div></div>`;
 }
@@ -1416,7 +1545,17 @@ function sheetView() {
     inhalt = `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
       ${(schema ? n.absaetze.filter((a) => a.abs === "1") : n.absaetze).map((a) => `<p style="margin:8px 0;line-height:1.55">${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</span></div></div>
       ${schema ? gliederungView() : ""}
+      <div class="mk-norm-fuss">${alsKarteKnopf("norm", sh.ref)}</div>
       <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: www.gesetze-im-internet.de</div>`;
+  } else if (sh.art === "karteEdit") {
+    titel = sh.e.id ? "Karte bearbeiten" : "Neue Karte"; links = sh.zurueck ? "Zurück" : "Abbrechen";
+    inhalt = karteEditView(sh);
+  } else if (sh.art === "stapel") {
+    titel = sh.name;
+    inhalt = stapelView(sh.name);
+  } else if (sh.art === "kartenIO") {
+    titel = "Exportieren / Importieren";
+    inhalt = kartenIoView();
   } else if (sh.art === "punktesammler") {
     titel = "Punkte sammeln";
     inhalt = `<div class="gruppe-fuss" style="margin:4px 4px 12px">Diese Sätze werden in der Klausur fast wörtlich verlangt – auswendig lernen.</div>
@@ -1687,6 +1826,7 @@ const AKTIONEN = {
     if (inp && !inp.value) inp.focus();
   },
   sheetZu: () => {
+    if (state.sheet?.zurueck) { state.sheet = state.sheet.zurueck; render(); return; }
     if (state.sheet?.art === "willkommen") schreib("bsr.willkommen", "1");
     if (state.sheet?.art === "konto" && state.sitzung) {
       // Abbrechen bei neuer, noch leerer Zeile: Zeile wieder entfernen
@@ -1721,14 +1861,102 @@ const AKTIONEN = {
   },
   karte: (v) => {
     const d = state.deck, k = d.karten[d.index];
-    const gew = new Set(stat.karten);
-    if (v === "1") { d.gewusst += 1; gew.add(k.id); } else gew.delete(k.id);
-    stat.karten = [...gew];
+    if (v === "1") d.gewusst += 1;
+    if (k.art === "eigen") stat.meineKarten = MK.bewerteKarte(meine(), k.id, v === "1");
+    else if (k.art === "fehler") stat.lern[k.id] = planen(stat.lern[k.id], v === "1");
+    else {
+      const gew = new Set(stat.karten);
+      if (v === "1") gew.add(k.id); else gew.delete(k.id);
+      stat.karten = [...gew];
+    }
     speichern();
     d.index += 1; d.um = false;
     render();
   },
   deckZu: () => { state.deck = null; render(); },
+  // ---------- Eigene Karteikarten ----------
+  karteNeu: () => karteOeffnen({}),
+  karteBearbeiten: (v) => {
+    const k = meine()[v];
+    if (!k || k.x) return;
+    karteOeffnen({ id: v, v: k.v, h: k.h, f: k.f, st: k.st, q: k.q });
+  },
+  karteStapel: (v) => { state.sheet.e.st = v; render(); },
+  karteVorschauDrehen: () => {
+    state.sheet.um = !state.sheet.um;
+    document.querySelector(".mk-mini")?.classList.toggle("um", state.sheet.um);
+  },
+  karteSpeichern: () => {
+    const sh = state.sheet, e = sh.e;
+    if (!MK.entwurfOk(e)) return;
+    stat.meineKarten = MK.speichernKarte(meine(), e);
+    schreib("bsr.stapel", e.st || MK.STANDARD_STAPEL);
+    speichern();
+    // Wird gerade gelernt: geänderten Text sofort auf der Karte zeigen
+    const dk = state.deck?.karten.find((k) => k.art === "eigen" && k.id === e.id);
+    if (dk) { const k = meine()[e.id]; Object.assign(dk, { vorne: k.v, hinten: k.h, kopf: k.st }); }
+    state.sheet = sh.zurueck || null;
+    toast(e.id ? "Karte gespeichert." : `Karte gespeichert – Stapel „${e.st || MK.STANDARD_STAPEL}“ im Reiter Karten.`);
+    render();
+  },
+  karteLoeschen: (v) => {
+    if (!confirm("Diese Karte löschen? Das gilt auch auf deinen anderen Geräten.")) return;
+    stat.meineKarten = MK.loeschenKarte(meine(), v);
+    speichern();
+    if (state.deck) {
+      const i = state.deck.karten.findIndex((k) => k.art === "eigen" && k.id === v);
+      if (i >= 0) { state.deck.karten.splice(i, 1); if (i < state.deck.index) state.deck.index -= 1; state.deck.um = false; }
+      if (!state.deck.karten.length) state.deck = null;
+    }
+    const z = state.sheet?.zurueck;
+    state.sheet = z && MK.kartenVon(meine(), state.fach).some((k) => k.st === z.name) ? z : null;
+    toast("Karte gelöscht.");
+    render();
+  },
+  stapelOeffnen: (v) => { state.sheet = { art: "stapel", name: v }; render(); },
+  meineLernen: (v) => {
+    const m = meine(), r = new Zufall();
+    let ks;
+    if (v === "faellig") ks = MK.faelligeKarten(m, state.fach);
+    else if (v.startsWith("st:")) ks = r.mischen(MK.kartenVon(m, state.fach).filter((k) => k.st === v.slice(3)));
+    else if (v.startsWith("sf:")) ks = MK.faelligeKarten(m, state.fach).filter((k) => k.st === v.slice(3));
+    if (!ks?.length) return;
+    state.sheet = null;
+    state.deck = { karten: ks.map((k) => ({ id: k.id, art: "eigen", kopf: k.st, vorne: k.v, hinten: k.h })), index: 0, um: false, gewusst: 0 };
+    render();
+  },
+  fehlerLernen: () => {
+    const ks = new Zufall().mischen(fehlerKarten(state.fach));
+    if (!ks.length) return;
+    state.deck = { karten: ks.map((k) => ({ id: k.id, art: "fehler", thema: k.thema, vorne: k.v, hinten: k.h })), index: 0, um: false, gewusst: 0 };
+    render();
+  },
+  kartenIO: () => { state.sheet = { art: "kartenIO" }; render(); },
+  kartenExport: (v) => {
+    const tag = new Date().toISOString().slice(0, 10);
+    if (v === "json") dateiSpeichern(`karteikarten-${tag}.json`, MK.exportJson(meine()), "application/json");
+    else dateiSpeichern(`karteikarten-${state.fach}-${tag}.txt`, MK.exportText(meine(), state.fach), "text/plain");
+  },
+  /** „+ Als Karte“: Entwurf aus dem jeweiligen Inhalt, im Editor noch anpassbar. */
+  alsKarte: (v, el) => {
+    const q = el.dataset.q;
+    if (q === "frage") {
+      const x = s(), f = x.review != null ? x.fragen[x.review] : aktFrage();
+      karteOeffnen(karteAusFrage(f));
+    } else if (q === "punkt") {
+      const [id, feld, i] = v.split("|"), th = THEMA[id];
+      karteOeffnen({ ...MK.ausPunkt(KOMPAKT[id][feld][Number(i)], th.titel, feld), f: th.fach, q: `Kompaktwissen · ${th.titel}` });
+    } else if (q === "beispiel") {
+      const [id, i] = v.split("|"), th = THEMA[id];
+      karteOeffnen({ ...MK.ausBeispiel(KOMPAKT[id].beispiele[Number(i)]), f: th.fach, q: `Klausurbeispiel · ${th.titel}` });
+    } else if (q === "norm") {
+      const n = norm(v);
+      if (n) karteOeffnen({ ...MK.ausNorm(n), q: "Gesetzestext" });
+    } else if (q === "pfad") {
+      const z = state.pfad?.block, b = z && PFADE[state.pfad.fach].bloecke.find((x) => x.id === z.id), c = b?.karten[z.schritt - 1];
+      if (c) karteOeffnen({ ...MK.ausPfadKarte(c), q: `Lernpfad · ${b.titel}` });
+    }
+  },
   kompakt: (v) => {
     if (!KOMPAKT[v]) return;
     const vorher = state.kompakt;
@@ -1816,10 +2044,37 @@ app.addEventListener("input", (e) => {
     document.getElementById("kontoListe").innerHTML = kontoListe("kontoGewaehlt");
   } else if (t.id === "syncCode") {
     state.syncEingabe = t.value;
+  } else if (t.id === "kVorne" || t.id === "kHinten" || t.id === "kStapel") {
+    const e = state.sheet?.e;
+    if (!e) return;
+    if (t.id === "kVorne") e.v = t.value;
+    else if (t.id === "kHinten") e.h = t.value;
+    else {
+      e.st = t.value.trim() || lies("bsr.stapel", MK.STANDARD_STAPEL);
+      document.querySelectorAll(".mk-stapel-chips .chip").forEach((c) => c.classList.toggle("aktiv", !t.value.trim() && c.dataset.v === e.st));
+    }
+    const v = document.getElementById("kVorschau");
+    if (v && t.id !== "kStapel") v.innerHTML = kartenVorschau(e, state.sheet.um);
+    const k = document.getElementById("kSpeichern");
+    if (k) k.disabled = !MK.entwurfOk(e);
   } else if (t.id === "kontoTabSuche") {
     state.kontoSuche = t.value;
     document.getElementById("kontoTabListe").innerHTML = kontoListe("kontoDetail");
   }
+});
+
+// Import eigener Karteikarten aus einer Datei
+app.addEventListener("change", async (e) => {
+  if (e.target.id !== "kImport" || !e.target.files?.[0]) return;
+  const datei = e.target.files[0];
+  if (datei.size > 2e6) { toast("Die Datei ist zu groß (höchstens 2 MB)."); return; }
+  const { meine: neu, neu: n, doppelt } = MK.importieren(meine(), await datei.text(), { fach: state.fach });
+  if (!n) { toast(doppelt ? "Alle Karten sind schon vorhanden." : "In der Datei wurden keine Karten gefunden."); return; }
+  stat.meineKarten = neu;
+  speichern();
+  state.sheet = null;
+  toast(`${n} ${n === 1 ? "Karte" : "Karten"} importiert${doppelt ? ` · ${doppelt} doppelte übersprungen` : ""}.`);
+  render();
 });
 
 app.addEventListener("keydown", (e) => {

@@ -189,7 +189,9 @@ test("Wiederholung nach Lernintervallen", async () => {
   for (let i = 0; i < 6; i++) { e = planen(e, true, t0); tage.push(e.fach); }
   assert.deepEqual(tage, [2, 3, 4, 5, 5, 5]);
   assert.equal(new Date(e.faellig).getMonth(), 10); // 35 Tage später → November
-  assert.deepEqual(planen(e, false, t0), { fach: 1, faellig: tagPlus(t0, 1), t: t0 });
+  assert.deepEqual(planen(e, false, t0), { fach: 1, faellig: tagPlus(t0, 1), t: t0, falsch: true });
+  assert.ok(!planen(planen(e, false, t0), true, t0).falsch, "richtig beantwortet → nicht mehr unter „Meine Fehler“");
+  assert.ok(!planen(undefined, true, t0).falsch);
   const lern = { a: { fach: 1, faellig: t0 - 10 }, b: { fach: 2, faellig: t0 - 99 }, c: { fach: 3, faellig: t0 + 5 } };
   assert.deepEqual(faellige(lern, ["a", "b", "c", "d"], t0), ["b", "a"]);
   assert.equal(naechste(lern, ["a", "b", "c"], t0), t0 + 5);
@@ -482,4 +484,86 @@ test("Synchronisierung: gelesene Zusammenfassungen werden vereinigt", async () =
   const { gelesenVereinen } = await import("../js/sync.js");
   assert.deepEqual(gelesenVereinen({ a: 1, b: 5 }, { b: 3, c: 2 }), { a: 1, b: 5, c: 2 });
   assert.deepEqual(gelesenVereinen(undefined, { x: 1 }), { x: 1 });
+});
+
+test("Eigene Karteikarten: anlegen, bearbeiten, lernen, löschen", async () => {
+  const MK = await import("../js/meinekarten.js");
+  assert.ok(!MK.entwurfOk({ v: "Frage", h: "  " }));
+  let m = MK.speichernKarte({}, { v: " Witwensplitting? ", h: "Folgejahr (§ 32a Abs. 6 S. 1 Nr. 1 EStG)", f: "est", st: "" }, 1000);
+  const [id] = Object.keys(m);
+  assert.equal(m[id].v, "Witwensplitting?");
+  assert.equal(m[id].st, MK.STANDARD_STAPEL);
+  assert.deepEqual(MK.faelligeKarten(m, "est", 1000).map((k) => k.id), [id], "neue Karten sind sofort fällig");
+  assert.equal(MK.kartenVon(m, "oer").length, 0);
+  m = MK.bewerteKarte(m, id, true, 1000);
+  assert.equal(m[id].l.fach, 1);
+  assert.equal(MK.faelligeKarten(m, "est", 1000).length, 0, "nach „gewusst“ erst morgen wieder");
+  m = MK.speichernKarte(m, { id, v: "Wann gilt das Witwensplitting?", h: m[id].h, st: "Fristen" }, 2000);
+  assert.equal(m[id].l.fach, 1, "Bearbeiten behält den Lernstand");
+  assert.equal(m[id].f, "est");
+  assert.deepEqual(MK.stapelVon(m, "est", 2000).map((s) => s.name), ["Fristen"]);
+  m = MK.loeschenKarte(m, id, 3000);
+  assert.equal(MK.kartenVon(m).length, 0);
+  assert.ok(m[id].x, "Grabstein bleibt für den Abgleich");
+});
+
+test("Eigene Karteikarten: Geräte-Abgleich verliert weder Bearbeitung noch Wiederholung", async () => {
+  const MK = await import("../js/meinekarten.js");
+  const basis = { a: { v: "A", h: "1", f: "bsr", st: "S", e: 1, t: 1 }, b: { v: "B", h: "2", f: "bsr", st: "S", e: 1, t: 1 } };
+  // Handy bearbeitet a, PC wiederholt a; PC löscht b
+  const handy = { ...basis, a: { ...basis.a, v: "A neu", t: 5 } };
+  const pc = { ...MK.bewerteKarte(basis, "a", true, 6), b: { x: 1, t: 7 } };
+  for (const g of [MK.meineVereinen(handy, pc), MK.meineVereinen(pc, handy)]) {
+    assert.equal(g.a.v, "A neu");
+    assert.equal(g.a.l.fach, 1);
+    assert.ok(g.b.x);
+  }
+  // Abgleich über sync.js
+  const S = await import("../js/sync.js");
+  const db = {};
+  const server = { holen: async (c) => db[c] ? JSON.parse(JSON.stringify(db[c])) : null,
+    speichern: async (c, daten, v) => { if ((db[c]?.version || 0) !== v) return null; db[c] = { daten, version: v + 1 }; return v + 1; } };
+  const leer = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null, meineKarten: {} });
+  const code = S.neuerCode();
+  const h1 = { ...leer(), meineKarten: handy }, p1 = { ...leer(), meineKarten: pc };
+  const r1 = await S.abgleichen(h1, { code, geraet: "H" }, server, 10);
+  const r2 = await S.abgleichen(p1, { code, geraet: "P" }, server, 11);
+  const pcNeu = r2.ergebnis(p1), handyNeu = (await S.abgleichen(r1.ergebnis(h1), r1.lokal, server, 12)).ergebnis(r1.ergebnis(h1));
+  for (const st of [pcNeu, handyNeu]) {
+    assert.deepEqual(MK.kartenVon(st.meineKarten).map((k) => k.v), ["A neu"]);
+    assert.equal(st.meineKarten.a.l.fach, 1);
+  }
+});
+
+test("Eigene Karteikarten: Export und Import (JSON, Anki-Text, Semikolon)", async () => {
+  const MK = await import("../js/meinekarten.js");
+  let m = MK.speichernKarte({}, { v: "**§ 26 EStG**", h: "Wahlrecht\nder Ehegatten", f: "est", st: "Ehe" }, 1);
+  m = MK.speichernKarte(m, { v: "Art. 20 GG", h: "Staatsstrukturprinzipien", f: "oer" }, 2);
+  const json = MK.exportJson(m);
+  const leer = MK.importieren({}, json, { fach: "bsr" }, 10);
+  assert.equal(leer.neu, 2);
+  assert.deepEqual(MK.kartenVon(leer.meine, "est").map((k) => [k.v, k.h, k.st]), [["**§ 26 EStG**", "Wahlrecht\nder Ehegatten", "Ehe"]]);
+  assert.equal(MK.importieren(leer.meine, json, { fach: "bsr" }, 20).doppelt, 2, "Doppelte werden übersprungen");
+  const anki = MK.exportText(m, "est");
+  assert.ok(anki.includes("<b>§ 26 EStG</b>\tWahlrecht<br>der Ehegatten"));
+  const zurueck = MK.importieren({}, anki, { fach: "est" }, 30);
+  assert.deepEqual(MK.kartenVon(zurueck.meine).map((k) => [k.v, k.h, k.f]), [["**§ 26 EStG**", "Wahlrecht\nder Ehegatten", "est"]]);
+  const csv = MK.importieren({}, "Vorne;Hinten\n\"Frist\";\"31.07.\"\nnur eine Spalte\n", { fach: "ust", stapel: "CSV" }, 40);
+  assert.equal(csv.neu, 2);
+  assert.ok(MK.kartenVon(csv.meine).every((k) => k.f === "ust" && k.st === "CSV"));
+  assert.equal(MK.importieren({}, "kein Inhalt", { fach: "ust" }).neu, 0);
+});
+
+test("Eigene Karteikarten: Entwürfe aus Kompaktwissen, Beispielen und Normen", async () => {
+  const MK = await import("../js/meinekarten.js");
+  const { KOMPAKT } = await import("../js/kompakt.js");
+  assert.deepEqual(MK.ausPunkt("**Witwensplitting (§ 32a Abs. 6 S. 1 Nr. 1 EStG):** im Jahr nach dem Tod noch Splitting.", "X"),
+    { v: "Witwensplitting (§ 32a Abs. 6 S. 1 Nr. 1 EStG)", h: "im Jahr nach dem Tod noch Splitting." });
+  assert.equal(MK.ausPunkt("Ohne Stichwort.", "Tarif").v, "Tarif: Was gilt?");
+  for (const k of Object.values(KOMPAKT)) for (const b of k.beispiele) {
+    const e = MK.ausBeispiel(b);
+    assert.ok(MK.entwurfOk(e) && e.h.length <= 2000, b.titel);
+  }
+  const e = MK.ausNorm(norm("EStG 26"));
+  assert.ok(e.v.startsWith("§ 26 EStG") && e.h.includes("Ehegatten") && e.h.length <= 2000);
 });
