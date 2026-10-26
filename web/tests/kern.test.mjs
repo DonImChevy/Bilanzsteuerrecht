@@ -615,3 +615,50 @@ test("Keine doppelten Fragen: Übung je Thema, gemischt und Klausur in allen Mod
   assert.equal(new Set(texte).size, texte.length, "zwei Vorlagen mit gleichem Aufgabentext");
   assert.equal(new Set(LERNKARTEN.map((k) => k.vorne)).size, LERNKARTEN.length, "Lernkarte doppelt");
 });
+
+test("Goodnotes-Lernset importieren (ZIP mit Änderungsprotokoll, wie beim Export)", async () => {
+  const { goodnotesLesen } = await import("../js/goodnotes.js");
+  const MK = await import("../js/meinekarten.js");
+  // Mini-Protobuf-Encoder für den Aufbau der Testdatei
+  const vi = (n) => { const o = []; do { let b = n % 128; n = Math.floor(n / 128); if (n) b |= 128; o.push(b); } while (n); return o; };
+  const L = (f, inhalt) => { const b = typeof inhalt === "string" ? [...new TextEncoder().encode(inhalt)] : inhalt; return [...vi(f * 8 + 2), ...vi(b.length), ...b]; };
+  const V = (f, n) => [...vi(f * 8), ...vi(n)];
+  const seite = (...texte) => L(1, texte.flatMap((x) => L(1, [...L(1, x[0]), ...(x[1] != null ? L(2, x[1]) : [])])));
+  const nachricht = (inhalt) => [...vi(inhalt.length), ...inhalt];
+  const SET = "SET-1";
+  const ev = [
+    nachricht([...L(1, SET), ...L(30, [...L(1, SET), ...L(2, L(1, "BilR Fristen")), ...V(20, 24)])]),
+    nachricht([...L(1, "K2"), ...L(151, [...L(1, "K2"), ...L(2, SET), ...L(4, L(1, "b")), ...L(5, seite(["text/plain"])), ...L(6, seite(["text/plain"]))])]),
+    nachricht([...L(1, "K1"), ...L(151, [...L(1, "K1"), ...L(2, SET), ...L(4, L(1, "a")), ...L(5, seite(["text/plain"])), ...L(6, seite(["text/plain"]))])]),
+    nachricht([...L(1, "K2"), ...L(152, [...L(1, "K2"), ...L(2, SET), ...L(3, L(1, "b")), ...L(4, seite(["text/plain", "Inventur"])), ...L(5, seite(["text/plain", "§ 240 HGB"]))])]),
+    nachricht([...L(1, "K1"), ...L(152, [...L(1, "K1"), ...L(2, SET), ...L(3, L(1, "a")), ...L(4, seite(["text/plain", "Frist"])), ...L(5, seite(["text/plain", "alt"]))])]),
+    nachricht([...L(1, "K1"), ...L(152, [...L(1, "K1"), ...L(2, SET), ...L(3, L(1, "a")), ...L(4, seite(["text/plain", "Frist ESt-Erklärung?"])), ...L(5, seite(["text/plain", "31.07."], ["text/plain", "des Folgejahres"]))])]),
+    nachricht([...L(1, "K3"), ...L(152, [...L(1, "K3"), ...L(2, SET), ...L(3, L(1, "c")), ...L(4, seite(["image/png"])), ...L(5, seite(["text/plain", "nur Bild vorne"]))])]),
+    nachricht([...L(1, SET), ...L(150, [...L(1, SET), ...L(2, "K1"), ...L(3, "DocumentEditor:x")])]),
+  ].flat();
+  // ZIP mit Deflate wie Goodnotes (plus ein leerer Eintrag davor)
+  const roh = new Uint8Array(ev);
+  const def = new Uint8Array(await new Response(new Blob([roh]).stream().pipeThrough(new CompressionStream("deflate-raw"))).arrayBuffer());
+  const teile = [], zentral = [];
+  let pos = 0;
+  for (const [name, daten, methode, groesse] of [["schema.pb", new Uint8Array([8, 24]), 0, 2], ["index.events.pb", def, 8, roh.length]]) {
+    const n = new TextEncoder().encode(name), lokal = new Uint8Array(30 + n.length), d = new DataView(lokal.buffer);
+    d.setUint32(0, 0x04034b50, true); d.setUint16(8, methode, true); d.setUint32(18, daten.length, true); d.setUint32(22, groesse, true); d.setUint16(26, n.length, true); lokal.set(n, 30);
+    const z = new Uint8Array(46 + n.length), dz = new DataView(z.buffer);
+    dz.setUint32(0, 0x02014b50, true); dz.setUint16(10, methode, true); dz.setUint32(20, daten.length, true); dz.setUint32(24, groesse, true); dz.setUint16(28, n.length, true); dz.setUint32(42, pos, true); z.set(n, 46);
+    teile.push(lokal, daten); zentral.push(z); pos += lokal.length + daten.length;
+  }
+  const zl = zentral.reduce((a, z) => a + z.length, 0), ende = new Uint8Array(22), de = new DataView(ende.buffer);
+  de.setUint32(0, 0x06054b50, true); de.setUint16(8, 2, true); de.setUint16(10, 2, true); de.setUint32(12, zl, true); de.setUint32(16, pos, true);
+  const datei = await new Blob([...teile, ...zentral, ende]).arrayBuffer();
+
+  const set = await goodnotesLesen(datei);
+  assert.equal(set.titel, "BilR Fristen");
+  assert.deepEqual(set.karten, [{ v: "Frist ESt-Erklärung?", h: "31.07.\ndes Folgejahres" }, { v: "Inventur", h: "§ 240 HGB" }, { v: "", h: "nur Bild vorne" }]);
+  assert.equal(set.ohneText, 1);
+  // Übernahme in die eigenen Karten: Stapel = Name des Lernsets, Karte ohne Text auf einer Seite fällt weg
+  const { meine, neu } = MK.importieren({}, JSON.stringify({ karten: set.karten.map((k) => ({ vorne: k.v, hinten: k.h })) }), { fach: "bsr", stapel: set.titel });
+  assert.equal(neu, 2);
+  assert.ok(MK.kartenVon(meine, "bsr").every((k) => k.st === "BilR Fristen"));
+  await assert.rejects(goodnotesLesen(new TextEncoder().encode("kein Lernset").buffer));
+});
