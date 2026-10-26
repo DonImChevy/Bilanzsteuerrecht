@@ -585,3 +585,16 @@ test("Übung: feste Aufgaben kommen je Durchgang nur einmal, erzeugte nicht dire
   assert.equal(ort.filter((f) => f.id === "ust-ort-lieferung").length, 1);
   assert.equal(fragen(["ust-ort"], 10, new Zufall(7), "qa", true).length, 2, "MC-Modus ohne Fälle: nur die zwei festen Aufgaben");
 });
+
+test("Ort der Leistung: jeder Fall kommt dran, bevor sich einer wiederholt; alle Normen auflösbar", () => {
+  for (const [id, anzahl] of [["ust-ort-fall", 11], ["ust-ort-sonstige-fall", 5], ["ust-ort-sonder-fall", 13]]) {
+    const v = ALLE.find((x) => x.id === id), r = new Zufall(3);
+    // Nach höchstens zwei Durchläufen (angebrochener Stapel + ein voller) war jeder Fall dran
+    const texte = Array.from({ length: 2 * anzahl }, () => v.erzeugen(r));
+    assert.equal(new Set(texte.map((f) => f.text)).size, anzahl, id);
+    for (const f of texte) { assert.equal(f.richtig.length, 1); for (const ref of f.normen) assert.ok(norm(ref), `${id}: Norm ${ref} fehlt`); }
+  }
+  const uebung = fragen(["ust-ort"], 10, new Zufall(1), null, true); // Thema üben im MC-Modus
+  assert.equal(uebung.length, 10, "MC-Übung „Ort“ wieder mit 10 Aufgaben");
+  assert.equal(new Set(uebung.map((f) => f.text)).size, 10, "keine Frage doppelt");
+});
