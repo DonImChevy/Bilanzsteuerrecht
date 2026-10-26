@@ -598,3 +598,20 @@ test("Ort der Leistung: jeder Fall kommt dran, bevor sich einer wiederholt; alle
   assert.equal(uebung.length, 10, "MC-Übung „Ort“ wieder mit 10 Aufgaben");
   assert.equal(new Set(uebung.map((f) => f.text)).size, 10, "keine Frage doppelt");
 });
+
+test("Keine doppelten Fragen: Übung je Thema, gemischt und Klausur in allen Modulen", () => {
+  const schl = (fr) => fr.map((f) => f.text.replace(/\s+/g, " ").trim().toLowerCase());
+  const ohneDoppelte = (name, fr) => { const t = schl(fr); assert.equal(new Set(t).size, t.length, `${name}: doppelte Frage`); };
+  for (let s = 0; s < 12; s++) {
+    for (const t of THEMEN) { ohneDoppelte(t.id, fragen([t.id], 10, new Zufall(s))); ohneDoppelte(t.id + " MC", fragen([t.id], 10, new Zufall(s), null, true)); }
+    for (const fach of ["bsr", "oer", "est", "ust"]) {
+      const alle = THEMEN.filter((t) => t.fach === fach).map((t) => t.id);
+      for (const f of [null, "qa", "rechnen", "fall", "buchung"]) ohneDoppelte(`${fach} ${f}`, fragen(alle, 20, new Zufall(s), f));
+      for (const n of [20, 60]) { const k = klausur(n, new Zufall(s), fach); ohneDoppelte(`Klausur ${fach}`, k); assert.equal(k.length, n, `Klausur ${fach} ${n} vollständig`); }
+    }
+  }
+  // Inhalte: kein Aufgabentext und keine Lernkarte doppelt angelegt
+  const texte = ALLE.map((v) => v.erzeugen(new Zufall(1)).text.replace(/\s+/g, " ").trim());
+  assert.equal(new Set(texte).size, texte.length, "zwei Vorlagen mit gleichem Aufgabentext");
+  assert.equal(new Set(LERNKARTEN.map((k) => k.vorne)).size, LERNKARTEN.length, "Lernkarte doppelt");
+});

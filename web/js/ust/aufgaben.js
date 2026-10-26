@@ -1,7 +1,7 @@
 // Umsatzsteuer (GS I) – Aufgaben nach Skript, Klausurtechnik und den Lösungshinweisen der Semesterklausuren,
 // Rechtsstand 2026. Eigene Sachverhalte im Klausurstil; Rechenaufgaben würfeln bei jedem Aufruf neue Zahlen.
 // Frage-Antwort-Aufgaben tragen ihre Multiple-Choice-Fassung (mc) und die Stichworte für die automatische Prüfung (sw).
-import { auswahl, zahl } from "../kern.js";
+import { auswahl, zahl, reihum } from "../kern.js";
 import * as G from "../geld.js";
 
 const eur = G.euro;
@@ -18,10 +18,9 @@ const R = (id, thema, erzeugen) => ({
 /** Einordnungsfall: zieht einen Fall {text, richtig, erkl, normen, optionen?} – reihum aus einem gemischten Stapel,
  *  damit jeder Fall drankommt, bevor sich einer wiederholt. */
 const F = (id, thema, frage, optionen, faelle) => {
-  let stapel = [];
+  const ziehe = reihum(faelle);
   return { id, thema, kategorie: "fall", erzeugen: (r) => {
-    if (!stapel.length) stapel = r.mischen(faelle.map((_, i) => i));
-    const f = faelle[stapel.pop()];
+    const f = ziehe(r);
     return { ...auswahl(id, thema, `${f.text}\n\n${f.frage || frage}`, f.optionen || optionen, [f.richtig], f.erkl, r), normen: f.normen || [] };
   } };
 };

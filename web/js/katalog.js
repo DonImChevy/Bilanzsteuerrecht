@@ -44,7 +44,14 @@ export const FALL_IDS = new Set(ALLE.filter((v) => v.erzeugen(new Zufall(1)).fal
  * filter: "buchung" (nur Buchungssätze), "uebertragung" (ÖR-Übertragungsaufgaben), "qa" (ÖR Frage-Antwort) oder null
  * ohneFaelle: Klausurfälle auslassen (Multiple-Choice-Modus)
  */
-export function fragen(themen, anzahl, r, filter = null, ohneFaelle = false) {
+/**
+ * Gemeinsamer Stand einer Übung bzw. Klausur, damit auch mehrere Ziehungen nacheinander (Klausur: Buchungen, Rechnen,
+ * Fälle, Frage-Antwort) keine Frage doppelt liefern: bereits gestellte Fragetexte und wie oft jede Vorlage dran war.
+ */
+export const neueZiehung = () => ({ texte: new Set(), n: new Map() });
+const textSchluessel = (f) => String(f.text).replace(/\s+/g, " ").trim().toLowerCase();
+
+export function fragen(themen, anzahl, r, filter = null, ohneFaelle = false, z = neueZiehung()) {
   let pool = ALLE.filter((v) => themen.includes(v.thema) && !(ohneFaelle && FALL_IDS.has(v.id)));
   if (filter === true || filter === "buchung") pool = pool.filter((v) => BUCHUNGS_IDS.has(v.id));
   if (filter === "uebertragung") pool = pool.filter((v) => v.kategorie === "uebertragung");
@@ -54,19 +61,24 @@ export function fragen(themen, anzahl, r, filter = null, ohneFaelle = false) {
   if (!pool.length || anzahl <= 0) return [];
   // Jede Vorlage kommt erst wieder dran, wenn alle anderen einmal dran waren. Feste Aufgaben (immer gleicher Text)
   // gibt es je Übung nur einmal – bei kleinen Themen wird die Übung dann kürzer statt dieselbe Frage zu wiederholen.
-  // Erzeugte Aufgaben (neue Zahlen bzw. neuer Fall) dürfen wiederkommen – höchstens dreimal je Übung und möglichst
-  // nicht direkt hintereinander.
-  const out = [], n = new Map();
-  let runde = r.mischen(pool), letzte = null;
+  // Erzeugte Aufgaben (neue Zahlen bzw. neuer Fall) dürfen wiederkommen – höchstens dreimal je Übung, möglichst
+  // nicht direkt hintereinander und nie mit einem Fragetext, der schon dran war (dann wird neu erzeugt).
+  const out = [], leer = new Set(), oft = (v) => z.n.get(v.id) || 0;
+  let runde = r.mischen(pool.filter((v) => !(istFest(v) && oft(v)))), letzte = null;
   while (out.length < anzahl) {
     if (!runde.length) {
-      runde = r.mischen(pool.filter((v) => !istFest(v) && (n.get(v) || 0) < 3));
+      runde = r.mischen(pool.filter((v) => !istFest(v) && oft(v) < 3 && !leer.has(v)));
       if (!runde.length) break;
       if (runde.length > 1 && runde[runde.length - 1] === letzte) runde.unshift(runde.pop());
     }
-    letzte = runde.pop();
-    n.set(letzte, (n.get(letzte) || 0) + 1);
-    out.push(letzte.erzeugen(r));
+    const v = runde.pop();
+    let f = null;
+    for (let i = 0; i < 8 && !f; i++) { const x = v.erzeugen(r); if (!z.texte.has(textSchluessel(x))) f = x; }
+    if (!f) { leer.add(v); continue; } // liefert nichts Neues mehr – Vorlage für diese Übung erschöpft
+    z.texte.add(textSchluessel(f));
+    z.n.set(v.id, oft(v) + 1);
+    letzte = v;
+    out.push(f);
   }
   return out;
 }
@@ -96,31 +108,32 @@ function gewichtet(pool, anzahl, r) {
 
 export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false, teil = "beide") {
   const alle = pruefungsThemen(fach).filter((t) => imTeil(t, teil)).map((t) => t.id);
+  const z = neueZiehung(); // alle Teilziehungen teilen sich den Stand → keine Frage doppelt
   if (fach === "oer") {
     // Klausurstruktur ÖR: ca. 75 % Frage-Antwort (davon häufige Klausurthemen doppelt gewichtet), 25 % Übertragungsaufgaben
-    const ue = fragen(alle, Math.round(anzahl * 0.25), r, "uebertragung");
+    const ue = fragen(alle, Math.round(anzahl * 0.25), r, "uebertragung", false, z);
     const pool = ALLE.filter((v) => alle.includes(v.thema) && v.kategorie !== "uebertragung" && !(ohneFaelle && FALL_IDS.has(v.id)));
     const qa = gewichtet(pool, anzahl - ue.length, r);
     return r.mischen([...qa, ...ue]);
   }
   if (fach === "est" || fach === "ust") {
     // Klausurstruktur ESt: Gesamtfall-Charakter – ca. 50 % Rechenaufgaben, Rest Einordnungsfälle und Frage-Antwort
-    const re = fragen(alle, Math.round(anzahl * 0.5), r, "rechnen");
-    const fa = fragen(alle, Math.round(anzahl * 0.2), r, "fall");
-    const qa = fragen(alle, anzahl - re.length - fa.length, r, "qa", ohneFaelle);
+    const re = fragen(alle, Math.round(anzahl * 0.5), r, "rechnen", false, z);
+    const fa = fragen(alle, Math.round(anzahl * 0.2), r, "fall", false, z);
+    const qa = fragen(alle, anzahl - re.length - fa.length, r, "qa", ohneFaelle, z);
     return r.mischen([...re, ...fa, ...qa]);
   }
   if (fach === "bsr" && teil === "beide") {
     // Wie die Semesterklausur: Teil I (Buchführung) ca. 25 %, Teil II (Bilanzierung und Bewertung) ca. 75 %
     const t1 = pruefungsThemen(fach).filter((t) => t.teil === 1).map((t) => t.id), t2 = alle.filter((id) => !t1.includes(id));
-    const anz1 = Math.round(anzahl * 0.25), b1 = fragen(t1, Math.ceil(anz1 * 0.6), r, "buchung");
-    const teil1 = [...b1, ...fragen(t1, anz1 - b1.length, r)];
-    const b2 = fragen(t2, Math.round((anzahl - anz1) * 0.4), r, "buchung");
-    return r.mischen([...teil1, ...b2, ...fragen(t2, anzahl - anz1 - b2.length, r, null, ohneFaelle)]);
+    const anz1 = Math.round(anzahl * 0.25), b1 = fragen(t1, Math.ceil(anz1 * 0.6), r, "buchung", false, z);
+    const teil1 = [...b1, ...fragen(t1, anz1 - b1.length, r, null, false, z)];
+    const b2 = fragen(t2, Math.round((anzahl - anz1) * 0.4), r, "buchung", false, z);
+    return r.mischen([...teil1, ...b2, ...fragen(t2, anzahl - anz1 - b2.length, r, null, ohneFaelle, z)]);
   }
   // Teil I: Schwerpunkt Buchungssätze (ca. 60 %); Teil II: ca. 40 % Buchungen, Rest Würdigung und Berechnung
-  const b = fragen(alle, Math.ceil(anzahl * (teil === "2" ? 0.4 : 0.6)), r, "buchung");
-  const rest = fragen(alle, anzahl - b.length, r, null, ohneFaelle);
+  const b = fragen(alle, Math.ceil(anzahl * (teil === "2" ? 0.4 : 0.6)), r, "buchung", false, z);
+  const rest = fragen(alle, anzahl - b.length, r, null, ohneFaelle, z);
   return r.mischen([...b, ...rest]);
 }
 

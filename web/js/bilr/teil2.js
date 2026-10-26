@@ -1,7 +1,7 @@
 // Bilanzsteuerrecht GS I, Teil II: GoB und Betriebsvermögen, Zurechnung, Anschaffungskosten, Grundstücke, Abschreibungen, Teilwert,
 // Rechnungsabgrenzung, Entnahmen und Einlagen. Nach Skript und Übungsheft Teil II (2026/2027) und den
 // Lösungshinweisen der Semesterklausuren; Rechtsstand 2026. Reine Daten- und Generatordatei.
-import { zahl, auswahl, buchung, satz, einfach } from "../kern.js";
+import { zahl, auswahl, buchung, satz, einfach, reihum } from "../kern.js";
 import * as G from "../geld.js";
 
 const eur = G.euro, E = G.E, ust = (n, s = 19) => G.prozent(n, s);
@@ -11,10 +11,10 @@ const V = (id, thema, erzeugen) => ({ id, thema, erzeugen });
 /** Rechenaufgabe; Abweichungen unter 1 € (kaufmännische Rundung wie in der Klausur erlaubt) zählen als richtig. */
 const rechnen = (id, thema, text, cent, erkl, quelle = Q) => zahl(id, thema, text, Math.round(cent), erkl, { toleranz: 99, quelle });
 /** Einordnungsfall: zieht einen Fall; optionen gelten für alle Fälle oder je Fall (f.optionen). */
-const F = (id, thema, frage, optionen, faelle) => V(id, thema, (r) => {
-  const f = r.wahl(faelle);
+const F = (id, thema, frage, optionen, faelle) => V(id, thema, ((ziehe) => (r) => {
+  const f = ziehe(r); // reihum – jeder Fall kommt dran, bevor sich einer wiederholt
   return { ...auswahl(id, thema, `${f.text}\n\n${f.frage || frage}`, f.optionen || optionen, [f.richtig], f.erkl, r), normen: f.normen || [] };
-});
+})(reihum(faelle)));
 /** Frage-Antwort mit Multiple-Choice-Fassung (mc) und Stichworten für die automatische Prüfung (sw). */
 const A = (id, thema, text, antwort, normen, mc, sw, { fall = false } = {}) => ({
   id, thema, mc, sw, erzeugen: () => ({ id, thema, typ: "offen", fall, text, antwort, normen, erklaerung: "", quelle: Q }),
