@@ -10,6 +10,7 @@ import { PAARE } from "./paare.js";
 import { gliederungView } from "./bilr/gliederung.js";
 import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, gelesenAnteil, lesezeit, kompaktInline } from "./kompakt.js";
 import * as MK from "./meinekarten.js";
+import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule } from "./module.js";
@@ -937,9 +938,10 @@ function kartenIoView() {
       <button class="zeile" data-a="kartenExport" data-v="anki" ${n ? "" : "disabled"}><span class="symbol">${ic("karten")}</span><span class="grow"><b>Für Anki & Co.</b><div class="sub">${n} Karten aus ${esc(MODUL[state.fach].titel)} als Textdatei (Vorderseite ⇥ Rückseite).</div></span></button>
     </div></div>
     <div class="gruppe"><div class="gruppe-titel">Importieren</div><div class="liste">
-      <label class="zeile mk-datei"><span class="symbol">${ic("plus")}</span><span class="grow"><b>Datei auswählen</b><div class="sub">.json aus dieser App oder Text/CSV mit Vorderseite und Rückseite je Zeile (getrennt durch Tab oder Semikolon). Neue Karten landen in ${esc(MODUL[state.fach].titel)}.</div></span>
-        <input type="file" id="kImport" accept=".json,.txt,.csv,.tsv,text/plain,application/json" hidden></label>
+      <label class="zeile mk-datei"><span class="symbol">${ic("plus")}</span><span class="grow"><b>Datei auswählen</b><div class="sub"><b>Goodnotes-Lernset</b> (.goodnotes, getippter Text), .json aus dieser App oder Text/CSV mit Vorderseite und Rückseite je Zeile (getrennt durch Tab oder Semikolon). Neue Karten landen in ${esc(MODUL[state.fach].titel)}.</div></span>
+        <input type="file" id="kImport" hidden></label>
     </div></div>
+    <div class="gruppe-fuss" style="margin:0 4px 8px"><b>Aus Goodnotes:</b> Lernset öffnen → Teilen → Exportieren → „In Dateien sichern“, dann hier die .goodnotes-Datei auswählen. Übernommen wird getippter Text; der Stapel heißt wie das Lernset.</div>
     <div class="gruppe-fuss" style="margin:0 4px 20px">Doppelte Karten (gleicher Text) werden beim Import übersprungen. Der Lernstand wird nicht mit exportiert.</div>`;
 }
 function dateiSpeichern(name, inhalt, typ) {
@@ -2066,14 +2068,25 @@ app.addEventListener("input", (e) => {
 // Import eigener Karteikarten aus einer Datei
 app.addEventListener("change", async (e) => {
   if (e.target.id !== "kImport" || !e.target.files?.[0]) return;
-  const datei = e.target.files[0];
-  if (datei.size > 2e6) { toast("Die Datei ist zu groß (höchstens 2 MB)."); return; }
-  const { meine: neu, neu: n, doppelt } = MK.importieren(meine(), await datei.text(), { fach: state.fach });
-  if (!n) { toast(doppelt ? "Alle Karten sind schon vorhanden." : "In der Datei wurden keine Karten gefunden."); return; }
+  const datei = e.target.files[0], gn = /\.goodnotes$/i.test(datei.name);
+  e.target.value = ""; // dieselbe Datei später erneut wählbar
+  // Goodnotes-Lernsets können wegen Bildern groß sein – gelesen wird nur das Änderungsprotokoll mit dem Text
+  if (datei.size > (gn ? 200e6 : 2e6)) { toast(`Die Datei ist zu groß (höchstens ${gn ? "200" : "2"} MB).`); return; }
+  let inhalt = gn ? "" : await datei.text().catch(() => ""), stapel, ohneText = 0;
+  if (gn) {
+    try {
+      const set = await goodnotesLesen(await datei.arrayBuffer());
+      inhalt = JSON.stringify({ karten: set.karten.map((k) => ({ vorne: k.v, hinten: k.h, quelle: "Goodnotes" })) });
+      stapel = set.titel; ohneText = set.ohneText;
+    } catch (err) { toast(err.message?.includes("Browser") ? err.message : "Die Goodnotes-Datei konnte nicht gelesen werden."); return; }
+  }
+  const { meine: neu, neu: n, doppelt } = MK.importieren(meine(), inhalt, { fach: state.fach, stapel });
+  const rest = [doppelt ? `${doppelt} doppelte übersprungen` : "", ohneText ? `${ohneText} ohne getippten Text (Bild/Handschrift) ausgelassen` : ""].filter(Boolean).join(" · ");
+  if (!n) { toast(doppelt ? "Alle Karten sind schon vorhanden." : `In der Datei wurden keine Karten gefunden.${rest ? " " + rest + "." : ""}`); return; }
   stat.meineKarten = neu;
   speichern();
   state.sheet = null;
-  toast(`${n} ${n === 1 ? "Karte" : "Karten"} importiert${doppelt ? ` · ${doppelt} doppelte übersprungen` : ""}.`);
+  toast(`${n} ${n === 1 ? "Karte" : "Karten"} importiert${stapel ? ` – Stapel „${stapel}“` : ""}${rest ? ` · ${rest}` : ""}.`);
   render();
 });
 
