@@ -115,7 +115,7 @@ export function kartenView(fach, { esc, ic, normLabel }) {
     </div></div>`;
 }
 
-export function blockView(fach, z, { esc, ic, normLabel, konfetti }) {
+export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken = false }) {
   const b = PFADE[fach].bloecke.find((x) => x.id === z.id), n = schritte(b), k = b.karten.length;
   const fortschritt = `<div class="pf-schritte">${Array.from({ length: n - 2 }, (_, i) => `<i class="${i + 1 < z.schritt ? "ok" : i + 1 === z.schritt ? "akt" : ""}${i >= k ? " frage" : ""}"></i>`).join("")}</div>`;
   const kopf = `<div class="pf-kopf"><button class="pf-rund" data-a="pfadKarte" aria-label="Zur Lernpfad-Karte">${ic("kreuz")}</button>${z.schritt > 0 && z.schritt < n - 1 ? fortschritt : `<span class="pf-marke">${esc(b.titel)}</span>`}<span class="pf-chip">${b.icon}</span></div>`;
@@ -131,7 +131,8 @@ export function blockView(fach, z, { esc, ic, normLabel, konfetti }) {
   } else if (z.schritt <= k) {
     const c = b.karten[z.schritt - 1], [name, sym, farbe] = ART[c.art];
     inhalt = `<div class="pf-lernkarte ${farbe}" style="--i:${z.schritt}"><div class="pf-tag"><span>${sym}</span>${name}<em>${z.schritt}/${k}</em></div>
-      <h2>${esc(c.titel)}</h2><div class="pf-text">${textHtml(c.text, esc)}</div></div>`;
+      <h2>${esc(c.titel)}</h2><div class="pf-text">${textHtml(c.text, esc)}</div>
+      ${karteMerken ? `<button class="pf-merken" data-a="alsKarte" data-q="pfad" aria-label="Diese Lernkarte als eigene Karteikarte speichern">${ic("plus", "klein")} Als Karte</button>` : ""}</div>`;
     fuss = `<div class="pf-reihe"><button class="pf-zurueck" data-a="pfadZurueck" ${z.schritt === 1 ? "disabled" : ""}>${ic("pfeil", "klein")}</button><button class="pf-los" data-a="pfadWeiter">${z.schritt === k ? "Zu den Fragen" : "Weiter"} ${ic("pfeil")}</button></div>`;
   } else if (z.schritt < n - 1) {
     const qi = z.schritt - k - 1, q = b.fragen[qi], a = z.antwort, buchst = "ABCDEFGH";

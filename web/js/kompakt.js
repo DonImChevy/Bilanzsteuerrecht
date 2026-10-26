@@ -49,11 +49,12 @@ function loesungZeile(z) {
 }
 
 /** Klausurbeispiel: Sachverhalt wie im Aufgabenblatt, darunter die Lösung auf Klausurpapier. */
-function beispielView(b, i) {
+function beispielView(b, i, karte = "") {
   return `<article class="km-bsp">
     <div class="km-bsp-kopf"><span class="km-bsp-nr">Klausurbeispiel ${i + 1}</span><h4>${esc(b.titel)}</h4></div>
     <div class="km-sv"><span class="km-etikett">Sachverhalt</span><p>${kompaktInline(b.sv)}</p>${b.aufgabe ? `<p class="km-aufgabe"><b>Aufgabe:</b> ${kompaktInline(b.aufgabe)}</p>` : ""}</div>
     <div class="km-loesung"><span class="km-etikett">Lösung – so schreibst du es in der Klausur</span>${b.loesung.map(loesungZeile).join("")}</div>
+    ${karte}
   </article>`;
 }
 
@@ -61,7 +62,7 @@ function beispielView(b, i) {
 export const gelesenAnteil = (themen, gelesen = {}) => themen.filter((t) => KOMPAKT[t.id] && gelesen[t.id]).length;
 
 /**
- * Lese-Ansicht eines Themas. h = { ic, thema, nachbarn: [vorher, nachher], gelesen, ausSitzung }.
+ * Lese-Ansicht eines Themas. h = { ic, thema, nachbarn: [vorher, nachher], gelesen, ausSitzung, alsKarte(quelle, wert, klasse) }.
  * Aufbau als „Spickzettel“: ein Satz als Kern, Zahlen, Schema, das Wichtigste mit Textmarker, Fallen und zum Schluss
  * Klausurbeispiele mit Musterlösung, in der jede Aussage ihre Norm trägt.
  */
@@ -69,7 +70,9 @@ export function kompaktView(id, h) {
   const k = KOMPAKT[id], t = h.thema;
   const [vor, nach] = h.nachbarn;
   const abschnitt = (cls, titel, inhalt) => inhalt ? `<section class="km-abschnitt ${cls}"><h3>${titel}</h3>${inhalt}</section>` : "";
-  const liste = (arr, cls = "") => arr?.length ? `<ul class="km-liste ${cls}">${arr.map((p) => `<li>${kompaktInline(p)}</li>`).join("")}</ul>` : "";
+  // Jeder Punkt lässt sich mit „+“ als eigene Karteikarte übernehmen
+  const karte = (feld, i) => (h.alsKarte ? h.alsKarte("punkt", `${id}|${feld}|${i}`, "mini") : "");
+  const liste = (arr, feld) => arr?.length ? `<ul class="km-liste">${arr.map((p, i) => `<li>${kompaktInline(p)}${karte(feld, i)}</li>`).join("")}</ul>` : "";
   return `<div class="vollbild kompakt" role="dialog" aria-label="Zusammenfassung ${esc(t.titel)}">
     <div class="vb-kopf"><button class="rund" data-a="kompaktZu" aria-label="Schließen">${h.ic("kreuz")}</button>
       <div class="mitte">Kompaktwissen</div><span class="km-zeit">${lesezeit(k)} Min.</span></div>
@@ -79,9 +82,9 @@ export function kompaktView(id, h) {
       <p class="km-satz">${kompaktInline(k.satz)}</p>
       ${k.zahlen?.length ? `<div class="km-zahlen">${k.zahlen.map(([w, b]) => `<div><b>${esc(w)}</b><span>${kompaktInline(b)}</span></div>`).join("")}</div>` : ""}
       ${abschnitt("km-schema", "Prüfungsschema", k.schema?.length ? `<ol class="km-schritte">${k.schema.map((s) => `<li>${kompaktInline(s)}</li>`).join("")}</ol>` : "")}
-      ${abschnitt("km-kern", "Das Wichtigste", liste(k.punkte))}
-      ${abschnitt("km-fallen", "Typische Fehler", liste(k.fallen))}
-      ${abschnitt("km-beispiele", k.beispiele.length === 1 ? "Klausurbeispiel" : "Klausurbeispiele", k.beispiele.map(beispielView).join(""))}
+      ${abschnitt("km-kern", "Das Wichtigste", liste(k.punkte, "punkte"))}
+      ${abschnitt("km-fallen", "Typische Fehler", liste(k.fallen, "fallen"))}
+      ${abschnitt("km-beispiele", k.beispiele.length === 1 ? "Klausurbeispiel" : "Klausurbeispiele", k.beispiele.map((b, i) => beispielView(b, i, h.alsKarte ? `<div class="km-bsp-karte">${h.alsKarte("beispiel", `${id}|${i}`)}</div>` : "")).join(""))}
       <p class="km-hinweis">Die Zusammenfassung gibt einen Überblick über die klausurrelevanten Punkte – sie ersetzt nicht das Skript. Paragrafen antippen, um den Gesetzestext zu lesen.</p>
     </div>
     <div class="vb-fuss km-fuss">

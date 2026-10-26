@@ -27,6 +27,10 @@ const P = {
   wechsel: '<path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/>',
   install: '<path d="M12 3.5v11M7.5 10l4.5 4.5 4.5-4.5"/><path d="M4.5 16.5v2.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-2.5"/>',
   mond: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  karteNeu: '<rect x="3" y="7" width="13.5" height="14" rx="2.5"/><path d="M7.5 3.5H18a2.5 2.5 0 0 1 2.5 2.5v11M9.75 11v6M6.75 14h6"/>',
+  muell: '<path d="M4 6.5h16M9.5 6.5V4h5v2.5M6 6.5l1 13.5h10l1-13.5M10 10.5v6M14 10.5v6"/>',
+  export: '<path d="M12 15V3.5M7.5 8 12 3.5 16.5 8"/><path d="M5 13v6.5h14V13"/>',
   hut: '<path d="M12 4 22 8.5 12 13 2 8.5z"/><path d="M6 10.8V15c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.2"/><path d="M20 9.5V15"/>',
   // Module
   tkonto: '<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M12 9v11"/>',

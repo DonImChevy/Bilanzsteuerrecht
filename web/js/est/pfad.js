@@ -59,16 +59,18 @@ export const PFAD_EST = [
     ],
   },
   {
-    id: "e-veranlagung", titel: "Einzeln oder zusammen?", kurz: "§§ 25, 26, 26a, 26b EStG", icon: "💍", normen: ["EStG 26 1", "EStG 26b", "EStG 26a 1", "EStG 32a 5"],
+    id: "e-veranlagung", titel: "Einzeln oder zusammen?", kurz: "§§ 25, 26, 26a, 26b EStG", icon: "💍", normen: ["EStG 26 1", "EStG 26b", "EStG 26a 1", "EStG 32a 5", "EStG 32a 6"],
     karten: [
       { art: "merksatz", titel: "Wahlrecht für Ehegatten", text: "Ehegatten (und eingetragene Lebenspartner) können **zwischen Einzel- und Zusammenveranlagung wählen** (§ 26 Abs. 1 EStG), wenn **alle drei** Voraussetzungen erfüllt sind:\n1. Beide sind **unbeschränkt steuerpflichtig**.\n2. Sie leben **nicht dauernd getrennt**.\n3. Beides lag **zu Beginn oder im Laufe des Jahres** vor (ein Tag genügt)." },
       { art: "erklaerung", titel: "Zusammenveranlagung und Splitting", text: "Bei der **Zusammenveranlagung** (§ 26b EStG) werden die Einkünfte beider zusammengerechnet. Darauf gilt das **Splittingverfahren** (§ 32a Abs. 5 EStG): Das gemeinsame zvE wird **halbiert**, die Steuer dafür berechnet und **verdoppelt**. Das lohnt sich, wenn die Einkommen sehr unterschiedlich sind.\nWählen die Ehegatten nichts, wird **zusammen veranlagt** (§ 26 Abs. 3 EStG)." },
       { art: "beispiel", titel: "Typische Fälle", text: "• Heirat am 30.12. → Voraussetzungen im Laufe des Jahres erfüllt → **Wahlrecht** für das ganze Jahr.\n• Seit März dauernd getrennt → im Jahr der Trennung noch Wahlrecht (lag zu Beginn vor), im Folgejahr nicht mehr.\n• Ehemann lebt dauerhaft in den USA, Frau in Deutschland → nicht beide unbeschränkt steuerpflichtig → **kein** Wahlrecht." },
+      { art: "erklaerung", titel: "Tod des Ehegatten – Witwensplitting", text: "Stirbt ein Ehegatte, gilt das Splitting noch ein Jahr länger:\n• **Todesjahr**: Die Voraussetzungen lagen zu Beginn des Jahres vor → **Wahlrecht**, bei Zusammenveranlagung Splitting (§ 26 Abs. 1, § 32a Abs. 5 EStG).\n• **Folgejahr**: Einzelveranlagung, aber noch der **Splittingtarif** (§ 32a Abs. 6 S. 1 Nr. 1 EStG) – wenn beide im Zeitpunkt des Todes die Voraussetzungen des § 26 Abs. 1 S. 1 EStG erfüllt haben.\n• **Ab dem zweiten Jahr** nach dem Tod: **Grundtarif**." },
     ],
     fragen: [
       { art: "wahl", frage: "Ein Paar heiratet am 28.12. Dürfen die beiden für dieses Jahr die Zusammenveranlagung wählen?", optionen: ["Ja – die Voraussetzungen lagen im Laufe des Jahres vor", "Nein – sie waren nicht das ganze Jahr verheiratet", "Nur für den Dezember", "Erst ab dem Folgejahr"], richtig: 0, erkl: "§ 26 Abs. 1 EStG: zu Beginn oder im Laufe des Jahres genügt." },
       { art: "wahl", frage: "Ehegatten wählen nichts. Wie werden sie veranlagt?", optionen: ["Zusammen", "Einzeln", "Gar nicht", "Nach Wahl des Finanzamts"], richtig: 0, erkl: "§ 26 Abs. 3 EStG." },
       { art: "wahl", frage: "Wie funktioniert das Splittingverfahren?", optionen: ["zvE halbieren, Steuer berechnen, verdoppeln", "Jeder zahlt die Hälfte der Steuer", "Die Steuer wird halbiert", "Das zvE wird verdoppelt"], richtig: 0, erkl: "§ 32a Abs. 5 EStG." },
+      { art: "wahl", frage: "Herr H ist im Mai 01 verstorben; das Paar lebte zusammen in Köln. Seine Witwe heiratet nicht wieder. Welcher Tarif gilt für sie im VZ 02?", optionen: ["Splittingtarif (Witwensplitting)", "Grundtarif", "Zusammenveranlagung mit dem Verstorbenen", "Halber Grundfreibetrag"], richtig: 0, erkl: "§ 32a Abs. 6 S. 1 Nr. 1 EStG: Splitting für den VZ, der dem Todesjahr folgt. Ab 03 gilt der Grundtarif." },
       { art: "wahl", frage: "Welche Voraussetzung gehört nicht zu § 26 Abs. 1 EStG?", optionen: ["Gemeinsame Kinder", "Beide unbeschränkt steuerpflichtig", "Nicht dauernd getrennt", "Voraussetzungen zu Beginn oder im Laufe des Jahres"], richtig: 0, erkl: "Kinder spielen für das Wahlrecht keine Rolle." },
     ],
   },

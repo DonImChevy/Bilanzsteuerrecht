@@ -7,7 +7,9 @@
 // • Lernkartei (lern) und gewusste Lernkarten: pro Aufgabe gewinnt der neueste Eintrag (Zeitstempel t).
 // • Lernpfade (pfad): je Block gewinnt die beste Sternzahl. Einstellungen und „Weiterlernen“ (zuletzt): der neueste Stand.
 // • Gelesene Zusammenfassungen (kompakt): Vereinigung, je Thema der neueste Zeitpunkt.
+// • Eigene Karteikarten (meineKarten): je Karte der neuere Inhalt (auch Löschen) und der neuere Lernkartei-Stand.
 import { SYNC_SERVER } from "./sync-config.js";
+import { meineVereinen } from "./meinekarten.js";
 
 export const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // ohne 0/O und 1/I
 export const syncVerfuegbar = () => !!(SYNC_SERVER.url && SYNC_SERVER.key);
@@ -99,7 +101,7 @@ export function gesamt(daten) {
   for (const g of Object.values(daten.geraete || {})) s = addiere(s, { proThema: g.proThema || {}, tage: g.tage || {}, klausuren: g.klausuren || [] });
   s.klausuren.sort((a, b) => a.datum - b.datum);
   return { ...s, lern: daten.lern || {}, karten: Object.entries(daten.karten || {}).filter(([, e]) => e.g).map(([id]) => id),
-    pfad: daten.pfad || {}, kompakt: daten.kompakt || {}, einstellungen: daten.einstellungen || null, zuletzt: daten.zuletzt || null };
+    pfad: daten.pfad || {}, kompakt: daten.kompakt || {}, meineKarten: daten.meineKarten || {}, einstellungen: daten.einstellungen || null, zuletzt: daten.zuletzt || null };
 }
 
 /**
@@ -122,6 +124,7 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       karten: neuester(d.karten, karten),
       pfad: pfadVereinen(d.pfad, vorher.pfad),
       kompakt: gelesenVereinen(d.kompakt, vorher.kompakt),
+      meineKarten: meineVereinen(d.meineKarten, vorher.meineKarten),
       einstellungen: neuerer(d.einstellungen, vorher.einstellungen),
       zuletzt: neuerer(d.zuletzt, vorher.zuletzt),
     };
@@ -136,6 +139,7 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       s.lern = neuester(g.lern, statJetzt.lern);
       s.pfad = pfadVereinen(g.pfad, statJetzt.pfad);
       s.kompakt = gelesenVereinen(g.kompakt, statJetzt.kompakt);
+      s.meineKarten = meineVereinen(g.meineKarten, statJetzt.meineKarten);
       s.einstellungen = neuerer(g.einstellungen, statJetzt.einstellungen);
       s.zuletzt = neuerer(g.zuletzt, statJetzt.zuletzt);
       const kNeu = kartenAenderungen(statJetzt.karten, vorher.karten, jetzt);
