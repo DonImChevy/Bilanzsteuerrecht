@@ -153,7 +153,7 @@ export const BEISPIELE_UST = {
       titel: "Essen und Getränke im Restaurant",
       sv: "Gastwirt G berechnet einem Gast für ein Menü 32,10 € und für Getränke 17,85 €, insgesamt 49,95 €, Verzehr im Lokal.",
       loesung: [
-        "G erbringt eine sonstige Leistung (§ 3 Abs. 9 UStG), Ort ist das Lokal (§ 3a Abs. 3 Nr. 3 b UStG) → steuerbar und steuerpflichtig.",
+        "G erbringt eine sonstige Leistung (§ 3 Abs. 9 UStG), Ort ist das Lokal (§ 3a Abs. 3 Nr. 3a Buchst. a UStG) → steuerbar und steuerpflichtig.",
         "Speisen: 7 % (§ 12 Abs. 2 Nr. 15 UStG) → BMG 30 €, USt 2,10 €. Getränke sind ausgenommen: 19 % (§ 12 Abs. 1 UStG) → BMG 15 €, USt 2,85 €.",
       ],
     },

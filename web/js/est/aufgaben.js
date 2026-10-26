@@ -1,7 +1,7 @@
 // Einkommensteuer (GS I) – Aufgaben nach den Skripten und Folien der Akademie, Rechtsstand 2026.
 // Rechenaufgaben würfeln bei jedem Aufruf neue Zahlen; Einordnungsfälle ziehen einen von mehreren Sachverhalten.
 // Frage-Antwort-Aufgaben tragen ihre Multiple-Choice-Fassung (r = richtig, f = falsch) gleich mit.
-import { auswahl, zahl } from "../kern.js";
+import { auswahl, zahl, reihum } from "../kern.js";
 import * as G from "../geld.js";
 import { grundtarif, splitting, zone } from "./tarif.js";
 
@@ -17,10 +17,10 @@ const R = (id, thema, erzeugen) => ({
 /** Einordnungsfall: zieht einen Fall {text, richtig, erkl} und stellt ihn mit festen Antwortmöglichkeiten. */
 const F = (id, thema, frage, optionen, faelle, normen = []) => ({
   id, thema, kategorie: "fall",
-  erzeugen: (r) => {
-    const f = r.wahl(faelle);
+  erzeugen: ((ziehe) => (r) => {
+    const f = ziehe(r); // reihum – jeder Fall kommt dran, bevor sich einer wiederholt
     return { ...auswahl(id, thema, `${f.text}\n\n${frage}`, optionen, [f.richtig], f.erkl, r), normen: f.normen || normen };
-  },
+  })(reihum(faelle)),
 });
 
 const eur = (e) => G.euro(Math.round(e * 100));

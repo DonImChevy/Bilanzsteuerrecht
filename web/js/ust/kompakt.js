@@ -54,7 +54,7 @@ export const KOMPAKT_UST = {
       "**B2B-Grundregel (§ 3a Abs. 2 UStG):** Ort ist der Sitz des **Empfängers**, wenn dieser Unternehmer ist und für sein Unternehmen bezieht.",
       "**B2C-Grundregel (§ 3a Abs. 1 UStG):** Ort ist der Sitz des **leistenden** Unternehmers.",
       "**Grundstücksleistungen (§ 3a Abs. 3 Nr. 1 UStG):** Lage des Grundstücks – Vermietung, Makler, Architekt, Bauleistungen, Ferienwohnung.",
-      "**Weitere Sonderregeln:** kurzfristige Vermietung von Beförderungsmitteln (§ 3a Abs. 3 Nr. 2), Kultur-, Unterrichts- und Unterhaltungsleistungen an Nichtunternehmer am Tätigkeitsort (§ 3a Abs. 3 Nr. 3a), Restaurantleistungen dort, wo sie erbracht werden (§ 3a Abs. 3 Nr. 3b), Personenbeförderung auf der Strecke (§ 3b Abs. 1).",
+      "**Weitere Sonderregeln:** kurzfristige Vermietung von Beförderungsmitteln (§ 3a Abs. 3 Nr. 2), Kultur-, Unterrichts- und Unterhaltungsleistungen an Nichtunternehmer am Tätigkeitsort, per Streaming am Wohnort des Empfängers (§ 3a Abs. 3 Nr. 3), Restaurantleistungen und Reparaturen für Privatleute dort, wo sie erbracht werden (§ 3a Abs. 3 Nr. 3a Buchst. a, b), Eintritt zu Messen für Unternehmer am Veranstaltungsort (§ 3a Abs. 3 Nr. 5), Beratung an Privatleute im Drittland an deren Wohnsitz (§ 3a Abs. 4), Personenbeförderung auf der Strecke (§ 3b Abs. 1).",
     ],
     fallen: [
       "§ 3a Abs. 2 UStG nicht prüfen, bevor die Sonderregeln des Abs. 3 ausgeschlossen sind.",

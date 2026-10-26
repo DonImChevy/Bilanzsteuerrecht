@@ -567,3 +567,51 @@ test("Eigene Karteikarten: Entwürfe aus Kompaktwissen, Beispielen und Normen", 
   const e = MK.ausNorm(norm("EStG 26"));
   assert.ok(e.v.startsWith("§ 26 EStG") && e.h.includes("Ehegatten") && e.h.length <= 2000);
 });
+
+test("Übung: feste Aufgaben kommen je Durchgang nur einmal, erzeugte nicht direkt hintereinander", async () => {
+  const { istFest } = await import("../js/katalog.js");
+  for (let s = 0; s < 30; s++) {
+    for (const thema of THEMEN.map((t) => t.id)) {
+      const fr = fragen([thema], 10, new Zufall(s));
+      const fest = fr.filter((f) => istFest(ALLE.find((v) => v.id === f.id))).map((f) => f.id);
+      assert.equal(new Set(fest).size, fest.length, `${thema}: feste Aufgabe doppelt`);
+      const erzeugt = vorlagenFuer(thema).filter((v) => !istFest(v)).length;
+      for (let i = 1; i < fr.length; i++) if (erzeugt > 1) assert.notEqual(fr[i].id, fr[i - 1].id, `${thema}: zweimal hintereinander`);
+      for (const id of new Set(fr.map((f) => f.id))) assert.ok(fr.filter((f) => f.id === id).length <= 3, `${thema}: ${id} mehr als dreimal`);
+    }
+  }
+  // Ort der Leistung: zwei feste Frage-Antwort-Aufgaben + ein Fallgenerator → 10 Aufgaben ohne doppelte feste
+  const ort = fragen(["ust-ort"], 10, new Zufall(7));
+  assert.equal(ort.filter((f) => f.id === "ust-ort-lieferung").length, 1);
+  assert.equal(fragen(["ust-ort"], 10, new Zufall(7), "qa", true).length, 2, "MC-Modus ohne Fälle: nur die zwei festen Aufgaben");
+});
+
+test("Ort der Leistung: jeder Fall kommt dran, bevor sich einer wiederholt; alle Normen auflösbar", () => {
+  for (const [id, anzahl] of [["ust-ort-fall", 11], ["ust-ort-sonstige-fall", 5], ["ust-ort-sonder-fall", 13]]) {
+    const v = ALLE.find((x) => x.id === id), r = new Zufall(3);
+    // Nach höchstens zwei Durchläufen (angebrochener Stapel + ein voller) war jeder Fall dran
+    const texte = Array.from({ length: 2 * anzahl }, () => v.erzeugen(r));
+    assert.equal(new Set(texte.map((f) => f.text)).size, anzahl, id);
+    for (const f of texte) { assert.equal(f.richtig.length, 1); for (const ref of f.normen) assert.ok(norm(ref), `${id}: Norm ${ref} fehlt`); }
+  }
+  const uebung = fragen(["ust-ort"], 10, new Zufall(1), null, true); // Thema üben im MC-Modus
+  assert.equal(uebung.length, 10, "MC-Übung „Ort“ wieder mit 10 Aufgaben");
+  assert.equal(new Set(uebung.map((f) => f.text)).size, 10, "keine Frage doppelt");
+});
+
+test("Keine doppelten Fragen: Übung je Thema, gemischt und Klausur in allen Modulen", () => {
+  const schl = (fr) => fr.map((f) => f.text.replace(/\s+/g, " ").trim().toLowerCase());
+  const ohneDoppelte = (name, fr) => { const t = schl(fr); assert.equal(new Set(t).size, t.length, `${name}: doppelte Frage`); };
+  for (let s = 0; s < 12; s++) {
+    for (const t of THEMEN) { ohneDoppelte(t.id, fragen([t.id], 10, new Zufall(s))); ohneDoppelte(t.id + " MC", fragen([t.id], 10, new Zufall(s), null, true)); }
+    for (const fach of ["bsr", "oer", "est", "ust"]) {
+      const alle = THEMEN.filter((t) => t.fach === fach).map((t) => t.id);
+      for (const f of [null, "qa", "rechnen", "fall", "buchung"]) ohneDoppelte(`${fach} ${f}`, fragen(alle, 20, new Zufall(s), f));
+      for (const n of [20, 60]) { const k = klausur(n, new Zufall(s), fach); ohneDoppelte(`Klausur ${fach}`, k); assert.equal(k.length, n, `Klausur ${fach} ${n} vollständig`); }
+    }
+  }
+  // Inhalte: kein Aufgabentext und keine Lernkarte doppelt angelegt
+  const texte = ALLE.map((v) => v.erzeugen(new Zufall(1)).text.replace(/\s+/g, " ").trim());
+  assert.equal(new Set(texte).size, texte.length, "zwei Vorlagen mit gleichem Aufgabentext");
+  assert.equal(new Set(LERNKARTEN.map((k) => k.vorne)).size, LERNKARTEN.length, "Lernkarte doppelt");
+});

@@ -80,6 +80,15 @@ export const pruefungsThemen = (fach) => themenFuer(fach).filter((t) => !t.zusat
 export const imTeil = (thema, teil = "beide") => teil === "beide" || !thema.teil || String(thema.teil) === String(teil);
 
 // ---------- Zufall (mulberry32, reproduzierbar) ----------
+/** Zieht Elemente reihum aus einem gemischten Stapel: jedes kommt dran, bevor sich eines wiederholt (Fallgeneratoren). */
+export function reihum(liste) {
+  let stapel = [];
+  return (r) => {
+    if (!stapel.length) stapel = r.mischen(liste.map((_, i) => i));
+    return liste[stapel.pop()];
+  };
+}
+
 export class Zufall {
   constructor(seed) {
     this.s = (seed ?? Math.floor(Math.random() * 2 ** 32)) >>> 0;

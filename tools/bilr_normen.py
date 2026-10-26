@@ -36,7 +36,7 @@ AUSWAHL_EST = {
 }
 # Umsatzsteuer (Aufruf mit --ust → web/js/ust/normen.js, Export NORMEN_UST)
 AUSWAHL_UST = {
-    "UStG": {"1": ["1", "2"], "2": ["1"], "3": ["1", "1b", "3", "4", "6", "6a", "7", "9", "9a", "12"], "3a": ["1", "2", "3|1,3"],
+    "UStG": {"1": ["1", "2"], "2": ["1"], "3": ["1", "1b", "3", "4", "6", "6a", "7", "9", "9a", "12"], "3a": ["1", "2", "3", "4"],
              "4": [""], "9": ["1", "2"], "10": ["1", "4", "5"], "12": ["1", "2|1,15"], "13": ["1"], "13a": ["1"],
              "14": ["1", "4"], "14c": None, "15": ["1", "1a", "2", "3", "4"], "17": ["1"], "19": ["1"],
              "3b": ["1"], "13b": ["2", "5"], "16": ["1"], "18": ["1", "2"], "20": None, "25a": ["1", "3"]},
@@ -45,8 +45,11 @@ AUSWAHL_UST = {
 TITEL = {("EStG", "20"): "Einkünfte aus Kapitalvermögen", ("EStG", "10"): "Sonderausgaben", ("EStG", "3"): "Steuerfreie Einnahmen", ("EStG", "11"): "Vereinnahmung und Verausgabung",
          ("EStG", "12"): "Nicht abzugsfähige Ausgaben", ("EStG", "9b"): "Umsatzsteuerrechtlicher Vorsteuerabzug"}
 # Im PDF über einen Seitenumbruch verschobene Textteile (gehören zu § 3 Nr. 13 EStG)
+# § 3a Abs. 3 UStG: Im PDF stehen die Nummern 1/2 und 3a/4 vertauscht vor dem Text – Nummern wieder an die richtige Stelle setzen
 TEXT_KORREKTUR = {("UStG", "3a"): [(r"\n1\. 2\. Eine sonstige", "\n1. Eine sonstige"),
-                                    (r" Die kurzfristige Vermietung eines Beförderungsmittels.*?(?=\n3\.)", "")],
+                                    (r" (Die kurzfristige Vermietung eines Beförderungsmittels)", r"\n2. \1"),
+                                    (r"\n4\. a\) die Abgabe von Speisen", "\na) die Abgabe von Speisen"),
+                                    (r" (Eine Vermittlungsleistung an einen Empfänger)", r"\n4. \1")],
                   ("UStG", "12"): [(r" -+\*\).*?(?=\n…)", "")],
                   ("EStG", "3"): [(r"Trennungsgelder\. Die als Reisekostenvergütungen .*?abziehbaren Aufwendungen nicht übersteigen; ", "")]}
 START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
