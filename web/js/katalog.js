@@ -52,13 +52,33 @@ export function fragen(themen, anzahl, r, filter = null, ohneFaelle = false) {
   if (filter === "rechnen") pool = pool.filter((v) => v.kategorie === "rechnen");
   if (filter === "fall") pool = pool.filter((v) => v.kategorie === "fall");
   if (!pool.length || anzahl <= 0) return [];
-  const out = [];
-  let runde = [];
+  // Jede Vorlage kommt erst wieder dran, wenn alle anderen einmal dran waren. Feste Aufgaben (immer gleicher Text)
+  // gibt es je Übung nur einmal – bei kleinen Themen wird die Übung dann kürzer statt dieselbe Frage zu wiederholen.
+  // Erzeugte Aufgaben (neue Zahlen bzw. neuer Fall) dürfen wiederkommen – höchstens dreimal je Übung und möglichst
+  // nicht direkt hintereinander.
+  const out = [], n = new Map();
+  let runde = r.mischen(pool), letzte = null;
   while (out.length < anzahl) {
-    if (!runde.length) runde = r.mischen(pool);
-    out.push(runde.pop().erzeugen(r));
+    if (!runde.length) {
+      runde = r.mischen(pool.filter((v) => !istFest(v) && (n.get(v) || 0) < 3));
+      if (!runde.length) break;
+      if (runde.length > 1 && runde[runde.length - 1] === letzte) runde.unshift(runde.pop());
+    }
+    letzte = runde.pop();
+    n.set(letzte, (n.get(letzte) || 0) + 1);
+    out.push(letzte.erzeugen(r));
   }
   return out;
+}
+
+/** Feste Aufgabe: erzeugt bei jedem Zufall dieselbe Frage (Frage-Antwort, Merksätze) – im Gegensatz zu Rechen- und Fallgeneratoren. */
+const FEST = new Map();
+export function istFest(v) {
+  if (!FEST.has(v.id)) {
+    const text = (s) => { const f = v.erzeugen(new Zufall(s)); return JSON.stringify([f.text, [...(f.optionen || [])].sort(), f.loesung, f.loesungen]); };
+    FEST.set(v.id, [2, 3, 4].every((s) => text(s) === text(1)));
+  }
+  return FEST.get(v.id);
 }
 
 /** Zieht `anzahl` verschiedene Vorlagen; in den Altklausuren häufig geprüfte Themen zählen doppelt. */

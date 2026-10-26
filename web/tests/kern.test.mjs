@@ -567,3 +567,21 @@ test("Eigene Karteikarten: Entwürfe aus Kompaktwissen, Beispielen und Normen", 
   const e = MK.ausNorm(norm("EStG 26"));
   assert.ok(e.v.startsWith("§ 26 EStG") && e.h.includes("Ehegatten") && e.h.length <= 2000);
 });
+
+test("Übung: feste Aufgaben kommen je Durchgang nur einmal, erzeugte nicht direkt hintereinander", async () => {
+  const { istFest } = await import("../js/katalog.js");
+  for (let s = 0; s < 30; s++) {
+    for (const thema of THEMEN.map((t) => t.id)) {
+      const fr = fragen([thema], 10, new Zufall(s));
+      const fest = fr.filter((f) => istFest(ALLE.find((v) => v.id === f.id))).map((f) => f.id);
+      assert.equal(new Set(fest).size, fest.length, `${thema}: feste Aufgabe doppelt`);
+      const erzeugt = vorlagenFuer(thema).filter((v) => !istFest(v)).length;
+      for (let i = 1; i < fr.length; i++) if (erzeugt > 1) assert.notEqual(fr[i].id, fr[i - 1].id, `${thema}: zweimal hintereinander`);
+      for (const id of new Set(fr.map((f) => f.id))) assert.ok(fr.filter((f) => f.id === id).length <= 3, `${thema}: ${id} mehr als dreimal`);
+    }
+  }
+  // Ort der Leistung: zwei feste Frage-Antwort-Aufgaben + ein Fallgenerator → 10 Aufgaben ohne doppelte feste
+  const ort = fragen(["ust-ort"], 10, new Zufall(7));
+  assert.equal(ort.filter((f) => f.id === "ust-ort-lieferung").length, 1);
+  assert.equal(fragen(["ust-ort"], 10, new Zufall(7), "qa", true).length, 2, "MC-Modus ohne Fälle: nur die zwei festen Aufgaben");
+});
