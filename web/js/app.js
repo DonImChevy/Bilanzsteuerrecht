@@ -19,6 +19,7 @@ import { serie, woche, tagSchluessel } from "./aktivitaet.js";
 import { ic } from "./icons.js";
 import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, codeAnzeige, abgleichen, SERVER } from "./sync.js";
 import qrcode from "./lib/qrcode.js";
+import { taler, talerBuehne, TALER_SPRUECHE } from "./maskottchen.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
@@ -188,6 +189,8 @@ const state = {
   bilrTeil: ["1", "2"].includes(lies("bsr.teil", "beide")) ? lies("bsr.teil", "beide") : "beide", // Bilanzrecht: "1" | "2" | "beide"
   ziel: Number(lies("bsr.ziel", "20")) || 20,
   design: lies("bsr.design", "system"),
+  // Animationen aus („Bewegung reduzieren“): eigener Schalter, Startwert = Systemeinstellung des Geräts
+  bewegungAus: (() => { const v = lies("bsr.bewegungAus", ""); return v ? v === "1" : !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; })(),
   hinweisWeg: lies("bsr.hinweisWeg", "") === "1",
   tab: "start",
   suche: "",
@@ -196,6 +199,7 @@ const state = {
   kontoSuche: "",
   bilrAnsicht: "konten", // Bilanzrecht-Nachschlagen: "konten" | "gesetze"
   sitzung: null,
+  talerSpruch: -1, // angetippter Spruch des Maskottchens auf der Startseite (-1 = keiner)
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
   kompakt: null, // Kompaktwissen: {id: Thema | null (Übersicht), fach, liste: aus der Übersicht geöffnet, ausSitzung}
@@ -214,7 +218,7 @@ const farbe = (q) => (q >= 0.8 ? "var(--ok)" : q >= 0.5 ? "var(--warn)" : "var(-
 const zahlText = (n) => n.toLocaleString("de-DE");
 
 // ======================= Einstellungen (werden mit dem Sync-Code abgeglichen) =======================
-const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus"];
+const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus", "bewegungAus"];
 // Erster Stand ohne Zeitstempel (t = 0): Ein neu verbundenes Gerät übernimmt die Einstellungen der anderen.
 if (!stat.einstellungen) stat.einstellungen = { ziel: String(state.ziel), design: state.design, teil: state.bilrTeil, oerModus: state.oerModus, t: 0 };
 /** Einstellung lokal speichern und für den Abgleich mit Zeitstempel im Lernstand vermerken. */
@@ -232,6 +236,7 @@ function einstellungenAnwenden() {
   if (e.design) state.design = e.design;
   if (e.teil) state.bilrTeil = ["1", "2"].includes(e.teil) ? e.teil : "beide";
   if (e.oerModus) state.oerModus = e.oerModus === "mc" ? "mc" : "qa";
+  if (e.bewegungAus != null) state.bewegungAus = e.bewegungAus === "1";
 }
 
 /** Akzentfarbe und Hell/Dunkel anwenden. */
@@ -242,6 +247,15 @@ function designAnwenden() {
   root.style.setProperty("--m-dunkel", m.farbeDunkel);
   if (state.design === "light" || state.design === "dark") root.dataset.theme = state.design;
   else delete root.dataset.theme;
+  root.dataset.bewegung = state.bewegungAus ? "aus" : "an";
+}
+
+/** Schalter „Animationen“ (an = Animationen laufen, aus = Bewegung reduziert). Klein für Kopfzeilen, sonst als Zeile. pf = Lernpfad-Design. */
+function bewegungSchalter(klein = false, pf = false) {
+  const an = !state.bewegungAus;
+  return `<button class="${pf ? "pf-schalter" : "schalter"}${klein ? " klein" : ""}" role="switch" aria-checked="${an}" data-a="bewegung" aria-label="Animationen ${an ? "an" : "aus"}" title="Animationen ${an ? "an" : "aus"} – antippen zum Umschalten">
+    <span class="sch-ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><path d="M4 8h7M2 12h9M4 16h7"/><circle cx="17" cy="12" r="4.2"/></svg></span>
+    <span class="sch-bahn" aria-hidden="true"><span class="sch-knopf"></span></span></button>`;
 }
 
 // ======================= Sitzung =======================
@@ -437,7 +451,7 @@ function render() {
   if (state.deck) html += deckView();
   if (state.paare) html += paareView();
   if (state.pfad) {
-    const hilfe = { esc, ic, konfetti, normLabel: (r) => norm(r)?.label || r, karteMerken: true };
+    const hilfe = { esc, ic, konfetti, normLabel: (r) => norm(r)?.label || r, karteMerken: true, schalter: bewegungSchalter(true, true) };
     html += state.pfad.block ? blockView(state.pfad.fach, state.pfad.block, hilfe) : kartenView(state.pfad.fach, hilfe);
   }
   if (state.kompakt) html += kompaktEbene();
@@ -513,6 +527,9 @@ function seitenKopf(titel, untertitel = "") {
 }
 
 // ======================= Tab: Start =======================
+/** Taler bewegt sich nur beim ersten Anzeigen und direkt nach dem Antippen – nicht bei jedem Neuzeichnen der Startseite. */
+function talerBewegt() { const neu = !state.talerGezeigt || state.talerAngetippt; state.talerGezeigt = true; state.talerAngetippt = false; return neu; }
+
 function gruss() {
   const h = new Date().getHours();
   return h < 5 ? "Gute Nacht" : h < 11 ? "Guten Morgen" : h < 17 ? "Hallo" : h < 22 ? "Guten Abend" : "Gute Nacht";
@@ -531,9 +548,13 @@ function tabStart() {
 
   return `
     <div class="kopfzeile">
-      <div><div class="gruss">${esc(datum)}</div><h1 class="titel" style="margin-top:2px">${gruss()} 👋</h1></div>
+      <div class="gruss-block">
+        <button class="taler-knopf" data-a="taler" aria-label="Maskottchen Taler antippen">${taler(state.talerSpruch < 0 ? "hallo" : "jubeln", { groesse: 60, klasse: talerBewegt() ? (state.talerSpruch < 0 ? "" : "flip") : "ruhig" })}</button>
+        <div><div class="gruss">${esc(datum)}</div><h1 class="titel" style="margin-top:2px">${gruss()}</h1></div>
+      </div>
       <div class="kopf-aktionen"><button class="icon-btn" data-a="einstellungen" aria-label="Einstellungen">${ic("einstellungen")}</button></div>
     </div>
+    ${state.talerSpruch >= 0 ? `<div class="taler-blase" role="status">${esc(TALER_SPRUECHE[state.talerSpruch % TALER_SPRUECHE.length])}</div>` : ""}
     <section class="hero">
       <div class="oben">
         <div class="ziel-ring" style="--p:${p}"><div>${heute}<small>von ${ziel}</small></div></div>
@@ -1160,22 +1181,25 @@ function sitzungView() {
     fuss = `<button class="knopf zweit" data-a="zurueck" ${x.index === 0 ? "disabled" : ""}>${ic("zurueck")} Zurück</button>` +
       (x.index === n - 1 ? `<button class="knopf" data-a="abgeben">${ic("haken")} Abgeben</button>` : `<button class="knopf" data-a="weiter">Weiter ${ic("pfeil")}</button>`);
   } else if (f.typ === "offen" && !b && !x.aufgedeckt[x.index]) {
-    fuss = `<button class="knopf" id="offenKnopf" data-a="pruefen">${offenKnopfText(f, aktAntwort())}</button>`;
+    fuss = `<span class="fb-warte">${taler("warte", { groesse: 52 })}</span><button class="knopf" id="offenKnopf" data-a="pruefen">${offenKnopfText(f, aktAntwort())}</button>`;
   } else if (f.typ === "offen" && !b) {
     feedback = `<div class="feedback" style="color:var(--text);font-size:16px"><span>Hast du es gewusst?<small>Ehrlich vergleichen – das steuert, wann die Frage wiederkommt.</small></span></div>`;
     fuss = `<button class="knopf rot" data-a="selbst" data-v="0">${ic("kreuz")} Nicht gewusst</button><button class="knopf gruen" data-a="selbst" data-v="1">${ic("haken")} Gewusst</button>`;
   } else if (!b) {
-    fuss = `<button class="knopf" id="pruefen" data-a="pruefen" ${istLeer(f, aktAntwort()) ? "disabled" : ""}>Prüfen</button>`;
+    fuss = `<span class="fb-warte">${taler("warte", { groesse: 52 })}</span><button class="knopf" id="pruefen" data-a="pruefen" ${istLeer(f, aktAntwort()) ? "disabled" : ""}>Prüfen</button>`;
   } else {
     const ok = b.korrekt;
     fussKlasse = ok ? "ok" : "err";
     const satz = (ok ? LOB : TROST)[(x.index + n) % (ok ? LOB.length : TROST.length)];
-    feedback = `<div class="feedback"><span class="kreis-ic">${ic(ok ? "haken" : "kreuz")}</span><span>${satz}<small>${ok ? "Kommt in der Lernkartei ein Fach weiter." : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
+    // Die Show läuft nur beim ersten Zeichnen der Rückmeldung zu dieser Aufgabe
+    const showKey = `${x.start}-${x.index}`, neu = state.talerShow !== showKey;
+    state.talerShow = showKey;
+    feedback = `<div class="feedback">${talerBuehne(ok, { ruhig: !neu })}<span>${satz}<small>${ok ? "Kommt in der Lernkartei ein Fach weiter." : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
     fuss = `<button class="knopf ${ok ? "gruen" : "rot"}" data-a="weiter">${x.index === n - 1 ? "Auswertung" : "Weiter"} ${ic("pfeil")}</button>`;
   }
 
   return `<div class="vollbild">
-    <div class="vb-kopf"><button class="rund" data-a="beenden" aria-label="Beenden">${ic("kreuz")}</button>${mitte}${rechts}</div>
+    <div class="vb-kopf"><button class="rund" data-a="beenden" aria-label="Beenden">${ic("kreuz")}</button>${mitte}${bewegungSchalter(true)}${rechts}</div>
     <div class="vb-inhalt">
       <div class="nr">Aufgabe ${x.index + 1} von ${n} · ${esc(sitzungTitel(x))}</div>
       ${frageView(f, aktAntwort(), b, false, x.modus !== "klausur" && x.aufgedeckt[x.index])}
@@ -1345,7 +1369,8 @@ function ergebnisView() {
     <div class="vb-inhalt">
       <div class="zentriert">
         <div class="ring" style="--p:${Math.round(q * 100)};--farbe:${farbe(q)}"><div>${Math.round(q * 100)} %</div></div>
-        <div class="ergebnis-titel">${q >= 0.9 ? "Hervorragend! 🎉" : q >= 0.7 ? "Gut gemacht! 💪" : q >= 0.5 ? "Solide! 👍" : "Weiter so! 📚"}</div>
+        ${taler(q >= 0.7 ? "jubeln" : "mut", { groesse: 96, klasse: "erg-taler" })}
+        <div class="ergebnis-titel">${q >= 0.9 ? "Hervorragend!" : q >= 0.7 ? "Gut gemacht!" : q >= 0.5 ? "Solide!" : "Weiter so!"}</div>
         <div class="sub" style="font-size:15px">${lob}</div>
       </div>
       <div class="statistik-reihe" style="margin-top:18px">
@@ -1596,6 +1621,8 @@ function sheetView() {
         <span class="chip-reihe">${[10, 20, 30, 50].map((z) => `<button class="chip ${state.ziel === z ? "aktiv" : ""}" data-a="ziel" data-v="${z}">${z} Aufgaben</button>`).join("")}</span></div></div></div>
       <div class="gruppe"><div class="gruppe-titel">Darstellung</div><div class="modus-karte"><div class="segment">
         ${[["system", "System"], ["light", "Hell"], ["dark", "Dunkel"]].map(([id, t]) => `<button data-a="design" data-v="${id}" class="${state.design === id ? "aktiv" : ""}">${t}</button>`).join("")}</div></div></div>
+      <div class="gruppe"><div class="gruppe-titel">Animationen</div><div class="liste"><div class="zeile">
+        <span class="grow"><b>Animationen</b><div class="sub">Aus = Bewegung reduzieren: Taler, Konfetti und Übergänge bleiben still. Auch während der Aufgaben oben rechts umschaltbar.</div></span>${bewegungSchalter()}</div></div></div>
       ${syncVerfuegbar() ? `<div class="gruppe"><div class="gruppe-titel">Mehrere Geräte</div><div class="liste"><button class="zeile" data-a="syncOeffnen"><span class="symbol">${ic("wechsel")}</span>
         <span class="grow"><b>Geräte synchronisieren</b><div class="sub">${esc(syncStatusText())}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
       <div class="gruppe"><div class="gruppe-titel">So funktioniert's</div><div class="liste">
@@ -1715,6 +1742,15 @@ function fachSetzen(v) {
 }
 
 const AKTIONEN = {
+  // Ohne Neuzeichnen umschalten – eine laufende Aufgabe bleibt, wie sie ist
+  bewegung: () => {
+    state.bewegungAus = !state.bewegungAus;
+    einstellungMerken("bewegungAus", state.bewegungAus ? "1" : "0");
+    document.documentElement.dataset.bewegung = state.bewegungAus ? "aus" : "an";
+    const an = !state.bewegungAus;
+    document.querySelectorAll('[data-a="bewegung"]').forEach((b) => { b.setAttribute("aria-checked", an); b.setAttribute("aria-label", `Animationen ${an ? "an" : "aus"}`); b.title = `Animationen ${an ? "an" : "aus"} – antippen zum Umschalten`; });
+  },
+  taler: () => { state.talerSpruch += 1; state.talerAngetippt = true; render(); },
   tab: (v) => { state.tab = v; state.sheet = null; render(); window.scrollTo(0, 0); },
   einstellungen: () => { state.sheet = { art: "einstellungen" }; render(); },
   syncOeffnen: () => { state.sheet = { art: "sync" }; render(); },

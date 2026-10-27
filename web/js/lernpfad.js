@@ -5,6 +5,7 @@ import { PFAD_EST } from "./est/pfad.js";
 import { PFAD_OER } from "./oer/pfad.js";
 import { PFAD_BSR1, PFAD_BSR2 } from "./bilr/pfad.js";
 import * as G from "./geld.js";
+import { taler } from "./maskottchen.js";
 
 // Schlüssel = Modul; Bilanzrecht je nach Auswahl Teil I (bsr1), Teil II (bsr2) oder beide (bsr).
 export const PFADE = {
@@ -134,10 +135,10 @@ export function kartenView(fach, { esc, ic, normLabel }) {
     </div></div>`;
 }
 
-export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken = false }) {
+export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken = false, schalter = "" }) {
   const b = PFADE[fach].bloecke.find((x) => x.id === z.id), n = schritte(b), k = b.karten.length;
   const fortschritt = `<div class="pf-schritte">${Array.from({ length: n - 2 }, (_, i) => `<i class="${i + 1 < z.schritt ? "ok" : i + 1 === z.schritt ? "akt" : ""}${i >= k ? " frage" : ""}"></i>`).join("")}</div>`;
-  const kopf = `<div class="pf-kopf"><button class="pf-rund" data-a="pfadKarte" aria-label="Zur Lernpfad-Karte">${ic("kreuz")}</button>${z.schritt > 0 && z.schritt < n - 1 ? fortschritt : `<span class="pf-marke">${esc(b.titel)}</span>`}<span class="pf-chip">${b.icon}</span></div>`;
+  const kopf = `<div class="pf-kopf"><button class="pf-rund" data-a="pfadKarte" aria-label="Zur Lernpfad-Karte">${ic("kreuz")}</button>${z.schritt > 0 && z.schritt < n - 1 ? fortschritt : `<span class="pf-marke">${esc(b.titel)}</span>`}${schalter}<span class="pf-chip">${b.icon}</span></div>`;
   const normen = b.normen.map((r) => `<button class="pf-norm" data-a="normDetail" data-v="${r.split(" ").slice(0, 2).join(" ")}">${esc(normLabel(r))}</button>`).join("");
   let inhalt, fuss = "";
   if (z.schritt === 0) {
@@ -173,6 +174,7 @@ export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken =
     const s = sterneFuer(z.fehler), alle = PFADE[fach].bloecke, i = alle.indexOf(b), naechster = alle[i + 1];
     const sek = Math.round(((z.ende || Date.now()) - z.start) / 1000);
     inhalt = `${s === 3 ? konfetti() : ""}<div class="pf-ende"><div class="pf-gross-sterne">${[1, 2, 3].map((x) => `<span class="${x <= s ? "an" : ""}" style="--i:${x}">★</span>`).join("")}</div>
+      ${taler(s >= 2 ? "jubeln" : "mut", { groesse: 92, klasse: "pf-taler" })}
       <h1 class="pf-titel">${s === 3 ? "Perfekt!" : s === 2 ? "Stark gemacht!" : "Block geschafft!"}</h1>
       <p class="pf-unter">${b.fragen.length - z.fehler} von ${b.fragen.length} Fragen auf Anhieb richtig · ${Math.floor(sek / 60)}:${String(sek % 60).padStart(2, "0")} min</p>
       <div class="pf-xp">+${(b.fragen.length - z.fehler) * 10 + 20} XP</div>

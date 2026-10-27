@@ -29,12 +29,14 @@ Deploy über GitHub Pages (`.github/workflows/pages.yml`). Antworten an den Nutz
 - `meinekarten.js` – eigene Karteikarten (`stat.meineKarten`, je Karte Inhalt + Lernkartei `l`, Löschen als Grabstein `x`), Export/Import (JSON, Anki-Text, CSV) und Entwürfe für „+ Als Karte“ (Aufgabe, Kompaktwissen, Klausurbeispiel, Norm, Lernpfad). Neue Quelle: Knopf über `alsKarteKnopf()` in app.js, Entwurf in `AKTIONEN.alsKarte`. `goodnotes.js` liest Goodnotes-Lernsets (.goodnotes = ZIP mit `index.events.pb`, Protobuf-Änderungsprotokoll; nur getippter Text).
 - `lernpfad.js` – Lernpfad-Modus (eigenes Design `.pfad`/`.pf-*`; jeder Block muss für sich verständlich sein). Lernkarten können `grafik: { bilanz, konten }` tragen (Mini-Bilanz / T-Konten mit Soll und Haben).
 - Lösungsanzeige: Erklärungen stehen unter „Erläuterung – kein Gesetzeswortlaut“, Normen unter „Gesetzestext – Wortlaut“. In Erklärungen Abgeleitetes mit „vgl.“ zitieren, ohne Zusatz nur, was wörtlich so im Gesetz steht.
+- `maskottchen.js` – Maskottchen „Taler“ (SVG-Münze mit Brille; Stimmungen `hallo`, `jubeln`, `mut`): Startseite (antippbar, Sprüche `TALER_SPRUECHE`), Rückmeldung nach jeder Aufgabe, Auswertung, Lernpfad-Ende. Farben `--taler-*`, Bewegung nur einmal je Anlass (`.ruhig`).
 - `sync.js` – Supabase-Sync, führt Zähler pro Gerät zusammen; neue Felder in `stat` dort mit aufnehmen.
 - Normtexte: `python3 -I tools/bilr_normen.py` erzeugt `*/normen.js` aus Gesetzesdateien.
 - Schemata als Grafik statt Normtext: `bilr/gliederung.js` (§ 266 HGB) und `est/r2.js` (R 2 EStR, Ausgabe 2025 des amtlichen ESt-Handbuchs; als Norm `EStR 2` im Index, Zitate „R 2 Abs. 1 EStR“ werden antippbar).
 
 ## Design
 - `web/css/style.css`: Basis oben, darunter „Design 2.0“ (Glas, Leuchten, 3D-Knöpfe) und Komponenten wie `.themen-karte`.
+- Animationen: Schalter „Animationen“ (`state.bewegungAus`, Einstellung `bewegungAus`, synchronisiert) setzt `data-bewegung="an|aus"` auf `<html>`; Startwert = Systemeinstellung. Reduzierte Bewegung in CSS über `:root[data-bewegung="aus"] …`, nicht über `prefers-reduced-motion`.
 - Farben nur über Variablen: `--m` (Modulfarbe, Indigo auf der Startseite), `--m-licht`, `--m-tief`, `--glas*`, `--schatten*`. Hell **und** dunkel prüfen (`prefers-color-scheme` und `data-theme`).
 - Lernpfad hat bewusst eigene Farben (Amber/Pink/Violett) – App-Styles dürfen `.pfad`/`.pf-*` nicht treffen.
 - Neue Listen als einzelne Glaskarten gestalten, nicht als schlichte Tabelle (Vorbilder: `.themen-karte`, `.t-konto` mit T-Konto-Seite, `.stapel`).
