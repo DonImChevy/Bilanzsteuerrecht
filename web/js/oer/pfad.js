@@ -139,17 +139,19 @@ export const PFAD_OER = [
     ],
   },
   {
-    id: "o-regierung", titel: "Die Bundesregierung", kurz: "Art. 62–69 GG", icon: "👥", normen: ["GG 63", "GG 65", "GG 67", "GG 68"],
+    id: "o-regierung", titel: "Die Bundesregierung", kurz: "Art. 62–69 GG", icon: "👥", normen: ["GG 63", "GG 64", "GG 65", "GG 67", "GG 68"],
     karten: [
       { art: "merksatz", titel: "Wahl des Bundeskanzlers (Art. 63 GG)", text: "1. Der **Bundespräsident schlägt** einen Kandidaten vor; der Bundestag wählt **ohne Aussprache**. Nötig ist die **Mehrheit der Mitglieder** (Kanzlermehrheit, bei 630 Abgeordneten **316** Stimmen).\n2. Scheitert das, kann der Bundestag **innerhalb von 14 Tagen** selbst jemanden mit Kanzlermehrheit wählen.\n3. Danach genügt die **relative Mehrheit**. Erreicht der Gewählte doch die Kanzlermehrheit, **muss** der Präsident ihn ernennen; sonst ernennt er ihn binnen **7 Tagen** oder **löst den Bundestag auf** (Art. 63 Abs. 4 GG)." },
       { art: "erklaerung", titel: "Drei Prinzipien (Art. 65 GG)", text: "• **Kanzlerprinzip**: Der Kanzler bestimmt die **Richtlinien der Politik**.\n• **Ressortprinzip**: Jeder Minister leitet seinen Bereich **selbständig** und in eigener Verantwortung.\n• **Kollegialprinzip**: Bei Meinungsverschiedenheiten zwischen Ministern entscheidet die **Bundesregierung** als Ganzes." },
       { art: "erklaerung", titel: "Misstrauensvotum und Vertrauensfrage", text: "• **Konstruktives Misstrauensvotum** (Art. 67 GG): Der Bundestag kann den Kanzler nur abwählen, indem er mit Kanzlermehrheit **gleichzeitig einen Nachfolger wählt**.\n• **Vertrauensfrage** (Art. 68 GG): Der Kanzler fragt, ob der Bundestag ihm vertraut. Findet er keine Mehrheit, kann der Bundespräsident auf Vorschlag des Kanzlers den Bundestag **binnen 21 Tagen auflösen**." },
+      { art: "erklaerung", titel: "Die Minister (Art. 64 GG)", text: "Die **Bundesminister** werden auf **Vorschlag des Kanzlers** vom **Bundespräsidenten** ernannt und entlassen (Art. 64 Abs. 1 GG) – der Bundestag wählt sie **nicht**.\nDeshalb kann der Bundestag einen einzelnen Minister auch **nicht verbindlich abwählen**: Ein Misstrauensvotum gibt es nur gegen den Kanzler (Art. 67 GG). Ein bloß **politischer** Missbilligungsbeschluss ist aber zulässig – er bindet niemanden." },
     ],
     fragen: [
       { art: "wahl", frage: "Wer schlägt den Kandidaten für die erste Kanzlerwahl vor?", optionen: ["Der Bundespräsident", "Die stärkste Fraktion", "Der Bundesrat", "Der Bundestagspräsident"], richtig: 0, erkl: "Art. 63 Abs. 1 GG." },
       { art: "zahl", einheit: "Stimmen", frage: "Bundestag mit 630 Mitgliedern: Wie viele Stimmen braucht die Kanzlermehrheit?", cent: 31600, erkl: "Mehr als die Hälfte der Mitglieder: 630 ÷ 2 = 315 → 316." },
       { art: "wahl", frage: "Wie kann der Bundestag den Kanzler abwählen?", optionen: ["Nur durch Wahl eines Nachfolgers (Art. 67 GG)", "Mit einfacher Mehrheit", "Durch Volksentscheid", "Durch den Bundesrat"], richtig: 0, erkl: "Konstruktives Misstrauensvotum." },
       { art: "wahl", frage: "Wer bestimmt die Richtlinien der Politik?", optionen: ["Der Bundeskanzler", "Der Bundespräsident", "Jeder Minister", "Der Bundesrat"], richtig: 0, erkl: "Art. 65 S. 1 GG – Kanzlerprinzip." },
+      { art: "wahl", frage: "Der Bundestag beschließt mit Mehrheit, die Finanzministerin solle entlassen werden. Muss sie gehen?", optionen: ["Nein – nur politische Wirkung; entlassen kann nur der Bundespräsident auf Vorschlag des Kanzlers", "Ja, sofort", "Ja, wenn der Bundesrat zustimmt", "Ja, nach 48 Stunden"], richtig: 0, erkl: "Art. 64 Abs. 1 GG; Misstrauensvotum nur gegen den Kanzler (Art. 67 GG)." },
     ],
   },
   {
@@ -178,6 +180,22 @@ export const PFAD_OER = [
       { art: "wahl", frage: "Der Bundesrat verweigert einem Zustimmungsgesetz die Zustimmung. Folge?", optionen: ["Das Gesetz kommt nicht zustande", "Der Bundestag überstimmt ihn", "Der Präsident entscheidet", "Das BVerfG entscheidet"], richtig: 0, erkl: "Ohne Zustimmung kein Zustimmungsgesetz." },
       { art: "wahl", frage: "Wann dürfen die Länder im Bereich der konkurrierenden Gesetzgebung Gesetze erlassen?", optionen: ["Solange und soweit der Bund nicht tätig geworden ist", "Nie", "Immer", "Nur mit Zustimmung des Bundestags"], richtig: 0, erkl: "Art. 72 Abs. 1 GG." },
       { art: "wahl", frage: "Wer ist für die Gesetzgebung grundsätzlich zuständig?", optionen: ["Die Länder (Art. 70 GG)", "Der Bund", "Der Bundesrat", "Die Gemeinden"], richtig: 0, erkl: "Der Bund nur, soweit das GG ihm die Befugnis verleiht." },
+    ],
+  },
+  {
+    id: "o-steuern", titel: "Wer darf Steuergesetze machen?", kurz: "Art. 105, 106 GG", icon: "💰", normen: ["GG 105", "GG 106"],
+    karten: [
+      { art: "merksatz", titel: "Eigene Regeln für Steuern (Art. 105 GG)", text: "Für Steuergesetze gelten nicht Art. 73/74, sondern **Art. 105 GG**:\n• **Abs. 1 – ausschließlich Bund:** Zölle und Finanzmonopole.\n• **Abs. 2 – konkurrierend:** die Grundsteuer und alle übrigen Steuern, wenn dem Bund das **Aufkommen ganz oder zum Teil zusteht** (Art. 106) **oder** die Voraussetzungen des **Art. 72 Abs. 2** vorliegen.\n• **Abs. 2a – Länder:** **örtliche Verbrauch- und Aufwandsteuern** (z. B. Hunde-, Zweitwohnungsteuer), solange sie bundesgesetzlichen Steuern nicht gleichartig sind." },
+      { art: "erklaerung", titel: "Wem steht das Aufkommen zu? (Art. 106 GG)", text: "• **Bund** (Abs. 1): u. a. Zölle, die meisten Verbrauchsteuern (z. B. Energie-, Tabaksteuer), Kfz-Steuer, Versicherungsteuer, Solidaritätszuschlag.\n• **Länder** (Abs. 2): **Vermögensteuer**, **Erbschaftsteuer**, Biersteuer, Spielbankabgabe.\n• **Bund und Länder gemeinsam** (Abs. 3, Gemeinschaftsteuern): **Einkommen-, Körperschaft- und Umsatzsteuer**.\n• **Gemeinden** (Abs. 6): Grund- und Gewerbesteuer." },
+      { art: "erklaerung", titel: "Prüfung in der Klausur", text: "1. **Art. 105 Abs. 1**: Zoll oder Finanzmonopol? → Bund ausschließlich.\n2. **Art. 105 Abs. 2a**: örtliche Verbrauch- oder Aufwandsteuer? → Länder.\n3. **Art. 105 Abs. 2 S. 2 Alt. 1**: Steht dem Bund das Aufkommen (teilweise) zu (Art. 106)? → konkurrierend.\n4. Sonst **Alt. 2**: nur wenn Art. 72 Abs. 2 GG erfüllt ist.\nDazu: Fließt das Aufkommen auch Ländern oder Gemeinden zu, braucht das Bundesgesetz die **Zustimmung des Bundesrates** (Art. 105 Abs. 3)." },
+      { art: "beispiel", titel: "Zwei Klassiker", text: "• **Einkommensteuer**: Gemeinschaftsteuer (Art. 106 Abs. 3) → Aufkommen steht dem Bund teilweise zu → **konkurrierende Gesetzgebung** nach Art. 105 Abs. 2 S. 2 Alt. 1; Zustimmung des Bundesrates nötig (Abs. 3).\n• **Vermögensteuer**: Aufkommen nur bei den Ländern (Art. 106 Abs. 2 Nr. 1) → der Bund darf nur, wenn **Art. 72 Abs. 2** vorliegt (Art. 105 Abs. 2 S. 2 Alt. 2)." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Wer hat die Gesetzgebungskompetenz für Zölle?", optionen: ["Ausschließlich der Bund", "Die Länder", "Bund und Länder konkurrierend", "Die EU allein, nie der Bund"], richtig: 0, erkl: "Art. 105 Abs. 1 GG." },
+      { art: "wahl", frage: "Eine Stadt will eine Hundesteuer einführen. Wer regelt das?", optionen: ["Das Land (örtliche Aufwandsteuer, Art. 105 Abs. 2a)", "Der Bund", "Der Bundesrat", "Nur die EU"], richtig: 0, erkl: "Örtliche Verbrauch- und Aufwandsteuern → Länder (die Kommunen auf landesrechtlicher Grundlage)." },
+      { art: "wahl", frage: "Warum darf der Bund das Einkommensteuergesetz erlassen?", optionen: ["Weil ihm das Aufkommen zum Teil zusteht (Art. 105 Abs. 2 i. V. m. Art. 106 Abs. 3)", "Weil Steuern immer Bundessache sind", "Wegen Art. 73 GG", "Weil der Bundesrat zugestimmt hat"], richtig: 0, erkl: "Gemeinschaftsteuer → konkurrierende Gesetzgebung nach Art. 105 Abs. 2 S. 2 Alt. 1 GG." },
+      { art: "wahl", frage: "Wem steht das Aufkommen der Erbschaftsteuer zu?", optionen: ["Den Ländern", "Dem Bund", "Bund und Ländern gemeinsam", "Den Gemeinden"], richtig: 0, erkl: "Art. 106 Abs. 2 Nr. 2 GG." },
+      { art: "wahl", frage: "Braucht ein Bundesgesetz zur Umsatzsteuer die Zustimmung des Bundesrates?", optionen: ["Ja – das Aufkommen fließt auch den Ländern zu", "Nein – Einspruchsgesetz", "Nur bei Steuererhöhungen", "Nur wenn der Bundestag es beschließt"], richtig: 0, erkl: "Art. 105 Abs. 3 GG." },
     ],
   },
 ];

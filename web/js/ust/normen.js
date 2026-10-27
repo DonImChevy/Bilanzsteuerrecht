@@ -256,6 +256,10 @@ export const NORMEN_UST = [
 {
 "abs": "1",
 "text": "Hat sich die Bemessungsgrundlage für einen steuerpflichtigen Umsatz im Sinne des § 1 Abs. 1 Nr. 1 geändert, hat der Unternehmer, der diesen Umsatz ausgeführt hat, den dafür geschuldeten Steuerbetrag zu berichtigen. Ebenfalls ist der Vorsteuerabzug bei dem Unternehmer, an den dieser Umsatz ausgeführt wurde, zu berichtigen. Dies gilt nicht, soweit er durch die Änderung der Bemessungsgrundlage wirtschaftlich nicht begünstigt wird. Wird in diesen Fällen ein anderer Unternehmer durch die Änderung der Bemessungsgrundlage wirtschaftlich begünstigt, hat dieser Unternehmer seinen Vorsteuerabzug zu berichtigen. Die Sätze 1 bis 4 gelten in den Fällen des § 1 Abs. 1 Nr. 5 und des § 13b sinngemäß. Bei Preisnachlässen und Preiserstattungen eines Unternehmers in einer Leistungskette an einen in dieser Leistungskette nicht unmittelbar nachfolgenden Abnehmer liegt eine Minderung der Bemessungsgrundlage nach Satz 1 nur vor, wenn der Leistungsbezug dieses Abnehmers im Rahmen der Leistungskette im Inland steuerpflichtig ist. Die Berichtigung des Vorsteuerabzugs kann unterbleiben, soweit ein dritter Unternehmer den auf die Minderung des Entgelts entfallenden Steuerbetrag an das Finanzamt entrichtet; in diesem Fall ist der dritte Unternehmer Schuldner der Steuer. Die Berichtigungen nach den Sätzen 1 und 2 sind für den Besteuerungszeitraum vorzunehmen, in dem die Änderung der Bemessungsgrundlage eingetreten ist. Die Berichtigung nach Satz 4 ist für den Besteuerungszeitraum vorzunehmen, in dem der andere Unternehmer wirtschaftlich begünstigt wird."
+},
+{
+"abs": "2",
+"text": "Absatz 1 gilt sinngemäß, wenn\n1. das vereinbarte Entgelt für eine steuerpflichtige Lieferung, sonstige Leistung oder einen steuerpflichtigen innergemeinschaftlichen Erwerb uneinbringlich geworden ist. Wird das Entgelt nachträglich vereinnahmt, sind Steuerbetrag und Vorsteuerabzug erneut zu berichtigen;\n2. für eine vereinbarte Lieferung oder sonstige Leistung ein Entgelt entrichtet, die Lieferung oder sonstige Leistung jedoch nicht ausgeführt worden ist;\n3. eine steuerpflichtige Lieferung, sonstige Leistung oder ein steuerpflichtiger innergemeinschaftlicher Erwerb rückgängig gemacht worden ist;\n4. der Erwerber den Nachweis im Sinne des § 3d Satz 2 führt;\n5. Aufwendungen im Sinne des § 15 Abs. 1a getätigt werden."
 }
 ],
 "auszug": true
@@ -268,6 +272,14 @@ export const NORMEN_UST = [
 {
 "abs": "1",
 "text": "Ein von einem im Inland oder in den in § 1 Absatz 3 bezeichneten Gebieten ansässigen Unternehmer bewirkter Umsatz im Sinne des § 1 Absatz 1 Nummer 1 ist steuerfrei, wenn der Gesamtumsatz nach Absatz 2 im vorangegangenen Kalenderjahr 25 000 Euro nicht überschritten hat und im laufenden Kalenderjahr 100 000 Euro nicht überschreitet. In den Fällen des Satzes 1 finden die Vorschriften über die Steuerbefreiung innergemeinschaftlicher Lieferungen (§ 4 Nummer 1 Buchstabe b, § 6a), über den Verzicht auf Steuerbefreiungen (§ 9), über die Angabe der Umsatzsteuer-Identifikationsnummern in einer Rechnung (§ 14a Absatz 1 Satz 3, Absatz 3 Satz 2 und Absatz 7 Satz 2) und über die Erklärungspflichten (§ 18 Absatz 1 bis 4) keine Anwendung; § 149 Absatz 1 Satz 2 der Abgabenordnung und § 18 Absatz 4a dieses Gesetzes bleiben unberührt."
+},
+{
+"abs": "2",
+"text": "Gesamtumsatz ist die nach vereinnahmten Entgelten berechnete Summe der vom Unternehmer ausgeführten steuerbaren Umsätze im Sinne des § 1 Absatz 1 Nummer 1 abzüglich folgender Umsätze:\n1. Umsätze, die nach § 4 Nummer 8 Buchstabe i, Nummer 9 Buchstabe b und Nummer 11 bis 29 steuerfrei sind;\n2. Umsätze, die nach § 4 Nummer 8 Buchstabe a bis h, Nummer 9 Buchstabe a und Nummer 10 steuerfrei sind, wenn sie Hilfsumsätze sind. Die Umsätze mit Wirtschaftsgütern des Anlagevermögens eines Unternehmers bleiben bei der Ermittlung des Gesamtumsatzes nach Satz 1 außer Ansatz."
+},
+{
+"abs": "3",
+"text": "Ein Unternehmer nach Absatz 1 Satz 1 kann bis zum letzten Tag des Monats Februar des zweiten auf den Besteuerungszeitraum folgenden Kalenderjahres gegenüber dem Finanzamt unwiderruflich erklären, dass er auf die Anwendung des Absatzes 1 verzichtet. Der Verzicht wird von Beginn des Besteuerungszeitraums an, für den er gelten soll, wirksam. Der Verzicht bindet den Unternehmer mindestens für fünf Kalenderjahre. Der Unternehmer kann den Verzicht mit Wirkung von Beginn eines darauffolgenden Kalenderjahres an widerrufen."
 }
 ],
 "auszug": true

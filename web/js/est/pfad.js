@@ -45,10 +45,11 @@ export const PFAD_EST = [
     ],
   },
   {
-    id: "e-schema", titel: "Vom Einkommen zum zvE", kurz: "§ 2 Abs. 3–5 EStG", icon: "Σ", normen: ["EStG 2 3", "EStG 2 4", "EStG 2 5", "EStR 2"],
+    id: "e-schema", titel: "Vom Einkommen zum zvE", kurz: "§ 2 Abs. 3–5 EStG", icon: "Σ", normen: ["EStG 2 2", "EStG 2 3", "EStG 2 4", "EStG 2 5", "EStR 2"],
     karten: [
       { art: "merksatz", titel: "Das Schema in vier Stufen", text: "**Summe der Einkünfte** (alle sieben Arten zusammen)\n− Altersentlastungsbetrag, Entlastungsbetrag für Alleinerziehende\n= **Gesamtbetrag der Einkünfte** (§ 2 Abs. 3 EStG)\n− **Sonderausgaben** und **außergewöhnliche Belastungen**\n= **Einkommen** (§ 2 Abs. 4 EStG)\n− Kinderfreibeträge (nur wenn günstiger als Kindergeld)\n= **zu versteuerndes Einkommen** (§ 2 Abs. 5 EStG)" },
       { art: "erklaerung", titel: "Was ist was?", text: "• **Sonderausgaben**: private Ausgaben, die das Gesetz trotzdem zum Abzug zulässt – z. B. Vorsorgeaufwendungen (Kranken-, Rentenversicherung), Kirchensteuer, Spenden.\n• **Außergewöhnliche Belastungen**: zwangsläufige, ungewöhnlich hohe Ausgaben, z. B. Krankheitskosten.\n• Auf das **zu versteuernde Einkommen** wird der **Tarif** angewendet." },
+      { art: "erklaerung", titel: "Verluste verrechnen", text: "Einkünfte können auch **negativ** sein – z. B. wenn bei einer vermieteten Wohnung die Werbungskosten höher sind als die Mieten. Verluste werden mit positiven Einkünften verrechnet (**Verlustausgleich**):\n• **horizontal**: innerhalb derselben Einkunftsart,\n• **vertikal**: zwischen verschiedenen Einkunftsarten – in der **Summe der Einkünfte**.\nBeispiel: Arbeitslohn-Einkünfte 30.000 €, Vermietung −5.000 € → Summe der Einkünfte **25.000 €**." },
       { art: "beispiel", titel: "Rechenbeispiel", text: "Arbeitslohn-Einkünfte 40.000 € + Vermietung 6.000 € = **Summe/Gesamtbetrag 46.000 €**\n− Sonderausgaben 8.000 € = **Einkommen 38.000 €** = **zvE 38.000 €** (keine Kinder)." },
     ],
     fragen: [
@@ -56,6 +57,7 @@ export const PFAD_EST = [
       { art: "wahl", frage: "Was wird vom Gesamtbetrag der Einkünfte abgezogen, um zum Einkommen zu kommen?", optionen: ["Sonderausgaben und außergewöhnliche Belastungen", "Werbungskosten", "Kinderfreibeträge", "Die Lohnsteuer"], richtig: 0, erkl: "§ 2 Abs. 4 EStG." },
       { art: "wahl", frage: "Worauf wird der Einkommensteuertarif angewendet?", optionen: ["Auf das zu versteuernde Einkommen", "Auf die Summe der Einkünfte", "Auf den Bruttolohn", "Auf die Einnahmen"], richtig: 0, erkl: "§ 2 Abs. 5, § 32a EStG." },
       { art: "wahl", frage: "Sind Beiträge zur Krankenversicherung Werbungskosten?", optionen: ["Nein – Sonderausgaben (Vorsorgeaufwendungen)", "Ja", "Ja, aber nur bei Arbeitnehmern", "Nein – gar nicht abziehbar"], richtig: 0, erkl: "Vorsorgeaufwendungen sind Sonderausgaben." },
+      { art: "zahl", frage: "Einkünfte aus nichtselbständiger Arbeit 42.000 €, aus Vermietung und Verpachtung −6.500 €. Summe der Einkünfte (in €)?", cent: 3550000, erkl: "Vertikaler Verlustausgleich: 42.000 € − 6.500 € = 35.500 €." },
     ],
   },
   {
@@ -65,6 +67,7 @@ export const PFAD_EST = [
       { art: "erklaerung", titel: "Zusammenveranlagung und Splitting", text: "Bei der **Zusammenveranlagung** (§ 26b EStG) werden die Einkünfte beider zusammengerechnet. Darauf gilt das **Splittingverfahren** (§ 32a Abs. 5 EStG): Das gemeinsame zvE wird **halbiert**, die Steuer dafür berechnet und **verdoppelt**. Das lohnt sich, wenn die Einkommen sehr unterschiedlich sind.\nWählen die Ehegatten nichts, wird **zusammen veranlagt** (§ 26 Abs. 3 EStG)." },
       { art: "beispiel", titel: "Typische Fälle", text: "• Heirat am 30.12. → Voraussetzungen im Laufe des Jahres erfüllt → **Wahlrecht** für das ganze Jahr.\n• Seit März dauernd getrennt → im Jahr der Trennung noch Wahlrecht (lag zu Beginn vor), im Folgejahr nicht mehr.\n• Ehemann lebt dauerhaft in den USA, Frau in Deutschland → nicht beide unbeschränkt steuerpflichtig → **kein** Wahlrecht." },
       { art: "erklaerung", titel: "Tod des Ehegatten – Witwensplitting", text: "Stirbt ein Ehegatte, gilt das Splitting noch ein Jahr länger:\n• **Todesjahr**: Die Voraussetzungen lagen zu Beginn des Jahres vor → **Wahlrecht**, bei Zusammenveranlagung Splitting (§ 26 Abs. 1, § 32a Abs. 5 EStG).\n• **Folgejahr**: Einzelveranlagung, aber noch der **Splittingtarif** (§ 32a Abs. 6 S. 1 Nr. 1 EStG) – wenn beide im Zeitpunkt des Todes die Voraussetzungen des § 26 Abs. 1 S. 1 EStG erfüllt haben.\n• **Ab dem zweiten Jahr** nach dem Tod: **Grundtarif**." },
+      { art: "erklaerung", titel: "Neue Ehe im selben Jahr", text: "Endet eine Ehe (Tod, Scheidung) und heiratet der Ehegatte **im selben Jahr neu**, hätte er eigentlich für beide Ehen ein Wahlrecht. Dann gilt: Die **alte Ehe bleibt unberücksichtigt** – das Wahlrecht besteht nur mit dem **neuen** Ehegatten (§ 26 Abs. 1 S. 2 EStG)." },
     ],
     fragen: [
       { art: "wahl", frage: "Ein Paar heiratet am 28.12. Dürfen die beiden für dieses Jahr die Zusammenveranlagung wählen?", optionen: ["Ja – die Voraussetzungen lagen im Laufe des Jahres vor", "Nein – sie waren nicht das ganze Jahr verheiratet", "Nur für den Dezember", "Erst ab dem Folgejahr"], richtig: 0, erkl: "§ 26 Abs. 1 EStG: zu Beginn oder im Laufe des Jahres genügt." },
@@ -72,6 +75,23 @@ export const PFAD_EST = [
       { art: "wahl", frage: "Wie funktioniert das Splittingverfahren?", optionen: ["zvE halbieren, Steuer berechnen, verdoppeln", "Jeder zahlt die Hälfte der Steuer", "Die Steuer wird halbiert", "Das zvE wird verdoppelt"], richtig: 0, erkl: "§ 32a Abs. 5 EStG." },
       { art: "wahl", frage: "Herr H ist im Mai 01 verstorben; das Paar lebte zusammen in Köln. Seine Witwe heiratet nicht wieder. Welcher Tarif gilt für sie im VZ 02?", optionen: ["Splittingtarif (Witwensplitting)", "Grundtarif", "Zusammenveranlagung mit dem Verstorbenen", "Halber Grundfreibetrag"], richtig: 0, erkl: "§ 32a Abs. 6 S. 1 Nr. 1 EStG: Splitting für den VZ, der dem Todesjahr folgt. Ab 03 gilt der Grundtarif." },
       { art: "wahl", frage: "Welche Voraussetzung gehört nicht zu § 26 Abs. 1 EStG?", optionen: ["Gemeinsame Kinder", "Beide unbeschränkt steuerpflichtig", "Nicht dauernd getrennt", "Voraussetzungen zu Beginn oder im Laufe des Jahres"], richtig: 0, erkl: "Kinder spielen für das Wahlrecht keine Rolle." },
+      { art: "wahl", frage: "B ist seit Jahren mit A verheiratet. A stirbt im Februar, B heiratet im August C. Mit wem kann B für dieses Jahr die Zusammenveranlagung wählen?", optionen: ["Nur mit C", "Nur mit A", "Wahlweise mit A oder C", "Mit niemandem"], richtig: 0, erkl: "§ 26 Abs. 1 S. 2 EStG: Die aufgelöste Ehe bleibt unberücksichtigt, wenn im selben Jahr eine neue Ehe mit Wahlrecht geschlossen wird." },
+    ],
+  },
+  {
+    id: "e-erklaerung", titel: "Wer muss eine Steuererklärung abgeben?", kurz: "§§ 25, 46 EStG · § 56 EStDV", icon: "📝", normen: ["EStG 25 1", "EStG 25 3", "EStG 46 2", "EStG 46 4"],
+    karten: [
+      { art: "merksatz", titel: "Die Veranlagung", text: "Die Einkommensteuer ist eine **Jahressteuer**: Nach Ablauf des Kalenderjahres wird sie im **Veranlagungsverfahren** festgesetzt (§ 2 Abs. 7, § 25 Abs. 1 EStG). Grundlage ist die **Steuererklärung**, die eigenhändig unterschrieben oder elektronisch (ELSTER) abgegeben wird (§ 25 Abs. 3, 4 EStG)." },
+      { art: "erklaerung", titel: "Grundregel", text: "Eine Erklärung muss abgeben, wessen **Gesamtbetrag der Einkünfte** den **Grundfreibetrag** übersteigt (2026: **12.348 €**, bei Zusammenveranlagung das Doppelte) (§ 25 Abs. 3 EStG i. V. m. § 56 EStDV).\n**Ausnahme Arbeitnehmer:** Bei Arbeitslohn ist die Steuer durch den **Lohnsteuerabzug abgegolten** – eine Veranlagung gibt es nur in den Fällen des **§ 46 Abs. 2 EStG** (§ 46 Abs. 4 EStG)." },
+      { art: "erklaerung", titel: "Arbeitnehmer: Pflicht oder Antrag?", text: "**Pflichtveranlagung** (§ 46 Abs. 2 EStG), z. B.:\n• **Nr. 1**: andere Einkünfte ohne Lohnsteuerabzug (z. B. Miete) **oder** Lohnersatzleistungen mit Progressionsvorbehalt (z. B. Arbeitslosengeld) von jeweils **mehr als 410 €**,\n• **Nr. 2**: Arbeitslohn von **mehreren Arbeitgebern nebeneinander**,\n• **Nr. 3a**: Ehegatten, beide mit Arbeitslohn, einer in **Steuerklasse V** (oder VI bzw. IV mit Faktor).\n**Antragsveranlagung** (§ 46 Abs. 2 Nr. 8 EStG): in allen anderen Fällen freiwillig – lohnt sich, wenn eine **Erstattung** zu erwarten ist." },
+      { art: "beispiel", titel: "Drei Fälle", text: "• Angestellte, nur Arbeitslohn, Steuerklasse I → **keine Pflicht**, Antrag möglich.\n• Angestellter mit 1.200 € Mieteinkünften → **Pflicht** (Nr. 1: mehr als 410 €).\n• Selbständige Grafikerin, Gewinn 35.000 € → **Pflicht** (§ 25 Abs. 3 EStG, § 56 EStDV)." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Ein Angestellter hat nur Arbeitslohn von einem Arbeitgeber (Steuerklasse I). Muss er eine Steuererklärung abgeben?", optionen: ["Nein – Lohnsteuer abgeltend, Antrag möglich", "Ja, immer", "Ja, wenn der Lohn über 12.348 € liegt", "Nein, und ein Antrag ist auch nicht möglich"], richtig: 0, erkl: "§ 46 Abs. 4 EStG; Antragsveranlagung nach § 46 Abs. 2 Nr. 8 EStG." },
+      { art: "wahl", frage: "Eine Arbeitnehmerin hat zusätzlich Einkünfte aus Vermietung von 900 €. Folge?", optionen: ["Pflichtveranlagung", "Keine Veranlagung", "Nur Antragsveranlagung", "Die Miete ist steuerfrei"], richtig: 0, erkl: "§ 46 Abs. 2 Nr. 1 EStG: mehr als 410 € Einkünfte ohne Lohnsteuerabzug." },
+      { art: "wahl", frage: "Ein Arbeitnehmer hat im Jahr 2.400 € Kurzarbeitergeld bezogen. Muss er eine Erklärung abgeben?", optionen: ["Ja – Leistungen mit Progressionsvorbehalt über 410 €", "Nein – Kurzarbeitergeld ist steuerfrei", "Nur wenn er es beantragt", "Nein – das regelt der Arbeitgeber"], richtig: 0, erkl: "§ 46 Abs. 2 Nr. 1 EStG i. V. m. § 32b EStG." },
+      { art: "wahl", frage: "Ehegatten arbeiten beide; einer hat Steuerklasse III, der andere V. Was gilt?", optionen: ["Pflichtveranlagung", "Keine Veranlagung", "Nur Einzelveranlagung", "Nur auf Antrag"], richtig: 0, erkl: "§ 46 Abs. 2 Nr. 3a EStG." },
+      { art: "zahl", frage: "Ab wie viel € Nebeneinkünften (ohne Lohnsteuerabzug) muss ein Arbeitnehmer eine Erklärung abgeben? Grenze, die überschritten sein muss (in €)?", cent: 41000, erkl: "Mehr als 410 € (§ 46 Abs. 2 Nr. 1 EStG)." },
     ],
   },
   {
@@ -89,11 +109,12 @@ export const PFAD_EST = [
     ],
   },
   {
-    id: "e-einnahmen", titel: "Einnahmen & steuerfreie Einnahmen", kurz: "§§ 8, 3, 3c EStG", icon: "💶", normen: ["EStG 8 1", "EStG 3", "EStG 3c 1"],
+    id: "e-einnahmen", titel: "Einnahmen & steuerfreie Einnahmen", kurz: "§§ 8, 3, 3c EStG", icon: "💶", normen: ["EStG 8 1", "EStG 3", "EStG 3c 1", "EStG 32b 1"],
     karten: [
       { art: "merksatz", titel: "Was sind Einnahmen?", text: "Einnahmen sind alle Güter **in Geld oder Geldeswert**, die einem im Rahmen einer Überschusseinkunftsart **zufließen** (§ 8 Abs. 1 EStG) – also auch Sachbezüge wie ein Firmenwagen oder Gutscheine." },
       { art: "erklaerung", titel: "Steuerfreie Einnahmen (§ 3 EStG)", text: "Manche Einnahmen sind ausdrücklich **steuerfrei**, z. B.:\n• **Übungsleiterpauschale** (§ 3 Nr. 26): nebenberufliche Tätigkeit als Trainer, Ausbilder, Pfleger für gemeinnützige oder öffentliche Träger – bis **3.300 €** im Jahr (seit 2026)\n• **Ehrenamtspauschale** (§ 3 Nr. 26a): bis **960 €**\n• **Arbeitgeberanteil zur Sozialversicherung** (§ 3 Nr. 62)" },
       { art: "erklaerung", titel: "Ausgaben bei steuerfreien Einnahmen", text: "Ausgaben, die mit steuerfreien Einnahmen zusammenhängen, sind **nicht abziehbar** (§ 3c Abs. 1 EStG). Bei Übungsleitern gilt eine Besonderheit: Ausgaben sind nur abziehbar, **soweit sie die steuerfreien Einnahmen übersteigen**." },
+      { art: "erklaerung", titel: "Steuerfrei – aber mit Progressionsvorbehalt", text: "Lohnersatzleistungen wie **Arbeitslosengeld, Kurzarbeitergeld, Krankengeld** oder **Elterngeld** sind steuerfrei (§ 3 Nr. 1, 2, 67 EStG). Sie erhöhen aber den **Steuersatz**, der auf das übrige zvE angewendet wird (**Progressionsvorbehalt**, § 32b Abs. 1 Nr. 1 EStG).\nDas zvE selbst wird **nicht** höher – nur der Prozentsatz." },
       { art: "beispiel", titel: "Rechenbeispiel", text: "Fußballtrainerin im Verein: Einnahmen 2.800 € → bis 3.300 € **steuerfrei**, Einkünfte 0 €.\nVariante: Einnahmen 4.000 € → 4.000 − 3.300 = **700 € steuerpflichtig**." },
     ],
     fragen: [
@@ -101,6 +122,7 @@ export const PFAD_EST = [
       { art: "wahl", frage: "Ist ein vom Arbeitgeber geschenkter Tankgutschein eine Einnahme?", optionen: ["Ja – Einnahme in Geldeswert", "Nein – nur Geld zählt", "Nein – Geschenke sind immer steuerfrei", "Nur ab 1.000 €"], richtig: 0, erkl: "§ 8 Abs. 1 EStG: Geld oder Geldeswert." },
       { art: "wahl", frage: "Ist der Arbeitgeberanteil zur Rentenversicherung steuerpflichtiger Arbeitslohn?", optionen: ["Nein – steuerfrei nach § 3 Nr. 62 EStG", "Ja", "Nur zur Hälfte", "Nur bei Beamten"], richtig: 0, erkl: "Gesetzlich geschuldete Arbeitgeberbeiträge sind steuerfrei." },
       { art: "wahl", frage: "Wie hoch ist der Übungsleiterfreibetrag seit 2026?", optionen: ["3.300 €", "3.000 €", "840 €", "960 €"], richtig: 0, erkl: "§ 3 Nr. 26 EStG: 3.300 € (960 € ist die Ehrenamtspauschale)." },
+      { art: "wahl", frage: "Eine Arbeitnehmerin erhält 2026 für drei Monate Arbeitslosengeld. Was gilt?", optionen: ["Steuerfrei, aber es erhöht den Steuersatz (Progressionsvorbehalt)", "Voll steuerpflichtig als Arbeitslohn", "Steuerfrei ohne jede Auswirkung", "Es erhöht das zvE"], richtig: 0, erkl: "§ 3 Nr. 2 EStG steuerfrei; Progressionsvorbehalt nach § 32b Abs. 1 Nr. 1 EStG." },
     ],
   },
   {
