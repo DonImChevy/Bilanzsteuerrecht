@@ -19,6 +19,7 @@ import { serie, woche, tagSchluessel } from "./aktivitaet.js";
 import { ic } from "./icons.js";
 import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, codeAnzeige, abgleichen, SERVER } from "./sync.js";
 import qrcode from "./lib/qrcode.js";
+import { taler, TALER_SPRUECHE } from "./maskottchen.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
@@ -196,6 +197,7 @@ const state = {
   kontoSuche: "",
   bilrAnsicht: "konten", // Bilanzrecht-Nachschlagen: "konten" | "gesetze"
   sitzung: null,
+  talerSpruch: -1, // angetippter Spruch des Maskottchens auf der Startseite (-1 = keiner)
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
   kompakt: null, // Kompaktwissen: {id: Thema | null (Übersicht), fach, liste: aus der Übersicht geöffnet, ausSitzung}
@@ -513,6 +515,9 @@ function seitenKopf(titel, untertitel = "") {
 }
 
 // ======================= Tab: Start =======================
+/** Taler bewegt sich nur beim ersten Anzeigen und direkt nach dem Antippen – nicht bei jedem Neuzeichnen der Startseite. */
+function talerBewegt() { const neu = !state.talerGezeigt || state.talerAngetippt; state.talerGezeigt = true; state.talerAngetippt = false; return neu; }
+
 function gruss() {
   const h = new Date().getHours();
   return h < 5 ? "Gute Nacht" : h < 11 ? "Guten Morgen" : h < 17 ? "Hallo" : h < 22 ? "Guten Abend" : "Gute Nacht";
@@ -531,9 +536,13 @@ function tabStart() {
 
   return `
     <div class="kopfzeile">
-      <div><div class="gruss">${esc(datum)}</div><h1 class="titel" style="margin-top:2px">${gruss()} 👋</h1></div>
+      <div class="gruss-block">
+        <button class="taler-knopf" data-a="taler" aria-label="Maskottchen Taler antippen">${taler(state.talerSpruch < 0 ? "hallo" : "jubeln", { groesse: 60, klasse: talerBewegt() ? "" : "ruhig" })}</button>
+        <div><div class="gruss">${esc(datum)}</div><h1 class="titel" style="margin-top:2px">${gruss()}</h1></div>
+      </div>
       <div class="kopf-aktionen"><button class="icon-btn" data-a="einstellungen" aria-label="Einstellungen">${ic("einstellungen")}</button></div>
     </div>
+    ${state.talerSpruch >= 0 ? `<div class="taler-blase" role="status">${esc(TALER_SPRUECHE[state.talerSpruch % TALER_SPRUECHE.length])}</div>` : ""}
     <section class="hero">
       <div class="oben">
         <div class="ziel-ring" style="--p:${p}"><div>${heute}<small>von ${ziel}</small></div></div>
@@ -1170,7 +1179,7 @@ function sitzungView() {
     const ok = b.korrekt;
     fussKlasse = ok ? "ok" : "err";
     const satz = (ok ? LOB : TROST)[(x.index + n) % (ok ? LOB.length : TROST.length)];
-    feedback = `<div class="feedback"><span class="kreis-ic">${ic(ok ? "haken" : "kreuz")}</span><span>${satz}<small>${ok ? "Kommt in der Lernkartei ein Fach weiter." : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
+    feedback = `<div class="feedback">${taler(ok ? "jubeln" : "mut", { groesse: 58, klasse: "fb-taler" })}<span>${satz}<small>${ok ? "Kommt in der Lernkartei ein Fach weiter." : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
     fuss = `<button class="knopf ${ok ? "gruen" : "rot"}" data-a="weiter">${x.index === n - 1 ? "Auswertung" : "Weiter"} ${ic("pfeil")}</button>`;
   }
 
@@ -1345,7 +1354,8 @@ function ergebnisView() {
     <div class="vb-inhalt">
       <div class="zentriert">
         <div class="ring" style="--p:${Math.round(q * 100)};--farbe:${farbe(q)}"><div>${Math.round(q * 100)} %</div></div>
-        <div class="ergebnis-titel">${q >= 0.9 ? "Hervorragend! 🎉" : q >= 0.7 ? "Gut gemacht! 💪" : q >= 0.5 ? "Solide! 👍" : "Weiter so! 📚"}</div>
+        ${taler(q >= 0.7 ? "jubeln" : "mut", { groesse: 96, klasse: "erg-taler" })}
+        <div class="ergebnis-titel">${q >= 0.9 ? "Hervorragend!" : q >= 0.7 ? "Gut gemacht!" : q >= 0.5 ? "Solide!" : "Weiter so!"}</div>
         <div class="sub" style="font-size:15px">${lob}</div>
       </div>
       <div class="statistik-reihe" style="margin-top:18px">
@@ -1715,6 +1725,7 @@ function fachSetzen(v) {
 }
 
 const AKTIONEN = {
+  taler: () => { state.talerSpruch += 1; state.talerAngetippt = true; render(); },
   tab: (v) => { state.tab = v; state.sheet = null; render(); window.scrollTo(0, 0); },
   einstellungen: () => { state.sheet = { art: "einstellungen" }; render(); },
   syncOeffnen: () => { state.sheet = { art: "sync" }; render(); },

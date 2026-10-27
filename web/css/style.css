@@ -1242,3 +1242,36 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .auswertung .erkl.muster, .auswertung .loes-kopf.erl + .erkl { border-left: 3px solid color-mix(in srgb, var(--m) 55%, transparent); }
 .auswertung .loes-kopf.erl + .erkl:not(.muster) { padding-left: 12px; }
 .normen .norm { border-left: 3px solid var(--text3); }
+
+/* Maskottchen „Taler“ (js/maskottchen.js): eigene Münzfarben, gleich in hell und dunkel */
+:root { --taler-hell: #ffdc7a; --taler-gold: #f6b93b; --taler-tief: #c98618; --taler-dunkel: #8a5a0c; --taler-tinte: #3a2710; --taler-wange: #ff8f7a; --taler-schatten: rgba(58, 39, 16, 0.18); }
+.taler { display: inline-block; flex: none; overflow: visible; vertical-align: middle; }
+.taler .t-umriss { stroke: var(--taler-tinte); }
+.taler .t-tinte { fill: var(--taler-tinte); }
+.taler .t-strich { stroke: var(--taler-tinte); fill: none; stroke-linecap: round; }
+.taler .t-schatten { fill: var(--taler-schatten); }
+.taler .t-ganz, .taler .t-augen, .taler .t-winkarm, .taler .t-funke { transform-box: view-box; }
+.taler .t-augen { transform-origin: 60px 59px; animation: talerBlinzeln 5.5s ease-in-out 1.2s infinite; }
+.taler.hallo .t-winkarm { transform-origin: 95px 62px; animation: talerWinken 0.55s ease-in-out 0.25s 4 alternate; }
+.taler.jubeln .t-ganz { transform-origin: 60px 110px; animation: talerHuepf 0.75s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+.taler.jubeln .t-funke { transform-origin: center; transform-box: fill-box; animation: talerFunke 0.9s ease-out calc(0.15s + var(--i) * 0.12s) both; }
+.taler.mut .t-ganz { transform-origin: 60px 110px; animation: talerNicken 0.9s ease-in-out both; }
+.taler.huepf .t-ganz { transform-origin: 60px 110px; animation: talerHuepf 0.6s cubic-bezier(0.3, 1.5, 0.5, 1) both; }
+@keyframes talerBlinzeln { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(0.12); } }
+@keyframes talerWinken { from { transform: rotate(-8deg); } to { transform: rotate(16deg); } }
+@keyframes talerHuepf { 0% { transform: translateY(0) scale(1, 1); } 22% { transform: translateY(2px) scale(1.06, 0.92); } 55% { transform: translateY(-14px) scale(0.96, 1.05); } 80% { transform: translateY(0) scale(1.03, 0.97); } 100% { transform: translateY(0) scale(1, 1); } }
+@keyframes talerNicken { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-5deg); } 60% { transform: rotate(3deg); } }
+@keyframes talerFunke { 0% { transform: scale(0) rotate(-40deg); opacity: 0; } 50% { transform: scale(1.25) rotate(10deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .taler * { animation: none !important; } }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --taler-schatten: rgba(0, 0, 0, 0.5); } }
+:root[data-theme="dark"] { --taler-schatten: rgba(0, 0, 0, 0.5); }
+.taler.ruhig .t-ganz, .taler.ruhig .t-winkarm, .taler.ruhig .t-funke { animation: none; }
+.gruss-block { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.taler-knopf { padding: 0; margin: 4px 0 -6px -4px; background: none; border: 0; border-radius: 50%; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.taler-knopf:focus-visible { outline: 2.5px solid var(--m); outline-offset: 2px; }
+.taler-knopf:active .taler { transform: scale(0.94); }
+.taler-blase { position: relative; margin: 12px 0 2px 6px; max-width: 34ch; padding: 10px 14px; border-radius: 16px; font-weight: 650; font-size: 14.5px; line-height: 1.4; color: var(--text); background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow); animation: rein 0.25s; }
+.taler-blase::before { content: ""; position: absolute; top: -7px; left: 22px; width: 12px; height: 12px; background: var(--card); border-left: 1px solid var(--line); border-top: 1px solid var(--line); transform: rotate(45deg); }
+.vb-fuss .feedback .fb-taler { margin: -26px -4px -4px -6px; }
+.erg-taler { display: block; margin: 8px auto 0; }
+.pfad .pf-taler { display: block; margin: 4px auto -4px; }
