@@ -1,4 +1,4 @@
-// Lernpfad Umsatzsteuer: zwölf Blöcke, jeder in sich geschlossen – die Lernkarten eines Blocks erklären alles,
+// Lernpfad Umsatzsteuer: Blöcke, jeder in sich geschlossen – die Lernkarten eines Blocks erklären alles,
 // was seine Fragen abfragen; kein Block setzt einen anderen voraus. Die Reihenfolge ist nur ein Vorschlag.
 // Karten: {art: "merksatz" | "erklaerung" | "beispiel" | "klausur", titel, text}; **fett**, Zeilen mit „• “ = Liste.
 // Fragen: {art: "wahl", frage, optionen, richtig (Index), erkl} | {art: "zahl", frage, cent, erkl}. Normen: Verweise für den Normen-Tab.
@@ -80,6 +80,22 @@ export const PFAD_UST = [
     ],
   },
   {
+    id: "sonderfaelle", titel: "Werklieferung, Kommission, Reihengeschäft", kurz: "§ 3 Abs. 3, 4, 6a, 7 UStG", icon: "🔗", normen: ["UStG 3 3", "UStG 3 4", "UStG 3 6a", "UStG 3 7"],
+    karten: [
+      { art: "merksatz", titel: "Werklieferung oder Werkleistung? (§ 3 Abs. 4 UStG)", text: "Bearbeitet ein Unternehmer einen **fremden** Gegenstand und verwendet dabei **selbst beschaffte Hauptstoffe**, ist das eine **Lieferung** (Werklieferung) – auch wenn das Ergebnis mit Grund und Boden fest verbunden wird (Hausbau).\nStellt er nur **Zutaten oder Nebensachen** (Garn, Schrauben), bleibt es eine **sonstige Leistung** (Werkleistung)." },
+      { art: "erklaerung", titel: "Kommission (§ 3 Abs. 3 UStG)", text: "Ein **Kommissionär** verkauft (oder kauft) **im eigenen Namen für fremde Rechnung**.\nUmsatzsteuerlich gibt es **zwei Lieferungen**: zwischen Kommittent und Kommissionär **und** zwischen Kommissionär und Kunde.\nBei der **Verkaufskommission** gilt der **Kommissionär als Abnehmer** – die Lieferung an ihn findet erst statt, wenn er an den Kunden liefert." },
+      { art: "erklaerung", titel: "Reihengeschäft (§ 3 Abs. 6a, 7 UStG)", text: "Mehrere Unternehmer verkaufen **denselben Gegenstand** hintereinander, er gelangt aber **direkt vom Ersten zum Letzten**.\n• Nur **eine** Lieferung ist die **bewegte** – Ort: Beginn der Beförderung (§ 3 Abs. 6 S. 1).\n• Transportiert der **erste** Unternehmer → seine Lieferung ist bewegt; holt der **letzte** Abnehmer ab → die Lieferung an ihn.\n• **Ruhende** Lieferungen **vor** der bewegten: Ort am **Beginn**, **danach**: am **Ende** der Beförderung (§ 3 Abs. 7 S. 2 Nr. 1, 2)." },
+      { art: "beispiel", titel: "Reihengeschäft in Zahlen", text: "A (Hamburg) verkauft an B (Berlin), B an C (München). **A** lässt die Ware direkt von Hamburg nach München fahren.\n• A → B: **bewegte** Lieferung, Ort **Hamburg** (Beginn).\n• B → C: ruhende Lieferung **nach** der bewegten, Ort **München** (Ende)." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Ein Bauunternehmer errichtet auf dem Grundstück seiner Kundin ein Haus mit eigenem Material. Was liegt vor?", optionen: ["Werklieferung (Lieferung)", "Werkleistung (sonstige Leistung)", "Zwei getrennte Leistungen", "Kein Umsatz"], richtig: 0, erkl: "Selbst beschaffte Hauptstoffe → Werklieferung, auch bei fester Verbindung mit dem Grund und Boden (§ 3 Abs. 4 UStG)." },
+      { art: "wahl", frage: "Eine Schneiderin kürzt die Hose eines Kunden und verwendet dafür eigenes Garn. Was liegt vor?", optionen: ["Werkleistung (sonstige Leistung)", "Werklieferung", "Lieferung des Garns", "Kein Umsatz"], richtig: 0, erkl: "Garn ist nur Zutat – es bleibt eine sonstige Leistung (§ 3 Abs. 4, 9 UStG)." },
+      { art: "wahl", frage: "Kunsthändler K verkauft im eigenen Namen Bilder der Malerin M auf deren Rechnung. Wie viele Lieferungen liegen beim Verkauf an eine Kundin vor?", optionen: ["Zwei: M an K und K an die Kundin", "Eine: M an die Kundin", "Eine: K an die Kundin", "Keine – K vermittelt nur"], richtig: 0, erkl: "Verkaufskommission: Lieferung M → K und K → Kundin; K gilt als Abnehmer (§ 3 Abs. 3 UStG)." },
+      { art: "wahl", frage: "A (Köln) verkauft an B (Bonn), B an C (Dresden). C holt die Ware selbst in Köln ab. Welche Lieferung ist die bewegte?", optionen: ["B an C", "A an B", "Beide", "Keine"], richtig: 0, erkl: "Holt der letzte Abnehmer ab, ist die Lieferung an ihn bewegt (§ 3 Abs. 6a S. 3 UStG)." },
+      { art: "wahl", frage: "Reihengeschäft: Die bewegte Lieferung ist A an B; danach liefert B an C. Wo ist die Lieferung B an C ausgeführt?", optionen: ["Am Ende der Beförderung", "Am Beginn der Beförderung", "Am Sitz von B", "Am Sitz von C, egal wo die Ware ankommt"], richtig: 0, erkl: "Ruhende Lieferung nach der bewegten → Ende der Beförderung (§ 3 Abs. 7 S. 2 Nr. 2 UStG)." },
+    ],
+  },
+  {
     id: "entgelt", titel: "Gegen Entgelt? Leistungsaustausch", kurz: "§ 1 Abs. 1 Nr. 1 UStG", icon: "🔁", normen: ["UStG 1 1"],
     karten: [
       { art: "merksatz", titel: "Leistungsaustausch", text: "Steuerbar ist eine Leistung nur **gegen Entgelt**: Leistung und Gegenleistung müssen **wirtschaftlich verknüpft** sein – das Geld wird gerade **für** die Leistung gezahlt. Die Höhe spielt dafür keine Rolle." },
@@ -123,6 +139,20 @@ export const PFAD_UST = [
       { art: "wahl", frage: "Ein Mieter zahlt die (steuerpflichtige) Maimiete erst im Juli. Wann entsteht die Steuer dafür?", optionen: ["Mit Ablauf Mai", "Mit Ablauf Juli", "Mit Ablauf Dezember", "Erst bei Mahnung"], richtig: 0, erkl: "Monatliche Teilleistung – die Steuer entsteht mit Ablauf des Monats, für den die Miete geschuldet ist." },
       { art: "zahl", frage: "Kaufpreis 2.380 € brutto (19 %). Anzahlung 595 € im Mai, Lieferung im Juni. Wie viel USt entsteht mit Ablauf Mai (in €)?", cent: 9500, erkl: "Anzahlung vor Ausführung → § 13 Abs. 1 Nr. 1 a S. 4 UStG: 595 × 19/119 = 95,00 €." },
       { art: "wahl", frage: "Ferienwohnung vom 20.05. bis 05.06., Restzahlung nach Ende. Wann entsteht die Steuer für den Rest?", optionen: ["Mit Ablauf Juni", "Mit Ablauf Mai", "Mit Ablauf des Zahlungsmonats", "Mit Vertragsschluss"], richtig: 0, erkl: "Die Vermietung ist am 05.06. vollendet." },
+    ],
+  },
+  {
+    id: "aenderung", titel: "Wenn sich das Entgelt ändert", kurz: "§ 17 UStG", icon: "↩️", normen: ["UStG 17 1", "UStG 17 2"],
+    karten: [
+      { art: "merksatz", titel: "Später weniger bekommen? Berichtigen!", text: "Ändert sich das Entgelt **nachträglich** – Skonto, Rabatt, Bonus, Rücksendung –, berichtigt der **Leistende** seine Umsatzsteuer und der **Empfänger** seine Vorsteuer (§ 17 Abs. 1 S. 1, 2 UStG).\nBerichtigt wird im Voranmeldungszeitraum der **Änderung** – nicht rückwirkend (§ 17 Abs. 1 S. 8 UStG)." },
+      { art: "erklaerung", titel: "Weitere Fälle (§ 17 Abs. 2 UStG)", text: "• **Uneinbringlich** (z. B. Insolvenz des Kunden): Steuer berichtigen; zahlt er später doch, erneut berichtigen (Nr. 1). Bloßer Zahlungsverzug reicht **nicht**.\n• **Anzahlung** geleistet, Leistung aber nie erbracht (Nr. 2).\n• Leistung **rückgängig** gemacht, z. B. Rücktritt vom Kauf (Nr. 3)." },
+      { art: "beispiel", titel: "Skonto in Zahlen", text: "Lieferung im März: 10.000 € + 1.900 € USt = 11.900 €. Der Kunde zahlt im April mit **2 % Skonto** (238 € weniger).\nIm April: USt-Minderung = 238 € × 19/119 = **38 €** beim Lieferanten – und **38 €** weniger Vorsteuer beim Kunden." },
+    ],
+    fragen: [
+      { art: "zahl", frage: "Rechnung 5.950 € brutto (19 %). Der Kunde zieht 3 % Skonto ab. Um wie viel € mindert sich die Umsatzsteuer?", cent: 2850, erkl: "Skonto 178,50 € brutto × 19/119 = 28,50 €." },
+      { art: "wahl", frage: "Lieferung im Mai, Skontoabzug bei Zahlung im Juni. Wann wird die Umsatzsteuer berichtigt?", optionen: ["Im Juni", "Im Mai", "Gar nicht", "Am Jahresende"], richtig: 0, erkl: "Im VAZ der Änderung (§ 17 Abs. 1 S. 8 UStG)." },
+      { art: "wahl", frage: "Ein Kunde zahlt seit drei Monaten nicht, ist aber zahlungsfähig. Darf der Unternehmer die Steuer berichtigen?", optionen: ["Nein – bloßer Verzug ist keine Uneinbringlichkeit", "Ja, sofort", "Ja, nach 30 Tagen", "Nur mit Zustimmung des Kunden"], richtig: 0, erkl: "§ 17 Abs. 2 Nr. 1 UStG setzt Uneinbringlichkeit voraus." },
+      { art: "wahl", frage: "Wer muss bei einem nachträglichen Rabatt außer dem Lieferanten noch etwas berichtigen?", optionen: ["Der unternehmerische Abnehmer seine Vorsteuer", "Niemand", "Das Finanzamt", "Der Steuerberater"], richtig: 0, erkl: "§ 17 Abs. 1 S. 2 UStG." },
     ],
   },
   {
@@ -171,18 +201,51 @@ export const PFAD_UST = [
     ],
   },
   {
-    id: "wertabgabe", titel: "Unentgeltliche Wertabgaben", kurz: "§ 3 Abs. 1b, 9a · § 10 Abs. 4 UStG", icon: "🎁", normen: ["UStG 3 1b", "UStG 3 9a", "UStG 10 4"],
+    id: "rechnung", titel: "Rechnung & falscher Steuerausweis", kurz: "§§ 14, 14c UStG", icon: "🧾", normen: ["UStG 14 4", "UStG 14c 1", "UStG 14c 2", "UStG 15 1"],
+    karten: [
+      { art: "merksatz", titel: "Was in eine Rechnung gehört (§ 14 Abs. 4 UStG)", text: "• Name und Anschrift von **Leistendem und Empfänger**\n• **Steuernummer** oder USt-IdNr. des Leistenden\n• **Ausstellungsdatum** und fortlaufende **Rechnungsnummer**\n• **Menge und Art** der Leistung, **Zeitpunkt** der Leistung\n• **Entgelt**, **Steuersatz** und **Steuerbetrag**\nOhne ordnungsgemäße Rechnung **kein Vorsteuerabzug** (§ 15 Abs. 1 S. 1 Nr. 1 S. 2 UStG). Bis **250 € brutto** genügt eine Kleinbetragsrechnung mit weniger Angaben (§ 33 UStDV)." },
+      { art: "erklaerung", titel: "Zu viel ausgewiesen (§ 14c Abs. 1 UStG)", text: "Ein Unternehmer weist **mehr** Steuer aus, als er schuldet (z. B. 19 % statt 7 %).\n• Er schuldet den **ausgewiesenen** Betrag – auch den **Mehrbetrag**.\n• Der Empfänger darf nur die **gesetzlich geschuldete** Steuer als Vorsteuer abziehen – sie wird aus dem **Gesamtbetrag** herausgerechnet.\n• Die Rechnung kann **berichtigt** werden." },
+      { art: "erklaerung", titel: "Gar nicht berechtigt (§ 14c Abs. 2 UStG)", text: "Wer Steuer ausweist, obwohl er es **nicht darf** – **Privatperson**, **Kleinunternehmer**, Scheinrechnung ohne Leistung –, schuldet den ausgewiesenen Betrag.\nDer Empfänger hat **keinen** Vorsteuerabzug." },
+      { art: "beispiel", titel: "Fachbuch mit 19 %", text: "Rechnung über Fachbücher (richtig wären 7 %): 1.000 € + **190 €** USt = 1.190 €.\n• Gesetzlich geschuldet: 1.190 € × 7/107 = **77,85 €**.\n• Händler schuldet **190 €** (77,85 € + 112,15 € Mehrbetrag nach § 14c Abs. 1).\n• Der Käufer zieht nur **77,85 €** Vorsteuer ab." },
+    ],
+    fragen: [
+      { art: "zahl", frage: "Rechnung über Bücher (7 %): 500 € + 95 € USt (19 %) = 595 €. Wie viel Vorsteuer darf der unternehmerische Käufer abziehen (in €)?", cent: 3893, erkl: "Nur die gesetzlich geschuldete Steuer, aus dem Gesamtbetrag herausgerechnet: 595 € × 7/107 = 38,93 €." },
+      { art: "zahl", frage: "Gleicher Fall: Wie viel Umsatzsteuer schuldet der Händler insgesamt (in €)?", cent: 9500, erkl: "Den ausgewiesenen Betrag: 38,93 € gesetzlich + 56,07 € Mehrbetrag nach § 14c Abs. 1 UStG = 95 €." },
+      { art: "wahl", frage: "Eine Privatperson verkauft ihr altes Sofa und schreibt eine Rechnung mit 19 % USt. Folge?", optionen: ["Sie schuldet den ausgewiesenen Betrag (§ 14c Abs. 2)", "Nichts – sie ist kein Unternehmer", "Der Käufer schuldet die Steuer", "Die Steuer wird erstattet"], richtig: 0, erkl: "Unberechtigter Steuerausweis – geschuldet wird der ausgewiesene Betrag." },
+      { art: "wahl", frage: "Bis zu welchem Bruttobetrag gilt die Kleinbetragsrechnung?", optionen: ["250 €", "150 €", "500 €", "1.000 €"], richtig: 0, erkl: "§ 33 UStDV: bis 250 € einschließlich Steuer." },
+      { art: "wahl", frage: "Was gehört nicht zu den Pflichtangaben einer Rechnung?", optionen: ["Die Bankverbindung", "Die fortlaufende Rechnungsnummer", "Der Zeitpunkt der Leistung", "Der Steuersatz"], richtig: 0, erkl: "§ 14 Abs. 4 UStG verlangt keine Bankverbindung." },
+    ],
+  },
+  {
+    id: "wertabgabe", titel: "Unentgeltliche Wertabgaben", kurz: "§ 3 Abs. 1b, 9a · § 10 Abs. 4 UStG", icon: "🎁", normen: ["UStG 3 1b", "UStG 3 9a", "UStG 10 4", "UStG 10 5"],
     karten: [
       { art: "merksatz", titel: "Warum besteuert wird", text: "Ein Unternehmer, der Waren seines Unternehmens **privat** verbraucht, soll nicht besser stehen als ein Verbraucher. Deshalb werden bestimmte **unentgeltliche** Vorgänge wie Leistungen gegen Entgelt besteuert." },
       { art: "erklaerung", titel: "Wie eine Lieferung (§ 3 Abs. 1b UStG)", text: "• **Entnahme** für private Zwecke (Waren aus dem Laden)\n• **Sachzuwendungen ans Personal** – außer **Aufmerksamkeiten bis 60 €**\n• **Geschenke** – außer Geschenke von **geringem Wert bis 50 €** und Warenmuster\nVoraussetzung: Der Gegenstand hat beim Einkauf zum **Vorsteuerabzug** berechtigt." },
       { art: "erklaerung", titel: "Wie eine sonstige Leistung (§ 3 Abs. 9a UStG)", text: "• **Private Nutzung** eines Unternehmensgegenstands (z. B. Firmenwagen)\n• **Andere Leistungen** für private Zwecke (Mitarbeiter streichen das Privathaus)" },
       { art: "beispiel", titel: "Bemessungsgrundlage (§ 10 Abs. 4 UStG)", text: "Bei Entnahmen gilt der **Einkaufspreis im Zeitpunkt der Entnahme** – **nicht** der Verkaufspreis. Die Steuer wird daraufgeschlagen. Beispiel: Wein, Einkaufspreis jetzt 100 € → USt 19 €." },
+      { art: "erklaerung", titel: "Verbilligt an Nahestehende (§ 10 Abs. 5 UStG)", text: "Verkauft ein Unternehmer **verbilligt** an sein **Personal** oder an **nahestehende Personen** (z. B. Angehörige, Gesellschafter), gilt eine **Mindestbemessungsgrundlage**: mindestens der Wert nach § 10 Abs. 4 (z. B. Einkaufspreis), höchstens das **marktübliche Entgelt**.\nBeispiel: Einkaufspreis 600 €, Verkauf an die Tochter für 200 € netto → BMG **600 €**." },
     ],
     fragen: [
       { art: "wahl", frage: "Eine Händlerin nimmt Lebensmittel (mit Vorsteuerabzug gekauft) für ihre Feier mit. Was liegt vor?", optionen: ["Entnahme nach § 3 Abs. 1b", "Nichts – eigene Ware", "Sonstige Leistung nach § 3 Abs. 9a", "Steuerfreier Umsatz"], richtig: 0, erkl: "Entnahme für private Zwecke – gleichgestellt mit einer Lieferung." },
       { art: "wahl", frage: "Ein Arbeitgeber schenkt einer Mitarbeiterin Blumen für 35 € zum Geburtstag. Steuerbar?", optionen: ["Nein – Aufmerksamkeit", "Ja – Sachzuwendung", "Ja, zu 7 %", "Nur mit Rechnung"], richtig: 0, erkl: "Aufmerksamkeiten bis 60 € sind nicht steuerbar." },
       { art: "zahl", frage: "Entnahme von Wein: Einkaufspreis beim Kauf 80 €, jetzt 90 €, Ladenpreis 160 €. Wie hoch ist die USt (in €)?", cent: 1710, erkl: "Einkaufspreis im Zeitpunkt der Entnahme 90 € × 19 % = 17,10 €." },
       { art: "wahl", frage: "Eine Händlerin entnimmt einen Pullover, den sie ohne Vorsteuerabzug von einer Privatperson gekauft hatte. Wertabgabe?", optionen: ["Nein – kein Vorsteuerabzug beim Erwerb", "Ja – wie jede Entnahme", "Ja, aber steuerfrei", "Nur über 50 €"], richtig: 0, erkl: "§ 3 Abs. 1b S. 2 UStG setzt voraus, dass der Gegenstand zum Vorsteuerabzug berechtigt hat." },
+      { art: "zahl", frage: "Ein Möbelhändler verkauft seinem Mitarbeiter einen Schrank (Einkaufspreis 800 €, Ladenpreis 1.500 € netto) für 300 € netto. Bemessungsgrundlage (in €)?", cent: 80000, erkl: "Mindestbemessungsgrundlage: Einkaufspreis 800 € > Entgelt 300 € (§ 10 Abs. 5 Nr. 2 i. V. m. Abs. 4 Nr. 1 UStG)." },
+    ],
+  },
+  {
+    id: "kleinunternehmer", titel: "Kleinunternehmer", kurz: "§ 19 UStG", icon: "🌱", normen: ["UStG 19 1", "UStG 19 2", "UStG 19 3"],
+    karten: [
+      { art: "merksatz", titel: "Die zwei Grenzen (seit 2025)", text: "Die Umsätze eines Kleinunternehmers sind **steuerfrei**, wenn sein Gesamtumsatz\n• im **Vorjahr** höchstens **25.000 €** betrug **und**\n• im **laufenden Jahr** **100.000 €** nicht übersteigt (§ 19 Abs. 1 S. 1 UStG).\nWird die 100.000-€-Grenze im laufenden Jahr überschritten, ist **ab diesem Umsatz** Schluss mit der Befreiung." },
+      { art: "erklaerung", titel: "Was das bedeutet", text: "• Keine Umsatzsteuer auf die Umsätze – also auch **keine Steuer in der Rechnung** ausweisen.\n• **Kein Vorsteuerabzug** aus Eingangsrechnungen (§ 15 Abs. 2 S. 1 Nr. 1 UStG).\n• Weist er trotzdem Steuer aus, **schuldet** er sie nach § 14c Abs. 2 UStG.\n• **Verzicht** möglich (z. B. wegen hoher Vorsteuern) – bindet **fünf Jahre** (§ 19 Abs. 3 UStG)." },
+      { art: "beispiel", titel: "Durchgespielt", text: "• Vorjahr 22.000 €, dieses Jahr voraussichtlich 60.000 € → **Kleinunternehmer**.\n• Vorjahr 27.000 € → **kein** Kleinunternehmer, egal wie wenig er dieses Jahr umsetzt.\n• Gründer, der im Vorjahr noch nichts umgesetzt hat → kann Kleinunternehmer sein." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Umsatz im Vorjahr 24.000 €, im laufenden Jahr voraussichtlich 45.000 €. Kleinunternehmer?", optionen: ["Ja", "Nein – 45.000 € sind zu viel", "Nur mit Antrag", "Nein – über 22.000 €"], richtig: 0, erkl: "Vorjahr ≤ 25.000 € und laufendes Jahr ≤ 100.000 € (§ 19 Abs. 1 S. 1 UStG)." },
+      { art: "wahl", frage: "Umsatz im Vorjahr 26.000 €, im laufenden Jahr nur 15.000 €. Kleinunternehmer?", optionen: ["Nein – Vorjahresgrenze überschritten", "Ja", "Ja, ab Juli", "Nur für die Hälfte der Umsätze"], richtig: 0, erkl: "Das Vorjahr liegt über 25.000 €." },
+      { art: "wahl", frage: "Kann ein Kleinunternehmer Vorsteuer aus dem Kauf eines Laptops abziehen?", optionen: ["Nein", "Ja, voll", "Ja, zur Hälfte", "Nur bei über 1.000 €"], richtig: 0, erkl: "Seine Umsätze sind steuerfrei → kein Vorsteuerabzug (§ 15 Abs. 2 S. 1 Nr. 1 UStG)." },
+      { art: "wahl", frage: "Ein Kleinunternehmer weist in einer Rechnung 19 % USt aus. Folge?", optionen: ["Er schuldet den ausgewiesenen Betrag", "Nichts – er ist ja befreit", "Der Kunde schuldet die Steuer", "Die Rechnung ist nichtig"], richtig: 0, erkl: "Unberechtigter Steuerausweis (§ 14c Abs. 2 UStG)." },
+      { art: "wahl", frage: "Wie lange bindet der Verzicht auf die Kleinunternehmerregelung?", optionen: ["Mindestens fünf Kalenderjahre", "Ein Jahr", "Zehn Jahre", "Er ist jederzeit widerruflich"], richtig: 0, erkl: "§ 19 Abs. 3 S. 3 UStG." },
     ],
   },
 ];

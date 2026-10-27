@@ -36,6 +36,7 @@ export const SW_EST = {
   "est-arbeitsmittel": { s: ["ausuebung|dienen|dient", "werkzeug|computer|fachliteratur|fachbuch|bueromoebel|schreibtisch|laptop|pc", "berufskleid|schutzkleid|uniform", "buergerlich|anzug", "aufteil|zeitanteil|massstab|10 prozent", "afa|nutzungsdauer|gwg|abschreib"] },
   "est-afa-gwg": { norm: ["EStG 9|EStG 7|EStG 6"], s: ["anschaffungskost", "gleichmaessig|verteil|linear", "zeitanteil|monat", "800", "umsatzsteuer|vorsteuer|netto|brutto", "sofort|voll"] },
   "est-homeoffice": { norm: ["EStG 4|EStG 9"], s: ["mittelpunkt", "1.260|1260", "kalendertag|je tag|pro tag|taeglich|210", "raum|bueromaessig|abgeschlossen", "taetigkeitsstaette|arbeitsplatz", "nicht abzieh|abzugsverbot|grundsaetzlich nicht"] },
+  "est-reisekosten": { norm: ["EStG 9"], s: ["ausserhalb|auswaerts|auswaertig", "erste taetigkeitsstaette", "0,30|30 cent|kilometer|km", "28", "14", "8 stunden|acht stunden", "drei monat|3 monat|dreimonat", "uebernacht|hotel|unterkunft", "fruehstueck|mahlzeit|kuerz"] },
   "est-ep-grundlagen": { s: ["0,38|038|38 cent|38 ct", "einfach|entfernungskilometer", "kuerzest", "4.500|4500", "arbeitstag|je tag|pro tag", "taetigkeitsstaette"] },
   "est-erste-ts": { s: ["ortsfest|einrichtung", "zuordn|zugeordn", "dauerhaft|unbefristet|48", "drittel|zwei volle|arbeitstaeglich|quantitativ", "nur eine|hoechstens eine|naechst|naeher"] },
   "est-ep-abgeltung": { s: ["saemtlich|alle aufwend|alle kost|gesamte", "parkgebuehr|park|finanzierung|kfz|reparatur|tanken|benzin", "unfall", "oeffentlich|ticket|bahn", "behinder|gdb", "tatsaechlich"] },

@@ -26,8 +26,8 @@ AUSWAHL = {
 }
 # Einkommensteuer (Aufruf mit --est als erstem Argument → web/js/est/normen.js, Export NORMEN_EST)
 AUSWAHL_EST = {
-    "EStG": {"1": ["1", "4"], "2": None, "3": ["|15,26,26a,51,62"], "3c": ["1"], "4": ["4", "5|6b,6c"],
-             "6": ["2"], "7": ["1"], "8": ["1"], "9": ["1", "2", "4"], "9a": None, "11": None, "12": None,
+    "EStG": {"1": ["1", "4"], "2": None, "3": ["|15,16,26,26a,51,62"], "3c": ["1"], "4": ["4", "5|6b,6c"],
+             "6": ["2"], "7": ["1"], "8": ["1"], "9": ["1", "2", "4", "4a", "5"], "9a": None, "11": None, "12": None,
              "25": ["1", "3"], "26": None, "26a": ["1"], "26b": None, "32a": ["1", "5", "6"], "36": ["1", "2", "4"],
              "46": ["2", "4"], "15": ["1", "2"], "19": ["1"], "20": ["1|7"], "21": ["1", "3"], "23": ["1|1", "3"],
              "24b": ["1", "2"], "31": None, "33": ["1", "2"], "37": ["1"], "38": ["1"], "38a": ["1"], "43": ["5"], "49": ["1|4"],
@@ -38,7 +38,7 @@ AUSWAHL_EST = {
 AUSWAHL_UST = {
     "UStG": {"1": ["1", "2"], "2": ["1"], "3": ["1", "1b", "3", "4", "6", "6a", "7", "9", "9a", "12"], "3a": ["1", "2", "3", "4"],
              "4": [""], "9": ["1", "2"], "10": ["1", "4", "5"], "12": ["1", "2|1,15"], "13": ["1"], "13a": ["1"],
-             "14": ["1", "4"], "14c": None, "15": ["1", "1a", "2", "3", "4"], "17": ["1"], "19": ["1"],
+             "14": ["1", "4"], "14c": None, "15": ["1", "1a", "2", "3", "4"], "17": ["1", "2"], "19": ["1", "2", "3"],
              "3b": ["1"], "13b": ["2", "5"], "16": ["1"], "18": ["1", "2"], "20": None, "25a": ["1", "3"]},
 }
 # Paragrafen ohne amtliche Überschrift: Titel des Abschnitts
@@ -51,6 +51,9 @@ TEXT_KORREKTUR = {("UStG", "3a"): [(r"\n1\. 2\. Eine sonstige", "\n1. Eine sonst
                                     (r"\n4\. a\) die Abgabe von Speisen", "\na) die Abgabe von Speisen"),
                                     (r" (Eine Vermittlungsleistung an einen Empfänger)", r"\n4. \1")],
                   ("UStG", "12"): [(r" -+\*\).*?(?=\n…)", "")],
+                  # § 9 Abs. 1 EStG: Fortsetzung von Nr. 1 steht im PDF in der Spalte hinter Nr. 4; „Satz 8.“ in Abs. 4a nicht als Nummer lesen
+                  ("EStG", "9"): [(r"(Lasten, soweit)(\n2\. .*?im Sinne) (sie mit einer Einkunftsart .*?bb ergibt;) (des Absatzes 4\.)", r"\1 \3\2 \4"),
+                                  (r"Kürzungsbetrag nach Satz\n8\. ", "Kürzungsbetrag nach Satz 8. ")],
                   ("EStG", "3"): [(r"Trennungsgelder\. Die als Reisekostenvergütungen .*?abziehbaren Aufwendungen nicht übersteigen; ", "")]}
 START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
          "UStG": "§ 1 Steuerbare Umsätze"}

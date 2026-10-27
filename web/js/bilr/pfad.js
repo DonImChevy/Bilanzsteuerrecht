@@ -63,6 +63,21 @@ export const PFAD_BSR1 = [
     ],
   },
   {
+    id: "b1-buecher", teil: 1, titel: "Grundbuch, Hauptbuch, Nebenbücher", kurz: "§§ 238, 239 HGB · § 146 AO", icon: "📒", normen: ["HGB 238", "HGB 239", "AO 146"],
+    karten: [
+      { art: "merksatz", titel: "Keine Buchung ohne Beleg", text: "Jeder Geschäftsvorfall braucht einen **Beleg** (Rechnung, Kontoauszug, Quittung; notfalls ein selbst erstellter Eigenbeleg). Vom Beleg geht es in zwei Ordnungen:\n• **Grundbuch (Journal)**: **zeitlich** – Datum, Beleg, Buchungssatz, Betrag.\n• **Hauptbuch**: **sachlich** – alle **Sachkonten** (Bestands- und Erfolgskonten)." },
+      { art: "erklaerung", titel: "Nebenbücher", text: "Nebenbücher halten **Einzelheiten** fest, die im Hauptbuch nur als Summe stehen:\n• **Kontokorrent**: je Kunde (Debitoren) und je Lieferant (Kreditoren)\n• **Anlagenkartei**: jedes Anlagegut mit Anschaffungskosten und AfA\n• **Lohnkonten**, **Lagerbuch**" },
+      { art: "erklaerung", titel: "Ordnungsregeln (§ 239 HGB, § 146 AO)", text: "Buchungen müssen **vollständig, richtig, zeitgerecht und geordnet** sein.\n• **Kasseneinnahmen und -ausgaben täglich** aufzeichnen.\n• **Radierverbot**: Nichts so ändern, dass der ursprüngliche Inhalt nicht mehr erkennbar ist (§ 239 Abs. 3 HGB).\n• Die **Kasse** darf **nie ins Minus** gehen – ein negativer Kassenbestand ist ein Buchführungsmangel." },
+      { art: "beispiel", titel: "Kassenbericht – rückwärts gerechnet", text: "Wer seine Bareinnahmen nicht einzeln aufzeichnet, ermittelt sie am Abend rückwärts:\nKassenendbestand 800 € + Ausgaben 300 € + Privatentnahme 200 € + Einzahlung auf die Bank 1.000 € − Anfangsbestand 500 € = **Tageseinnahmen 1.800 €**." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "In welchem Buch stehen alle Geschäftsvorfälle in zeitlicher Reihenfolge?", optionen: ["Im Grundbuch (Journal)", "Im Hauptbuch", "Im Kontokorrent", "Im Inventar"], richtig: 0, erkl: "Grundbuch = zeitliche Ordnung; Hauptbuch = sachliche Ordnung." },
+      { art: "wahl", frage: "Wo findet man, wie viel ein bestimmter Kunde noch schuldet?", optionen: ["Im Kontokorrent (Debitoren)", "Im Grundbuch", "In der GuV", "Im Kassenbuch"], richtig: 0, erkl: "Das Kontokorrent führt je Kunde ein eigenes Konto." },
+      { art: "zahl", frage: "Kassenbericht: Endbestand 600 €, Ausgaben 150 €, Privatentnahme 100 €, Bankeinzahlung 500 €, Anfangsbestand 400 €. Tageseinnahmen (in €)?", cent: 95000, erkl: "600 + 150 + 100 + 500 − 400 = 950 €." },
+      { art: "wahl", frage: "Wie oft sind Kasseneinnahmen und -ausgaben aufzuzeichnen?", optionen: ["Täglich", "Wöchentlich", "Monatlich", "Zum Jahresabschluss"], richtig: 0, erkl: "§ 146 Abs. 1 S. 2 AO." },
+    ],
+  },
+  {
     id: "b1-deuten", teil: 1, titel: "Buchungssätze deuten", kurz: "Rückwärts denken", icon: "🔍", normen: [],
     karten: [
       { art: "merksatz", titel: "Den Satz zurückübersetzen", text: "Beim **Deuten** liest du einen fertigen Buchungssatz und erklärst, **welcher Geschäftsvorfall** dahintersteckt." },
@@ -88,6 +103,20 @@ export const PFAD_BSR1 = [
       { art: "wahl", frage: "Die Bank schreibt 120 € Zinsen gut. Buchungssatz?", optionen: ["Bank an Zinserträge", "Zinsaufwand an Bank", "Zinserträge an Bank", "Bank an Eigenkapital"], richtig: 0, erkl: "Bank nimmt zu (Soll), Ertrag im Haben." },
       { art: "zahl", frage: "Erträge 140.000 €, Aufwendungen 112.000 €. Wie hoch ist der Gewinn (in €)?", cent: 2800000, erkl: "Gewinn = Erträge − Aufwendungen = 28.000 €." },
       { art: "wahl", frage: "Worüber werden Erfolgskonten abgeschlossen?", optionen: ["Über die GuV", "Über das Schlussbilanzkonto", "Über die Privatkonten", "Gar nicht – sie laufen weiter"], richtig: 0, erkl: "Erfolgskonten → GuV → Eigenkapital." },
+    ],
+  },
+  {
+    id: "b1-grundbegriffe", teil: 1, titel: "Auszahlung, Ausgabe, Aufwand, Kosten", kurz: "Die Grundbegriffe", icon: "🔤", normen: ["HGB 242"],
+    karten: [
+      { art: "merksatz", titel: "Vier Paare – vier Ebenen", text: "• **Auszahlung / Einzahlung**: Bargeld und Bankguthaben fließen ab oder zu.\n• **Ausgabe / Einnahme**: das **Geldvermögen** ändert sich (Zahlungsmittel + Forderungen − Verbindlichkeiten).\n• **Aufwand / Ertrag**: **Werteverzehr bzw. -zuwachs** des Jahres – mindert oder erhöht das **Eigenkapital** (GuV).\n• **Kosten / Leistungen**: der **betriebsbedingte** Werteverzehr (Kostenrechnung)." },
+      { art: "erklaerung", titel: "Wo sie auseinanderfallen", text: "• **Wareneinkauf auf Ziel**: Ausgabe (Verbindlichkeit), aber noch **keine Auszahlung**.\n• **Maschine bar gekauft**: Auszahlung, aber **kein Aufwand** – nur Geld wird zu Maschine.\n• **AfA**: **Aufwand ohne Auszahlung**.\n• **Darlehen tilgen**: Auszahlung, aber **weder Ausgabe noch Aufwand** (Schuld sinkt gleich mit). Nur die **Zinsen** sind Aufwand.\n• **Spende**: Aufwand, aber **keine Kosten** (nicht betriebsbedingt)." },
+      { art: "beispiel", titel: "Bestand oder Strom?", text: "**Bestandsgrößen** gelten für einen **Stichtag** und stehen in der **Bilanz** (Kasse, Forderungen).\n**Stromgrößen** gelten für einen **Zeitraum** und stehen in der **GuV** (Aufwand, Ertrag)." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Ein Händler tilgt 5.000 € seines Bankdarlehens. Was liegt vor?", optionen: ["Nur eine Auszahlung", "Auszahlung und Aufwand", "Aufwand, aber keine Auszahlung", "Ausgabe und Aufwand"], richtig: 0, erkl: "Geld fließt ab, aber die Schuld sinkt gleich mit – Geldvermögen und Eigenkapital ändern sich nicht." },
+      { art: "wahl", frage: "Waren werden auf Ziel eingekauft. Was liegt vor?", optionen: ["Ausgabe, aber keine Auszahlung", "Auszahlung", "Ertrag", "Nichts"], richtig: 0, erkl: "Die Verbindlichkeit mindert das Geldvermögen; gezahlt wird erst später." },
+      { art: "wahl", frage: "Die Jahres-AfA für eine Maschine ist …", optionen: ["Aufwand ohne Auszahlung", "Auszahlung ohne Aufwand", "Weder Aufwand noch Auszahlung", "Eine Einnahme"], richtig: 0, erkl: "Werteverzehr, aber kein Geldabfluss im Jahr der AfA." },
+      { art: "wahl", frage: "Eine Spende an das Rote Kreuz ist …", optionen: ["Aufwand, aber keine Kosten", "Kosten", "Kein Aufwand", "Ein Ertrag"], richtig: 0, erkl: "Neutraler Aufwand – nicht betriebsbedingt." },
     ],
   },
   {
@@ -192,6 +221,22 @@ export const PFAD_BSR1 = [
 ];
 
 export const PFAD_BSR2 = [
+  {
+    id: "b2-gob", teil: 2, titel: "GoB & Maßgeblichkeit", kurz: "§§ 243, 252 HGB · § 5 Abs. 1 EStG", icon: "⚖️", normen: ["HGB 243", "HGB 252", "EStG 5 1"],
+    karten: [
+      { art: "merksatz", titel: "Handelsbilanz bestimmt die Steuerbilanz", text: "Kaufleute stellen ihre Bilanz nach den **Grundsätzen ordnungsmäßiger Buchführung (GoB)** auf (§ 243 Abs. 1 HGB). Für die Steuer gilt: Gewerbetreibende setzen das Betriebsvermögen an, das **nach den handelsrechtlichen GoB** auszuweisen ist – das ist die **Maßgeblichkeit** (§ 5 Abs. 1 S. 1 EStG).\nAusnahme: Das Steuerrecht schreibt etwas anderes vor (z. B. § 6, § 7 EStG) – dann geht das Steuerrecht vor." },
+      { art: "erklaerung", titel: "Bewertungsgrundsätze (§ 252 Abs. 1 HGB)", text: "• **Nr. 1 Bilanzidentität**: Schlussbilanz = Eröffnungsbilanz des Folgejahres.\n• **Nr. 2 Fortführung** des Unternehmens unterstellen.\n• **Nr. 3 Einzelbewertung** zum **Stichtag**.\n• **Nr. 4 Vorsicht**: Gewinne erst, wenn **realisiert** (Realisationsprinzip); absehbare **Verluste schon vorher** (Imparitätsprinzip).\n• **Nr. 5 Periodenabgrenzung**: Aufwand und Ertrag in das Jahr, zu dem sie gehören.\n• **Nr. 6 Stetigkeit** der Methoden." },
+      { art: "erklaerung", titel: "Nach dem Stichtag bekannt geworden", text: "Erkenntnisse zwischen Stichtag und Bilanzaufstellung:\n• **wertaufhellend** – Umstand lag am Stichtag **schon vor** (Kunde war schon insolvent) → **berücksichtigen**.\n• **wertbegründend** – Umstand entsteht **erst danach** (Lagerbrand im Januar) → **nicht** berücksichtigen." },
+      { art: "beispiel", titel: "Vorsicht in Zahlen", text: "Wertpapiere: Anschaffungskosten 10.000 €.\n• Kurs am Stichtag 12.000 € → Ansatz **10.000 €** (Gewinn noch nicht realisiert).\n• Kurs am Stichtag 8.000 € → Abschreibung möglich bzw. nötig (Imparitätsprinzip)." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Welche Vorschrift verknüpft Handels- und Steuerbilanz?", optionen: ["§ 5 Abs. 1 S. 1 EStG (Maßgeblichkeit)", "§ 238 HGB", "§ 141 AO", "§ 4 Abs. 3 EStG"], richtig: 0, erkl: "Maßgeblichkeit der handelsrechtlichen GoB." },
+      { art: "wahl", frage: "Grundstück: Anschaffungskosten 200.000 €, Verkehrswert am Stichtag 260.000 €. Ansatz?", optionen: ["200.000 €", "260.000 €", "230.000 €", "Wahlweise"], richtig: 0, erkl: "Realisationsprinzip und Anschaffungskosten als Obergrenze (§ 252 Abs. 1 Nr. 4, § 253 Abs. 1 HGB)." },
+      { art: "wahl", frage: "Am 20.01. (vor Aufstellung der Bilanz) erfährt der Kaufmann, dass ein Kunde schon im November insolvent war. Folge für die Bilanz zum 31.12.?", optionen: ["Berücksichtigen – wertaufhellend", "Nicht berücksichtigen – erst im neuen Jahr bekannt", "Nur im Anhang erwähnen", "Neue Bilanz für Januar"], richtig: 0, erkl: "Der Umstand lag am Stichtag schon vor (§ 252 Abs. 1 Nr. 4 HGB)." },
+      { art: "wahl", frage: "Im Februar brennt das Lager ab. Bilanz zum 31.12. des Vorjahres?", optionen: ["Nicht berücksichtigen – wertbegründend", "Waren auf 0 € abschreiben", "Rückstellung bilden", "Bilanz nicht aufstellen"], richtig: 0, erkl: "Ereignis nach dem Stichtag." },
+      { art: "wahl", frage: "Welcher Grundsatz verlangt, dass Schlussbilanz und Eröffnungsbilanz übereinstimmen?", optionen: ["Bilanzidentität", "Stetigkeit", "Einzelbewertung", "Vorsicht"], richtig: 0, erkl: "§ 252 Abs. 1 Nr. 1 HGB." },
+    ],
+  },
   {
     id: "b2-bv", teil: 2, titel: "Was gehört ins Betriebsvermögen?", kurz: "R 4.2 EStR · § 246 HGB", icon: "🧭", normen: ["HGB 246", "EStG 5 1"],
     karten: [

@@ -8,8 +8,8 @@ import * as G from "./geld.js";
 
 // Schlüssel = Modul; Bilanzrecht je nach Auswahl Teil I (bsr1), Teil II (bsr2) oder beide (bsr).
 export const PFADE = {
-  ust: { titel: "Umsatzsteuer", untertitel: "Vom System bis zur Vorsteuer – Block für Block", bloecke: PFAD_UST },
-  est: { titel: "Einkommensteuer", untertitel: "Von der Steuerpflicht bis zur Entfernungspauschale", bloecke: PFAD_EST },
+  ust: { titel: "Umsatzsteuer", untertitel: "Vom System bis zum Kleinunternehmer – Block für Block", bloecke: PFAD_UST },
+  est: { titel: "Einkommensteuer", untertitel: "Von der Steuerpflicht bis zu den Reisekosten", bloecke: PFAD_EST },
   oer: { titel: "Öffentliches Recht", untertitel: "Vom Staat bis zum Gesetz – Staatsrecht Schritt für Schritt", bloecke: PFAD_OER },
   bsr1: { titel: "Bilanzrecht Teil I", untertitel: "Buchführung – vom Geschäftsvorfall bis zum Abschluss", bloecke: PFAD_BSR1 },
   bsr2: { titel: "Bilanzrecht Teil II", untertitel: "Bilanzierung und Bewertung – vom Betriebsvermögen bis zur Einlage", bloecke: PFAD_BSR2 },

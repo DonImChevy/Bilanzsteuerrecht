@@ -149,6 +149,9 @@ export const BEISPIELE_EST = {
         "**Gewerkschaftsbeitrag:** Seit 2026 zusätzlich zu berücksichtigen (§ 9a S. 3 EStG; Beiträge zu Berufsverbänden, § 9 Abs. 1 S. 3 Nr. 3 EStG) → insgesamt **1.590 €**.",
       ],
     },
+  ],
+
+  "est-arbeitsmittel": [
     {
       titel: "Laptop über 800 €",
       sv: "Arbeitnehmer B kauft im Oktober einen Laptop für 1.428 € (1.200 € netto), den er zu 90 % beruflich nutzt.",
@@ -156,6 +159,37 @@ export const BEISPIELE_EST = {
         "Kein GWG, da die AK netto 800 € übersteigen (§ 9 Abs. 1 S. 3 Nr. 7 S. 2 i. V. m. § 6 Abs. 2 S. 1 EStG).",
         "Nutzungsdauer von Computerhardware ein Jahr → voller Abzug im Anschaffungsjahr (§ 9 Abs. 1 S. 3 Nr. 7 i. V. m. § 7 Abs. 1 EStG).",
         "Werbungskosten: 1.428 € (brutto, kein Vorsteuerabzug) × 90 % = **1.285,20 €** (§ 9 Abs. 1 S. 3 Nr. 6 EStG).",
+      ],
+    },
+    {
+      titel: "Kleidung, Fachbuch und Aktentasche",
+      sv: "Die angestellte Versicherungskauffrau V kauft 2026 (1) ein Kostüm für Kundentermine (380 €), (2) einen Kommentar zum Versicherungsvertragsgesetz (149 €) und (3) am 10.09. eine Aktentasche aus Leder für 892,50 € brutto (750 € netto; Nutzungsdauer 5 Jahre), die sie nur beruflich nutzt.",
+      loesung: [
+        "**(1)** Bürgerliche Kleidung, Lebensführung → nicht abziehbar (§ 12 Nr. 1 S. 2 EStG).",
+        "**(2)** Fachliteratur, Arbeitsmittel → WK **149 €** (§ 9 Abs. 1 S. 3 Nr. 6 EStG).",
+        "**(3)** Arbeitsmittel, Nutzungsdauer über ein Jahr; AK ohne USt 750 € ≤ 800 € → GWG, Sofortabzug brutto **892,50 €** (§ 9 Abs. 1 S. 3 Nr. 7 S. 2 i. V. m. § 6 Abs. 2 S. 1 EStG).",
+        "Werbungskosten insgesamt: 149 € + 892,50 € = **1.041,50 €**.",
+      ],
+    },
+  ],
+
+  "est-homeoffice": [
+    {
+      titel: "Lehrerin mit Arbeitszimmer",
+      sv: "Gymnasiallehrerin L hat in ihrer Mietwohnung ein abgeschlossenes, nur beruflich genutztes Arbeitszimmer (anteilige Kosten 2.400 € im Jahr). In der Schule steht ihr kein eigener Arbeitsplatz zur Verfügung. 2026 unterrichtet sie an 190 Tagen und bereitet an 230 Tagen zu Hause Unterricht vor.",
+      loesung: [
+        "Mittelpunkt der gesamten Tätigkeit ist der Unterricht in der Schule → Arbeitszimmerkosten nicht abziehbar (§ 9 Abs. 5 S. 1 i. V. m. § 4 Abs. 5 S. 1 Nr. 6b S. 1, 2 EStG).",
+        "Kein anderer Arbeitsplatz → Tagespauschale auch an Unterrichtstagen (§ 4 Abs. 5 S. 1 Nr. 6c S. 2 EStG): 230 Tage × 6 € = 1.380 €, höchstens **1.260 €** (Nr. 6c S. 1).",
+      ],
+    },
+    {
+      titel: "Telearbeit ab Mai",
+      sv: "Angestellter T arbeitete bis April 2026 nur im Büro. Ab 01.05.2026 arbeitet er vereinbarungsgemäß ausschließlich in seinem häuslichen Arbeitszimmer; einen Büroarbeitsplatz hat er nicht mehr. Die anteiligen Raumkosten betragen 60 € im Monat.",
+      loesung: [
+        "Ab Mai ist das Arbeitszimmer Mittelpunkt der gesamten Tätigkeit → Abzug zulässig (§ 9 Abs. 5 S. 1 i. V. m. § 4 Abs. 5 S. 1 Nr. 6b S. 2 EStG).",
+        "Tatsächliche Kosten: 8 Monate × 60 € = 480 €.",
+        "Jahrespauschale: 1.260 € − 4/12 für Januar bis April = **840 €** (§ 4 Abs. 5 S. 1 Nr. 6b S. 3, 4 EStG) → höher, daher 840 €.",
+        "Daneben keine Tagespauschale (§ 4 Abs. 5 S. 1 Nr. 6c S. 3 EStG).",
       ],
     },
   ],
@@ -168,6 +202,21 @@ export const BEISPIELE_EST = {
         "**(1) A:** 220 × 27 volle km × 0,38 € = **2.257,20 €**. Der Höchstbetrag von 4.500 € gilt nicht, weil A einen eigenen Pkw benutzt (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 HS. 2 EStG).",
         "**(2) B:** 230 × 60 km × 0,38 € = 5.244 € → begrenzt auf **4.500 €**. Die tatsächlichen Kosten (1.800 €) übersteigen die Pauschale nicht (§ 9 Abs. 2 S. 2 EStG) → 4.500 €.",
         "**(3) C:** Pkw-Teilstrecke ohne Höchstbetrag: 220 × 20 × 0,38 € = 1.672 €; Bahnstrecke: 220 × 40 × 0,38 € = 3.344 € (unter 4.500 €) → **5.016 €**. Die Jahreskarte (1.500 €) ist geringer und bleibt unberücksichtigt.",
+      ],
+    },
+  ],
+
+  "est-reisekosten": [
+    {
+      titel: "Dreitägige Messe",
+      sv: "Arbeitnehmer A fährt 2026 mit seinem eigenen Pkw zu einer Messe nach Köln (200 km einfache Strecke), Anreise Montag 7 Uhr, Rückkehr Mittwoch 20 Uhr. Das Hotel (2 Nächte) hat der Arbeitgeber mit Frühstück gebucht und bezahlt. Am Dienstagabend lädt ihn der Arbeitgeber zum Abendessen ein. Für das Parkhaus zahlt A 30 €. Erstattungen erhält er nicht.",
+      loesung: [
+        "Auswärtige berufliche Tätigkeit, da außerhalb von Wohnung und erster Tätigkeitsstätte (§ 9 Abs. 4a S. 2 EStG).",
+        "Fahrtkosten: 400 km × 0,30 € = **120 €** (§ 9 Abs. 1 S. 3 Nr. 4a S. 2 EStG).",
+        "Verpflegung: Montag 14 €, Dienstag 28 €, Mittwoch 14 € (§ 9 Abs. 4a S. 3 Nr. 1, 2 EStG); Kürzung Frühstück 2 × 5,60 € und Abendessen 11,20 € (§ 9 Abs. 4a S. 8 EStG) → 56 € − 22,40 € = **33,60 €**.",
+        "Übernachtung: vom Arbeitgeber getragen, kein Aufwand des A.",
+        "Parkgebühren **30 €** (§ 9 Abs. 1 S. 1 EStG).",
+        "Werbungskosten: 120 € + 33,60 € + 30 € = **183,60 €**.",
       ],
     },
   ],

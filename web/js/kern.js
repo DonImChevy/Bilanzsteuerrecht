@@ -51,8 +51,11 @@ export const THEMEN = [
   { id: "est-einnahmen", titel: "Einnahmen & Steuerbefreiungen", unter: "§§ 8, 3, 3c EStG · Übungsleiter", icon: "💶", fach: "est" },
   { id: "est-ausgaben", titel: "Nicht abziehbare Ausgaben", unter: "§ 12 EStG · gemischte Aufwendungen", icon: "🚫", fach: "est" },
   { id: "est-zufluss", titel: "Zu- und Abfluss", unter: "§ 11 EStG", icon: "📅", fach: "est" },
-  { id: "est-werbungskosten", titel: "Werbungskosten", unter: "§§ 9, 9a EStG · Arbeitsmittel, AfA, Home-Office", icon: "💼", fach: "est" },
+  { id: "est-werbungskosten", titel: "Werbungskosten", unter: "§§ 9, 9a EStG · Begriff, Pauschbetrag", icon: "💼", fach: "est" },
+  { id: "est-arbeitsmittel", titel: "Arbeitsmittel", unter: "§ 9 Abs. 1 S. 3 Nr. 6, 7 EStG · Berufskleidung, AfA, GWG", icon: "💻", fach: "est" },
+  { id: "est-homeoffice", titel: "Arbeitszimmer & Home-Office", unter: "§ 4 Abs. 5 S. 1 Nr. 6b, 6c, § 9 Abs. 5 EStG", icon: "🏠", fach: "est" },
   { id: "est-entfernung", titel: "Entfernungspauschale", unter: "§ 9 Abs. 1 S. 3 Nr. 4, Abs. 2, 4 EStG", icon: "🚗", fach: "est" },
+  { id: "est-reisekosten", titel: "Reisekosten", unter: "§ 9 Abs. 1 S. 3 Nr. 4a, 5a, Abs. 4a EStG · Auswärtstätigkeit", icon: "🧳", fach: "est" },
   // Umsatzsteuer (Skript GS I, Klausurtechnik, Semesterklausuren; Rechtsstand 2026)
   { id: "ust-grundlagen", titel: "System & Unternehmer", unter: "§§ 1, 2 UStG · Rahmen des Unternehmens", icon: "🏢", fach: "ust" },
   { id: "ust-leistung", titel: "Lieferung & sonstige Leistung", unter: "§ 3 Abs. 1, 9 UStG · Nebenleistungen", icon: "📦", fach: "ust" },
