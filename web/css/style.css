@@ -69,7 +69,8 @@ button { cursor: pointer; border: 0; background: none; padding: 0; }
 .ic.fill { fill: currentColor; stroke: none; }
 .versteckt { display: none !important; }
 .zentriert { text-align: center; }
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+/* Bewegung reduzieren: Schalter in der App (Startwert = Systemeinstellung), gesetzt als data-bewegung auf <html> */
+:root[data-bewegung="aus"] *, :root[data-bewegung="aus"] *::before, :root[data-bewegung="aus"] *::after { animation: none !important; transition: none !important; }
 
 /* ---------- Grundlayout ---------- */
 #app { min-height: 100%; }
@@ -404,9 +405,7 @@ button.zeile:active, button.karte-btn:active { background: var(--card2); }
 .stern { font-size: 52px; color: var(--card2); animation: sternPop 0.55s cubic-bezier(0.2, 1.6, 0.4, 1) both; animation-delay: calc(0.25s + var(--i) * 0.22s); }
 .stern.an { color: #fbbf24; text-shadow: 0 2px 12px rgba(251, 191, 36, 0.55); }
 @keyframes sternPop { from { transform: scale(0) rotate(-60deg); opacity: 0; } }
-@media (prefers-reduced-motion: reduce) {
-  .paar-karte, .funken span, .schwebe-text, .herz.verloren, .stern, .paar-spiel.beben .vb-inhalt { animation-duration: 0.01ms !important; animation-delay: 0s !important; }
-}
+:root[data-bewegung="aus"] .paar-karte, :root[data-bewegung="aus"] .funken span, :root[data-bewegung="aus"] .schwebe-text, :root[data-bewegung="aus"] .herz.verloren, :root[data-bewegung="aus"] .stern, :root[data-bewegung="aus"] .paar-spiel.beben .vb-inhalt { animation-duration: 0.01ms !important; animation-delay: 0s !important; }
 .punkte-karte { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--accent); }
 .punkte-titel { font-weight: 800; margin-bottom: 8px; }
 .punkte-satz { font-size: 16.5px; line-height: 1.55; }
@@ -663,9 +662,7 @@ mark.norm-hl { background: color-mix(in srgb, var(--gold) 32%, transparent); col
 .pfad .pf-xp { display: inline-block; margin: 14px 0 6px; padding: 10px 18px; border-radius: 14px; font-weight: 900; font-size: 20px; color: #1a0b2e; background: linear-gradient(90deg, #fde68a, #fbbf24); box-shadow: 0 0 30px rgba(251, 191, 36, 0.5); }
 .pfad .pf-link { display: block; margin: 10px auto 0; color: #f9a8d4; font-weight: 800; }
 .pfad .konfetti { z-index: 3; }
-@media (prefers-reduced-motion: reduce) {
-  .pfad *, .pfad-kachel * { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
-}
+:root[data-bewegung="aus"] .pfad *, :root[data-bewegung="aus"] .pfad-kachel * { animation-duration: 0.01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
 @media (min-width: 700px) { .pfad .pf-label { width: 240px; } }
 
 /* =====================================================================
@@ -823,7 +820,7 @@ h1.titel { font-size: 32px; letter-spacing: -0.9px; background: linear-gradient(
 .screen.anim > *:nth-child(5) { animation-delay: 160ms; } .screen.anim > *:nth-child(6) { animation-delay: 200ms; } .screen.anim > *:nth-child(n+7) { animation-delay: 240ms; }
 .screen.anim { animation: none; }
 
-@media (prefers-reduced-motion: reduce) { body::before { animation: none; } }
+:root[data-bewegung="aus"] body::before { animation: none; }
 
 /* Themenliste im Modul: einzelne Glaskarten statt einer langen Tabelle */
 .filter-suche { position: relative; }
@@ -1262,7 +1259,7 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 @keyframes talerHuepf { 0% { transform: translateY(0) scale(1, 1); } 22% { transform: translateY(2px) scale(1.06, 0.92); } 55% { transform: translateY(-14px) scale(0.96, 1.05); } 80% { transform: translateY(0) scale(1.03, 0.97); } 100% { transform: translateY(0) scale(1, 1); } }
 @keyframes talerNicken { 0%, 100% { transform: rotate(0); } 30% { transform: rotate(-5deg); } 60% { transform: rotate(3deg); } }
 @keyframes talerFunke { 0% { transform: scale(0) rotate(-40deg); opacity: 0; } 50% { transform: scale(1.25) rotate(10deg); opacity: 1; } 100% { transform: scale(1) rotate(0); opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .taler * { animation: none !important; } }
+:root[data-bewegung="aus"] .taler * { animation: none !important; }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --taler-schatten: rgba(0, 0, 0, 0.5); } }
 :root[data-theme="dark"] { --taler-schatten: rgba(0, 0, 0, 0.5); }
 .taler.ruhig .t-ganz, .taler.ruhig .t-winkarm, .taler.ruhig .t-funke { animation: none; }
@@ -1354,8 +1351,29 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .taler-knopf .taler.flip { transform-origin: 50% 55%; animation: tbStartFlip 0.8s cubic-bezier(0.3, 0.9, 0.3, 1) both; }
 .taler-knopf { perspective: 500px; }
 @keyframes tbStartFlip { 0% { transform: translateY(0) rotateY(0); } 45% { transform: translateY(-16px) rotateY(540deg); } 75% { transform: translateY(2px) rotateY(720deg) scale(1.05, 0.93); } 100% { transform: translateY(0) rotateY(720deg); } }
-@media (prefers-reduced-motion: reduce) {
-  .taler-buehne *, .taler-buehne + span { animation: none !important; }
-  .taler-buehne .tb-mitte, .taler-buehne .tb-staub { display: none; }
-  .fb-warte .taler { transition: none; }
-}
+:root[data-bewegung="aus"] .taler-buehne *, :root[data-bewegung="aus"] .taler-buehne + span { animation: none !important; }
+:root[data-bewegung="aus"] .taler-buehne .tb-mitte, :root[data-bewegung="aus"] .taler-buehne .tb-staub { display: none; }
+:root[data-bewegung="aus"] .fb-warte .taler { transition: none; }
+
+/* Schalter „Animationen“ (role="switch"): an = Bahn in Modulfarbe, Knopf rechts; aus = grau, Knopf links */
+.schalter, .pf-schalter { display: inline-flex; align-items: center; gap: 7px; flex: none; padding: 0; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.schalter .sch-ic, .pf-schalter .sch-ic { display: grid; place-items: center; }
+.schalter .sch-ic { color: var(--text2); }
+.schalter .sch-bahn, .pf-schalter .sch-bahn { position: relative; width: 46px; height: 28px; border-radius: 99px; transition: background 0.2s; }
+.schalter .sch-bahn { background: color-mix(in srgb, var(--text3) 40%, transparent); box-shadow: inset 0 0 0 1px var(--line); }
+.schalter .sch-knopf, .pf-schalter .sch-knopf { position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25); transition: transform 0.22s cubic-bezier(0.3, 1.4, 0.5, 1); }
+.schalter[aria-checked="true"] .sch-bahn { background: var(--m); box-shadow: none; }
+.schalter[aria-checked="true"] .sch-ic { color: var(--m); }
+.schalter[aria-checked="true"] .sch-knopf, .pf-schalter[aria-checked="true"] .sch-knopf { transform: translateX(18px); }
+.schalter.klein .sch-bahn, .pf-schalter.klein .sch-bahn { width: 40px; height: 24px; }
+.schalter.klein .sch-knopf, .pf-schalter.klein .sch-knopf { width: 18px; height: 18px; }
+.schalter.klein[aria-checked="true"] .sch-knopf, .pf-schalter.klein[aria-checked="true"] .sch-knopf { transform: translateX(16px); }
+.schalter:focus-visible .sch-bahn { outline: 2.5px solid var(--m); outline-offset: 2px; }
+.vb-kopf .schalter.klein { padding: 6px 8px; border-radius: 99px; background: var(--glas, var(--card)); border: 1px solid var(--glas-rand, var(--line)); }
+.vb-kopf .zaehler { min-width: 44px; }
+/* Lernpfad-Variante in dessen eigenen Farben */
+.pfad .pf-schalter { padding: 6px 8px; border-radius: 99px; background: var(--pf-glas); border: 1px solid var(--pf-rand); color: var(--pf-sub); }
+.pfad .pf-schalter .sch-bahn { background: rgba(255, 255, 255, 0.16); }
+.pfad .pf-schalter[aria-checked="true"] .sch-bahn { background: linear-gradient(90deg, #fbbf24, #f472b6); }
+.pfad .pf-schalter[aria-checked="true"] { color: #fde68a; }
+.pfad .pf-schalter:focus-visible .sch-bahn { outline: 2.5px solid #fbbf24; outline-offset: 2px; }

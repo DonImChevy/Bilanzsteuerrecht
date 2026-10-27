@@ -135,10 +135,10 @@ export function kartenView(fach, { esc, ic, normLabel }) {
     </div></div>`;
 }
 
-export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken = false }) {
+export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken = false, schalter = "" }) {
   const b = PFADE[fach].bloecke.find((x) => x.id === z.id), n = schritte(b), k = b.karten.length;
   const fortschritt = `<div class="pf-schritte">${Array.from({ length: n - 2 }, (_, i) => `<i class="${i + 1 < z.schritt ? "ok" : i + 1 === z.schritt ? "akt" : ""}${i >= k ? " frage" : ""}"></i>`).join("")}</div>`;
-  const kopf = `<div class="pf-kopf"><button class="pf-rund" data-a="pfadKarte" aria-label="Zur Lernpfad-Karte">${ic("kreuz")}</button>${z.schritt > 0 && z.schritt < n - 1 ? fortschritt : `<span class="pf-marke">${esc(b.titel)}</span>`}<span class="pf-chip">${b.icon}</span></div>`;
+  const kopf = `<div class="pf-kopf"><button class="pf-rund" data-a="pfadKarte" aria-label="Zur Lernpfad-Karte">${ic("kreuz")}</button>${z.schritt > 0 && z.schritt < n - 1 ? fortschritt : `<span class="pf-marke">${esc(b.titel)}</span>`}${schalter}<span class="pf-chip">${b.icon}</span></div>`;
   const normen = b.normen.map((r) => `<button class="pf-norm" data-a="normDetail" data-v="${r.split(" ").slice(0, 2).join(" ")}">${esc(normLabel(r))}</button>`).join("");
   let inhalt, fuss = "";
   if (z.schritt === 0) {
