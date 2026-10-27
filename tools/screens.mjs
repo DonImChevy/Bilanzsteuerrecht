@@ -13,6 +13,7 @@ for (const schema of ["light", "dark"]) {
   const bild = (name) => p.screenshot({ path: `${aus}/${schema}_${name}.png` });
   await p.goto("http://localhost:8765/index.html"); await p.waitForTimeout(600);
   await bild("willkommen");
+  await klick(`[data-a="willkommenRolle"][data-v="${modul === "bbf" ? "ausbildung" : "studium"}"]`, 500); // erst Studium oder Ausbildung wählen
   await klick(`[data-a="willkommenModul"][data-v="${modul}"]`, 900); await bild("modul");
   await p.evaluate(() => document.querySelector("#themenListe")?.scrollIntoView()); await p.waitForTimeout(500); await bild("themen");
   for (const tab of ["klausur", "karten", "nachschlagen"]) { await klick(`[data-a="tab"][data-v="${tab}"]`); await bild(tab); }

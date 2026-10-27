@@ -1385,3 +1385,14 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .pfad .pf-erkl.nach-show.ok { animation-delay: 1.45s; }
 .pfad .pf-erkl.nach-show.err { animation-delay: 0.75s; }
 :root[data-bewegung="aus"] .pfad .pf-fuss .fb-warte .taler { transition: none; }
+
+/* Rolle wählen: Studium oder Ausbildung (Willkommen, Startseite, Einstellungen) */
+.rollen-karte { margin-bottom: 12px; }
+.rollen-karte .segment button { gap: 6px; }
+.rollen-wahl { display: grid; gap: 12px; margin: 4px 0 22px; }
+.rollen-kachel { display: flex; align-items: center; gap: 14px; text-align: left; padding: 16px; border-radius: 22px; background: var(--card); box-shadow: var(--shadow); border: 1px solid var(--line); transition: transform 0.12s; }
+.rollen-kachel:active { transform: scale(0.98); }
+.rollen-kachel:focus-visible { outline: 2.5px solid var(--m); outline-offset: 2px; }
+.rollen-kachel .m-icon { width: 48px; height: 48px; min-width: 48px; border-radius: 15px; display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, var(--m-licht, var(--m)), var(--m)); box-shadow: 0 8px 18px -8px var(--m); }
+.rollen-kachel b { display: block; font-size: 17px; }
+.rollen-kachel .sub { display: block; font-size: 13.5px; }

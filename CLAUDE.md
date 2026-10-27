@@ -18,11 +18,12 @@ Deploy über GitHub Pages (`.github/workflows/pages.yml`). Antworten an den Nutz
 - Prüfen vor dem Push:
   - `node --test web/tests/kern.test.mjs`
   - `node tools/stichworte_pruefen.mjs` (Stichworte der Frage-Antwort-Aufgaben)
-  - Screenshots: `cd web && python3 -m http.server 8765 &` dann `node tools/screens.mjs bsr <ordner>` (hell + dunkel, meldet JS-Fehler). Modul-IDs: `bsr`, `oer`, `est`, `ust`.
+  - Screenshots: `cd web && python3 -m http.server 8765 &` dann `node tools/screens.mjs bsr <ordner>` (hell + dunkel, meldet JS-Fehler). Modul-IDs: `bsr`, `oer`, `est`, `ust`, `bbf`.
 
 ## Aufbau
 - `web/js/app.js` – gesamte UI: `render()` baut `app.innerHTML` neu; Aktionen über `data-a`/`data-v` und die Map `AKTIONEN`; Zustand in `state`, Lernstand `stat` in localStorage `bsr.stat.v1`. Einstellungen über `einstellungMerken()` (werden synchronisiert).
 - `web/js/module.js` – Modulliste (Farbe, Icon, aktiv/bald). `kern.js` – `THEMEN` (mit `fach`, bei BilR `teil: 1|2`). `katalog.js` – Aufgabenauswahl/Klausur.
+- **Rollen:** Beim ersten Start „Studium“ oder „Ausbildung“ wählen (`state.rolle`, Einstellung `rolle`); Module tragen `rolle` in `module.js`. **BilBf** (`bbf`, Ausbildung FTA I, Buchführung und Bilanzwesen) teilt die Buchführungsthemen mit Bilanzrecht Teil I (`THEMEN_BBF` in `kern.js`, Reihenfolge des Lehrplans); Aufgaben außerhalb des FTA-Lehrplans blendet `NICHT_IN.bbf` aus (Vorlagen immer über `vorlageIn(v, fach)` / `themaIn` filtern, nicht über `THEMA[..].fach`). Eigenes: `bilr/bbf.js` (Thema `bbf-afa`), `bilr/bbf_kompakt.js`, `bilr/bbf_pfad.js`. Material (Skript, Übungen, Klausuren) ist privat.
 - Fachinhalte je Modul: `web/js/bilr/`, `oer/`, `est/`, `ust/` (`aufgaben.js`, `normen.js`, `paare.js`, `pfad.js` = Lernpfad-Blöcke).
 - `kompakt.js` + `*/kompakt.js` – Kompaktwissen: je Thema eine Zusammenfassung (`satz`, `zahlen`, `punkte`, `schema`, `fallen`; `**fett**` = Textmarker, Normzitate werden automatisch antippbar) und je Modul `KLAUSUR_*` (Klausuraufbau, Schwerpunkte). Neues Thema in `kern.js` → auch hier eintragen (Test prüft das). Gelesen-Status in `stat.kompakt`, synchronisiert.
 - `*/beispiele.js` – Klausurbeispiele je Thema (`titel`, `sv`, `aufgabe`, `loesung[]`): eigener Sachverhalt im Klausurstil, Lösung **so knapp wie in den echten Lösungshinweisen** (kein Obersatz, keine abgeschriebenen Definitionen; USt im Urteilsstil „… gem. § …, da …“, BilR Würdigung → AK/AfA → Buchung, ÖR Wissensfragen in wenigen Sätzen, „Fraglich ist“ nur bei Fallfragen), **jede Aussage mit tragender Norm** (exakte Fundstelle, vorher am Gesetzestext in der App prüfen). Zeilen `BS: … → GuV … · BVV …` werden als Buchungssatz mit Gewinnauswirkung dargestellt.

@@ -213,8 +213,10 @@ test("Lernserie, Wochenverlauf und Module", async () => {
   assert.equal(w.length, 7);
   assert.deepEqual([w[0].n, w[6].n, w[6].heute, w[6].kurz], [2, 7, true, "Di"]);
   // Module: aktive haben Themen und Aufgaben, kommende nicht; Icons existieren
-  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer", "est", "ust"]);
-  assert.ok(MODULE.length === 7 && !MODUL.asv && MODUL.ust.kurz === "USt" && MODUL.bsr.kurz === "BilR" && MODUL.pr.kurz === "PrivR");
+  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer", "est", "ust", "bbf"]);
+  assert.deepEqual(aktiveModule("studium").map((m) => m.id), ["bsr", "oer", "est", "ust"]);
+  assert.deepEqual(aktiveModule("ausbildung").map((m) => m.id), ["bbf"]);
+  assert.ok(MODULE.length === 8 && !MODUL.asv && MODUL.ust.kurz === "USt" && MODUL.bsr.kurz === "BilR" && MODUL.bbf.kurz === "BilBf" && MODUL.pr.kurz === "PrivR");
   for (const m of MODULE) {
     assert.ok(ICON_NAMEN.includes(m.icon), m.id);
     assert.equal(THEMEN.some((t) => t.fach === m.id), !m.bald, m.id);
@@ -430,9 +432,9 @@ test("Paare finden: Normen und Kurzerklärungen eindeutig", async () => {
 
 test("Lernpfade aller Module: jeder Block in sich vollständig", async () => {
   const { PFADE } = await import("../js/lernpfad.js");
-  for (const fach of ["ust", "est", "oer", "bsr1", "bsr2"]) assert.ok(PFADE[fach]?.bloecke.length >= 8, "Lernpfad fehlt: " + fach);
+  for (const fach of ["ust", "est", "oer", "bsr1", "bsr2", "bbf"]) assert.ok(PFADE[fach]?.bloecke.length >= 8, "Lernpfad fehlt: " + fach);
   const ids = new Set();
-  for (const b of ["ust", "est", "oer", "bsr1", "bsr2"].flatMap((f) => PFADE[f].bloecke)) {
+  for (const b of ["ust", "est", "oer", "bsr1", "bsr2", "bbf"].flatMap((f) => PFADE[f].bloecke)) {
     assert.ok(!ids.has(b.id), "doppelt: " + b.id); ids.add(b.id);
     assert.ok(b.karten.length >= 3 && b.fragen.length >= 3, b.id + ": zu wenig Karten oder Fragen");
     for (const r of b.normen) assert.ok(norm(r), `${b.id}: Norm ${r} fehlt`);
@@ -661,4 +663,24 @@ test("Goodnotes-Lernset importieren (ZIP mit Änderungsprotokoll, wie beim Expor
   assert.equal(neu, 2);
   assert.ok(MK.kartenVon(meine, "bsr").every((k) => k.st === "BilR Fristen"));
   await assert.rejects(goodnotesLesen(new TextEncoder().encode("kein Lernset").buffer));
+});
+
+test("BilBf (Ausbildung FTA I): Themen, ausgeblendete Aufgaben, Übung und Klausur", async () => {
+  const { themenFuer, NICHT_IN, vorlageIn } = await import("../js/kern.js");
+  const { fragen, klausur, neueZiehung, ALLE } = await import("../js/katalog.js");
+  const ids = themenFuer("bbf").map((t) => t.id);
+  assert.ok(ids.length >= 12 && ids.includes("bbf-afa") && ids.includes("bestandskonten"));
+  for (const raus of ["warenunterkonten", "kalkulation", "bsr-afa", "bsr-ak", "bsr-teilwert"]) assert.ok(!ids.includes(raus), raus);
+  // jede ausgeblendete ID gibt es wirklich (Tippfehler fallen sonst nicht auf)
+  for (const id of NICHT_IN.bbf) assert.ok(ALLE.some((v) => v.id === id), "unbekannte ID in NICHT_IN: " + id);
+  for (const id of ids) assert.ok(ALLE.filter((v) => v.thema === id && vorlageIn(v, "bbf")).length >= 3, "zu wenig Aufgaben: " + id);
+  const r = new Zufall(7);
+  for (let i = 0; i < 20; i++) {
+    const ue = fragen(ids, 15, r, null, false, neueZiehung("bbf"));
+    const kl = klausur(30, r, "bbf");
+    for (const f of [...ue, ...kl]) {
+      assert.ok(ids.includes(f.thema), "fremdes Thema: " + f.thema);
+      assert.ok(!NICHT_IN.bbf.has(f.id), "ausgeblendete Aufgabe gezogen: " + f.id);
+    }
+  }
 });
