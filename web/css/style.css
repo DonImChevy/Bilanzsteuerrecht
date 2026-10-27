@@ -1169,3 +1169,43 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
   color: #fde68a; background: rgba(251, 191, 36, 0.1); border: 1px dashed rgba(251, 191, 36, 0.45); }
 .pfad .pf-merken .ic { width: 16px; height: 16px; stroke-width: 2.4; }
 .pfad .pf-merken:active { transform: scale(0.95); }
+
+/* =====================================================================
+   R 2 EStR – Schema als ruhige Grafik: Rechenweg oben, je Stufe eine Karte mit dünner Farbleiste,
+   wichtige Zeilen fett, Sonderfälle eingeklappt, Ergebniszeile mit „=“ als Abschluss.
+   ===================================================================== */
+.r2 { margin: 8px 0 6px; }
+.r2 .st-sde { --st: #2563eb; } .r2 .st-gde { --st: #0d9488; } .r2 .st-eink { --st: #7c3aed; }
+.r2 .st-zve { --st: #d97706; } .r2 .st-tarif { --st: #db2777; } .r2 .st-fest { --st: #16a34a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .r2 .st-sde { --st: #60a5fa; } :root:not([data-theme="light"]) .r2 .st-gde { --st: #2dd4bf; } :root:not([data-theme="light"]) .r2 .st-eink { --st: #a78bfa; } :root:not([data-theme="light"]) .r2 .st-zve { --st: #fbbf24; } :root:not([data-theme="light"]) .r2 .st-tarif { --st: #f472b6; } :root:not([data-theme="light"]) .r2 .st-fest { --st: #4ade80; } }
+:root[data-theme="dark"] .r2 .st-sde { --st: #60a5fa; } :root[data-theme="dark"] .r2 .st-gde { --st: #2dd4bf; } :root[data-theme="dark"] .r2 .st-eink { --st: #a78bfa; } :root[data-theme="dark"] .r2 .st-zve { --st: #fbbf24; } :root[data-theme="dark"] .r2 .st-tarif { --st: #f472b6; } :root[data-theme="dark"] .r2 .st-fest { --st: #4ade80; }
+.r2-abs + .r2-abs { margin-top: 26px; }
+.r2-kopf { display: flex; flex-direction: column; gap: 2px; margin: 0 4px 10px; font-size: 17px; font-weight: 800; }
+.r2-kopf small { font-size: 13px; font-weight: 600; color: var(--text3); }
+/* Rechenweg in Kurzform */
+.r2-weg { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 0 4px 14px; font-size: 13px; font-weight: 700; color: var(--text2); }
+.r2-schritt { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.r2-schritt i { width: 8px; height: 8px; border-radius: 50%; background: var(--st); }
+.r2-pfeil { color: var(--text3); font-weight: 400; }
+/* Stufe */
+.r2-stufe { position: relative; margin-bottom: 10px; padding: 12px 14px 10px 18px; border-radius: 16px; background: var(--glas-stark); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.r2-stufe::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 4px; border-radius: 0 4px 4px 0; background: var(--st); }
+.r2-stufe-titel { margin-bottom: 4px; font-size: 12px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; color: var(--st); }
+.r2-zeilen { list-style: none; margin: 0; padding: 0; }
+.r2-z, .r2-erg { display: grid; grid-template-columns: 20px 16px 1fr; gap: 8px; align-items: baseline; padding: 5px 0; font-size: 14.5px; line-height: 1.45; color: var(--text2); }
+.r2-nr { font-size: 11.5px; font-weight: 600; color: var(--text3); text-align: right; font-variant-numeric: tabular-nums; }
+.r2-op { font-weight: 800; text-align: center; color: var(--text3); }
+.r2-text { overflow-wrap: anywhere; }
+.r2-z.wichtig { color: var(--text); font-weight: 700; }
+.r2-erg { margin-top: 4px; padding-top: 8px; border-top: 1.5px solid color-mix(in srgb, var(--st) 55%, transparent); color: var(--text); font-weight: 800; font-size: 15.5px; }
+.r2-erg .r2-op { color: var(--st); }
+/* Normen im Schema dezent – antippbar, aber ohne Leuchtfarbe */
+.r2 .km-norm { color: inherit; font-weight: inherit; background: none; text-decoration: underline dotted color-mix(in srgb, var(--text) 35%, transparent); text-underline-offset: 3px; border: 0; }
+/* Sonderfälle eingeklappt */
+.r2-selten { margin: 2px 0 0; }
+.r2-selten summary { cursor: pointer; list-style: none; padding: 5px 0 5px 44px; font-size: 12.5px; font-weight: 650; color: var(--text3); }
+.r2-selten summary::-webkit-details-marker { display: none; }
+.r2-selten summary::before { content: "+ "; font-weight: 800; }
+.r2-selten[open] summary::before { content: "− "; }
+.r2-selten .r2-z { font-size: 13px; color: var(--text3); }
+.r2 figcaption { margin: 12px 4px 0; font-size: 12px; line-height: 1.5; color: var(--text3); }

@@ -30,6 +30,7 @@ Deploy über GitHub Pages (`.github/workflows/pages.yml`). Antworten an den Nutz
 - `lernpfad.js` – Lernpfad-Modus (eigenes Design `.pfad`/`.pf-*`; jeder Block muss für sich verständlich sein).
 - `sync.js` – Supabase-Sync, führt Zähler pro Gerät zusammen; neue Felder in `stat` dort mit aufnehmen.
 - Normtexte: `python3 -I tools/bilr_normen.py` erzeugt `*/normen.js` aus Gesetzesdateien.
+- Schemata als Grafik statt Normtext: `bilr/gliederung.js` (§ 266 HGB) und `est/r2.js` (R 2 EStR, Ausgabe 2025 des amtlichen ESt-Handbuchs; als Norm `EStR 2` im Index, Zitate „R 2 Abs. 1 EStR“ werden antippbar).
 
 ## Design
 - `web/css/style.css`: Basis oben, darunter „Design 2.0“ (Glas, Leuchten, 3D-Knöpfe) und Komponenten wie `.themen-karte`.

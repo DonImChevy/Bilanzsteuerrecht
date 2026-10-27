@@ -63,7 +63,7 @@ export const KOMPAKT_EST = {
   },
 
   "est-zve": {
-    satz: "Vom Einkommen zur Steuer führt ein festes Schema: Summe der Einkünfte, Gesamtbetrag der Einkünfte, Einkommen, zu versteuerndes Einkommen (§ 2 Abs. 3–5 EStG).",
+    satz: "Vom Einkommen zur Steuer führt ein festes Schema: Summe der Einkünfte, Gesamtbetrag der Einkünfte, Einkommen, zu versteuerndes Einkommen (§ 2 Abs. 3–5 EStG). Das vollständige amtliche Schema steht in R 2 Abs. 1 EStR, der Weg zur festzusetzenden Steuer in R 2 Abs. 2 EStR.",
     zahlen: [["36 / 72 €", "Sonderausgaben-Pauschbetrag (§ 10c)"], ["4.260 €", "Entlastungsbetrag Alleinerziehende (1 Kind)"], ["1.000 / 2.000 €", "Sparer-Pauschbetrag"]],
     schema: [
       "Einkünfte aus den 7 Einkunftsarten (§ 2 Abs. 1 EStG)",

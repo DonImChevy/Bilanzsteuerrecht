@@ -8,6 +8,7 @@ import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
 import { PAARE } from "./paare.js";
 import { gliederungView } from "./bilr/gliederung.js";
+import { r2View } from "./est/r2.js";
 import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, gelesenAnteil, lesezeit, kompaktInline } from "./kompakt.js";
 import * as MK from "./meinekarten.js";
 import { goodnotesLesen } from "./goodnotes.js";
@@ -1035,7 +1036,7 @@ function kontenInhalt() {
 const GESETZE = {
   oer: [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"]],
   bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["EStDV", "Einkommensteuer-Durchführungsverordnung (EStDV)"], ["UStG", "Umsatzsteuergesetz (UStG)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
-  est: [["EStG", "Einkommensteuergesetz (EStG)"], ["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
+  est: [["EStG", "Einkommensteuergesetz (EStG)"], ["EStR", "Einkommensteuer-Richtlinien (EStR)"], ["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
   ust: [["UStG", "Umsatzsteuergesetz (UStG)"]],
 };
 /** Paragrafen in Gesetzesreihenfolge (§ 3 vor § 3a vor § 4); Präambel und Nummern ohne Ziffer zuerst. */
@@ -1049,10 +1050,10 @@ function normenListe() {
   const q = norma(state.normSuche.trim());
   const html = gesetzeFuer(state.fach).map(([g, titel]) => {
     const liste = normenVon(state.fach).filter((n) => n.g === g).filter((n) => !q || norma(`${n.nr} ${n.titel} ${n.abs.map((a) => a.text).join(" ")}`).includes(q)
-      || norma(g === "GG" ? `art ${n.nr}` : `§ ${n.nr}`) === q || norma(g === "GG" ? `art. ${n.nr}` : `§${n.nr}`) === q);
+      || norma(g === "GG" ? `art ${n.nr}` : g === "EStR" ? `r ${n.nr}` : `§ ${n.nr}`) === q || norma(g === "GG" ? `art. ${n.nr}` : `§${n.nr}`) === q);
     if (!liste.length) return "";
     return `<div class="gruppe"><div class="gruppe-titel">${titel}<span class="sub" style="text-transform:none;letter-spacing:0">${liste.length}</span></div><div class="liste">
-      ${liste.map((n) => `<button class="zeile" data-a="normDetail" data-v="${n.g} ${n.nr}"><span class="symbol" style="font-size:14px;width:46px">${g === "GG" ? (n.nr === "Präambel" ? "Pr." : n.nr) : "§ " + n.nr}</span><span class="grow"><div style="font-weight:600">${g === "GG" ? (n.nr === "Präambel" ? "Präambel" : "Art. " + n.nr) : "§ " + n.nr}</div><div class="sub">${esc(n.titel && n.titel !== "Präambel" ? n.titel : n.abs[0]?.text.slice(0, 70) + " …")}${n.auszug ? " · Auszug" : ""}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join("")}
+      ${liste.map((n) => `<button class="zeile" data-a="normDetail" data-v="${n.g} ${n.nr}"><span class="symbol" style="font-size:14px;width:46px">${g === "GG" ? (n.nr === "Präambel" ? "Pr." : n.nr) : (g === "EStR" ? "R " : "§ ") + n.nr}</span><span class="grow"><div style="font-weight:600">${g === "GG" ? (n.nr === "Präambel" ? "Präambel" : "Art. " + n.nr) : (g === "EStR" ? "R " : "§ ") + n.nr}</div><div class="sub">${esc(n.titel && n.titel !== "Präambel" ? n.titel : n.abs[0]?.text.slice(0, 70) + " …")}${n.auszug ? " · Auszug" : ""}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join("")}
     </div></div>`;
   }).join("");
   return html || `<div class="leer-zustand">${ic("suche")}<div><b>Keine Vorschrift gefunden</b></div></div>`;
@@ -1109,6 +1110,8 @@ function normBlock(refs, kontext = "") {
   if (!ns.length) return "";
   const zs = zitate(kontext);
   const bloecke = ns.map((n) => {
+    // R 2 EStR: Schema als Grafik statt als Fließtext
+    if (n.ref.startsWith("EStR 2")) return { treffer: false, html: `<details class="norm" open><summary>${esc(n.label)} <span class="sub">– ${esc(n.titel)}</span></summary>${r2View(n.ref.split(" ")[2], kompaktInline)}</details>` };
     const teile = n.absaetze.map((a) => absatzHtml(n, a, zs));
     const treffer = teile.some((t) => t.treffer);
     return { treffer, html: `<details class="norm"${ns.length <= 2 || treffer ? " open" : ""}><summary>${esc(n.label)}${n.titel ? ` <span class="sub">– ${esc(n.titel)}</span>` : ""}</summary>
@@ -1545,11 +1548,15 @@ function sheetView() {
     titel = n.label;
     // § 266 HGB: Absatz 1 als Text, das Gliederungsschema (Abs. 2, 3) als Grafik
     const schema = sh.ref.startsWith("HGB 266");
-    inhalt = `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
+    // R 2 EStR: Schema zum z. v. E. bzw. zur festzusetzenden ESt nur als Grafik (Stufen farbig)
+    const r2 = sh.ref.startsWith("EStR 2");
+    inhalt = r2 ? `<div class="sub" style="margin:2px 4px 6px">Einkommensteuer-Richtlinien · ${esc(n.titel)}</div>
+      ${r2View(sh.ref.split(" ")[2], kompaktInline)}`
+      : `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
       ${(schema ? n.absaetze.filter((a) => a.abs === "1") : n.absaetze).map((a) => `<p style="margin:8px 0;line-height:1.55">${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</span></div></div>
       ${schema ? gliederungView() : ""}
       <div class="mk-norm-fuss">${alsKarteKnopf("norm", sh.ref)}</div>
-      <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: www.gesetze-im-internet.de</div>`;
+      <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: ${r2 ? "Amtliches Einkommensteuer-Handbuch des BMF (esth.bundesfinanzministerium.de), Ausgabe 2025" : "www.gesetze-im-internet.de"}</div>`;
   } else if (sh.art === "karteEdit") {
     titel = sh.e.id ? "Karte bearbeiten" : "Neue Karte"; links = sh.zurueck ? "Zurück" : "Abbrechen";
     inhalt = karteEditView(sh);

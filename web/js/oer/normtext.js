@@ -5,11 +5,12 @@ import { NORMEN_EST } from "../est/normen.js";
 import { NORMEN_EST_BGB } from "../est/punkte.js";
 import { NORMEN_BILR_ZUSATZ } from "../bilr/normen_zusatz.js";
 import { NORMEN_UST } from "../ust/normen.js";
+import { NORMEN_ESTR } from "../est/r2.js";
 
 // Ein Paragraf kann in mehreren Modulen vorkommen (z. B. § 12 EStG): Absätze werden vereinigt,
 // faecher nennt die Module, in deren Nachschlagen-Liste er erscheint.
 const INDEX = new Map();
-for (const [fach, liste] of [["oer", NORMEN_OER], ["bsr", [...NORMEN_BILR, ...NORMEN_BILR_ZUSATZ]], ["est", [...NORMEN_EST, ...NORMEN_EST_BGB]], ["ust", NORMEN_UST]]) {
+for (const [fach, liste] of [["oer", NORMEN_OER], ["bsr", [...NORMEN_BILR, ...NORMEN_BILR_ZUSATZ]], ["est", [...NORMEN_EST, ...NORMEN_EST_BGB, ...NORMEN_ESTR]], ["ust", NORMEN_UST]]) {
   for (const n of liste) {
     const k = `${n.g} ${n.nr}`, da = INDEX.get(k);
     if (!da) { INDEX.set(k, { ...n, faecher: [fach] }); continue; }
@@ -32,6 +33,7 @@ export function norm(ref) {
   if (abs && !absaetze.length) return null;
   const teile = [];
   if (g === "GG") teile.push(nr === "Präambel" ? "Präambel" : `Art. ${nr}`);
+  else if (g === "EStR") teile.push(`R ${nr}`); // Einkommensteuer-Richtlinien
   else teile.push(`§ ${nr}`);
   if (abs) teile.push(`Abs. ${abs}`);
   if (satz) teile.push(`S. ${satz}`);
@@ -46,6 +48,12 @@ const ROEMISCH = { I: "1", II: "2", III: "3", IV: "4", V: "5", VI: "6", VII: "7"
  */
 export function normenAusText(text) {
   const refs = [];
+  // Richtlinien: „R 2 EStR“, „R 2 Abs. 1 EStR“
+  for (const m of String(text).matchAll(/\bR[\s\u00a0]*(\d+[a-z]?(?:\.\d+)?)(?:[\s\u00a0]+Abs\.[\s\u00a0]*(\d+))?[\s\u00a0]+EStR\b/g)) {
+    if (!INDEX.has(`EStR ${m[1]}`)) continue;
+    const ref = m[2] && norm(`EStR ${m[1]} ${m[2]}`) ? `EStR ${m[1]} ${m[2]}` : `EStR ${m[1]}`;
+    if (!refs.includes(ref)) refs.push(ref);
+  }
   for (const m of String(text).matchAll(/Art\.\s*(\d+[a-z]?)(?:\s+Abs\.\s*(\d+[a-z]?))?[^§]*?\bGG\b|Präambel[^§]*?\bGG\b/g)) {
     const nr = m[1] || "Präambel";
     if (!INDEX.has(`GG ${nr}`)) continue;
