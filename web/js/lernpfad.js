@@ -60,6 +60,25 @@ function textHtml(t, esc) {
   flush();
   return out.join("");
 }
+/** Zahl im deutschen Format ohne Cent, wenn glatt (5.000 €). */
+const betrag = (x) => x.toLocaleString("de-DE", { minimumFractionDigits: Number.isInteger(x) ? 0 : 2, maximumFractionDigits: 2 }) + " €";
+/**
+ * Grafik einer Lernkarte (optional): Mini-Bilanz und/oder T-Konten mit Soll- und Habenseite.
+ * grafik = { bilanz: { aktiv: [[Posten, €]], passiv: [[Posten, €]] }, konten: [{ name, art: "aktiv"|"passiv", soll: [[Text, €]], haben: [[Text, €]] }] }
+ * Zeilen, deren Text mit „AB“ bzw. „SB“ beginnt, werden als Anfangs- bzw. Schlussbestand hervorgehoben; „+“/„−“ am Anfang färbt Zu- und Abgänge.
+ */
+function grafikHtml(g, esc) {
+  if (!g) return "";
+  const zeile = ([t, x]) => {
+    const art = /^AB\b/.test(t) ? "ab" : /^SB\b/.test(t) ? "sb" : t.startsWith("+") ? "plus" : t.startsWith("−") ? "minus" : "";
+    return `<li class="${art}"><span>${esc(t.replace(/^([+−]) /, "$1\u00a0"))}</span><b>${betrag(x)}</b></li>`;
+  };
+  const summe = (l) => l.reduce((a, [, x]) => a + x, 0);
+  const seite = (titel, l, mitSumme) => `<div class="pf-tk-seite"><div class="pf-tk-kopf">${titel}</div><ul>${l.map(zeile).join("")}</ul>${mitSumme ? `<div class="pf-tk-summe">${betrag(summe(l))}</div>` : ""}</div>`;
+  const bilanz = g.bilanz ? `<figure class="pf-tk bilanz" aria-label="Bilanz"><figcaption>Bilanz</figcaption><div class="pf-tk-t">${seite("Aktiva", g.bilanz.aktiv, true)}${seite("Passiva", g.bilanz.passiv, true)}</div></figure>` : "";
+  const konten = (g.konten || []).map((k, _, __, sb = [...k.soll, ...k.haben].some(([t]) => /^SB\b/.test(t))) => `<figure class="pf-tk ${k.art || ""}" aria-label="Konto ${esc(k.name)}"><figcaption>${esc(k.name)}${k.art ? ` <small>${k.art === "aktiv" ? "Aktivkonto" : "Passivkonto"}</small>` : ""}</figcaption><div class="pf-tk-t">${seite("Soll", k.soll, sb)}${seite("Haben", k.haben, sb)}</div></figure>`).join("");
+  return `<div class="pf-grafik">${bilanz}${konten}</div>`;
+}
 const ART = {
   merksatz: ["Merksatz", "✦", "amber"], erklaerung: ["So funktioniert's", "◆", "cyan"],
   beispiel: ["Beispiel", "▲", "gruen"], klausur: ["Klausursatz", "✎", "pink"],
@@ -131,7 +150,7 @@ export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken =
   } else if (z.schritt <= k) {
     const c = b.karten[z.schritt - 1], [name, sym, farbe] = ART[c.art];
     inhalt = `<div class="pf-lernkarte ${farbe}" style="--i:${z.schritt}"><div class="pf-tag"><span>${sym}</span>${name}<em>${z.schritt}/${k}</em></div>
-      <h2>${esc(c.titel)}</h2><div class="pf-text">${textHtml(c.text, esc)}</div>
+      <h2>${esc(c.titel)}</h2><div class="pf-text">${textHtml(c.text, esc)}</div>${grafikHtml(c.grafik, esc)}
       ${karteMerken ? `<button class="pf-merken" data-a="alsKarte" data-q="pfad" aria-label="Diese Lernkarte als eigene Karteikarte speichern">${ic("plus", "klein")} Als Karte</button>` : ""}</div>`;
     fuss = `<div class="pf-reihe"><button class="pf-zurueck" data-a="pfadZurueck" ${z.schritt === 1 ? "disabled" : ""}>${ic("pfeil", "klein")}</button><button class="pf-los" data-a="pfadWeiter">${z.schritt === k ? "Zu den Fragen" : "Weiter"} ${ic("pfeil")}</button></div>`;
   } else if (z.schritt < n - 1) {
