@@ -1105,6 +1105,9 @@ function absatzHtml(n, a, zs) {
   return { html: `<p>${a.abs ? `<b>(${a.abs})</b> ` : ""}${inhalt}</p>`, treffer };
 }
 
+/** Überschrift über Musterantwort/Erklärung – macht klar, dass hier erläutert und nicht das Gesetz zitiert wird. */
+const erlKopf = (titel) => `<div class="loes-kopf erl"><span class="loes-ic" aria-hidden="true">✎</span><b>${titel}</b><span class="loes-tag">Erläuterung – kein Gesetzeswortlaut</span></div>`;
+
 function normBlock(refs, kontext = "") {
   const ns = (refs || []).map(norm).filter(Boolean);
   if (!ns.length) return "";
@@ -1118,7 +1121,7 @@ function normBlock(refs, kontext = "") {
     ${teile.map((t) => t.html).join("")}${n.auszug ? `<p class="sub">Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt.</p>` : ""}</details>` };
   });
   const legende = bloecke.some((x) => x.treffer) ? ` <span class="hl-legende">markiert = in der Aufgabe zitiert</span>` : "";
-  return `<div class="normen"><div class="sub" style="margin-bottom:4px;font-weight:600">Gesetzestext${legende}</div>${bloecke.map((x) => x.html).join("")}</div>`;
+  return `<div class="normen"><div class="loes-kopf gesetz"><span class="loes-ic" aria-hidden="true">§</span><b>Gesetzestext</b><span class="loes-tag">Wortlaut</span>${legende}</div>${bloecke.map((x) => x.html).join("")}</div>`;
 }
 
 // ======================= Render: Sitzung =======================
@@ -1292,7 +1295,7 @@ function auswertungInhalt(f, b) {
         <div class="pruef-zeile">${haken(a.treffer >= a.min)}<span><b>Begriffe:</b> ${a.treffer} von ${a.stichworte.length} genannt (mindestens ${a.min})</span></div>
         <div class="pruef-chips">${a.stichworte.map((w) => `<span class="pruef-chip ${w.ok ? "ja" : "nein"}">${w.ok ? "✓" : "✗"} ${esc(w.wort)}</span>`).join("")}</div>
       </div>
-      <div class="sub" style="margin:10px 0 4px">Musterantwort</div>
+      ${erlKopf("Musterantwort")}
       <div class="erkl muster">${esc(f.antwort)}</div>
       ${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}
       ${normBlock(f.normen, [f.text, f.antwort, f.erklaerung, f.quelle, f.zusatzZitate].join(" "))}
@@ -1304,6 +1307,7 @@ function auswertungInhalt(f, b) {
     const urteil = b.korrekt === true ? `<div class="urteil ja">✓ Gewusst</div>` : b.korrekt === false ? `<div class="urteil nein">✗ Nicht gewusst</div>` : `<div class="urteil">Musterantwort</div>`;
     return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt === false ? "nein" : b.korrekt === null ? "neutral" : ""}">
       ${urteil}
+      ${erlKopf("Musterantwort")}
       <div class="erkl muster">${esc(f.antwort)}</div>
       ${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}
       ${normBlock(f.normen, [f.text, f.antwort, f.erklaerung, f.quelle, f.zusatzZitate].join(" "))}
@@ -1313,6 +1317,7 @@ function auswertungInhalt(f, b) {
   return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt ? "" : "nein"}">
     <div class="urteil ${b.korrekt ? "ja" : "nein"}">${b.korrekt ? "✓ Richtig!" : "✗ Leider nicht richtig"}</div>
     ${extra}
+    ${f.antwort || f.erklaerung ? erlKopf("Lösung") : ""}
     ${f.antwort ? `<div class="erkl muster">${esc(f.antwort)}</div>${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}` : `<div class="erkl">${esc(f.erklaerung)}</div>`}
     ${normBlock(f.normen, [f.text, f.antwort, f.erklaerung, f.quelle, f.zusatzZitate].join(" "))}
     ${f.quelle ? `<div class="quelle">📖 ${esc(f.quelle)}</div>` : ""}

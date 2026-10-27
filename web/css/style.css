@@ -1209,3 +1209,36 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .r2-selten[open] summary::before { content: "− "; }
 .r2-selten .r2-z { font-size: 13px; color: var(--text3); }
 .r2 figcaption { margin: 12px 4px 0; font-size: 12px; line-height: 1.5; color: var(--text3); }
+
+/* Lernpfad: Mini-Bilanz und T-Konten auf Lernkarten (eigene Lernpfad-Farben: Soll = Amber, Haben = Violett) */
+.pfad .pf-grafik { display: grid; gap: 12px; margin-top: 14px; }
+.pfad .pf-tk { margin: 0; padding: 10px 12px 12px; border-radius: 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--pf-rand); }
+.pfad .pf-tk figcaption { font-weight: 800; font-size: 15px; text-align: center; padding-bottom: 6px; }
+.pfad .pf-tk figcaption small { font-weight: 700; font-size: 11.5px; color: var(--pf-sub); margin-left: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+.pfad .pf-tk.aktiv figcaption small { color: #fcd34d; } .pfad .pf-tk.passiv figcaption small { color: #c4b5fd; }
+.pfad .pf-tk-t { display: grid; grid-template-columns: 1fr 1fr; border-top: 2px solid var(--pf-text); }
+.pfad .pf-tk-seite { min-width: 0; padding: 6px 8px 0; display: flex; flex-direction: column; }
+.pfad .pf-tk-seite + .pf-tk-seite { border-left: 2px solid var(--pf-text); }
+.pfad .pf-tk-kopf { font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 4px; }
+.pfad .pf-tk-seite:first-child .pf-tk-kopf { color: #fcd34d; } .pfad .pf-tk-seite:last-child .pf-tk-kopf { color: #c4b5fd; text-align: right; }
+.pfad .pf-tk ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 3px; flex: 1; }
+.pfad .pf-tk li { display: flex; flex-wrap: wrap; justify-content: space-between; column-gap: 6px; font-size: 13px; line-height: 1.3; }
+.pfad .pf-tk li span { flex: 1 1 auto; min-width: 0; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; color: var(--pf-sub); } .pfad .pf-tk li b { margin-left: auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.pfad .pf-tk li.ab span, .pfad .pf-tk li.ab b { color: var(--pf-text); font-weight: 800; }
+.pfad .pf-tk li.plus b { color: #6ee7b7; } .pfad .pf-tk li.minus b { color: #fda4af; }
+.pfad .pf-tk li.sb { padding: 1px 4px; margin: 0 -4px; border-radius: 6px; background: rgba(244, 114, 182, 0.16); }
+.pfad .pf-tk li.sb span, .pfad .pf-tk li.sb b { color: #fbcfe8; font-weight: 800; }
+.pfad .pf-tk-summe { margin-top: 4px; padding-top: 3px; border-top: 1px solid var(--pf-rand); border-bottom: 3px double var(--pf-rand); text-align: right; font-weight: 800; font-size: 13px; font-variant-numeric: tabular-nums; }
+
+/* Lösung: Erläuterung (eigene Worte, Modulfarbe, Stift) klar getrennt vom Gesetzeswortlaut (neutral, §) */
+.loes-kopf { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; margin: 14px 0 6px; font-size: 13.5px; }
+.loes-kopf .loes-ic { width: 22px; height: 22px; border-radius: 7px; display: grid; place-items: center; font-size: 13px; font-weight: 800; }
+.loes-kopf .loes-tag { font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
+.loes-kopf.erl .loes-ic { background: color-mix(in srgb, var(--m) 16%, transparent); color: var(--m); }
+.loes-kopf.erl .loes-tag { background: color-mix(in srgb, var(--m) 12%, transparent); color: var(--m); }
+.loes-kopf.gesetz .loes-ic { background: var(--text); color: var(--card); font-family: Georgia, "Times New Roman", serif; }
+.loes-kopf.gesetz .loes-tag { border: 1px solid var(--line); color: var(--text2); }
+.loes-kopf.gesetz .hl-legende { margin-left: 0; }
+.auswertung .erkl.muster, .auswertung .loes-kopf.erl + .erkl { border-left: 3px solid color-mix(in srgb, var(--m) 55%, transparent); }
+.auswertung .loes-kopf.erl + .erkl:not(.muster) { padding-left: 12px; }
+.normen .norm { border-left: 3px solid var(--text3); }

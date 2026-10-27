@@ -86,6 +86,7 @@ export const KOMPAKT_BSR = {
       "Soll oder Haben? → „Soll an Haben“, Summe Soll = Summe Haben",
     ],
     punkte: [
+      "**Warum so herum? (die Bilanz-Logik):** Jedes Konto übernimmt die **Seite, auf der sein Posten in der Bilanz steht**. Aktiva stehen links → Anfangsbestand im **Soll** (links); Passiva stehen rechts → Anfangsbestand im **Haben** (rechts). **Zugänge kommen auf die Seite des Bestands, Abgänge auf die Gegenseite.** „Soll“ und „Haben“ sind dabei nur Namen für links und rechts.",
       "**Aktivkonten:** Anfangsbestand und **Zugänge im Soll**, Abgänge im Haben, Schlussbestand als Saldo im Haben.",
       "**Passivkonten:** Anfangsbestand und **Zugänge im Haben**, Abgänge im Soll, Schlussbestand als Saldo im Soll.",
       "**Buchungssatz:** „Soll-Konto **an** Haben-Konto“. Einfacher Buchungssatz: zwei Konten; zusammengesetzter: mehr als zwei Konten (z. B. Wareneinkauf an Bank mit Vorsteuer).",
