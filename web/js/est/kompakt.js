@@ -186,19 +186,67 @@ export const KOMPAKT_EST = {
 
   "est-werbungskosten": {
     satz: "Werbungskosten sind alle Aufwendungen, die durch die Einnahmeerzielung veranlasst sind – wer weniger als 1.230 € nachweist, bekommt als Arbeitnehmer den Pauschbetrag (§ 9 Abs. 1 S. 1, § 9a S. 1 Nr. 1 a EStG).",
-    zahlen: [["1.230 €", "Arbeitnehmer-Pauschbetrag"], ["102 €", "Pauschbetrag Versorgungsbezüge/Renten"], ["6 € / max. 1.260 €", "Home-Office-Pauschale"], ["800 €", "GWG-Grenze netto für Arbeitsmittel"]],
+    zahlen: [["1.230 €", "Arbeitnehmer-Pauschbetrag"], ["102 €", "Pauschbetrag Versorgungsbezüge/Renten"], ["+ Gewerkschaft", "seit 2026 zusätzlich zum Pauschbetrag"]],
     punkte: [
       "**Definition (§ 9 Abs. 1 S. 1 EStG):** Aufwendungen zur **Erwerbung, Sicherung und Erhaltung** der Einnahmen – abzuziehen bei der Einkunftsart, bei der sie erwachsen sind. Auch vorweggenommene (Bewerbung) und nachträgliche WK sind möglich.",
-      "**Katalog (§ 9 Abs. 1 S. 3 EStG):** Beiträge zu Berufsverbänden/**Gewerkschaften** (Nr. 3), Wege zur ersten Tätigkeitsstätte (Nr. 4), doppelte Haushaltsführung (Nr. 5), **Arbeitsmittel** (Nr. 6), AfA (Nr. 7).",
-      "**Arbeitsmittel:** Fachbücher, Werkzeug, typische Berufskleidung, Computer. Bis **800 € netto** sofort abziehbar, darüber AfA über die Nutzungsdauer (§ 9 Abs. 1 S. 3 Nr. 7 i. V. m. § 6 Abs. 2 EStG). Computer und Software: Nutzungsdauer 1 Jahr.",
-      "**Häusliches Arbeitszimmer:** nur abziehbar, wenn es den **Mittelpunkt** der gesamten Tätigkeit bildet – tatsächliche Kosten oder Jahrespauschale 1.260 €. Sonst **Home-Office-Pauschale 6 € je Tag**, höchstens 1.260 € im Jahr (§ 4 Abs. 5 S. 1 Nr. 6b, 6c EStG).",
-      "**Reisekosten (§ 9 Abs. 4a EStG):** Verpflegungspauschale 14 € bei mehr als 8 Stunden Abwesenheit bzw. An- und Abreisetag, 28 € bei 24 Stunden; Fahrtkosten mit 0,30 € je gefahrenem km.",
-      "**Pauschbeträge (§ 9a EStG):** **1.230 €** bei Arbeitslohn aus einem aktiven Dienstverhältnis (Nr. 1 a), 102 € bei Versorgungsbezügen (Nr. 1 b) und Renten (Nr. 3) – **Jahresbeträge**, nicht zeitanteilig, höchstens bis zur Höhe der Einnahmen. **Seit 2026 Gewerkschaftsbeiträge zusätzlich** (§ 9a S. 3).",
-      "**Vergleich:** tatsächliche WK (ohne Gewerkschaftsbeiträge) gegen den Pauschbetrag – der höhere Betrag wird abgezogen (§ 9a S. 1, 3 EStG).",
+      "**Katalog (§ 9 Abs. 1 S. 3 EStG):** Beiträge zu Berufsverbänden/**Gewerkschaften** (Nr. 3), Wege zur ersten Tätigkeitsstätte (Nr. 4), Reisekosten (Nr. 4a, 5a), doppelte Haushaltsführung (Nr. 5), **Arbeitsmittel** (Nr. 6), AfA (Nr. 7) – nur Beispiele („auch“).",
+      "**Eigene Themen:** Arbeitsmittel, Arbeitszimmer & Home-Office, Entfernungspauschale und Reisekosten – dort jeweils mit Rechenweg.",
+      "**Pauschbeträge (§ 9a EStG):** **1.230 €** bei Arbeitslohn aus einem aktiven Dienstverhältnis (Nr. 1 a), 102 € bei Versorgungsbezügen (Nr. 1 b) und Renten (Nr. 3) – **Jahresbeträge**, nicht zeitanteilig, höchstens bis zur Höhe der Einnahmen (§ 9a S. 2 EStG). **Seit 2026 Gewerkschaftsbeiträge zusätzlich** (§ 9a S. 3 EStG).",
+      "**Vergleich:** tatsächliche WK (ohne Gewerkschaftsbeiträge) gegen den Pauschbetrag – der höhere Betrag wird abgezogen, danach die Gewerkschaftsbeiträge (§ 9a S. 1, 3 EStG).",
     ],
     fallen: [
       "Der Pauschbetrag wird nicht zusätzlich zu nachgewiesenen WK gewährt (§ 9a S. 1 EStG: „wenn nicht höhere Werbungskosten nachgewiesen werden“).",
-      "Bei Arbeitnehmern ist die Umsatzsteuer Teil der Werbungskosten – nur die GWG-Grenze wird netto geprüft (§ 9 Abs. 1 S. 3 Nr. 7 S. 2 i. V. m. § 6 Abs. 2 S. 1 EStG).",
+      "Gewerkschaftsbeiträge nicht in den Vergleich mit dem Pauschbetrag einrechnen – sie kommen obendrauf (§ 9a S. 3 EStG).",
+    ],
+  },
+
+  "est-arbeitsmittel": {
+    satz: "Arbeitsmittel sind Gegenstände, die unmittelbar der beruflichen Tätigkeit dienen – bis 800 € ohne USt sofort abziehbar, sonst über die Nutzungsdauer (§ 9 Abs. 1 S. 3 Nr. 6, 7 EStG).",
+    zahlen: [["800 €", "GWG-Grenze ohne USt (952 € brutto)"], ["brutto", "abziehbar beim Arbeitnehmer"], ["10 %", "Grenze für private bzw. berufliche Mitbenutzung"], ["1 Jahr", "Nutzungsdauer Computer und Software"]],
+    schema: [
+      "Arbeitsmittel? Beruflicher Gegenstand oder Lebensführung (§ 12 Nr. 1 EStG)",
+      "Beruflicher Anteil (unter 10 % privat → voll; unter 10 % beruflich → nichts)",
+      "Anschaffungskosten ohne USt bis 800 € → Sofortabzug (GWG)",
+      "Sonst AfA: brutto / Nutzungsdauer × Monate ab Lieferung / 12",
+      "× beruflicher Anteil",
+    ],
+    punkte: [
+      "**Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 6 EStG):** z. B. Werkzeug, Fachliteratur, Computer, Schreibtisch, Aktentasche und **typische Berufskleidung**.",
+      "**Typische Berufskleidung:** Schutzkleidung (Sicherheitsschuhe), Uniform, Kittel, Kochjacke – auch ihre Reinigung. **Bürgerliche Kleidung** (Anzug, Kostüm) ist Lebensführung, selbst wenn sie nur im Büro getragen wird (§ 12 Nr. 1 S. 2 EStG).",
+      "**Gemischte Nutzung:** Aufteilung nach objektivem Maßstab (z. B. Zeitanteile). Private Mitbenutzung unter 10 % → voller Abzug, berufliche Nutzung unter 10 % → kein Abzug (§ 12 Nr. 1 EStG).",
+      "**Sofortabzug oder AfA:** Nutzungsdauer über ein Jahr → AfA (§ 9 Abs. 1 S. 3 Nr. 7 S. 1 i. V. m. § 7 Abs. 1 EStG), im Jahr der Lieferung **monatsgenau** (§ 7 Abs. 1 S. 4 EStG). AK ohne USt bis **800 €** → GWG, Sofortabzug (§ 9 Abs. 1 S. 3 Nr. 7 S. 2 i. V. m. § 6 Abs. 2 S. 1 EStG).",
+      "**Umsatzsteuer:** Arbeitnehmer haben keinen Vorsteuerabzug → die AK sind **brutto**; nur die GWG-Grenze wird **netto** geprüft (§ 9b Abs. 1 EStG im Umkehrschluss, § 6 Abs. 2 S. 1 EStG).",
+      "**Computer und Software:** Nach Verwaltungsauffassung (BMF vom 22.02.2022) Nutzungsdauer ein Jahr → voller Abzug im Anschaffungsjahr (§ 9 Abs. 1 S. 3 Nr. 7 S. 1 i. V. m. § 7 Abs. 1 EStG).",
+    ],
+    fallen: [
+      "Die GWG-Grenze mit dem Bruttopreis prüfen – maßgeblich sind 800 € **ohne** USt (§ 6 Abs. 2 S. 1 EStG).",
+      "Im Anschaffungsjahr volle Jahres-AfA ansetzen – richtig ist zeitanteilig ab dem Monat der Lieferung (§ 7 Abs. 1 S. 4 EStG).",
+      "Abzugsverbot für das Arbeitszimmer auf Arbeitsmittel anwenden – Schreibtisch und PC bleiben abziehbar (§ 9 Abs. 1 S. 3 Nr. 6 EStG).",
+    ],
+  },
+
+  "est-homeoffice": {
+    satz: "Ein häusliches Arbeitszimmer ist nur abziehbar, wenn es den Mittelpunkt der gesamten Tätigkeit bildet; sonst gibt es für Home-Office-Tage 6 € je Tag, höchstens 1.260 € im Jahr (§ 4 Abs. 5 S. 1 Nr. 6b, 6c i. V. m. § 9 Abs. 5 S. 1 EStG).",
+    zahlen: [["6 €", "Tagespauschale je Home-Office-Tag"], ["1.260 €", "Höchstbetrag Tagespauschale = Jahrespauschale Arbeitszimmer"], ["1/12", "Kürzung je Monat ohne Mittelpunkt"], ["210 Tage", "erreichen den Höchstbetrag"]],
+    schema: [
+      "Häusliches Arbeitszimmer? (abgeschlossener, büromäßiger Raum, fast nur beruflich)",
+      "Mittelpunkt der gesamten Tätigkeit? → tatsächliche Kosten oder Jahrespauschale 1.260 € (Nr. 6b)",
+      "Sonst Tagespauschale (Nr. 6c): 6 € je Tag überwiegend zu Hause ohne Besuch der ersten Tätigkeitsstätte",
+      "Kein anderer Arbeitsplatz? → Tagespauschale auch an Tagen mit Arbeit auswärts (Nr. 6c S. 2)",
+      "Höchstbetrag 1.260 €; nicht neben Nr. 6b",
+    ],
+    punkte: [
+      "**Häusliches Arbeitszimmer:** abgeschlossener Raum in der häuslichen Sphäre, büromäßig eingerichtet und (fast) nur beruflich genutzt. **Arbeitsecke**, Küche oder Durchgangszimmer sind kein Arbeitszimmer.",
+      "**Abzugsverbot mit Ausnahme (§ 4 Abs. 5 S. 1 Nr. 6b S. 1, 2 EStG):** Aufwendungen grundsätzlich nicht abziehbar – außer das Arbeitszimmer bildet den **Mittelpunkt** der gesamten betrieblichen und beruflichen Betätigung (qualitativer Schwerpunkt; bei gleichwertigen Tätigkeiten dort, wo überwiegend gearbeitet wird).",
+      "**Wahlrecht (Nr. 6b S. 3, 4):** tatsächliche Kosten (anteilige Miete bzw. AfA, Nebenkosten, Strom) **oder Jahrespauschale 1.260 €**; je vollem Monat ohne Mittelpunkt **minus 1/12**.",
+      "**Tagespauschale (§ 4 Abs. 5 S. 1 Nr. 6c S. 1 EStG):** **6 €** für jeden Tag, an dem überwiegend zu Hause gearbeitet und die erste Tätigkeitsstätte **nicht aufgesucht** wird, höchstens **1.260 €** – ein Arbeitszimmer ist dafür nicht nötig.",
+      "**Kein anderer Arbeitsplatz (Nr. 6c S. 2):** z. B. Lehrer ohne eigenen Schreibtisch in der Schule oder Außendienstler ohne Büro → Tagespauschale auch an Tagen, an denen auswärts oder in der Tätigkeitsstätte gearbeitet wird.",
+      "**Kein Nebeneinander (Nr. 6c S. 3):** keine Tagespauschale, soweit das Arbeitszimmer nach Nr. 6b abgezogen wird. Für Arbeitnehmer gilt alles über **§ 9 Abs. 5 S. 1 EStG** sinngemäß.",
+    ],
+    fallen: [
+      "Lehrer: Mittelpunkt ist der Unterricht in der Schule – kein Arbeitszimmerabzug, aber Tagespauschale auch an Schultagen (§ 4 Abs. 5 S. 1 Nr. 6b S. 2, Nr. 6c S. 2 EStG).",
+      "Für einen Tag mit Büroarbeitsplatz-Besuch Entfernungspauschale und Tagespauschale ansetzen (§ 4 Abs. 5 S. 1 Nr. 6c S. 1 EStG).",
+      "Die Jahrespauschale voll ansetzen, obwohl der Mittelpunkt erst unterjährig entsteht – je Monat ohne Mittelpunkt 1/12 kürzen (§ 4 Abs. 5 S. 1 Nr. 6b S. 4 EStG).",
     ],
   },
 
@@ -227,6 +275,34 @@ export const KOMPAKT_EST = {
       "Der Höchstbetrag gilt nur für die Strecke ohne Pkw (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 HS. 2 EStG).",
     ],
   },
+
+  "est-reisekosten": {
+    satz: "Bei einer Auswärtstätigkeit – beruflich außerhalb von Wohnung und erster Tätigkeitsstätte – sind Fahrt, Verpflegung (nur Pauschalen), Übernachtung und Nebenkosten Werbungskosten (§ 9 Abs. 1 S. 3 Nr. 4a, 5a, Abs. 4a EStG).",
+    zahlen: [["0,30 €", "je gefahrenem km mit dem Pkw (BRKG)"], ["14 €", "mehr als 8 Std. bzw. An- und Abreisetag"], ["28 €", "24 Std. abwesend"], ["5,60 € / 11,20 €", "Kürzung Frühstück / Mittag- oder Abendessen"], ["3 Monate", "Verpflegung an derselben Tätigkeitsstätte"]],
+    schema: [
+      "Auswärtstätigkeit? (außerhalb Wohnung und erster Tätigkeitsstätte, § 9 Abs. 4a S. 2 EStG)",
+      "Fahrtkosten: gefahrene km (hin und zurück) × 0,30 € oder tatsächliche Kosten",
+      "Verpflegung: 14 € / 28 € je Tag, Dreimonatsfrist",
+      "Vom Arbeitgeber gestellte Mahlzeiten kürzen",
+      "Übernachtung: tatsächliche Kosten ohne Frühstück",
+      "Reisenebenkosten addieren, steuerfreie Erstattungen abziehen",
+    ],
+    punkte: [
+      "**Auswärtstätigkeit (§ 9 Abs. 4a S. 2 EStG):** beruflich tätig außerhalb der Wohnung und der **ersten Tätigkeitsstätte** (§ 9 Abs. 4 EStG) – z. B. Kundenbesuch, Messe, Schulung, Baustelle.",
+      "**Fahrtkosten (§ 9 Abs. 1 S. 3 Nr. 4a S. 1, 2 EStG):** tatsächliche Kosten oder pauschal **0,30 € je gefahrenem km** mit dem Pkw (höchste Wegstreckenentschädigung nach BRKG) – **Hin- und Rückfahrt**, nicht die Entfernungspauschale.",
+      "**Verpflegung (§ 9 Abs. 4a S. 3 EStG):** nur Pauschalen – **28 €** je Kalendertag mit 24 Stunden Abwesenheit (Nr. 1), **14 €** für An- und Abreisetag bei Übernachtung (Nr. 2) und **14 €** bei eintägiger Abwesenheit von **mehr als 8 Stunden** (Nr. 3).",
+      "**Dreimonatsfrist (§ 9 Abs. 4a S. 6, 7 EStG):** an derselben Tätigkeitsstätte nur die ersten drei Monate; eine Unterbrechung von mindestens **vier Wochen** lässt die Frist neu beginnen.",
+      "**Mahlzeiten vom Arbeitgeber (§ 9 Abs. 4a S. 8 EStG):** Kürzung um **20 %** (Frühstück, 5,60 €) bzw. **40 %** (Mittag- und Abendessen, je 11,20 €) der 28 € – höchstens bis auf 0 €; ein Entgelt des Arbeitnehmers mindert die Kürzung (S. 10).",
+      "**Übernachtung (§ 9 Abs. 1 S. 3 Nr. 5a S. 1, 2 EStG):** tatsächliche Kosten der Unterkunft; ein ausgewiesenes **Frühstück herausrechnen** – es ist Verpflegung. Nach 48 Monaten an derselben Tätigkeitsstätte höchstens 1.000 € im Monat (Nr. 5a S. 4).",
+      "**Reisenebenkosten** (Parken, Maut, Gepäck) als Werbungskosten (§ 9 Abs. 1 S. 1 EStG); **steuerfreie Erstattungen** des Arbeitgebers (§ 3 Nr. 16 EStG) schließen den Abzug insoweit aus (§ 3c Abs. 1 EStG, § 9 Abs. 4a S. 11 EStG).",
+    ],
+    fallen: [
+      "Für Fahrten zur Auswärtstätigkeit die Entfernungspauschale ansetzen – richtig sind 0,30 € je gefahrenem km (§ 9 Abs. 1 S. 3 Nr. 4a S. 2 EStG).",
+      "Am An- und Abreisetag 8 Stunden Abwesenheit verlangen – bei Übernachtung gibt es die 14 € ohne Mindestzeit (§ 9 Abs. 4a S. 3 Nr. 2 EStG).",
+      "Restaurantbelege statt Pauschalen abziehen – Verpflegung nur nach Pauschalen (§ 9 Abs. 4a S. 1 EStG).",
+      "Kürzung für Mahlzeiten vom Preis der Mahlzeit berechnen – sie bemisst sich an den 28 € des vollen Tages (§ 9 Abs. 4a S. 8 EStG).",
+    ],
+  },
 };
 
 export const KLAUSUR_EST = {
@@ -236,7 +312,7 @@ export const KLAUSUR_EST = {
     "**Sichere Punkte:** saubere Definitionen (Steuerpflicht, Einkunftsart, Werbungskosten) mit genauer Norm; Rechenwege mit Zwischenergebnissen.",
     "**Punktesammler:** auswendig gelernte Klausursätze bringen Punkte, ohne dass gerechnet werden muss.",
   ],
-  top: ["est-werbungskosten", "est-entfernung", "est-steuerpflicht", "est-einkuenfte", "est-zufluss", "est-zve"],
+  top: ["est-werbungskosten", "est-arbeitsmittel", "est-entfernung", "est-reisekosten", "est-steuerpflicht", "est-einkuenfte", "est-zufluss", "est-zve"],
   tipps: [
     "Immer prüfen: Pauschbetrag oder tatsächliche Werbungskosten?",
     "Bei Zahlungen um den Jahreswechsel an § 11 EStG denken.",

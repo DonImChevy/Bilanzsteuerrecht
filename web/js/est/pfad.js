@@ -133,18 +133,49 @@ export const PFAD_EST = [
     ],
   },
   {
-    id: "e-wk", titel: "Werbungskosten", kurz: "§§ 9, 9a EStG", icon: "💼", normen: ["EStG 9 1", "EStG 9a", "EStG 4 5"],
+    id: "e-wk", titel: "Werbungskosten", kurz: "§§ 9, 9a EStG", icon: "💼", normen: ["EStG 9 1", "EStG 9a"],
     karten: [
       { art: "merksatz", titel: "Was sind Werbungskosten?", text: "Werbungskosten sind Aufwendungen zur **Erwerbung, Sicherung und Erhaltung der Einnahmen** (§ 9 Abs. 1 S. 1 EStG) – bei Arbeitnehmern alles, was **beruflich** veranlasst ist: Fachbücher, Arbeitsmittel, Fortbildung, Gewerkschaftsbeiträge, Fahrten zur Arbeit. **Nicht** dazu gehört, was zur privaten Lebensführung zählt (§ 12 Nr. 1 EStG), z. B. normale (**bürgerliche**) Kleidung." },
-      { art: "erklaerung", titel: "Der Pauschbetrag", text: "Arbeitnehmer bekommen ohne Nachweis den **Arbeitnehmer-Pauschbetrag von 1.230 €** (§ 9a S. 1 Nr. 1 a EStG). Nur wenn die tatsächlichen Werbungskosten **höher** sind, lohnt sich der Einzelnachweis – es wird **immer der höhere** Betrag angesetzt." },
-      { art: "erklaerung", titel: "Arbeitsmittel und Home-Office", text: "• **Arbeitsmittel** (Laptop, Schreibtisch): bis **800 € ohne USt** (952 € brutto) sofort voll abziehbar – abgezogen wird der tatsächlich gezahlte Bruttobetrag, sonst über die Nutzungsdauer (AfA). Computer und Software dürfen mit einer Nutzungsdauer von **1 Jahr** voll abgezogen werden.\n• **Home-Office-Pauschale**: **6 € pro Tag** zu Hause, höchstens **1.260 €** im Jahr (210 Tage)." },
-      { art: "beispiel", titel: "Rechenbeispiel", text: "Fachbücher 180 €, Gewerkschaft 240 €, Home-Office 50 Tage × 6 € = 300 € → 720 € < 1.230 € → es bleibt beim **Pauschbetrag 1.230 €**." },
+      { art: "erklaerung", titel: "Der Pauschbetrag", text: "Arbeitnehmer bekommen ohne Nachweis den **Arbeitnehmer-Pauschbetrag von 1.230 €** (§ 9a S. 1 Nr. 1 a EStG). Nur wenn die tatsächlichen Werbungskosten **höher** sind, lohnt sich der Einzelnachweis – es wird **immer der höhere** Betrag angesetzt.\n• Der Pauschbetrag ist ein **Jahresbetrag**: Wer erst im Juli anfängt, bekommt trotzdem die vollen 1.230 €.\n• **Seit 2026** kommen **Gewerkschaftsbeiträge zusätzlich** dazu (§ 9a S. 3 EStG) – sie zählen beim Vergleich nicht mit." },
+      { art: "beispiel", titel: "Rechenbeispiel", text: "Fachbücher 180 €, Fortbildung 300 €, Gewerkschaft 240 €.\nVergleich ohne Gewerkschaft: 480 € < 1.230 € → **Pauschbetrag 1.230 €**.\nDazu die Gewerkschaftsbeiträge: 1.230 € + 240 € = **1.470 €**." },
     ],
     fragen: [
-      { art: "zahl", frage: "Tatsächliche Werbungskosten eines Arbeitnehmers: 980 €. Welcher Betrag wird abgezogen (in €)?", cent: 123000, erkl: "980 € < 1.230 € → Arbeitnehmer-Pauschbetrag 1.230 €." },
-      { art: "zahl", frage: "Home-Office an 230 Tagen. Wie hoch ist die Pauschale (in €)?", cent: 126000, erkl: "230 × 6 € = 1.380 €, aber höchstens 1.260 €." },
-      { art: "wahl", frage: "Ein Arbeitnehmer kauft beruflich einen Schreibtischstuhl für 450 € netto. Was gilt?", optionen: ["Sofort voll als Werbungskosten abziehbar", "Nur über 13 Jahre abschreibbar", "Gar nicht abziehbar", "Nur zur Hälfte"], richtig: 0, erkl: "Arbeitsmittel bis 800 € netto sind sofort abziehbar." },
+      { art: "zahl", frage: "Tatsächliche Werbungskosten eines Arbeitnehmers: 980 € (ohne Gewerkschaftsbeiträge). Welcher Betrag wird abgezogen (in €)?", cent: 123000, erkl: "980 € < 1.230 € → Arbeitnehmer-Pauschbetrag 1.230 €." },
+      { art: "zahl", frage: "Fachbücher 250 €, Fortbildung 450 €, Gewerkschaftsbeitrag 300 €. Wie viel wird insgesamt abgezogen (in €)?", cent: 153000, erkl: "Ohne Gewerkschaft 700 € < 1.230 € → Pauschbetrag 1.230 €, plus Gewerkschaft 300 € (seit 2026 zusätzlich) = 1.530 €." },
+      { art: "wahl", frage: "Eine Arbeitnehmerin beginnt ihren ersten Job am 1. Juli. Welcher Pauschbetrag steht ihr zu?", optionen: ["1.230 €", "615 €", "102 €", "Keiner"], richtig: 0, erkl: "Der Pauschbetrag ist ein Jahresbetrag und wird nicht zeitanteilig gekürzt." },
       { art: "wahl", frage: "Was gehört nicht zu den Werbungskosten?", optionen: ["Bürgerliche Kleidung", "Fachbücher", "Gewerkschaftsbeiträge", "Fortbildungskosten"], richtig: 0, erkl: "Normale Kleidung gehört zur privaten Lebensführung (§ 12 Nr. 1 EStG)." },
+    ],
+  },
+  {
+    id: "e-arbeitsmittel", titel: "Arbeitsmittel", kurz: "§ 9 Abs. 1 S. 3 Nr. 6, 7 EStG", icon: "💻", normen: ["EStG 9 1", "EStG 6 2", "EStG 7 1"],
+    karten: [
+      { art: "merksatz", titel: "Was ist ein Arbeitsmittel?", text: "Arbeitsmittel sind Gegenstände, die **unmittelbar dem Beruf dienen**: Werkzeug, Fachbücher, Computer, Schreibtisch, Aktentasche – und **typische Berufskleidung** wie Uniform, Kittel oder Sicherheitsschuhe (§ 9 Abs. 1 S. 3 Nr. 6 EStG).\n**Bürgerliche Kleidung** (Anzug, Kostüm) ist **kein** Arbeitsmittel – auch wenn man sie nur im Büro trägt (§ 12 Nr. 1 EStG)." },
+      { art: "erklaerung", titel: "Sofort abziehen oder verteilen?", text: "• Kostet der Gegenstand **ohne USt höchstens 800 €** (= 952 € brutto), darf er **sofort voll** abgezogen werden (GWG, § 6 Abs. 2 EStG).\n• Sonst wird er über die **Nutzungsdauer** verteilt (AfA, § 7 Abs. 1 EStG) – im Kaufjahr nur für die Monate **ab dem Kaufmonat**.\n• Arbeitnehmer ziehen immer den **Bruttopreis** ab (sie bekommen keine Vorsteuer zurück); nur die 800-€-Grenze wird ohne USt geprüft.\n• **Computer und Software** dürfen mit 1 Jahr Nutzungsdauer sofort voll abgezogen werden." },
+      { art: "erklaerung", titel: "Auch privat genutzt?", text: "Wird ein Arbeitsmittel auch privat genutzt, zählt nur der **berufliche Anteil** (z. B. nach Zeit).\n• Privat **unter 10 %** → voller Abzug.\n• Beruflich **unter 10 %** → gar kein Abzug." },
+      { art: "beispiel", titel: "Rechenbeispiel", text: "Schreibtisch für 1.300 € brutto, gekauft im Oktober, Nutzungsdauer 13 Jahre:\n1.300 € / 13 = 100 € pro Jahr × 3/12 (Oktober bis Dezember) = **25 €**." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Ein Arbeitnehmer kauft beruflich einen Schreibtischstuhl für 450 € netto. Was gilt?", optionen: ["Sofort voll als Werbungskosten abziehbar", "Nur über 13 Jahre abschreibbar", "Gar nicht abziehbar", "Nur zur Hälfte"], richtig: 0, erkl: "Arbeitsmittel bis 800 € netto sind sofort abziehbar." },
+      { art: "wahl", frage: "Ein Bankberater kauft einen Anzug, den er nur am Schalter trägt. Werbungskosten?", optionen: ["Nein – bürgerliche Kleidung", "Ja, voll", "Ja, zur Hälfte", "Ja, über 3 Jahre verteilt"], richtig: 0, erkl: "Bürgerliche Kleidung ist Lebensführung (§ 12 Nr. 1 EStG), nur typische Berufskleidung ist Arbeitsmittel." },
+      { art: "zahl", frage: "Aktenschrank für 1.560 € brutto, gekauft im Juli, Nutzungsdauer 13 Jahre. Werbungskosten im Kaufjahr (in €)?", cent: 6000, erkl: "1.560 € / 13 = 120 € × 6/12 (Juli bis Dezember) = 60 €." },
+      { art: "zahl", frage: "Drucker für 300 € brutto, zu 70 % beruflich genutzt. Werbungskosten (in €)?", cent: 21000, erkl: "Unter 800 € netto → sofort abziehbar, aber nur der berufliche Anteil: 300 € × 70 % = 210 €." },
+      { art: "wahl", frage: "Gilt die 800-€-Grenze mit oder ohne Umsatzsteuer?", optionen: ["Ohne Umsatzsteuer", "Mit Umsatzsteuer", "Je nach Wahl", "Gar keine Grenze bei Arbeitnehmern"], richtig: 0, erkl: "Geprüft wird netto (800 € = 952 € brutto); abgezogen wird dann der Bruttobetrag." },
+    ],
+  },
+  {
+    id: "e-homeoffice", titel: "Arbeitszimmer & Home-Office", kurz: "§ 4 Abs. 5 S. 1 Nr. 6b, 6c, § 9 Abs. 5 EStG", icon: "🏠", normen: ["EStG 4 5", "EStG 9 5"],
+    karten: [
+      { art: "merksatz", titel: "Die Tagespauschale", text: "Für jeden Tag, an dem man **überwiegend zu Hause** arbeitet und **nicht ins Büro** fährt, gibt es **6 €** – höchstens **1.260 €** im Jahr (= 210 Tage) (§ 4 Abs. 5 S. 1 Nr. 6c i. V. m. § 9 Abs. 5 EStG).\nEin eigenes Arbeitszimmer braucht man dafür **nicht** – der Küchentisch reicht.\nFür denselben Tag gibt es **nicht zusätzlich** die Entfernungspauschale – man fährt ja nicht zur Arbeit." },
+      { art: "erklaerung", titel: "Das häusliche Arbeitszimmer", text: "Ein **Arbeitszimmer** ist ein abgeschlossener, wie ein Büro eingerichteter Raum, der (fast) nur beruflich genutzt wird – eine Arbeitsecke im Wohnzimmer zählt nicht.\nSeine Kosten sind **grundsätzlich nicht** abziehbar. **Ausnahme:** Das Zimmer ist der **Mittelpunkt** der gesamten Arbeit (z. B. Autorin, Telearbeiter fast nur zu Hause). Dann wahlweise:\n• die **tatsächlichen Kosten** (anteilige Miete, Nebenkosten) oder\n• die **Jahrespauschale 1.260 €** – je Monat ohne Mittelpunkt **1/12 weniger**.\nDaneben gibt es dann keine Tagespauschale." },
+      { art: "erklaerung", titel: "Wenn es keinen anderen Arbeitsplatz gibt", text: "Steht **dauerhaft kein anderer Arbeitsplatz** zur Verfügung – z. B. **Lehrer** ohne eigenen Schreibtisch in der Schule oder **Außendienstler** ohne Büro –, gibt es die 6 € **auch an Tagen**, an denen man zusätzlich in der Schule oder beim Kunden arbeitet (§ 4 Abs. 5 S. 1 Nr. 6c S. 2 EStG).\nDer Mittelpunkt bleibt bei Lehrern aber die Schule – ein Arbeitszimmer ist für sie also nicht abziehbar." },
+      { art: "beispiel", titel: "Rechenbeispiel", text: "Telearbeit im Arbeitszimmer (Mittelpunkt) ab 1. April, davor nur im Büro:\nJahrespauschale 1.260 € × 9/12 = **945 €** (oder die höheren tatsächlichen Kosten für April bis Dezember)." },
+    ],
+    fragen: [
+      { art: "zahl", frage: "Home-Office an 230 Tagen, Büroarbeitsplatz an den übrigen Tagen. Wie hoch ist die Pauschale (in €)?", cent: 126000, erkl: "230 × 6 € = 1.380 €, aber höchstens 1.260 €." },
+      { art: "zahl", frage: "Ein Arbeitnehmer arbeitet an 45 Tagen ganztags am Küchentisch statt im Büro. Pauschale (in €)?", cent: 27000, erkl: "45 × 6 € = 270 € – ein Arbeitszimmer ist dafür nicht nötig." },
+      { art: "wahl", frage: "Morgens 2 Stunden E-Mails zu Hause, danach 6 Stunden im Büro. Gibt es für den Tag die Tagespauschale?", optionen: ["Nein – nicht überwiegend zu Hause und Büro aufgesucht", "Ja, 6 €", "Ja, 3 €", "Ja, zusätzlich zur Entfernungspauschale"], richtig: 0, erkl: "Die 6 € gibt es nur, wenn überwiegend zu Hause gearbeitet und das Büro nicht aufgesucht wird." },
+      { art: "wahl", frage: "Eine Lehrerin hat kein eigenes Zimmer in der Schule und bereitet den Unterricht im Arbeitszimmer vor. Was kann sie abziehen?", optionen: ["Die Tagespauschale – auch an Schultagen", "Die tatsächlichen Kosten des Arbeitszimmers", "Die Jahrespauschale 1.260 € zusätzlich zur Tagespauschale", "Nichts"], richtig: 0, erkl: "Mittelpunkt ist die Schule → kein Arbeitszimmer; da kein anderer Arbeitsplatz da ist, gibt es die 6 € auch an Schultagen." },
+      { art: "zahl", frage: "Das Arbeitszimmer ist ab 1. Juli Mittelpunkt der Tätigkeit; tatsächliche Kosten 400 €. Höchster Abzug (in €)?", cent: 63000, erkl: "Jahrespauschale 1.260 € × 6/12 = 630 € > 400 € tatsächliche Kosten → 630 €." },
     ],
   },
   {
@@ -159,6 +190,22 @@ export const PFAD_EST = [
       { art: "zahl", frage: "200 Tage, 18,9 km einfache Strecke. Entfernungspauschale (in €)?", cent: 136800, erkl: "Nur volle km: 18 → 200 × 18 × 0,38 € = 1.368 €." },
       { art: "wahl", frage: "Gilt der Höchstbetrag von 4.500 € bei Fahrten mit dem eigenen Pkw?", optionen: ["Nein", "Ja", "Nur bei mehr als 50 km", "Nur bei Beamten"], richtig: 0, erkl: "Die Begrenzung gilt nicht für den eigenen oder überlassenen Pkw." },
       { art: "wahl", frage: "Eine Pendlerin fährt Bahn; ihr Jahresticket kostet mehr als die Pauschale. Was darf sie ansetzen?", optionen: ["Die höheren Ticketkosten", "Nur die Pauschale", "Gar nichts", "Pauschale plus Ticket"], richtig: 0, erkl: "§ 9 Abs. 2 S. 2 EStG: tatsächliche Kosten öffentlicher Verkehrsmittel, soweit höher." },
+    ],
+  },
+  {
+    id: "e-reisekosten", titel: "Reisekosten", kurz: "§ 9 Abs. 1 S. 3 Nr. 4a, 5a, Abs. 4a EStG", icon: "🧳", normen: ["EStG 9 1", "EStG 9 4a", "EStG 9 4"],
+    karten: [
+      { art: "merksatz", titel: "Was ist eine Dienstreise?", text: "Eine **Auswärtstätigkeit** liegt vor, wenn man **außerhalb der Wohnung und der ersten Tätigkeitsstätte** (dem festen Arbeitsort) beruflich tätig wird – Kundenbesuch, Messe, Schulung, Baustelle (§ 9 Abs. 4a S. 2 EStG).\nAbziehbar sind vier Bausteine: **Fahrt**, **Verpflegung**, **Übernachtung** und **Nebenkosten** (z. B. Parken)." },
+      { art: "erklaerung", titel: "Fahrt und Verpflegung", text: "• **Fahrt mit dem eigenen Pkw:** **0,30 € je gefahrenem km** – Hin- **und** Rückweg (§ 9 Abs. 1 S. 3 Nr. 4a EStG). Die Entfernungspauschale gilt hier nicht.\n• **Verpflegung** nur pauschal (§ 9 Abs. 4a S. 3 EStG):\n– eintägig **mehr als 8 Stunden** weg: **14 €**,\n– mit Übernachtung: **An- und Abreisetag je 14 €**, jeder volle Tag dazwischen **28 €**.\n• An derselben Tätigkeitsstätte gibt es die Verpflegungspauschale nur **drei Monate** lang." },
+      { art: "erklaerung", titel: "Essen vom Chef und Hotel", text: "• Stellt der **Arbeitgeber** eine Mahlzeit, wird die Pauschale gekürzt: **Frühstück 5,60 €**, **Mittag- oder Abendessen je 11,20 €** (20 % bzw. 40 % von 28 €) (§ 9 Abs. 4a S. 8 EStG).\n• **Hotel:** abziehbar ist der Übernachtungspreis **ohne Frühstück** – das Frühstück ist Verpflegung und mit der Pauschale abgegolten (§ 9 Abs. 1 S. 3 Nr. 5a EStG)." },
+      { art: "beispiel", titel: "Rechenbeispiel", text: "Zwei Tage Schulung, 150 km einfache Strecke mit dem eigenen Auto, Hotel 99 € mit 15 € Frühstück (selbst bezahlt):\nFahrt 300 km × 0,30 € = 90 € · Hotel 99 € − 15 € = 84 € · Verpflegung 14 € + 14 € = 28 €\n= **202 €**." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Eintägiger Kundenbesuch, 9 Stunden unterwegs. Verpflegungspauschale?", optionen: ["14 €", "28 €", "Keine", "7 €"], richtig: 0, erkl: "Mehr als 8 Stunden ohne Übernachtung → 14 €." },
+      { art: "zahl", frage: "Dreitägige Dienstreise (Mo–Mi) mit zwei Hotelnächten, alle Mahlzeiten selbst bezahlt. Verpflegungspauschalen insgesamt (in €)?", cent: 5600, erkl: "Anreisetag 14 € + voller Tag 28 € + Abreisetag 14 € = 56 €." },
+      { art: "zahl", frage: "Fahrt mit dem eigenen Pkw zu einem Kunden, 120 km einfache Strecke, abends zurück. Fahrtkosten (in €)?", cent: 7200, erkl: "Hin und zurück 240 km × 0,30 € = 72 €." },
+      { art: "wahl", frage: "10 Stunden beim Kunden, der Arbeitgeber zahlt dort das Mittagessen. Verpflegungspauschale?", optionen: ["2,80 €", "14 €", "0 €", "16,80 €"], richtig: 0, erkl: "14 € − 11,20 € (40 % von 28 €) = 2,80 €." },
+      { art: "wahl", frage: "Eine Mitarbeiterin arbeitet 11 Stunden an ihrem festen Arbeitsort in der Firma. Verpflegungspauschale?", optionen: ["Keine – keine Auswärtstätigkeit", "14 €", "28 €", "Nur mit Übernachtung"], richtig: 0, erkl: "An der ersten Tätigkeitsstätte gibt es keine Reisekosten." },
     ],
   },
 ];

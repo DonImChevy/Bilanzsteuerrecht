@@ -14,12 +14,13 @@ const R = (id, thema, erzeugen) => ({
   id, thema, kategorie: "rechnen",
   erzeugen: (r) => { const a = erzeugen(r); return { ...zahl(id, thema, a.text, Math.round(a.euro * 100), a.erklaerung, { toleranz: 99 }), normen: a.normen || [] }; },
 });
-/** Einordnungsfall: zieht einen Fall {text, richtig, erkl} und stellt ihn mit festen Antwortmöglichkeiten. */
+/** Einordnungsfall: zieht einen Fall {text, richtig, erkl} und stellt ihn mit festen Antwortmöglichkeiten (richtig = Index oder Optionstext). */
 const F = (id, thema, frage, optionen, faelle, normen = []) => ({
   id, thema, kategorie: "fall",
   erzeugen: ((ziehe) => (r) => {
     const f = ziehe(r); // reihum – jeder Fall kommt dran, bevor sich einer wiederholt
-    return { ...auswahl(id, thema, `${f.text}\n\n${frage}`, optionen, [f.richtig], f.erkl, r), normen: f.normen || normen };
+    const richtig = typeof f.richtig === "string" ? optionen.indexOf(f.richtig) : f.richtig;
+    return { ...auswahl(id, thema, `${f.text}\n\n${frage}`, optionen, [richtig], f.erkl, r), normen: f.normen || normen };
   })(reihum(faelle)),
 });
 
@@ -492,7 +493,7 @@ const vorauszahlungRechnen = R("est-11-vorauszahlung-rechnen", "est-zufluss", (r
   };
 });
 
-// ======================================================================= Werbungskosten, Arbeitsmittel, Home-Office
+// ======================================================================= Werbungskosten (Begriff, Pauschbetrag)
 const wk = [
   A("est-wk-begriff", "est-werbungskosten",
     "Was sind Werbungskosten? Unterscheiden Sie laufende, vorweggenommene, vergebliche und nachträgliche Werbungskosten.",
@@ -508,21 +509,29 @@ const wk = [
     M(["Der Arbeitnehmer-Pauschbetrag beträgt 1.230 €.", "Der Arbeitnehmer-Pauschbetrag ist ein Jahresbetrag und wird nicht zeitanteilig gekürzt.", "Der Pauschbetrag darf nicht zu negativen Einkünften führen.", "Gewerkschaftsbeiträge sind seit 2026 zusätzlich zum Pauschbetrag abziehbar."],
       ["Der Arbeitnehmer-Pauschbetrag beträgt 1.000 €.", "Bei einer Beschäftigung ab Juli wird der Pauschbetrag halbiert.", "Der Pauschbetrag wird zusätzlich zu den nachgewiesenen Werbungskosten abgezogen.", "Bei Versorgungsbezügen gilt ebenfalls ein Pauschbetrag von 1.230 €."],
       "Welche Aussagen zu den Werbungskosten-Pauschbeträgen sind richtig?")),
-  A("est-arbeitsmittel", "est-werbungskosten",
+];
+
+// ======================================================================= Arbeitsmittel
+const arbeitsmittel = [
+  A("est-arbeitsmittel", "est-arbeitsmittel",
     "Was sind Arbeitsmittel? Wann ist Kleidung ein Arbeitsmittel, und was gilt bei gemischter Nutzung?",
     "§ 9 Abs. 1 S. 3 Nr. 6 EStG: Gegenstände, die der Ausübung der beruflichen Tätigkeit dienen – z. B. Werkzeuge, Computer, Fachliteratur, Büromöbel.\n• Typische Berufskleidung: Schutzkleidung, uniformartige Kleidung, für den Beruf typische Kleidung (Erkennbarkeit des Berufs) oder dauerhaft mit Firmenemblem gekennzeichnete Kleidung, bei der eine private Nutzung so gut wie ausgeschlossen ist. Bürgerliche Kleidung (Anzug, Kostüm) ist kein Arbeitsmittel.\n• Gemischte Nutzung: Aufteilung nach objektivem Maßstab (PC nach Zeitanteilen, Telefon nach Gesprächsminuten); private Nutzung unter 10 % → voller Abzug, berufliche Nutzung unter 10 % → kein Abzug.\n• Zeitpunkt: grundsätzlich bei Abfluss (§ 11 Abs. 2 EStG); bei Nutzungsdauer über einem Jahr AfA bzw. GWG-Regel (§ 9 Abs. 1 S. 3 Nr. 6 S. 2, Nr. 7 EStG).",
     ["EStG 9 1", "EStG 12"],
     M(["Fachliteratur ist ein Arbeitsmittel.", "Schutzkleidung ist typische Berufskleidung.", "Bei einem privaten Nutzungsanteil unter 10 % ist ein voller Werbungskostenabzug möglich.", "Arbeitsmittel mit einer Nutzungsdauer von mehr als einem Jahr sind grundsätzlich über die AfA abzuziehen."],
       ["Ein Anzug ist ein Arbeitsmittel, wenn er nur im Büro getragen wird.", "Bei gemischter Nutzung ist ein Arbeitsmittel immer voll abziehbar.", "Arbeitsmittel sind immer im Jahr der Bestellung voll abziehbar.", "Bei einem beruflichen Nutzungsanteil von 5 % ist der berufliche Anteil abziehbar."],
       "Welche Aussagen zu Arbeitsmitteln sind richtig?")),
-  A("est-afa-gwg", "est-werbungskosten",
+  A("est-afa-gwg", "est-arbeitsmittel",
     "Wie werden Arbeitsmittel mit einer Nutzungsdauer von mehr als einem Jahr abgezogen? Erläutern Sie AfA und GWG-Regelung.",
     "Türöffner: § 9 Abs. 1 S. 3 Nr. 7 EStG (für die EÜR: § 4 Abs. 3 S. 3; für die Bilanz: § 6 Abs. 1 Nr. 1 S. 1).\nAfA (§ 7 Abs. 1 EStG):\n• Anschaffungskosten (§ 255 Abs. 1 HGB) gleichmäßig auf die gewöhnliche Nutzungsdauer verteilen (AfA-Tabellen: Computer 3, PKW 6, Büromöbel 13 Jahre).\n• Bei Arbeitnehmern gehört die Umsatzsteuer zu den Anschaffungskosten (kein Vorsteuerabzug, § 9b Abs. 1 EStG im Umkehrschluss).\n• Beginn mit Anschaffung = Lieferung (§ 9a EStDV), nicht mit Bezahlung; im ersten Jahr zeitanteilig nach Monaten (§ 7 Abs. 1 S. 4), der Anschaffungsmonat zählt voll.\nGWG (§ 6 Abs. 2 EStG): abnutzbares, bewegliches, selbständig nutzbares Wirtschaftsgut mit Anschaffungskosten ohne USt bis 800 € → Wahlrecht, die Anschaffungskosten im Jahr der Lieferung voll abzuziehen.\nComputerhardware und Software: Nach BMF vom 22.02.2022 kann eine Nutzungsdauer von einem Jahr zugrunde gelegt werden → Abzug im Jahr der Anschaffung in voller Höhe (Wahlrecht).\nVerkauf eines Arbeitsmittels: nicht steuerbar; ein Restwert ist nicht abziehbar.",
     ["EStG 9 1", "EStG 7 1", "EStG 6 2"],
     M(["Die AfA beginnt mit der Lieferung, nicht mit der Bezahlung.", "Im Anschaffungsjahr wird die AfA zeitanteilig nach Monaten berechnet; der Anschaffungsmonat zählt voll.", "Bei Arbeitnehmern gehört die Umsatzsteuer zu den Anschaffungskosten.", "Ein Arbeitsmittel mit Anschaffungskosten ohne USt bis 800 € kann sofort abgezogen werden."],
       ["Die AfA beginnt mit der Bezahlung des Kaufpreises.", "Im Anschaffungsjahr wird immer die volle Jahres-AfA angesetzt.", "Bei Arbeitnehmern wird die Umsatzsteuer als Vorsteuer abgezogen.", "Die GWG-Grenze von 800 € bezieht sich auf den Bruttopreis einschließlich USt."],
       "Welche Aussagen zu AfA und GWG bei Arbeitsmitteln sind richtig?")),
-  A("est-homeoffice", "est-werbungskosten",
+];
+
+// ======================================================================= Häusliches Arbeitszimmer, Home-Office-Pauschale
+const homeoffice = [
+  A("est-homeoffice", "est-homeoffice",
     "Wann sind Aufwendungen für ein häusliches Arbeitszimmer abziehbar? Was gilt für die Home-Office-Pauschale?",
     "Häusliches Arbeitszimmer (§ 4 Abs. 5 S. 1 Nr. 6b, § 9 Abs. 5 EStG):\n• Grundsätzlich nicht abziehbar.\n• Ausnahme: Das Arbeitszimmer bildet den Mittelpunkt der gesamten betrieblichen und beruflichen Tätigkeit (qualitativer Schwerpunkt; z. B. Autor, Heimarbeiter – nicht: Lehrer, Richter).\n• Begriff: abgeschlossener, in die häusliche Sphäre eingebundener, büromäßig eingerichteter Raum, nahezu ausschließlich beruflich genutzt (privat < 10 %); keine Arbeitsecke, kein Durchgangszimmer.\n• Wahlrecht: tatsächliche Kosten (anteilige Miete, AfA, Nebenkosten, Einrichtung) oder Jahrespauschale 1.260 €, zeitanteilig nach Monaten.\nHome-Office-Pauschale (§ 4 Abs. 5 S. 1 Nr. 6c EStG): in allen anderen Fällen 6 € je Kalendertag, höchstens 1.260 € im Jahr (210 Tage):\n• mit anderem Arbeitsplatz: nur für Tage, an denen überwiegend zu Hause gearbeitet und die erste Tätigkeitsstätte nicht aufgesucht wird (dann keine Entfernungspauschale für diesen Tag),\n• ohne anderen Arbeitsplatz (z. B. Lehrer): auch an Tagen, an denen die erste Tätigkeitsstätte aufgesucht wird.\nArbeitsmittel (z. B. Schreibtisch, PC) fallen nicht unter die Abzugsbeschränkung.",
     ["EStG 4 5", "EStG 9 1"],
@@ -536,7 +545,7 @@ const GEGENSTAENDE = [
   { name: "einen Schreibtisch", nd: 13 }, { name: "einen ergonomischen Bürostuhl", nd: 13 }, { name: "ein Bücherregal für Fachliteratur", nd: 13 },
   { name: "einen Aktenschrank", nd: 13 }, { name: "eine hochwertige Aktentasche", nd: 5 }, { name: "ein Diktiergerät", nd: 5 },
 ];
-const afaRechnen = R("est-afa-rechnen", "est-werbungskosten", (r) => {
+const afaRechnen = R("est-afa-rechnen", "est-arbeitsmittel", (r) => {
   const g = r.wahl(GEGENSTAENDE), monat = r.zahl(1, 12);
   const brutto = r.muenze() ? r.zahl(20, 60) * 50 - 0.1 : r.zahl(4, 18) * 50 - 0.1; // z. B. 1.249,90 €
   const netto = brutto / 1.19, gwg = netto <= 800;
@@ -549,7 +558,45 @@ const afaRechnen = R("est-afa-rechnen", "est-werbungskosten", (r) => {
   };
 });
 
-const homeofficeRechnen = R("est-homeoffice-rechnen", "est-werbungskosten", (r) => {
+const KEIN = "Nein – nicht abziehbar";
+const arbeitsmittelFall = F("est-arbeitsmittel-fall", "est-arbeitsmittel",
+  "Sind die Aufwendungen als Werbungskosten abziehbar?",
+  ["Ja, in voller Höhe", "Ja, nur anteilig", KEIN],
+  [
+    { text: "Polizeibeamtin P kauft sich eine zusätzliche Uniformhose, die sie ausschließlich im Dienst trägt.", richtig: "Ja, in voller Höhe",
+      erkl: "Uniform = typische Berufskleidung → Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 6 S. 1 EStG); eine private Nutzung ist so gut wie ausgeschlossen." },
+    { text: "Bankkaufmann B kauft einen dunklen Anzug, den er nach eigenen Angaben nur am Schalter trägt.", richtig: KEIN,
+      erkl: "Bürgerliche Kleidung gehört zur Lebensführung (§ 12 Nr. 1 S. 2 EStG) – auch wenn sie tatsächlich nur im Beruf getragen wird. Keine typische Berufskleidung i. S. d. § 9 Abs. 1 S. 3 Nr. 6 EStG." },
+    { text: "Koch K kauft zwei Kochjacken und ein Paar Sicherheitsschuhe für die Arbeit in der Restaurantküche.", richtig: "Ja, in voller Höhe",
+      erkl: "Schutzkleidung und berufstypische Kleidung sind typische Berufskleidung (§ 9 Abs. 1 S. 3 Nr. 6 S. 1 EStG)." },
+    { text: "Steuerfachangestellte S kauft einen EStG-Kommentar, mit dem sie im Büro arbeitet.", richtig: "Ja, in voller Höhe",
+      erkl: "Fachliteratur dient unmittelbar der beruflichen Tätigkeit → Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 6 EStG)." },
+    { text: "Lehrer L abonniert eine überregionale Tageszeitung, um sich auch für den Unterricht auf dem Laufenden zu halten.", richtig: KEIN,
+      erkl: "Allgemeine Tageszeitungen dienen der allgemeinen Information und damit (auch) der Lebensführung; eine Aufteilung ist nicht möglich (§ 12 Nr. 1 S. 2 EStG)." },
+    { text: "Programmiererin P kauft einen Computer für 1.100 €, den sie nachweislich zu 60 % beruflich und zu 40 % privat nutzt.", richtig: "Ja, nur anteilig",
+      erkl: "Gemischt genutztes Arbeitsmittel: Aufteilung nach objektivem Maßstab (Zeitanteile) → 60 % Werbungskosten (§ 9 Abs. 1 S. 3 Nr. 6, 7 EStG); der private Teil fällt unter § 12 Nr. 1 EStG." },
+    { text: "Arbeitnehmer A nutzt sein privates Smartphone nur zu etwa 5 % beruflich.", richtig: KEIN,
+      erkl: "Berufliche Mitbenutzung von weniger als 10 % ist untergeordnet → keine Werbungskosten (§ 12 Nr. 1 EStG)." },
+    { text: "Sachbearbeiterin S kauft für ihre Arbeitsecke im Wohnzimmer einen Schreibtisch, den sie zu 95 % beruflich nutzt.", richtig: "Ja, in voller Höhe",
+      erkl: "Private Mitbenutzung unter 10 % ist unschädlich → voller Abzug als Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 6 EStG). Das Abzugsverbot für das Arbeitszimmer erfasst Arbeitsmittel nicht." },
+    { text: "Ärztin Ä lässt ihre weißen Kittel aus der Klinik in einer Reinigung waschen.", richtig: "Ja, in voller Höhe",
+      erkl: "Auch die Reinigung typischer Berufskleidung ist Teil der Aufwendungen für Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 6 EStG)." },
+  ], ["EStG 9 1", "EStG 12"]);
+
+const GERAETE = [{ name: "eine Spiegelreflexkamera", nd: 7, wer: "Die angestellte Fotojournalistin Mia" }, { name: "einen Beamer", nd: 7, wer: "Der angestellte Vertriebstrainer Tom" },
+  { name: "eine Profi-Nähmaschine", nd: 13, wer: "Die angestellte Modedesignerin Lea" }, { name: "ein E-Piano", nd: 10, wer: "Der angestellte Musiklehrer Jan" }];
+const gemischtAfa = R("est-arbeitsmittel-gemischt", "est-arbeitsmittel", (r) => {
+  const g = r.wahl(GERAETE), monat = r.zahl(1, 12), anteil = r.zahl(6, 9) * 10;
+  const brutto = r.zahl(24, 60) * 50, afa = (brutto / g.nd) * (13 - monat) / 12 * anteil / 100;
+  return {
+    text: `${g.wer} kauft am ${r.zahl(2, 26)}. ${MONATE[monat - 1]} 2026 ${g.name} für ${eur(brutto)} einschließlich 19 % USt (Lieferung am selben Tag). Das Gerät wird nachweislich zu ${anteil} % beruflich genutzt. Gewöhnliche Nutzungsdauer: ${g.nd} Jahre.\n\nWie hoch sind die Werbungskosten 2026 (in €)?`,
+    euro: afa,
+    erklaerung: `Arbeitsmittel mit privater Mitbenutzung über 10 % → nur der berufliche Anteil (§ 9 Abs. 1 S. 3 Nr. 6 EStG, § 12 Nr. 1 EStG).\nAnschaffungskosten ohne USt ${eur(brutto / 1.19)} > 800 € → kein GWG; lineare AfA auf den Bruttobetrag (§ 9 Abs. 1 S. 3 Nr. 7 EStG, § 7 Abs. 1 EStG).\n${eur(brutto)} / ${g.nd} × ${13 - monat}/12 (Lieferung im ${MONATE[monat - 1]}, § 7 Abs. 1 S. 4 EStG) = ${eur(brutto / g.nd * (13 - monat) / 12)}\n× ${anteil} % beruflich = ${eur(afa)}`,
+    normen: ["EStG 9 1", "EStG 7 1", "EStG 12"],
+  };
+});
+
+const homeofficeRechnen = R("est-homeoffice-rechnen", "est-homeoffice", (r) => {
   const ho = r.zahl(40, 240), buero = r.zahl(0, 120);
   const pausch = Math.min(ho * HO_TAG, HO_MAX);
   return {
@@ -559,6 +606,110 @@ const homeofficeRechnen = R("est-homeoffice-rechnen", "est-werbungskosten", (r) 
     normen: ["EStG 4 5"],
   };
 });
+
+const ZIMMER = [
+  { wer: "Die angestellte Softwareentwicklerin Nora", vorher: "im Büro ihres Arbeitgebers", nachher: "vereinbart sie Telearbeit und arbeitet an allen Arbeitstagen in ihrem häuslichen Arbeitszimmer; ihr Büroarbeitsplatz entfällt" },
+  { wer: "Der Übersetzer Ben", vorher: "als Angestellter in einem Übersetzungsbüro", nachher: "ist er selbständig tätig und übersetzt ausschließlich in seinem häuslichen Arbeitszimmer" },
+];
+const arbeitszimmerRechnen = R("est-arbeitszimmer-rechnen", "est-homeoffice", (r) => {
+  const z = r.wahl(ZIMMER), ab = r.zahl(2, 10), monate = 13 - ab;
+  const miete = r.zahl(18, 32) * 50, flaeche = r.zahl(70, 110), zimmer = r.zahl(10, 18);
+  const tats = miete * zimmer / flaeche * monate, pausch = HO_MAX * monate / 12, abzug = Math.max(tats, pausch);
+  return {
+    text: `${z.wer} arbeitete bis Ende ${MONATE[ab - 2]} 2026 ${z.vorher} und war an keinem Tag zu Hause tätig. Ab dem 1. ${MONATE[ab - 1]} ${z.nachher}. Das Arbeitszimmer (${zimmer} m², abgeschlossen, nur beruflich genutzt) liegt in der Mietwohnung (${flaeche} m²; Warmmiete einschließlich Nebenkosten ${eur(miete)} im Monat).\n\nWelcher Betrag ist für das Arbeitszimmer 2026 höchstens abziehbar (in €)?`,
+    euro: abzug,
+    erklaerung: `Ab ${MONATE[ab - 1]} bildet das Arbeitszimmer den Mittelpunkt der gesamten Tätigkeit → Abzug zulässig (§ 4 Abs. 5 S. 1 Nr. 6b S. 2 EStG${z.wer.includes("Ben") ? "" : ", für Werbungskosten i. V. m. § 9 Abs. 5 S. 1 EStG"}); davor nicht.\n• Tatsächliche Kosten: ${eur(miete)} × ${zimmer}/${flaeche} m² × ${monate} Monate = ${eur(tats)}\n• Jahrespauschale: 1.260 € × ${monate}/12 = ${eur(pausch)} (Kürzung um je 1/12 für ${ab === 2 ? "den vollen Monat" : `die ${ab - 1} vollen Monate`} ohne Mittelpunkt, Nr. 6b S. 3, 4)\nWahlrecht → der höhere Betrag: ${eur(abzug)}.\nFür die Monate davor gibt es auch keine Tagespauschale, weil an keinem Tag zu Hause gearbeitet wurde (Nr. 6c S. 1).`,
+    normen: ["EStG 4 5", "EStG 9 5"],
+  };
+});
+
+const AZ = "Arbeitszimmer: tatsächliche Kosten oder Jahrespauschale (Nr. 6b)";
+const HO_NUR = "Tagespauschale nur für reine Home-Office-Tage (Nr. 6c S. 1)";
+const HO_AUCH = "Tagespauschale auch an Tagen mit Arbeit auswärts (Nr. 6c S. 2)";
+const HO_NICHTS = "Weder Arbeitszimmer noch Tagespauschale";
+const homeofficeFall = F("est-homeoffice-fall", "est-homeoffice",
+  "Was kann für die Arbeit zu Hause abgezogen werden?",
+  [AZ, HO_NUR, HO_AUCH, HO_NICHTS],
+  [
+    { text: "Die freie Schriftstellerin S schreibt ihre Romane ausschließlich in einem abgeschlossenen, nur beruflich genutzten Zimmer ihrer Wohnung. Lesungen hält sie nur gelegentlich.", richtig: AZ,
+      erkl: "Das Arbeitszimmer ist der qualitative Mittelpunkt der gesamten Tätigkeit → tatsächliche Kosten oder Jahrespauschale 1.260 € (§ 4 Abs. 5 S. 1 Nr. 6b S. 2, 3 EStG)." },
+    { text: "Sachbearbeiter A hat im Büro seines Arbeitgebers einen festen Arbeitsplatz. An zwei Tagen pro Woche arbeitet er ganztags am Küchentisch.", richtig: HO_NUR,
+      erkl: "Kein Arbeitszimmer (Küche ist kein büromäßig eingerichteter Raum), anderer Arbeitsplatz vorhanden → 6 € nur für die Tage, an denen er überwiegend zu Hause arbeitet und das Büro nicht aufsucht (§ 4 Abs. 5 S. 1 Nr. 6c S. 1, § 9 Abs. 5 S. 1 EStG)." },
+    { text: "Lehrerin L unterrichtet an einer Schule, in der ihr kein eigener Arbeitsplatz zur Verfügung steht. Unterricht vor- und nachbereiten sowie korrigieren tut sie nachmittags in ihrem häuslichen Arbeitszimmer.", richtig: HO_AUCH,
+      erkl: "Mittelpunkt ist der Unterricht in der Schule → kein Abzug nach Nr. 6b. Da dauerhaft kein anderer Arbeitsplatz zur Verfügung steht, gibt es die Tagespauschale auch an Unterrichtstagen (§ 4 Abs. 5 S. 1 Nr. 6c S. 2 EStG)." },
+    { text: "Außendienstmitarbeiter M hat beim Arbeitgeber keinen Büroarbeitsplatz. Er ist täglich bei Kunden unterwegs und erledigt morgens und abends Berichte und Terminplanung in seinem Arbeitszimmer.", richtig: HO_AUCH,
+      erkl: "Mittelpunkt ist die Tätigkeit beim Kunden → kein Abzug nach Nr. 6b. Kein anderer Arbeitsplatz → Tagespauschale auch an Tagen mit Auswärtstätigkeit (§ 4 Abs. 5 S. 1 Nr. 6c S. 2 EStG)." },
+    { text: "Angestellte B arbeitet an drei Tagen pro Woche im Büro ihres Arbeitgebers und an zwei Tagen in ihrem häuslichen Arbeitszimmer, wo sie dieselben Aufgaben erledigt.", richtig: HO_NUR,
+      erkl: "Bei gleichwertiger Tätigkeit liegt der Mittelpunkt dort, wo überwiegend gearbeitet wird – im Büro → kein Abzug nach Nr. 6b. Tagespauschale für die reinen Home-Office-Tage (§ 4 Abs. 5 S. 1 Nr. 6c S. 1 EStG)." },
+    { text: "Angestellter C erledigt dieselben Aufgaben an vier von fünf Arbeitstagen in seinem häuslichen Arbeitszimmer und fährt nur einmal pro Woche ins Büro.", richtig: AZ,
+      erkl: "Gleichwertige Tätigkeit, die überwiegend im Arbeitszimmer ausgeübt wird → Mittelpunkt im Arbeitszimmer (§ 4 Abs. 5 S. 1 Nr. 6b S. 2 EStG); daneben keine Tagespauschale (Nr. 6c S. 3)." },
+    { text: "Arbeitnehmer D, der im Betrieb einen festen Arbeitsplatz hat, beantwortet morgens zwei Stunden E-Mails am heimischen Schreibtisch und fährt dann für sechs Stunden ins Büro.", richtig: HO_NICHTS,
+      erkl: "Weder überwiegend zu Hause gearbeitet noch ohne Besuch der ersten Tätigkeitsstätte → keine Tagespauschale (§ 4 Abs. 5 S. 1 Nr. 6c S. 1 EStG); für den Tag gibt es nur die Entfernungspauschale." },
+  ], ["EStG 4 5", "EStG 9 5"]);
+
+// ======================================================================= Reisekosten (Auswärtstätigkeit)
+const VP_VOLL = 28, VP_TEIL = 14, KM_PKW = 0.30; // § 9 Abs. 4a S. 3 EStG; höchste Wegstreckenentschädigung § 5 Abs. 2 BRKG
+const reisekosten = [
+  A("est-reisekosten", "est-reisekosten",
+    "Was ist eine auswärtige berufliche Tätigkeit, und welche Reisekosten kann ein Arbeitnehmer dabei als Werbungskosten abziehen?",
+    "Auswärtige berufliche Tätigkeit (§ 9 Abs. 4a S. 2 EStG): beruflich tätig außerhalb der Wohnung und der ersten Tätigkeitsstätte (§ 9 Abs. 4 EStG). Reisekosten:\n• Fahrtkosten (§ 9 Abs. 1 S. 3 Nr. 4a EStG): tatsächliche Kosten oder pauschal je gefahrenem Kilometer nach BRKG, beim Pkw 0,30 € – Hin- und Rückfahrt (keine Entfernungspauschale).\n• Verpflegungsmehraufwand (§ 9 Abs. 4a EStG): nur Pauschalen – 28 € bei 24 Stunden Abwesenheit, 14 € für An- und Abreisetag bei Übernachtung und 14 € bei eintägiger Abwesenheit von mehr als 8 Stunden; nur für die ersten drei Monate an derselben Tätigkeitsstätte (S. 6), Neubeginn nach mindestens vier Wochen Unterbrechung (S. 7). Stellt der Arbeitgeber eine Mahlzeit, wird gekürzt: Frühstück 20 % (5,60 €), Mittag- und Abendessen je 40 % (11,20 €) der 28 € (S. 8).\n• Übernachtungskosten (§ 9 Abs. 1 S. 3 Nr. 5a EStG): tatsächliche Kosten der Unterkunft; Frühstück ist herauszurechnen (Verpflegung, mit der Pauschale abgegolten). Nach 48 Monaten an derselben Tätigkeitsstätte höchstens 1.000 € im Monat.\n• Reisenebenkosten (§ 9 Abs. 1 S. 1 EStG): z. B. Parkgebühren, Maut, Gepäckaufbewahrung.\nSteuerfreie Erstattungen des Arbeitgebers (§ 3 Nr. 16 EStG) schließen den Abzug insoweit aus.",
+    ["EStG 9 4a", "EStG 9 1", "EStG 9 4"],
+    M(["Bei einer eintägigen Auswärtstätigkeit mit mehr als 8 Stunden Abwesenheit beträgt die Verpflegungspauschale 14 €.", "Fahrtkosten mit dem eigenen Pkw können bei einer Auswärtstätigkeit mit 0,30 € je gefahrenem Kilometer angesetzt werden.", "Ein vom Arbeitgeber gestelltes Mittagessen kürzt die Verpflegungspauschale um 11,20 €.", "Die Verpflegungspauschalen gibt es nur für die ersten drei Monate an derselben Tätigkeitsstätte."],
+      ["Für Fahrten zu einer Auswärtstätigkeit gilt die Entfernungspauschale von 0,38 € je Entfernungskilometer.", "Statt der Pauschalen können die tatsächlichen Restaurantrechnungen abgezogen werden.", "Bei einer eintägigen Reise von 7 Stunden gibt es 14 € Verpflegungspauschale.", "Das im Hotelpreis enthaltene Frühstück gehört zu den Übernachtungskosten."],
+      "Welche Aussagen zu Reisekosten bei einer Auswärtstätigkeit sind richtig?")),
+];
+
+const verpflegungRechnen = R("est-verpflegung-rechnen", "est-reisekosten", (r) => {
+  const tage = r.zahl(2, 5), abend = r.muenze(), fr = VP_VOLL * 0.2, essen = VP_VOLL * 0.4;
+  const tag = (i) => (i === 0 || i === tage - 1 ? VP_TEIL : VP_VOLL);
+  const kuerz = (i) => (i > 0 ? fr : 0) + (abend && i === 0 ? essen : 0);
+  const netto = (i) => Math.max(tag(i) - kuerz(i), 0);
+  const summe = Array.from({ length: tage }, (_, i) => netto(i)).reduce((a, b) => a + b, 0);
+  const zeilen = Array.from({ length: tage }, (_, i) => `• Tag ${i + 1} (${i === 0 ? "Anreise" : i === tage - 1 ? "Abreise" : "24 Std."}): ${eur(tag(i))}${kuerz(i) ? ` − ${[i > 0 ? "Frühstück 5,60 €" : "", abend && i === 0 ? "Abendessen 11,20 €" : ""].filter(Boolean).join(" − ")} = ${eur(netto(i))}` : ""}`);
+  return {
+    text: `Arbeitnehmerin Jule nimmt 2026 an einer ${tage}-tägigen Schulung in Leipzig teil (Montag früh Anreise, Rückkehr am ${["", "", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"][tage]}abend). Ihr Arbeitgeber hat das Hotel mit Frühstück gebucht und bezahlt${abend ? "; am Anreiseabend lädt er alle Teilnehmer zu einem Abendessen ein" : ""}. Weitere Mahlzeiten bezahlt Jule selbst. Erstattungen erhält sie nicht.\n\nWie hoch sind die abziehbaren Verpflegungsmehraufwendungen (in €)?`,
+    euro: summe,
+    erklaerung: `Auswärtige berufliche Tätigkeit (§ 9 Abs. 4a S. 2 EStG) mit Übernachtung → An- und Abreisetag je 14 €, volle Tage 28 € (S. 3 Nr. 1, 2).\nVom Arbeitgeber gestellte Mahlzeiten kürzen (S. 8): Frühstück 20 % = 5,60 €, Abendessen 40 % = 11,20 € der 28 €.\n${zeilen.join("\n")}\n= ${eur(summe)}`,
+    normen: ["EStG 9 4a"],
+  };
+});
+
+const ZIELE = [["Hannover", 150], ["Kassel", 230], ["Erfurt", 290], ["Bremen", 120], ["Münster", 180], ["Nürnberg", 210]];
+const reiseRechnen = R("est-reise-gesamt", "est-reisekosten", (r) => {
+  const [ziel, einfach] = r.wahl(ZIELE), naechte = r.zahl(1, 3), preis = r.zahl(80, 140), frueh = r.zahl(12, 19), park = r.zahl(2, 6) * 5;
+  const fahrt = einfach * 2 * KM_PKW, hotel = naechte * (preis - frueh), vma = 2 * VP_TEIL + (naechte - 1) * VP_VOLL;
+  const erst = r.muenze() ? Math.floor((fahrt + hotel) * r.zahl(3, 8) / 100) * 10 : 0; // Teilerstattung, immer unter den Kosten
+  const summe = fahrt + hotel + vma + park - erst;
+  return {
+    text: `Vertriebsmitarbeiter Ole fährt 2026 mit seinem eigenen Pkw zu einem Messeauftritt seines Arbeitgebers nach ${ziel} (${einfach} km einfache Strecke) und bleibt dort ${naechte} ${naechte === 1 ? "Nacht" : "Nächte"}. Das Hotel stellt ihm je Nacht ${eur(preis)} in Rechnung, darin ist ein gesondert ausgewiesenes Frühstück von ${eur(frueh)} enthalten. Alle Mahlzeiten bezahlt er selbst. Für das Messeparkhaus zahlt er insgesamt ${eur(park)}.${erst ? ` Sein Arbeitgeber erstattet ihm steuerfrei ${eur(erst)}.` : " Erstattungen erhält er nicht."}\n\nWie hoch sind die Werbungskosten aus der Reise (in €)?`,
+    euro: summe,
+    erklaerung: `• Fahrtkosten (§ 9 Abs. 1 S. 3 Nr. 4a S. 2 EStG): ${einfach} km × 2 × 0,30 € = ${eur(fahrt)}\n• Übernachtung (Nr. 5a S. 2): ${naechte} × (${eur(preis)} − Frühstück ${eur(frueh)}) = ${eur(hotel)}\n• Verpflegung (§ 9 Abs. 4a S. 3 EStG): 2 × 14 €${naechte > 1 ? ` + ${naechte - 1} × 28 €` : ""} = ${eur(vma)} – keine Kürzung, da Ole das Frühstück selbst bezahlt\n• Parkgebühren (Reisenebenkosten, § 9 Abs. 1 S. 1 EStG): ${eur(park)}${erst ? `\n• − steuerfreie Erstattung (§ 3 Nr. 16 EStG, § 3c Abs. 1 EStG): ${eur(erst)}` : ""}\n= ${eur(summe)}`,
+    normen: ["EStG 9 1", "EStG 9 4a", "EStG 3"],
+  };
+});
+
+const VP = ["28 €", "14 €", "2,80 €", "Keine Verpflegungspauschale"];
+const reiseFall = F("est-reisekosten-fall", "est-reisekosten",
+  "Welche Verpflegungspauschale steht für den Tag zu?",
+  VP,
+  [
+    { text: "Bauleiter B fährt von seiner Wohnung zu einer Kundenbaustelle und ist insgesamt 9 Stunden unterwegs; er übernachtet zu Hause.", richtig: "14 €",
+      erkl: "Eintägige Auswärtstätigkeit mit mehr als 8 Stunden Abwesenheit → 14 € (§ 9 Abs. 4a S. 3 Nr. 3 EStG)." },
+    { text: "Referentin R hält einen Vortrag in der Nachbarstadt und ist insgesamt 7 ½ Stunden von Wohnung und erster Tätigkeitsstätte abwesend.", richtig: "Keine Verpflegungspauschale",
+      erkl: "Nicht mehr als 8 Stunden → keine Pauschale (§ 9 Abs. 4a S. 3 Nr. 3 EStG)." },
+    { text: "Monteur M ist auf einer fünftägigen Dienstreise mit Hotelübernachtung. Gefragt ist der dritte Tag, an dem er 24 Stunden abwesend ist; Mahlzeiten bezahlt er selbst.", richtig: "28 €",
+      erkl: "Kalendertag mit 24 Stunden Abwesenheit → 28 € (§ 9 Abs. 4a S. 3 Nr. 1 EStG)." },
+    { text: "Beraterin C reist um 20 Uhr zu einem Kundentermin am nächsten Morgen an und übernachtet im Hotel. Gefragt ist der Anreisetag.", richtig: "14 €",
+      erkl: "Anreisetag bei Übernachtung → 14 € ohne Mindestabwesenheit (§ 9 Abs. 4a S. 3 Nr. 2 EStG)." },
+    { text: "Elektriker E arbeitet seit vier Monaten an derselben Großbaustelle (keine erste Tätigkeitsstätte), zu der er täglich fährt; er ist jeden Tag 10 Stunden abwesend.", richtig: "Keine Verpflegungspauschale",
+      erkl: "Der Abzug ist auf die ersten drei Monate an derselben Tätigkeitsstätte beschränkt (§ 9 Abs. 4a S. 6 EStG)." },
+    { text: "Elektriker F war drei Monate an einer Großbaustelle, dann sechs Wochen im Urlaub und arbeitet jetzt wieder dort, täglich 10 Stunden abwesend.", richtig: "14 €",
+      erkl: "Unterbrechung von mindestens vier Wochen → die Dreimonatsfrist beginnt neu (§ 9 Abs. 4a S. 7 EStG); mehr als 8 Stunden → 14 €." },
+    { text: "Sachbearbeiterin S arbeitet wegen eines Projekts 11 Stunden in der Firmenzentrale, ihrer ersten Tätigkeitsstätte.", richtig: "Keine Verpflegungspauschale",
+      erkl: "Keine auswärtige berufliche Tätigkeit – sie ist an ihrer ersten Tätigkeitsstätte tätig (§ 9 Abs. 4a S. 2, § 9 Abs. 4 EStG)." },
+    { text: "Vertriebler V besucht einen Kunden und ist 10 Stunden unterwegs (ohne Übernachtung). Der Arbeitgeber lädt ihn dort zum Mittagessen mit dem Kunden ein (geschäftlich veranlasste Bewirtung durch den Arbeitgeber).", richtig: "2,80 €",
+      erkl: "14 € (§ 9 Abs. 4a S. 3 Nr. 3 EStG) − 40 % von 28 € = 11,20 € für das vom Arbeitgeber gestellte Mittagessen (S. 8 Nr. 2) = 2,80 €." },
+  ], ["EStG 9 4a"]);
 
 const wkSumme = R("est-wk-summe", "est-werbungskosten", (r) => {
   const tage = r.zahl(150, 220), entf = r.zahl(3, 14), buecher = r.zahl(2, 30) * 10, gew = r.muenze() ? r.zahl(15, 40) * 10 : 0;
@@ -680,8 +831,9 @@ export const EST_AUFGABEN = [
   ...grundlagen, ...stpfl, stpflFall, ...einkuenfte, einkunftsartFall, einkuenfteRechnen, ...zve, zveRechnen,
   ...veranlagung, veranlagungFall, ...tarif, tarifGrund, tarifSplit, abschluss, fall1,
   ...einnahmen, zuflussFall, uebungsleiterRechnen, ...ausgaben, aufwandFall, gemischtRechnen,
-  ...zufluss, elfFall, vorauszahlungRechnen, fall2, ...wk, afaRechnen, homeofficeRechnen, wkSumme,
-  ...entfernung, epPkw, epOepnv, epGemischt, epJobticket, epWechsel,
+  ...zufluss, elfFall, vorauszahlungRechnen, fall2, ...wk, wkSumme,
+  ...arbeitsmittel, arbeitsmittelFall, afaRechnen, gemischtAfa, ...homeoffice, homeofficeFall, homeofficeRechnen, arbeitszimmerRechnen,
+  ...entfernung, epPkw, epOepnv, epGemischt, epJobticket, epWechsel, ...reisekosten, reiseFall, verpflegungRechnen, reiseRechnen,
 ];
 
 export const MC_EST = Object.fromEntries(EST_AUFGABEN.filter((v) => v.mc).map((v) => [v.id, v.mc]));
