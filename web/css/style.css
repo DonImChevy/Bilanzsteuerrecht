@@ -1377,3 +1377,11 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .pfad .pf-schalter[aria-checked="true"] .sch-bahn { background: linear-gradient(90deg, #fbbf24, #f472b6); }
 .pfad .pf-schalter[aria-checked="true"] { color: #fde68a; }
 .pfad .pf-schalter:focus-visible .sch-bahn { outline: 2.5px solid #fbbf24; outline-offset: 2px; }
+
+/* Lernpfad: Taler wartet neben „Prüfen“ bzw. dem Tipp und zeigt nach jeder Antwort seine Show */
+.pfad .pf-taler-reihe { align-items: center; }
+.pfad .pf-taler-reihe .pf-tipp { flex: 1; text-align: left; padding: 12px 0; }
+.pfad .pf-fuss:has([data-a="pfadPruefen"]:active) .fb-warte .taler { transform: translateY(5px) scale(1.12, 0.8); transition-duration: 0.08s; }
+.pfad .pf-erkl.nach-show.ok { animation-delay: 1.45s; }
+.pfad .pf-erkl.nach-show.err { animation-delay: 0.75s; }
+:root[data-bewegung="aus"] .pfad .pf-fuss .fb-warte .taler { transition: none; }
