@@ -25,6 +25,8 @@ export const THEMEN = [
   { id: "bsr-afa", titel: "Abschreibungen & GWG", unter: "§ 253 III HGB, § 6 II, IIa, § 7 I EStG", icon: "📉", fach: "bsr", teil: 2 },
   { id: "bsr-teilwert", titel: "Teilwert & Wertaufholung", unter: "§ 253 III–V HGB, § 6 I Nr. 1, 2 EStG", icon: "⚖️", fach: "bsr", teil: 2 },
   { id: "bsr-abgrenzung", titel: "Rechnungsabgrenzung & Verbindlichkeiten", unter: "§§ 250, 252, 256a HGB, § 5 V EStG", icon: "📆", fach: "bsr", teil: 2 },
+  // Ausbildung (FTA I): Buchführung und Bilanzwesen – eigene Themen; die übrigen Themen teilt BilBf mit Bilanzrecht Teil I (THEMEN_BBF)
+  { id: "bbf-afa", titel: "AfA – Grundzüge", unter: "§ 7 I EStG · Digital-AfA · Buchung", icon: "📉", fach: "bbf" },
   { id: "bsr-entnahme-einlage", titel: "Entnahmen & Einlagen", unter: "§ 4 I, § 6 I Nr. 4, 5 EStG", icon: "🔄", fach: "bsr", teil: 2 },
   // Öffentliches Recht (Unterrichtsskript ÖR GS I – Kapitel 1 Staatsrecht und 2 Gesetzgebung)
   { id: "oer-staatsziele", titel: "Staat & Staatsformmerkmale", unter: "Skript 1.3–1.4.1 · Drei-Elemente-Lehre, Art. 20, 28, 79 GG", icon: "📜", fach: "oer" },
@@ -72,11 +74,44 @@ export const THEMA = Object.fromEntries(THEMEN.map((t) => [t.id, t]));
 
 export const FAECHER = {
   bsr: { id: "bsr", titel: "Bilanzsteuerrecht", kurz: "BSR" },
+  bbf: { id: "bbf", titel: "Bilanz und Buchführung", kurz: "BilBf" },
   oer: { id: "oer", titel: "Öffentliches Recht", kurz: "ÖR" },
   est: { id: "est", titel: "Einkommensteuer", kurz: "ESt" },
   ust: { id: "ust", titel: "Umsatzsteuer", kurz: "USt" },
 };
-export const themenFuer = (fach) => THEMEN.filter((t) => t.fach === fach);
+/**
+ * BilBf (Ausbildung FTA I) nutzt die Buchführungsthemen aus Bilanzrecht Teil I mit – in der Reihenfolge des Lehrplans,
+ * teils mit angepasstem Titel. Aufgaben, die über den Lehrplan hinausgehen, blendet NICHT_IN aus.
+ */
+const THEMEN_BBF = [
+  ["buchfuehrungspflicht", { unter: "§§ 238, 241a HGB, §§ 140, 141 AO · Beginn und Ende" }],
+  ["buecher", { unter: "Grundbuch, Hauptbuch, Belege, Kassenbericht" }],
+  ["grundbegriffe", { unter: "Auszahlung, Ausgabe, Aufwand" }],
+  ["inventurBilanz", { unter: "§§ 240, 241, 242, 247, 257 HGB · Inventurarten" }],
+  ["bilanzveraenderungen", { titel: "Bilanzveränderungen", unter: "BV-Umschichtung und BV-Änderung" }],
+  ["bestandskonten"], ["erfolgskonten"],
+  ["privatkonten", { unter: "Entnahmen und Einlagen von Geld" }],
+  ["umsatzsteuer", { unter: "Umsatzsteuer, Vorsteuer, Abschluss (Grundfälle)" }],
+  ["warenkonten"], ["bbf-afa"], ["abschluss"],
+  ["gewinnermittlung", { titel: "Betriebsvermögensvergleich", unter: "§ 4 I 1 EStG · Gewinnbegriff" }],
+];
+export const themenFuer = (fach) => fach === "bbf"
+  ? THEMEN_BBF.map(([id, anders]) => ({ ...THEMA[id], ...(anders || {}) }))
+  : THEMEN.filter((t) => t.fach === fach);
+/** Gehört das Thema (auch) zu diesem Modul? */
+export const themaIn = (themaId, fach) => THEMA[themaId]?.fach === fach || (fach === "bbf" && THEMEN_BBF.some(([id]) => id === themaId));
+/** Aufgaben gemeinsamer Themen, die über den Lehrplan des Moduls hinausgehen (FTA I: z. B. Skonto, Kostenrechnung, RAP). */
+export const NICHT_IN = {
+  bbf: new Set([
+    "bf-av-verkauf", "ib-aufstellung", "ib-rap", "ib-zinsschuld", "ib-sonstige-ford",
+    "gb-zusatzkosten", "gb-neutral", "gb-anderskosten",
+    "pk-warenentnahme",
+    "us-17", "us-maengel-rueck", "us-skonto-einzelhaendler", "us-skonto-grosshaendler", "us-skonto-r", "us-zahllastkonto",
+    "ge-regeln", "ge-methoden", "ge-5-1", "ko-korrektur-kuli", "ko-korrektur-provision", "ko-korrektur-verkauf", "ge-scott",
+  ]),
+};
+/** Vorlage (Aufgabe) gehört zum Modul: Thema passt und sie ist dort nicht ausgeblendet. */
+export const vorlageIn = (v, fach) => themaIn(v.thema, fach) && !NICHT_IN[fach]?.has(v.id);
 /** Themen für Klausur und gemischte Übungen – ohne „Zusatzwissen“. */
 export const pruefungsThemen = (fach) => themenFuer(fach).filter((t) => !t.zusatz);
 /** Bilanzrecht ist in Teil I (Buchführung) und Teil II (Bilanzierung und Bewertung) geteilt; teil = "1", "2" oder "beide". */

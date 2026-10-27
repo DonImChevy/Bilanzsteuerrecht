@@ -1,7 +1,7 @@
 import * as G from "./geld.js";
 import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
-import { THEMEN, THEMA, themenFuer, pruefungsThemen, imTeil, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
-import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer, FALL_IDS } from "./katalog.js";
+import { THEMEN, THEMA, themenFuer, pruefungsThemen, imTeil, themaIn, vorlageIn, NICHT_IN, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
+import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer, FALL_IDS, neueZiehung } from "./katalog.js";
 import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
@@ -14,7 +14,7 @@ import * as MK from "./meinekarten.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
-import { MODULE, MODUL, aktiveModule } from "./module.js";
+import { MODULE, MODUL, aktiveModule, moduleDerRolle, rolleVon } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
 import { ic } from "./icons.js";
 import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, codeAnzeige, abgleichen, SERVER } from "./sync.js";
@@ -184,7 +184,9 @@ const summeFach = (fach) => themenFuer(fach).map((t) => zaehler(t.id)).reduce((a
 
 // ======================= Zustand =======================
 const state = {
-  fach: ["oer", "est", "ust"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
+  fach: ["oer", "est", "ust", "bbf"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
+  // Studium (Grundstudium I) oder Ausbildung (FTA I); leer = noch nicht gewählt (Willkommen fragt danach). Alte Nutzer: Studium
+  rolle: ["studium", "ausbildung"].includes(lies("bsr.rolle", "")) ? lies("bsr.rolle", "") : (lies("bsr.willkommen", "") ? "studium" : ""),
   oerModus: lies("bsr.oerModus", "qa") === "mc" ? "mc" : "qa", // "qa" = selbst formulieren, "mc" = Multiple Choice
   bilrTeil: ["1", "2"].includes(lies("bsr.teil", "beide")) ? lies("bsr.teil", "beide") : "beide", // Bilanzrecht: "1" | "2" | "beide"
   ziel: Number(lies("bsr.ziel", "20")) || 20,
@@ -218,7 +220,7 @@ const farbe = (q) => (q >= 0.8 ? "var(--ok)" : q >= 0.5 ? "var(--warn)" : "var(-
 const zahlText = (n) => n.toLocaleString("de-DE");
 
 // ======================= Einstellungen (werden mit dem Sync-Code abgeglichen) =======================
-const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus", "bewegungAus"];
+const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus", "bewegungAus", "rolle"];
 // Erster Stand ohne Zeitstempel (t = 0): Ein neu verbundenes Gerät übernimmt die Einstellungen der anderen.
 if (!stat.einstellungen) stat.einstellungen = { ziel: String(state.ziel), design: state.design, teil: state.bilrTeil, oerModus: state.oerModus, t: 0 };
 /** Einstellung lokal speichern und für den Abgleich mit Zeitstempel im Lernstand vermerken. */
@@ -237,6 +239,7 @@ function einstellungenAnwenden() {
   if (e.teil) state.bilrTeil = ["1", "2"].includes(e.teil) ? e.teil : "beide";
   if (e.oerModus) state.oerModus = e.oerModus === "mc" ? "mc" : "qa";
   if (e.bewegungAus != null) state.bewegungAus = e.bewegungAus === "1";
+  if (e.rolle) state.rolle = e.rolle === "ausbildung" ? "ausbildung" : "studium";
 }
 
 /** Akzentfarbe und Hell/Dunkel anwenden. */
@@ -268,7 +271,7 @@ function neueSitzung(opt) {
     ? r.mischen((ohneFall.length ? ohneFall : vorlagen).map((v) => v.erzeugen(r)))
     : opt.modus === "klausur"
     ? klausur(opt.anzahl, r, opt.fach, mc, opt.teil)
-    : fragen(opt.themen, opt.anzahl || 10, r, opt.filter ?? opt.nurBuchung, mc);
+    : fragen(opt.themen, opt.anzahl || 10, r, opt.filter ?? opt.nurBuchung, mc, neueZiehung(opt.fach));
   if (mc) fr = fr.map((f) => alsMultipleChoice(f, r));
   return {
     ...opt, fragen: fr, antworten: fr.map(leereAntwort), bewertungen: fr.map(() => null), aufgedeckt: fr.map(() => false),
@@ -410,15 +413,19 @@ function scrollOben() {
 }
 
 // ======================= Wiederholung =======================
-const idsVon = (fach) => ALLE.filter((v) => THEMA[v.thema].fach === fach).map((v) => v.id);
+const idsVon = (fach) => ALLE.filter((v) => vorlageIn(v, fach)).map((v) => v.id);
+/** Buchführungsmodule (Kontenplan, Buchungssätze): Bilanzrecht und BilBf. */
+const buchungsFach = (fach) => fach === "bsr" || fach === "bbf";
+/** Zu welchem Modul ein Thema gehört – gemeinsame Buchführungsthemen zählen bei Azubis zu BilBf. */
+const fachFuerThema = (id) => (state.rolle === "ausbildung" && themaIn(id, "bbf") ? "bbf" : THEMA[id].fach);
 // Bilanzrecht: Auswahl Teil I / Teil II / beide (andere Module immer vollständig)
 const teilVon = (fach) => (fach === "bsr" ? state.bilrTeil : "beide");
 const themenImTeil = (fach) => themenFuer(fach).filter((t) => imTeil(t, teilVon(fach)));
 const pruefImTeil = (fach) => pruefungsThemen(fach).filter((t) => imTeil(t, teilVon(fach)));
-const idsImTeil = (fach) => ALLE.filter((v) => THEMA[v.thema].fach === fach && imTeil(THEMA[v.thema], teilVon(fach))).map((v) => v.id);
+const idsImTeil = (fach) => ALLE.filter((v) => vorlageIn(v, fach) && imTeil(THEMA[v.thema], teilVon(fach))).map((v) => v.id);
 const kartenImTeil = (fach) => kartenFuer(fach).filter((k) => imTeil(THEMA[k.thema], teilVon(fach)));
 const faelligImTeil = (fach) => faellige(stat.lern, idsImTeil(fach));
-const idsAktiv = () => aktiveModule().flatMap((m) => idsVon(m.id));
+const idsAktiv = () => aktiveModule(state.rolle || "studium").flatMap((m) => idsVon(m.id));
 const faelligVon = (fach) => faellige(stat.lern, fach ? idsVon(fach) : idsAktiv());
 const PRO_WIEDERHOLUNG = 20;
 
@@ -433,7 +440,7 @@ const TABS = () => [
   ["lernen", "start", "Übersicht"],
   ["klausur", "klausur", "Klausur"],
   ["karten", "karten", "Karten"],
-  ["nachschlagen", "nachschlagen", state.fach === "bsr" ? "Nachschlagen" : "Normen"],
+  ["nachschlagen", "nachschlagen", buchungsFach(state.fach) ? "Nachschlagen" : "Normen"],
 ];
 
 function render() {
@@ -444,7 +451,7 @@ function render() {
   // Einblend-Animationen nur, wenn sich die Ansicht wirklich ändert (nicht bei jedem Antippen)
   const neu = (k) => { const w = ansicht[k] !== schluessel[k](); ansicht[k] = schluessel[k](); return w ? " anim" : ""; };
   const animTab = neu("tab"), animVoll = neu("voll"), animSheet = neu("sheet");
-  const tab = { start: tabStart, lernen: tabLernen, klausur: tabKlausur, karten: tabKarten, nachschlagen: state.fach === "bsr" ? tabNachschlagenBilr : tabNormen }[state.tab]();
+  const tab = { start: tabStart, lernen: tabLernen, klausur: tabKlausur, karten: tabKarten, nachschlagen: buchungsFach(state.fach) ? tabNachschlagenBilr : tabNormen }[state.tab]();
   let html = `<main class="screen${animTab}${state.tab === "start" ? " ohne-leiste" : ""}" data-tab="${state.tab}">${tab}</main>`;
   if (state.tab !== "start") html += `<nav class="tabbar">${TABS().map(([id, i, t]) => `<button data-a="tab" data-v="${id}" class="${state.tab === id ? "aktiv" : ""}" aria-label="${t}"><span class="ti">${ic(i)}</span>${t}</button>`).join("")}</nav>`;
   if (state.sitzung) html += sitzungView();
@@ -569,12 +576,20 @@ function tabStart() {
       <button class="leeren ${state.suche ? "" : "versteckt"}" data-a="sucheLeeren" aria-label="Suche leeren">${ic("kreuz", "klein")}</button></div>
     <div id="sucheErgebnis">${state.suche.trim() ? suchErgebnisse(state.suche) : ""}</div>
     <div id="startRest" class="${state.suche.trim() ? "versteckt" : ""}">
-      <div class="gruppe"><div class="gruppe-titel">Deine Module <span class="sub" style="text-transform:none;letter-spacing:0">${aktiveModule().length} von ${MODULE.length} verfügbar</span></div>
-        <div class="modul-grid">${MODULE.map(modulKachel).join("")}</div></div>
+      <div class="gruppe"><div class="gruppe-titel">Deine Module <span class="sub" style="text-transform:none;letter-spacing:0">${aktiveModule(state.rolle || "studium").length} von ${moduleDerRolle(state.rolle || "studium").length} verfügbar</span></div>
+        ${rollenSchalter()}
+        <div class="modul-grid">${moduleDerRolle(state.rolle || "studium").map(modulKachel).join("")}</div></div>
       <div class="gruppe"><div class="gruppe-titel">Diese Woche <span class="sub" style="text-transform:none;letter-spacing:0">${zahlText(woche(stat.tage).reduce((a, t) => a + t.n, 0))} Aufgaben</span></div>
         <div class="liste">${wocheView()}</div></div>
       ${installHinweis()}
     </div>`;
+}
+
+/** Umschalter Studium / Ausbildung (Startseite und Einstellungen). */
+function rollenSchalter() {
+  const r = state.rolle || "studium";
+  return `<div class="modus-karte rollen-karte"><div class="segment">${[["studium", "hut", "Studium"], ["ausbildung", "akte", "Ausbildung"]].map(([id, i, t]) =>
+    `<button data-a="rolle" data-v="${id}" class="${r === id ? "aktiv" : ""}" aria-pressed="${r === id}">${ic(i, "klein")}${t}</button>`).join("")}</div></div>`;
 }
 
 /** Modul-Kachel: oben öffnen (ca. drei Viertel), unten Streifen mit den heutigen Wiederholungen. */
@@ -659,8 +674,11 @@ function suchErgebnisse(q) {
   const passt = (x) => woerter.every((w) => x.such.includes(w));
   const beste = (liste, n) => liste.filter(passt).map((x) => [guete(x.such, woerter), x]).sort((a, b) => b[0] - a[0]).slice(0, n).map((e) => e[1]);
   const I = suchIndex();
-  const themen = beste(I.themen, 6);
-  const aufgaben = beste(I.aufgaben.filter((x) => !MODUL[THEMA[x.v.thema].fach].bald), 8);
+  // Nur Inhalte der gewählten Rolle (Studium bzw. Ausbildung); gemeinsame Buchführungsthemen zählen bei Azubis zu BilBf
+  const rolle = state.rolle || "studium";
+  const inRolle = (themaId) => rolleVon(MODUL[fachFuerThema(themaId)]) === rolle;
+  const themen = beste(I.themen.filter((x) => inRolle(x.t.id)), 6);
+  const aufgaben = beste(I.aufgaben.filter((x) => !MODUL[THEMA[x.v.thema].fach].bald && inRolle(x.v.thema) && !NICHT_IN[fachFuerThema(x.v.thema)]?.has(x.v.id)), 8);
   // Normzitat wie „Art. 63“ oder „§ 12 BWahlG“: passende Vorschrift zuerst, Normen-Gruppe nach oben
   const zitat = /^\s*(art\.?|§)\s*(\d+[a-z]?)\s*([a-z]*)/i.exec(q);
   let normen = beste(I.normen, 6);
@@ -671,14 +689,14 @@ function suchErgebnisse(q) {
     normen = [...exakt, ...normen.filter((x) => !exakt.includes(x))].slice(0, 6);
   }
   const konten = beste(I.konten, 6);
-  const kompakt = beste(I.kompakt.filter((x) => !MODUL[x.t.fach].bald), 4);
-  const module = I.module.filter(passt);
+  const kompakt = beste(I.kompakt.filter((x) => !MODUL[x.t.fach].bald && inRolle(x.t.id)), 4);
+  const module = I.module.filter((x) => passt(x) && rolleVon(x.m) === rolle);
   const gruppe = (titel, inhalt) => `<div class="treffer-gruppe treffer"><div class="gruppe-titel">${titel}</div><div class="liste">${inhalt}</div></div>`;
   let html = "";
   if (module.length) html += gruppe("Module", module.map(({ m }) => `<button class="zeile" data-a="${m.bald ? "bald" : "modul"}" data-v="${m.id}">
     <span class="symbol" style="background:${m.farbe};color:#fff">${ic(m.icon)}</span><span class="grow"><div>${markiere(m.titel, hl)}</div><div class="sub">${m.bald ? "Bald verfügbar" : m.unter}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
   if (themen.length) html += gruppe("Themen – direkt üben", themen.map(({ t }) => `<button class="zeile" data-a="thema" data-v="${t.id}">
-    <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub">${MODUL[t.fach].kurz} · ${esc(t.unter)}</div></span><span class="chev">${ic("play", "klein fill")}</span></button>`).join(""));
+    <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub">${MODUL[fachFuerThema(t.id)].kurz} · ${esc(t.unter)}</div></span><span class="chev">${ic("play", "klein fill")}</span></button>`).join(""));
   if (kompakt.length) html += gruppe("Zusammenfassungen", kompakt.map(({ t, k }) => `<button class="zeile" data-a="kompakt" data-v="${t.id}">
     <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${markiere(kompaktText(k), hl, true)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
   const normHtml = normen.length ? gruppe("Gesetzestexte", normen.map(({ n, label }) => `<button class="zeile" data-a="normDetail" data-v="${n.g} ${n.nr}">
@@ -686,7 +704,7 @@ function suchErgebnisse(q) {
   if (zitat) html += normHtml;
   if (aufgaben.length) html += gruppe("Aufgaben", aufgaben.map(({ v, f }) => `<button class="zeile" data-a="einzeln" data-v="${v.id}">
     <span class="grow"><div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px">${markiere(f.text, hl, true)}</div>
-    <div class="sub">${MODUL[THEMA[v.thema].fach].kurz} · ${esc(THEMA[v.thema].titel)} · ${typBezeichnung(f)}</div></span><span class="chev">${ic("play", "klein fill")}</span></button>`).join(""));
+    <div class="sub">${MODUL[fachFuerThema(v.thema)].kurz} · ${esc(THEMA[v.thema].titel)} · ${typBezeichnung(f)}</div></span><span class="chev">${ic("play", "klein fill")}</span></button>`).join(""));
   if (!zitat) html += normHtml;
   if (konten.length) html += gruppe("Konten", konten.map(({ k }) => `<button class="zeile" data-a="kontoDetail" data-v="${k.id}">
     <span class="grow">${markiere(k.name, hl)}</span><span class="badge art-${k.art}">${k.artKurz}</span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
@@ -777,6 +795,7 @@ function themenListe() {
 /** Umschalter Frage-Antwort / Multiple Choice (ÖR und ESt). */
 function modusSchalter() {
   if (state.fach === "bsr") return teilSchalter();
+  if (state.fach === "bbf") return "";
   const m = [["qa", "stift", "Frage – Antwort"], ["mc", "haken", "Multiple Choice"]];
   return `<div class="gruppe"><div class="gruppe-titel">Antwortmodus</div><div class="modus-karte"><div class="segment">${m.map(([id, i, t]) =>
     `<button data-a="oerModus" data-v="${id}" class="${state.oerModus === id ? "aktiv" : ""}">${ic(i, "klein")}${t}</button>`).join("")}</div>
@@ -858,6 +877,8 @@ function tabKlausur() {
         : "Wie in der Klausur: ca. 75 % Frage-Antwort und 25 % Übertragungsaufgaben. Nach der Abgabe vergleichst du mit den Musterantworten.")
       : state.fach === "est" || state.fach === "ust"
       ? "Ca. 50 % Rechenaufgaben mit immer neuen Zahlen, dazu Einordnungsfälle und Frage-Antwort. Auswertung erst nach der Abgabe."
+      : state.fach === "bbf"
+      ? "Wie die Semesterklausur FTA I: Schwerpunkt Buchungssätze (ca. 60 %), dazu Wissensfragen, Inventur, AfA und Betriebsvermögensvergleich. Auswertung erst nach der Abgabe."
       : { 1: "Teil I: Buchführung mit Schwerpunkt Buchungssätze (ca. 60 %), dazu Rechnen und Theorie. Auswertung erst nach der Abgabe.",
           2: "Teil II: Bilanzierung und Bewertung – ca. 40 % Buchungssätze, dazu Berechnungen und Würdigung. Auswertung erst nach der Abgabe.",
           beide: "Wie die Semesterklausur: ca. 25 % Teil I (Buchführung) und 75 % Teil II (Bilanzierung und Bewertung). Auswertung erst nach der Abgabe." }[state.bilrTeil])}
@@ -900,7 +921,7 @@ function karteAusFrage(f) {
     hinten = l.soll.map(([k, c]) => `${K(k).name} ${G.text(c)}`).join("\n") + "\n" + l.haben.map(([k, c]) => `an ${K(k).name} ${G.text(c)}`).join("\n");
   }
   if (f.erklaerung && f.typ !== "offen") hinten += "\n\n" + f.erklaerung;
-  return { v: vorne, h: hinten, f: THEMA[f.thema].fach, q: THEMA[f.thema].titel };
+  return { v: vorne, h: hinten, f: fachFuerThema(f.thema), q: THEMA[f.thema].titel };
 }
 /** Zuletzt falsch beantwortete Aufgaben des Moduls – ohne Grafikaufgaben. */
 function fehlerKarten(fach) {
@@ -1005,7 +1026,7 @@ function tabKarten() {
   return `
     ${seitenKopf("Karteikarten", "Eigene Karten und fertige Lernkarten – Vorderseite lesen, umdrehen, ehrlich bewerten.")}
     ${meineKartenBereich()}
-    <div class="gruppe-titel" style="margin-top:22px">Fertige Lernkarten <span class="sub" style="text-transform:none;letter-spacing:0">${state.fach === "bsr" ? "Merksätze, Definitionen, Fristen" : "Frage – Musterantwort"}</span></div>
+    <div class="gruppe-titel" style="margin-top:22px">Fertige Lernkarten <span class="sub" style="text-transform:none;letter-spacing:0">${buchungsFach(state.fach) ? "Merksätze, Definitionen, Fristen" : "Frage – Musterantwort"}</span></div>
     ${state.fach === "bsr" ? teilSchalter() : ""}
     <div class="kachel-grid">
       <button class="kachel" data-a="deck" data-v="alle"><span class="k-icon">${ic("mischen")}</span><span class="k-text"><b>Alle mischen</b><span class="sub">${LERNKARTEN.length} Karten</span></span></button>
@@ -1621,6 +1642,7 @@ function sheetView() {
         <span class="chip-reihe">${[10, 20, 30, 50].map((z) => `<button class="chip ${state.ziel === z ? "aktiv" : ""}" data-a="ziel" data-v="${z}">${z} Aufgaben</button>`).join("")}</span></div></div></div>
       <div class="gruppe"><div class="gruppe-titel">Darstellung</div><div class="modus-karte"><div class="segment">
         ${[["system", "System"], ["light", "Hell"], ["dark", "Dunkel"]].map(([id, t]) => `<button data-a="design" data-v="${id}" class="${state.design === id ? "aktiv" : ""}">${t}</button>`).join("")}</div></div></div>
+      <div class="gruppe"><div class="gruppe-titel">Studium oder Ausbildung</div>${rollenSchalter()}<div class="gruppe-fuss">Bestimmt, welche Module auf der Startseite stehen. Der Lernstand bleibt erhalten.</div></div>
       <div class="gruppe"><div class="gruppe-titel">Animationen</div><div class="liste"><div class="zeile">
         <span class="grow"><b>Animationen</b><div class="sub">Aus = Bewegung reduzieren: Taler, Konfetti und Übergänge bleiben still. Auch während der Aufgaben oben rechts umschaltbar.</div></span>${bewegungSchalter()}</div></div></div>
       ${syncVerfuegbar() ? `<div class="gruppe"><div class="gruppe-titel">Mehrere Geräte</div><div class="liste"><button class="zeile" data-a="syncOeffnen"><span class="symbol">${ic("wechsel")}</span>
@@ -1645,15 +1667,20 @@ function sheetView() {
     inhalt = `<div class="willkommen">
       <div class="logo">${ic("hut")}</div>
       <h2>Willkommen beim Finanzwirt-Trainer</h2>
-      <div class="sub" style="font-size:15px">Deine Lern-App für das Studium zum Diplom-Finanzwirt – kostenlos und offline.</div>
+      <div class="sub" style="font-size:15px">Deine Lern-App für Studium und Ausbildung in der Steuerverwaltung – kostenlos und offline.</div>
       <div class="vorteile">
         <div><span class="symbol">${ic("ziel")}</span><div><b>Klausurnah üben</b><span class="sub">Buchungssätze, Frage-Antwort, Übertragungsaufgaben – mit Musterlösung.</span></div></div>
         <div><span class="symbol">${ic("gehirn")}</span><div><b>Nichts mehr vergessen</b><span class="sub">Die Lernkartei holt jede Aufgabe im richtigen Abstand zurück.</span></div></div>
         <div><span class="symbol">${ic("flamme")}</span><div><b>Dranbleiben</b><span class="sub">Tagesziel und Lernserie zeigen dir, wie gut du im Plan bist.</span></div></div>
       </div>
-      <div class="gruppe-titel" style="justify-content:center">Womit möchtest du starten?</div>
-      <div class="modul-grid" style="margin-bottom:20px">${aktiveModule().map((m) => `<button class="modul-kachel" style="--mc:${m.farbe};min-height:0" data-a="willkommenModul" data-v="${m.id}">
+      ${!state.rolle ? `<div class="gruppe-titel" style="justify-content:center">Wo stehst du?</div>
+      <div class="rollen-wahl">
+        <button class="rollen-kachel" data-a="willkommenRolle" data-v="studium"><span class="m-icon">${ic("hut")}</span><span><b>Studium</b><span class="sub">Diplom-Finanzwirt · Grundstudium I</span></span></button>
+        <button class="rollen-kachel" data-a="willkommenRolle" data-v="ausbildung"><span class="m-icon">${ic("akte")}</span><span><b>Ausbildung</b><span class="sub">Finanzwirt · Steueranwärter, FTA I</span></span></button>
+      </div>` : `<div class="gruppe-titel" style="justify-content:center">Womit möchtest du starten?</div>
+      <div class="modul-grid" style="margin-bottom:10px">${aktiveModule(state.rolle).map((m) => `<button class="modul-kachel" style="--mc:${m.farbe};min-height:0" data-a="willkommenModul" data-v="${m.id}">
         <span class="m-icon">${ic(m.icon)}</span><span><div class="m-titel">${m.titel}</div><div class="m-unter">${esc(m.unter)}</div></span></button>`).join("")}</div>
+      <div style="text-align:center;margin-bottom:20px"><button class="link" data-a="willkommenRolle" data-v="${state.rolle === "studium" ? "ausbildung" : "studium"}">Doch ${state.rolle === "studium" ? "in der Ausbildung" : "im Studium"}? Umstellen</button></div>`}
     </div>`;
   }
   return `<div class="sheet-hg" data-a="sheetZu"><div class="sheet ${halb ? "halb" : ""}" data-stop="1">
@@ -1742,6 +1769,13 @@ function fachSetzen(v) {
 }
 
 const AKTIONEN = {
+  rolle: (v) => {
+    state.rolle = v === "ausbildung" ? "ausbildung" : "studium";
+    einstellungMerken("rolle", state.rolle);
+    if (rolleVon(MODUL[state.fach]) !== state.rolle) fachSetzen(aktiveModule(state.rolle)[0].id);
+    render();
+  },
+  willkommenRolle: (v) => { AKTIONEN.rolle(v); state.sheet = { art: "willkommen" }; render(); },
   // Ohne Neuzeichnen umschalten – eine laufende Aufgabe bleibt, wie sie ist
   bewegung: () => {
     state.bewegungAus = !state.bewegungAus;
@@ -1803,8 +1837,8 @@ const AKTIONEN = {
     else if (v === "alles") starte({ ...basis, themen: alle });
     else starte({ ...basis, themen: [el.dataset.t] });
   },
-  thema: (v) => { fachSetzen(THEMA[v].fach); if (state.tab === "start") { state.tab = "lernen"; state.suche = ""; } starte({ modus: "uebung", fach: THEMA[v].fach, themen: [v] }); },
-  einzeln: (v) => { const t = ALLE.find((x) => x.id === v).thema; fachSetzen(THEMA[t].fach); state.tab = "lernen"; state.suche = ""; starte({ modus: "uebung", fach: THEMA[t].fach, themen: [t], ids: [v], einzeln: true }); },
+  thema: (v) => { const f = state.fach === "bbf" && themaIn(v, "bbf") ? "bbf" : fachFuerThema(v); fachSetzen(f); if (state.tab === "start") { state.tab = "lernen"; state.suche = ""; } starte({ modus: "uebung", fach: f, themen: [v] }); },
+  einzeln: (v) => { const t = ALLE.find((x) => x.id === v).thema, f = fachFuerThema(t); fachSetzen(f); state.tab = "lernen"; state.suche = ""; starte({ modus: "uebung", fach: f, themen: [t], ids: [v], einzeln: true }); },
   weiterlernen: () => { const z = stat.zuletzt; fachSetzen(z.fach); state.tab = "lernen"; starte({ modus: "uebung", fach: z.fach, themen: z.themen, nurBuchung: z.nurBuchung, filter: z.filter }); },
   beenden: () => {
     const x = s();
@@ -2011,13 +2045,13 @@ const AKTIONEN = {
   kompakt: (v) => {
     if (!KOMPAKT[v]) return;
     const vorher = state.kompakt;
-    state.kompakt = { id: v, fach: THEMA[v].fach, liste: !!vorher?.liste || (vorher && !vorher.id), ausSitzung: false };
+    state.kompakt = { id: v, fach: state.fach === "bbf" && themaIn(v, "bbf") ? "bbf" : fachFuerThema(v), liste: !!vorher?.liste || (vorher && !vorher.id), ausSitzung: false };
     if (!stat.kompakt[v]) { stat.kompakt[v] = Date.now(); speichern(); }
     render();
   },
   kompaktSitzung: (v) => {
     if (!KOMPAKT[v]) return;
-    state.kompakt = { id: v, fach: THEMA[v].fach, liste: false, ausSitzung: true };
+    state.kompakt = { id: v, fach: state.fach === "bbf" && themaIn(v, "bbf") ? "bbf" : fachFuerThema(v), liste: false, ausSitzung: true };
     if (!stat.kompakt[v]) { stat.kompakt[v] = Date.now(); speichern(); }
     render();
   },

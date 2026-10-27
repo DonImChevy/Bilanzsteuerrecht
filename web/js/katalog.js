@@ -6,9 +6,10 @@ import { OER_UEBERTRAGUNG } from "./oer/uebertragung.js";
 import { EST_AUFGABEN } from "./est/aufgaben.js";
 import { BSR_TEIL2 } from "./bilr/teil2.js";
 import { BSR_TEIL1_ZUSATZ } from "./bilr/teil1_zusatz.js";
+import { BBF_AUFGABEN } from "./bilr/bbf.js";
 import { UST_AUFGABEN } from "./ust/aufgaben.js";
 import { LERNKARTEN as BSR_KARTEN } from "./lernkarten.js";
-import { THEMA, pruefungsThemen, imTeil, Zufall } from "./kern.js";
+import { THEMA, pruefungsThemen, imTeil, Zufall, NICHT_IN, themaIn } from "./kern.js";
 import { normenAusText } from "./oer/normtext.js";
 import { MARKIERUNG } from "./markierungen.js";
 
@@ -16,7 +17,7 @@ import { MARKIERUNG } from "./markierungen.js";
 // ergänzt um die maßgeblichen Fundstellen aus markierungen.js (die dort genannten Sätze werden hervorgehoben).
 const mitNormen = (v) => {
   const zusatz = MARKIERUNG[v.id] || "";
-  const bsr = THEMA[v.thema].fach === "bsr";
+  const bsr = ["bsr", "bbf"].includes(THEMA[v.thema].fach);
   if (!bsr && !zusatz) return v;
   return { ...v, erzeugen: (r) => {
     const f = v.erzeugen(r);
@@ -29,7 +30,7 @@ const mitNormen = (v) => {
   } };
 };
 
-export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...BSR_TEIL1_ZUSATZ, ...EST_AUFGABEN, ...BSR_TEIL2, ...UST_AUFGABEN].map(mitNormen);
+export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...BSR_TEIL1_ZUSATZ, ...EST_AUFGABEN, ...BSR_TEIL2, ...UST_AUFGABEN, ...BBF_AUFGABEN].map(mitNormen);
 
 export const vorlagenFuer = (thema) => ALLE.filter((v) => v.thema === thema);
 export const fachVon = (vorlage) => THEMA[vorlage.thema].fach;
@@ -48,11 +49,12 @@ export const FALL_IDS = new Set(ALLE.filter((v) => v.erzeugen(new Zufall(1)).fal
  * Gemeinsamer Stand einer Übung bzw. Klausur, damit auch mehrere Ziehungen nacheinander (Klausur: Buchungen, Rechnen,
  * Fälle, Frage-Antwort) keine Frage doppelt liefern: bereits gestellte Fragetexte und wie oft jede Vorlage dran war.
  */
-export const neueZiehung = () => ({ texte: new Set(), n: new Map() });
+/** fach: Aufgaben, die im Modul ausgeblendet sind (NICHT_IN, z. B. BilBf), werden nicht gezogen. */
+export const neueZiehung = (fach = null) => ({ texte: new Set(), n: new Map(), ohne: NICHT_IN[fach] || null });
 const textSchluessel = (f) => String(f.text).replace(/\s+/g, " ").trim().toLowerCase();
 
 export function fragen(themen, anzahl, r, filter = null, ohneFaelle = false, z = neueZiehung()) {
-  let pool = ALLE.filter((v) => themen.includes(v.thema) && !(ohneFaelle && FALL_IDS.has(v.id)));
+  let pool = ALLE.filter((v) => themen.includes(v.thema) && !(ohneFaelle && FALL_IDS.has(v.id)) && !z.ohne?.has(v.id));
   if (filter === true || filter === "buchung") pool = pool.filter((v) => BUCHUNGS_IDS.has(v.id));
   if (filter === "uebertragung") pool = pool.filter((v) => v.kategorie === "uebertragung");
   if (filter === "qa") pool = pool.filter((v) => v.kategorie !== "uebertragung" && v.kategorie !== "rechnen" && v.kategorie !== "fall");
@@ -108,7 +110,7 @@ function gewichtet(pool, anzahl, r) {
 
 export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false, teil = "beide") {
   const alle = pruefungsThemen(fach).filter((t) => imTeil(t, teil)).map((t) => t.id);
-  const z = neueZiehung(); // alle Teilziehungen teilen sich den Stand → keine Frage doppelt
+  const z = neueZiehung(fach); // alle Teilziehungen teilen sich den Stand → keine Frage doppelt
   if (fach === "oer") {
     // Klausurstruktur ÖR: ca. 75 % Frage-Antwort (davon häufige Klausurthemen doppelt gewichtet), 25 % Übertragungsaufgaben
     const ue = fragen(alle, Math.round(anzahl * 0.25), r, "uebertragung", false, z);
@@ -143,4 +145,4 @@ const OER_KARTEN = [...OER_FRAGEN, ...EST_AUFGABEN.filter((v) => v.mc), ...BSR_T
   .map((f) => ({ id: "k-" + f.id, thema: f.thema, vorne: (f.fall ? "Klausurfall: " : "") + f.text, hinten: f.antwort, normen: f.normen }));
 
 export const LERNKARTEN = [...BSR_KARTEN, ...OER_KARTEN];
-export const kartenFuer = (fach) => LERNKARTEN.filter((k) => THEMA[k.thema].fach === fach);
+export const kartenFuer = (fach) => LERNKARTEN.filter((k) => themaIn(k.thema, fach) && !NICHT_IN[fach]?.has(k.id?.replace(/^k-/, "")));
