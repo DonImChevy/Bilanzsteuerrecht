@@ -24,6 +24,12 @@ const POSE = {
     rechts: arm("M95 62 Q108 50 106 35", 106, 34),
     augen: "froh", mund: null,
   },
+  // wartet neben dem Prüfen-Knopf: Arme unten, schaut nach oben zur Aufgabe
+  warte: {
+    links: arm("M25 70 Q16 76 17 86", 17, 87),
+    rechts: arm("M95 70 Q104 76 103 86", 103, 87),
+    augen: "offen", blick: [-0.8, -1.6], mund: "M55.5 74.5 Q60 77.5 64.5 74.5",
+  },
   // Daumen hoch, sanftes Lächeln, Augenbrauen mitfühlend
   mut: {
     links: arm("M25 70 Q16 76 17 86", 17, 87),
@@ -43,8 +49,8 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
   const p = POSE[stimmung] || POSE.hallo, id = `tg${++nr}`;
   const augen = p.augen === "froh"
     ? `<path d="M42.5 60.5 Q47 54.5 51.5 60.5" class="t-strich" stroke-width="3.2"/><path d="M68.5 60.5 Q73 54.5 77.5 60.5" class="t-strich" stroke-width="3.2"/>`
-    : `<g class="t-augen"><ellipse cx="47" cy="59" rx="3.7" ry="4.7" class="t-tinte"/><ellipse cx="73" cy="59" rx="3.7" ry="4.7" class="t-tinte"/>
-       <circle cx="48.4" cy="57.2" r="1.35" fill="#fff"/><circle cx="74.4" cy="57.2" r="1.35" fill="#fff"/></g>`;
+    : `<g class="t-augen"><g transform="translate(${(p.blick || [0, 0]).join(" ")})"><ellipse cx="47" cy="59" rx="3.7" ry="4.7" class="t-tinte"/><ellipse cx="73" cy="59" rx="3.7" ry="4.7" class="t-tinte"/>
+       <circle cx="48.4" cy="57.2" r="1.35" fill="#fff"/><circle cx="74.4" cy="57.2" r="1.35" fill="#fff"/></g></g>`;
   const brauen = p.brauen ? `<path d="M40.5 44.5 Q46 42 51.5 45.5" class="t-strich" stroke-width="2.4"/><path d="M68.5 45.5 Q74 42 79.5 44.5" class="t-strich" stroke-width="2.4"/>` : "";
   const mund = p.mund
     ? `<path d="${p.mund}" class="t-strich" stroke-width="3"/>`
@@ -63,6 +69,8 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
     <circle cx="60" cy="62" r="37.4" fill="none" stroke="var(--taler-dunkel)" stroke-width="3.4" stroke-dasharray="1.5 2.3" opacity="0.55"/>
     <circle cx="60" cy="62" r="34" fill="url(#${id})"/>
     <circle cx="60" cy="62" r="30.2" fill="none" stroke="var(--taler-hell)" stroke-width="1.4" opacity="0.75"/>
+    <clipPath id="${id}c"><circle cx="60" cy="62" r="34"/></clipPath>
+    <g clip-path="url(#${id}c)"><g transform="rotate(24 60 62)"><rect class="t-glanz" x="53" y="12" width="13" height="100" rx="6" fill="#fff"/></g></g>
     <path d="M36 46 A27 27 0 0 1 52 33.5" stroke="#fff" stroke-width="3.4" stroke-linecap="round" fill="none" opacity="0.55"/>
     <text x="60" y="40.5" text-anchor="middle" font-size="10.5" font-weight="800" font-family="Georgia, 'Times New Roman', serif" fill="var(--taler-tief)" opacity="0.8">§</text>
     <ellipse cx="37.5" cy="71.5" rx="5.2" ry="3.1" fill="var(--taler-wange)" opacity="0.6"/>
@@ -75,9 +83,28 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
       <path d="M36.5 56 L29.5 53.5 M83.5 56 L90.5 53.5" class="t-umriss" stroke-width="2.5" stroke-linecap="round"/>
     </g>
     ${mund}
+    <path class="t-tropfen t-umriss" d="M93 33 Q98.5 41.5 96.5 45 Q93 48.5 89.5 45 Q87.5 41.5 93 33Z" fill="#bfe6ff" stroke-width="1.8"/>
   </g>
   ${extra}
 </svg>`;
+}
+
+/**
+ * Große Show nach dem Prüfen: Taler wird wie eine Münze hochgeschnippt.
+ * ok: Doppelsalto, Strahlenkranz, Schockwelle, Münz- und Sternenregen, Glanzstreifen, Landung.
+ * falsch: kleiner Wurf, wackelige Landung wie eine austrudelnde Münze, Staub, Schweißtropfen, Daumen hoch.
+ * ruhig = Endzustand ohne Bewegung (beim erneuten Zeichnen derselben Aufgabe).
+ */
+export function talerBuehne(ok, { ruhig = false } = {}) {
+  const teile = ok ? Array.from({ length: 16 }, (_, i) => {
+    const w = (i / 16) * Math.PI * 2 + (i % 2 ? 0.2 : 0), weit = 95 + (i % 3) * 28;
+    const dx = Math.round(Math.cos(w) * weit), dy = Math.round(Math.sin(w) * weit * 0.8);
+    return `<i class="tb-teil ${i % 3 === 0 ? "stern" : "muenze"}" style="--dx:${dx}px;--dy:${dy}px;--r:${(i % 2 ? 1 : -1) * (180 + i * 25)}deg;--v:${(i % 4) * 0.03}s"></i>`;
+  }).join("") : "";
+  const effekte = ok
+    ? `<div class="tb-mitte"><i class="tb-glut"></i><svg class="tb-strahlen" viewBox="-100 -100 200 200">${Array.from({ length: 12 }, (_, i) => `<path d="M-7 -30 L0 -98 L7 -30Z" transform="rotate(${i * 30})"/>`).join("")}</svg><i class="tb-ring"></i><i class="tb-ring zwei"></i>${teile}</div>`
+    : `<i class="tb-staub l"></i><i class="tb-staub r"></i><i class="tb-staub m"></i>`;
+  return `<div class="taler-buehne ${ok ? "ok" : "err"}${ruhig ? " ruhig" : ""}" aria-hidden="true">${effekte}<div class="tb-flug">${taler(ok ? "jubeln" : "mut", { groesse: 58, klasse: "ruhig" })}</div></div>`;
 }
 
 /** Sprüche, wenn man Taler auf der Startseite antippt (reihum). */

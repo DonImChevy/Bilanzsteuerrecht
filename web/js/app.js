@@ -19,7 +19,7 @@ import { serie, woche, tagSchluessel } from "./aktivitaet.js";
 import { ic } from "./icons.js";
 import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, codeAnzeige, abgleichen, SERVER } from "./sync.js";
 import qrcode from "./lib/qrcode.js";
-import { taler, TALER_SPRUECHE } from "./maskottchen.js";
+import { taler, talerBuehne, TALER_SPRUECHE } from "./maskottchen.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
@@ -537,7 +537,7 @@ function tabStart() {
   return `
     <div class="kopfzeile">
       <div class="gruss-block">
-        <button class="taler-knopf" data-a="taler" aria-label="Maskottchen Taler antippen">${taler(state.talerSpruch < 0 ? "hallo" : "jubeln", { groesse: 60, klasse: talerBewegt() ? "" : "ruhig" })}</button>
+        <button class="taler-knopf" data-a="taler" aria-label="Maskottchen Taler antippen">${taler(state.talerSpruch < 0 ? "hallo" : "jubeln", { groesse: 60, klasse: talerBewegt() ? (state.talerSpruch < 0 ? "" : "flip") : "ruhig" })}</button>
         <div><div class="gruss">${esc(datum)}</div><h1 class="titel" style="margin-top:2px">${gruss()}</h1></div>
       </div>
       <div class="kopf-aktionen"><button class="icon-btn" data-a="einstellungen" aria-label="Einstellungen">${ic("einstellungen")}</button></div>
@@ -1169,17 +1169,20 @@ function sitzungView() {
     fuss = `<button class="knopf zweit" data-a="zurueck" ${x.index === 0 ? "disabled" : ""}>${ic("zurueck")} Zurück</button>` +
       (x.index === n - 1 ? `<button class="knopf" data-a="abgeben">${ic("haken")} Abgeben</button>` : `<button class="knopf" data-a="weiter">Weiter ${ic("pfeil")}</button>`);
   } else if (f.typ === "offen" && !b && !x.aufgedeckt[x.index]) {
-    fuss = `<button class="knopf" id="offenKnopf" data-a="pruefen">${offenKnopfText(f, aktAntwort())}</button>`;
+    fuss = `<span class="fb-warte">${taler("warte", { groesse: 52 })}</span><button class="knopf" id="offenKnopf" data-a="pruefen">${offenKnopfText(f, aktAntwort())}</button>`;
   } else if (f.typ === "offen" && !b) {
     feedback = `<div class="feedback" style="color:var(--text);font-size:16px"><span>Hast du es gewusst?<small>Ehrlich vergleichen – das steuert, wann die Frage wiederkommt.</small></span></div>`;
     fuss = `<button class="knopf rot" data-a="selbst" data-v="0">${ic("kreuz")} Nicht gewusst</button><button class="knopf gruen" data-a="selbst" data-v="1">${ic("haken")} Gewusst</button>`;
   } else if (!b) {
-    fuss = `<button class="knopf" id="pruefen" data-a="pruefen" ${istLeer(f, aktAntwort()) ? "disabled" : ""}>Prüfen</button>`;
+    fuss = `<span class="fb-warte">${taler("warte", { groesse: 52 })}</span><button class="knopf" id="pruefen" data-a="pruefen" ${istLeer(f, aktAntwort()) ? "disabled" : ""}>Prüfen</button>`;
   } else {
     const ok = b.korrekt;
     fussKlasse = ok ? "ok" : "err";
     const satz = (ok ? LOB : TROST)[(x.index + n) % (ok ? LOB.length : TROST.length)];
-    feedback = `<div class="feedback">${taler(ok ? "jubeln" : "mut", { groesse: 58, klasse: "fb-taler" })}<span>${satz}<small>${ok ? "Kommt in der Lernkartei ein Fach weiter." : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
+    // Die Show läuft nur beim ersten Zeichnen der Rückmeldung zu dieser Aufgabe
+    const showKey = `${x.start}-${x.index}`, neu = state.talerShow !== showKey;
+    state.talerShow = showKey;
+    feedback = `<div class="feedback">${talerBuehne(ok, { ruhig: !neu })}<span>${satz}<small>${ok ? "Kommt in der Lernkartei ein Fach weiter." : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
     fuss = `<button class="knopf ${ok ? "gruen" : "rot"}" data-a="weiter">${x.index === n - 1 ? "Auswertung" : "Weiter"} ${ic("pfeil")}</button>`;
   }
 
