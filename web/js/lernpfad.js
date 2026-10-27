@@ -5,7 +5,7 @@ import { PFAD_EST } from "./est/pfad.js";
 import { PFAD_OER } from "./oer/pfad.js";
 import { PFAD_BSR1, PFAD_BSR2 } from "./bilr/pfad.js";
 import * as G from "./geld.js";
-import { taler } from "./maskottchen.js";
+import { taler, talerBuehne } from "./maskottchen.js";
 
 // Schlüssel = Modul; Bilanzrecht je nach Auswahl Teil I (bsr1), Teil II (bsr2) oder beide (bsr).
 export const PFADE = {
@@ -166,10 +166,15 @@ export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken =
       feld = `<div class="pf-zahl${a ? (a.ok ? " richtig" : " falsch") : ""}"><input id="pfadZahl" inputmode="decimal" autocomplete="off" placeholder="0,00" value="${a ? esc(a.eingabe) : ""}" ${a ? "disabled" : ""}><span>${q.einheit || "€"}</span></div>
         ${a && !a.ok ? `<div class="pf-loesung">Richtig: <b>${q.einheit ? `${G.text(q.cent).replace(/,00$/, "")} ${q.einheit}` : G.euro(q.cent)}</b></div>` : ""}`;
     }
+    // Taler-Show nur beim ersten Zeichnen der Antwort auf diese Frage; danach ruhiger Endzustand
+    const show = a && z.talerShow !== qi;
+    if (a) z.talerShow = qi;
     inhalt = `<div class="pf-frage"><div class="pf-tag frage"><span>?</span>Frage ${qi + 1} von ${b.fragen.length}</div><h2>${esc(q.frage)}</h2>${feld}
-      ${a ? `<div class="pf-erkl ${a.ok ? "ok" : "err"}"><b>${a.ok ? "Richtig!" : "Nicht ganz."}</b> ${esc(q.erkl)}</div>` : ""}</div>`;
-    fuss = a ? `<button class="pf-los ${a.ok ? "ok" : "err"}" data-a="pfadWeiter">${qi + 1 === b.fragen.length ? "Abschließen" : "Nächste Frage"} ${ic("pfeil")}</button>`
-      : q.art === "zahl" ? `<button class="pf-los" data-a="pfadPruefen">Prüfen</button>` : `<div class="pf-tipp">Tippe die richtige Antwort an.</div>`;
+      ${a ? `<div class="pf-erkl ${a.ok ? "ok" : "err"}${show ? " nach-show" : ""}"><b>${a.ok ? "Richtig!" : "Nicht ganz."}</b> ${esc(q.erkl)}</div>` : ""}</div>`;
+    const warte = `<span class="fb-warte">${taler("warte", { groesse: 52 })}</span>`;
+    fuss = a ? `<div class="pf-reihe pf-taler-reihe">${talerBuehne(a.ok, { ruhig: !show })}<button class="pf-los ${a.ok ? "ok" : "err"}" data-a="pfadWeiter">${qi + 1 === b.fragen.length ? "Abschließen" : "Nächste Frage"} ${ic("pfeil")}</button></div>`
+      : q.art === "zahl" ? `<div class="pf-reihe pf-taler-reihe">${warte}<button class="pf-los" data-a="pfadPruefen">Prüfen</button></div>`
+      : `<div class="pf-reihe pf-taler-reihe">${warte}<div class="pf-tipp">Tippe die richtige Antwort an.</div></div>`;
   } else {
     const s = sterneFuer(z.fehler), alle = PFADE[fach].bloecke, i = alle.indexOf(b), naechster = alle[i + 1];
     const sek = Math.round(((z.ende || Date.now()) - z.start) / 1000);
