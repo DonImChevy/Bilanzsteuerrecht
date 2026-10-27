@@ -45,7 +45,7 @@ export const PFAD_EST = [
     ],
   },
   {
-    id: "e-schema", titel: "Vom Einkommen zum zvE", kurz: "§ 2 Abs. 3–5 EStG", icon: "Σ", normen: ["EStG 2 3", "EStG 2 4", "EStG 2 5"],
+    id: "e-schema", titel: "Vom Einkommen zum zvE", kurz: "§ 2 Abs. 3–5 EStG", icon: "Σ", normen: ["EStG 2 3", "EStG 2 4", "EStG 2 5", "EStR 2"],
     karten: [
       { art: "merksatz", titel: "Das Schema in vier Stufen", text: "**Summe der Einkünfte** (alle sieben Arten zusammen)\n− Altersentlastungsbetrag, Entlastungsbetrag für Alleinerziehende\n= **Gesamtbetrag der Einkünfte** (§ 2 Abs. 3 EStG)\n− **Sonderausgaben** und **außergewöhnliche Belastungen**\n= **Einkommen** (§ 2 Abs. 4 EStG)\n− Kinderfreibeträge (nur wenn günstiger als Kindergeld)\n= **zu versteuerndes Einkommen** (§ 2 Abs. 5 EStG)" },
       { art: "erklaerung", titel: "Was ist was?", text: "• **Sonderausgaben**: private Ausgaben, die das Gesetz trotzdem zum Abzug zulässt – z. B. Vorsorgeaufwendungen (Kranken-, Rentenversicherung), Kirchensteuer, Spenden.\n• **Außergewöhnliche Belastungen**: zwangsläufige, ungewöhnlich hohe Ausgaben, z. B. Krankheitskosten.\n• Auf das **zu versteuernde Einkommen** wird der **Tarif** angewendet." },
