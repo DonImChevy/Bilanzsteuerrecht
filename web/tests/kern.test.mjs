@@ -834,6 +834,9 @@ test("Gesetzestext: Satzgrenzen bei Verweisen („Satz 2.“), Sätzen mit § am
   const anzahl = (ref) => NT.saetze(NT.norm(ref).absaetze[0].text.replace(/^\(\d+[a-z]?\)\s*/, "")).length;
   assert.equal(anzahl("EStG 11 1"), 5);
   assert.equal(anzahl("UStG 18 1"), 4);
+  assert.equal(anzahl("UStG 17 1"), 9); // „eingetreten ist“ steht in Satz 8
+  const t4 = NT.norm("EStG 4 1").absaetze[0].text; // „(ABl. EU Nr. L 207 S. 1)“ beendet keinen Satz
+  assert.match(t4.slice(...NT.saetze(t4)[7]), /^Einlagen sind alle Wirtschaftsgüter/);
   assert.equal(NT.saetze("Dazu gehören z. B. Mieten. Das gilt (z. B. Erbbaurecht) auch. Siehe BGBl. I S. 1.").length, 3);
   assert.equal(NT.saetze("Es gelten folgende Fälle: 1. erste Nr. 2 und\n2. zweite Nr.").length, 1);
 });

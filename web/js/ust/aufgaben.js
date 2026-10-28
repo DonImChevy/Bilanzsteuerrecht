@@ -360,7 +360,7 @@ const entstehung = [
   }),
   A("ust-aenderung", "ust-entstehung",
     "Wann und wie ist die Bemessungsgrundlage nach § 17 UStG zu berichtigen?",
-    "• Ändert sich die Bemessungsgrundlage eines steuerpflichtigen Umsatzes nachträglich (Skonto, Rabatt, Bonus, Rückgabe), hat der leistende Unternehmer die geschuldete Steuer zu berichtigen (§ 17 Abs. 1 S. 1 UStG); der Empfänger berichtigt spiegelbildlich seinen Vorsteuerabzug (S. 2).\n• Berichtigung für den VAZ, in dem die Änderung eingetreten ist (§ 17 Abs. 1 S. 7 UStG) – keine Rückwirkung.\n• Tritt die Änderung noch im VAZ der Leistung ein, wird gleich die geänderte BMG angesetzt.\n• Uneinbringlichkeit des Entgelts wird ebenso behandelt (§ 17 Abs. 2 Nr. 1 UStG); bei späterer Zahlung ist erneut zu berichtigen.\n• Mahngebühren oder Verzugszinsen führen nicht zu einer Änderung, weil sie nicht zum Entgelt gehören.",
+    "• Ändert sich die Bemessungsgrundlage eines steuerpflichtigen Umsatzes nachträglich (Skonto, Rabatt, Bonus, Rückgabe), hat der leistende Unternehmer die geschuldete Steuer zu berichtigen (§ 17 Abs. 1 S. 1 UStG); der Empfänger berichtigt spiegelbildlich seinen Vorsteuerabzug (S. 2).\n• Berichtigung für den VAZ, in dem die Änderung eingetreten ist (§ 17 Abs. 1 S. 8 UStG) – keine Rückwirkung.\n• Tritt die Änderung noch im VAZ der Leistung ein, wird gleich die geänderte BMG angesetzt.\n• Uneinbringlichkeit des Entgelts wird ebenso behandelt (§ 17 Abs. 2 Nr. 1 UStG); bei späterer Zahlung ist erneut zu berichtigen.\n• Mahngebühren oder Verzugszinsen führen nicht zu einer Änderung, weil sie nicht zum Entgelt gehören.",
     ["UStG 17 1"],
     M(["Ein Skontoabzug in einem späteren Monat mindert die Steuer im Monat der Zahlung.", "Der Leistungsempfänger muss seinen Vorsteuerabzug entsprechend berichtigen.", "Eine Änderung im selben VAZ wird direkt bei der Bemessungsgrundlage berücksichtigt.", "Mahngebühren führen nicht zu einer Erhöhung der Bemessungsgrundlage."],
       ["Ein Skonto wird rückwirkend im Monat der Lieferung berücksichtigt.", "Nur der leistende Unternehmer berichtigt, der Leistungsempfänger nicht.", "Mahngebühren erhöhen die Bemessungsgrundlage nach § 17 UStG.", "Eine Berichtigung setzt stets eine neue Rechnung voraus."],
@@ -372,7 +372,7 @@ const entstehung = [
     return {
       text: `Ein Großhändler liefert am 20.${String(m).padStart(2, "0")}. Waren für ${eur(netto)} zzgl. ${eur(u)} USt an einen Einzelhändler. Dieser zahlt am 05.${String(m + 1).padStart(2, "0")}. unter Abzug von ${sk} % Skonto.\n\nUm wie viel € mindert sich die Umsatzsteuer des Großhändlers?`,
       cent: minderung,
-      erklaerung: `Lieferung im ${MONAT[m - 1]}: USt ${eur(u)} entsteht mit Ablauf ${MONAT[m - 1]}.\nSkonto ist eine Entgeltminderung (§ 17 Abs. 1 S. 1 UStG), eingetreten im ${MONAT[m]} → Berichtigung im VAZ ${MONAT[m]} (§ 17 Abs. 1 S. 7 UStG): ${sk} % von ${eur(u)} = ${eur(minderung)}. Der Einzelhändler mindert seine Vorsteuer im selben VAZ um denselben Betrag.`,
+      erklaerung: `Lieferung im ${MONAT[m - 1]}: USt ${eur(u)} entsteht mit Ablauf ${MONAT[m - 1]}.\nSkonto ist eine Entgeltminderung (§ 17 Abs. 1 S. 1 UStG), eingetreten im ${MONAT[m]} → Berichtigung im VAZ ${MONAT[m]} (§ 17 Abs. 1 S. 8 UStG): ${sk} % von ${eur(u)} = ${eur(minderung)}. Der Einzelhändler mindert seine Vorsteuer im selben VAZ um denselben Betrag.`,
       normen: ["UStG 17 1"],
     };
   }),

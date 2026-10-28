@@ -105,7 +105,7 @@ export function zitate(text) {
   return erg;
 }
 
-const ABKUERZUNG = /^(?:Abs|Nr|Nrn|Art|S|Buchst|bzw|vgl|ggf|Ziff|z|B|u|a|d|h|m|v|E|gem|i\.V\.m|i\.S\.d|Bek|BGBl|Ges|Kap)$/;
+const ABKUERZUNG = /^(?:Abs|Nr|Nrn|Art|S|Buchst|bzw|vgl|ggf|Ziff|z|B|u|a|d|h|m|v|E|gem|i\.V\.m|i\.S\.d|Bek|BGBl|ABl|Ges|Kap|Gz|lfd|Rn|Tz)$/;
 /** Teilt einen Absatz in Sätze: [[start, ende], …] – Aufzählungsnummern und Abkürzungen sind keine Satzenden. */
 export function saetze(text) {
   const grenzen = [];
