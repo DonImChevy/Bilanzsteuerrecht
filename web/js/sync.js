@@ -10,6 +10,9 @@
 // • Eigene Karteikarten (meineKarten): je Karte der neuere Inhalt (auch Löschen) und der neuere Lernkartei-Stand.
 // • Levelsystem: Bonus-XP (xpBonus) zählen wie die Aufgabenzähler pro Gerät; Erfolge: Vereinigung (frühester Zeitpunkt);
 //   Rekorde (längste Serien): Maximum.
+// • Tagesprotokoll (log: Aufgaben je Tag und Thema) und Tageszeiten (stunden): Zähler wie oben.
+// • Klausurtermine, gekaufte Garderobe, Duelle: je Eintrag der neueste (Löschen als Grabstein x).
+//   Outfit, Profil und Lerngruppe: der neueste Stand.
 import { SYNC_SERVER } from "./sync-config.js";
 import { meineVereinen } from "./meinekarten.js";
 import { erfolgeVereinen, rekordeVereinen } from "./level.js";
@@ -27,11 +30,11 @@ export const codeAnzeige = (c) => (c.match(/.{1,4}/g) || []).join("-");
 // ---------------------------------------------------------------- Zusammenführen (rein, testbar)
 
 const kopie = (x) => JSON.parse(JSON.stringify(x));
-const LEER = () => ({ proThema: {}, tage: {}, klausuren: [], xpBonus: 0 });
+const LEER = () => ({ proThema: {}, tage: {}, klausuren: [], xpBonus: 0, log: {}, stunden: {} });
 const kKey = (k) => `${k.datum}|${k.fach || "bsr"}`;
 
 /** Der zählende Teil eines Lernstands. */
-export const beitrag = (stat) => kopie({ proThema: stat.proThema || {}, tage: stat.tage || {}, klausuren: stat.klausuren || [], xpBonus: stat.xpBonus || 0 });
+export const beitrag = (stat) => kopie({ proThema: stat.proThema || {}, tage: stat.tage || {}, klausuren: stat.klausuren || [], xpBonus: stat.xpBonus || 0, log: stat.log || {}, stunden: stat.stunden || {} });
 
 /** Was in `stat` seit `basis` dazugekommen ist (Zähler als Differenz, Klausuren neu oder geändert). */
 export function differenz(stat, basis) {
@@ -44,6 +47,11 @@ export function differenz(stat, basis) {
   const alt = new Map(b.klausuren.map((k) => [kKey(k), JSON.stringify(k)]));
   d.klausuren = (stat.klausuren || []).filter((k) => alt.get(kKey(k)) !== JSON.stringify(k));
   d.xpBonus = (stat.xpBonus || 0) - (b.xpBonus || 0);
+  for (const [h, n] of Object.entries(stat.stunden || {})) if (n !== ((b.stunden || {})[h] || 0)) d.stunden[h] = n - ((b.stunden || {})[h] || 0);
+  for (const [tag, themen] of Object.entries(stat.log || {})) for (const [t, [nb, nr]] of Object.entries(themen)) {
+    const [ab, ar] = (b.log || {})[tag]?.[t] || [0, 0];
+    if (nb !== ab || nr !== ar) (d.log[tag] ||= {})[t] = [nb - ab, nr - ar];
+  }
   return d;
 }
 
@@ -61,6 +69,12 @@ export function addiere(ziel, d) {
     if (i >= 0) z.klausuren[i] = k; else z.klausuren.push(k);
   }
   z.xpBonus = (z.xpBonus || 0) + (d.xpBonus || 0);
+  z.stunden ||= {}; z.log ||= {};
+  for (const [h, n] of Object.entries(d.stunden || {})) z.stunden[h] = (z.stunden[h] || 0) + n;
+  for (const [tag, themen] of Object.entries(d.log || {})) for (const [t, [db, dr]] of Object.entries(themen)) {
+    const [ab, ar] = z.log[tag]?.[t] || [0, 0];
+    (z.log[tag] ||= {})[t] = [ab + db, ar + dr];
+  }
   return z;
 }
 
@@ -90,7 +104,7 @@ export function gelesenVereinen(a = {}, b = {}) {
   return out;
 }
 /** Von zwei Ständen mit Zeitstempel t den neueren (Einstellungen, zuletzt). */
-export const neuerer = (a, b) => ((b?.t || 0) > (a?.t || 0) ? b : a) ?? null;
+export const neuerer = (a, b) => (!a || (b?.t || 0) > (a?.t || 0) ? b : a) ?? null;
 
 /** Änderungen an den gewussten Lernkarten seit `basisKarten` als Einträge {g, t}. */
 export function kartenAenderungen(karten = [], basisKarten = null, jetzt = Date.now()) {
@@ -103,11 +117,12 @@ export function kartenAenderungen(karten = [], basisKarten = null, jetzt = Date.
 /** Gesamtstand aus den Serverdaten: Summe aller Geräte, Lernkartei und Karten wie gespeichert. */
 export function gesamt(daten) {
   let s = LEER();
-  for (const g of Object.values(daten.geraete || {})) s = addiere(s, { proThema: g.proThema || {}, tage: g.tage || {}, klausuren: g.klausuren || [], xpBonus: g.xpBonus || 0 });
+  for (const g of Object.values(daten.geraete || {})) s = addiere(s, { proThema: g.proThema || {}, tage: g.tage || {}, klausuren: g.klausuren || [], xpBonus: g.xpBonus || 0, log: g.log || {}, stunden: g.stunden || {} });
   s.klausuren.sort((a, b) => a.datum - b.datum);
   return { ...s, lern: daten.lern || {}, karten: Object.entries(daten.karten || {}).filter(([, e]) => e.g).map(([id]) => id),
     pfad: daten.pfad || {}, kompakt: daten.kompakt || {}, meineKarten: daten.meineKarten || {}, einstellungen: daten.einstellungen || null, zuletzt: daten.zuletzt || null,
-    erfolge: daten.erfolge || {}, rekorde: daten.rekorde || {} };
+    erfolge: daten.erfolge || {}, rekorde: daten.rekorde || {}, termine: daten.termine || {}, gekauft: daten.gekauft || {}, duelle: daten.duelle || {},
+    outfit: daten.outfit || null, profil: daten.profil || null, gruppe: daten.gruppe || null };
 }
 
 /**
@@ -135,6 +150,12 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       zuletzt: neuerer(d.zuletzt, vorher.zuletzt),
       erfolge: erfolgeVereinen(d.erfolge, vorher.erfolge),
       rekorde: rekordeVereinen(d.rekorde, vorher.rekorde),
+      termine: neuester(d.termine, vorher.termine),
+      gekauft: erfolgeVereinen(d.gekauft, vorher.gekauft),
+      duelle: neuester(d.duelle, vorher.duelle),
+      outfit: neuerer(d.outfit, vorher.outfit),
+      profil: neuerer(d.profil, vorher.profil),
+      gruppe: neuerer(d.gruppe, vorher.gruppe),
     };
     const version = await server.speichern(lokal.code, daten, alt?.version || 0);
     if (version == null) continue; // ein anderes Gerät war schneller – neu holen und erneut zusammenführen
@@ -152,6 +173,10 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       s.zuletzt = neuerer(g.zuletzt, statJetzt.zuletzt);
       s.erfolge = erfolgeVereinen(g.erfolge, statJetzt.erfolge);
       s.rekorde = rekordeVereinen(g.rekorde, statJetzt.rekorde);
+      s.termine = neuester(g.termine, statJetzt.termine);
+      s.gekauft = erfolgeVereinen(g.gekauft, statJetzt.gekauft);
+      s.duelle = neuester(g.duelle, statJetzt.duelle);
+      for (const k of ["outfit", "profil", "gruppe"]) s[k] = neuerer(g[k], statJetzt[k]);
       const kNeu = kartenAenderungen(statJetzt.karten, vorher.karten, jetzt);
       const kSet = new Set(g.karten);
       for (const [id, e] of Object.entries(kNeu)) if (e.g) kSet.add(id); else kSet.delete(id);

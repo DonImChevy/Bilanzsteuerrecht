@@ -1,6 +1,6 @@
 import * as G from "./geld.js";
 import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
-import { THEMEN, THEMA, themenFuer, pruefungsThemen, imTeil, themaIn, vorlageIn, NICHT_IN, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
+import { THEMEN, THEMA, themenFuer, pruefungsThemen, gleichbleibendErzeugen, imTeil, themaIn, vorlageIn, NICHT_IN, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
 import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer, FALL_IDS, neueZiehung } from "./katalog.js";
 import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
@@ -19,15 +19,24 @@ import { serie, woche, tagSchluessel } from "./aktivitaet.js";
 import { ic } from "./icons.js";
 import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, codeAnzeige, abgleichen, SERVER } from "./sync.js";
 import qrcode from "./lib/qrcode.js";
-import { taler, talerBuehne, TALER_SPRUECHE } from "./maskottchen.js";
-import { levelAus, xpGesamt, bonusFuerAntwort, erfolgePruefen, tagesBonus, XP } from "./level.js";
+import { taler, talerBuehne, TALER_SPRUECHE, talerOutfitSetzen } from "./maskottchen.js";
+import { kasse, kaufbar, outfitVon, artikel, STANDARD } from "./garderobe.js";
+import { garderobeView, talerBetrag } from "./garderobeansicht.js";
+import { kommende, countdownText, proTag } from "./termine.js";
+import { rueckblickView, statistikView, statistikStart } from "./statistikansicht.js";
+import { DUELL_ANZAHL, neuerSeed, duellLesen, duellLink, duellSieger, zeitText } from "./duell.js";
+import { eintragen, austragen, rangliste, gruppeSchreiben } from "./gruppe.js";
+import { zeitraum, auswerten as zeitraumAuswerten } from "./statistik.js";
+import { levelAus, xpGesamt, bonusFuerAntwort, erfolgePruefen, tagesBonus, laengsteSerie, XP } from "./level.js";
 import { levelZeile, levelSeite, levelFeier, erfolgBanner, levelStartFeier } from "./levelansicht.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
 // xpBonus/erfolge/rekorde: Levelsystem (level.js), lauf: aktuelle Serien dieses Geräts (nicht synchronisiert)
 const LEER = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null, pfad: {}, kompakt: {}, meineKarten: {}, einstellungen: null,
-  xpBonus: 0, erfolge: {}, rekorde: {}, lauf: { serie: 0, bs: 0 } });
+  xpBonus: 0, erfolge: {}, rekorde: {}, lauf: { serie: 0, bs: 0 },
+  // log: Aufgaben je Tag und Thema [bearbeitet, richtig]; stunden: Aufgaben je Tageszeit; Termine, Garderobe, Profil, Lerngruppe, Duelle
+  log: {}, stunden: {}, termine: {}, gekauft: {}, outfit: null, profil: null, gruppe: null, duelle: {} });
 function laden() {
   let s = LEER();
   try {
@@ -189,7 +198,11 @@ function erfasse(frage, korrekt) {
   if (korrekt !== null && korrekt !== undefined) stat.lern[frage.id] = planen(stat.lern[frage.id], korrekt);
   const heute = tagSchluessel();
   stat.tage[heute] = (stat.tage[heute] || 0) + 1;
-  const h = new Date().getHours(), momente = h >= 23 || h < 4 ? ["nachteule"] : h >= 4 && h < 7 ? ["fruehaufsteher"] : [];
+  const tl = ((stat.log ||= {})[heute] ||= {}), alt = tl[frage.thema] || [0, 0];
+  tl[frage.thema] = [alt[0] + 1, alt[1] + (korrekt ? 1 : 0)];
+  const h = new Date().getHours();
+  (stat.stunden ||= {})[h] = (stat.stunden[h] || 0) + 1;
+  const momente = h >= 23 || h < 4 ? ["nachteule"] : h >= 4 && h < 7 ? ["fruehaufsteher"] : [];
   belohnen(vorher, momente);
   speichern();
   // XP dieser Aufgabe und Tagesbonus getrennt (Erfolge erscheinen als eigenes Banner)
@@ -274,6 +287,7 @@ const state = {
   bilrAnsicht: "konten", // Bilanzrecht-Nachschlagen: "konten" | "gesetze"
   sitzung: null,
   talerSpruch: -1, // angetippter Spruch des Maskottchens auf der Startseite (-1 = keiner)
+  garderobe: { slot: "kopf", probe: null }, // Garderobe: Kategorie und angeprobter Artikel
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
   kompakt: null, // Kompaktwissen: {id: Thema | null (Übersicht), fach, liste: aus der Übersicht geöffnet, ausSitzung}
@@ -292,7 +306,7 @@ const farbe = (q) => (q >= 0.8 ? "var(--ok)" : q >= 0.5 ? "var(--warn)" : "var(-
 const zahlText = (n) => n.toLocaleString("de-DE");
 
 // ======================= Einstellungen (werden mit dem Sync-Code abgeglichen) =======================
-const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus2", "bewegungAus", "rolle"];
+const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus2", "bewegungAus", "rolle", "startLayout"];
 // Erster Stand ohne Zeitstempel (t = 0): Ein neu verbundenes Gerät übernimmt die Einstellungen der anderen.
 if (!stat.einstellungen) stat.einstellungen = { ziel: String(state.ziel), design: state.design, teil: state.bilrTeil, oerModus2: state.oerModus, t: 0 };
 /** Einstellung lokal speichern und für den Abgleich mit Zeitstempel im Lernstand vermerken. */
@@ -323,7 +337,13 @@ function designAnwenden() {
   if (state.design === "light" || state.design === "dark") root.dataset.theme = state.design;
   else delete root.dataset.theme;
   root.dataset.bewegung = state.bewegungAus ? "aus" : "an";
+  const o = meinOutfit();
+  talerOutfitSetzen(o);
+  root.dataset.hintergrund = o.hintergrund;
 }
+/** Getragenes Outfit (nur Gekauftes) und Taler-Kasse (1 Taler je 10 XP). */
+const meinOutfit = () => outfitVon(stat.outfit, stat.gekauft);
+const meineKasse = () => kasse(xpGesamt(stat).gesamt, stat.gekauft);
 
 /** Schalter „Animationen“ (an = Animationen laufen, aus = Bewegung reduziert). Klein für Kopfzeilen, sonst als Zeile. pf = Lernpfad-Design. */
 function bewegungSchalter(klein = false, pf = false) {
@@ -335,7 +355,7 @@ function bewegungSchalter(klein = false, pf = false) {
 
 // ======================= Sitzung =======================
 function neueSitzung(opt) {
-  const r = new Zufall(), mc = state.oerModus === "mc";
+  const r = new Zufall(opt.duell?.seed), mc = !!opt.duell || state.oerModus === "mc";
   // Multiple Choice ist für unterwegs: lange Klausurfälle bleiben dort außen vor (außer es bliebe sonst nichts übrig)
   const vorlagen = opt.ids ? opt.ids.map((id) => ALLE.find((v) => v.id === id)).filter(Boolean) : [];
   const ohneFall = vorlagen.filter((v) => !(mc && FALL_IDS.has(v.id)));
@@ -345,14 +365,16 @@ function neueSitzung(opt) {
     ? klausur(opt.anzahl, r, opt.fach, mc, opt.teil)
     : fragen(opt.themen, opt.anzahl || 10, r, opt.filter ?? opt.nurBuchung, mc, neueZiehung(opt.fach));
   if (mc) fr = fr.map((f) => alsMultipleChoice(f, r));
+  // Duell: nur automatisch prüfbare Aufgaben, damit beide fair verglichen werden
+  if (opt.duell) fr = fr.filter((f) => f.typ !== "offen").slice(0, DUELL_ANZAHL);
   return {
     ...opt, fragen: fr, antworten: fr.map(leereAntwort), bewertungen: fr.map(() => null), aufgedeckt: fr.map(() => false),
     index: 0, beendet: false, start: Date.now(), ende: null, review: null,
   };
 }
 function starte(opt) {
-  state.sitzung = neueSitzung(opt);
-  if (opt.modus === "uebung" && !opt.ids) {
+  state.sitzung = opt.duell ? gleichbleibendErzeugen(() => neueSitzung(opt)) : neueSitzung(opt);
+  if (opt.modus === "uebung" && !opt.ids && !opt.duell) {
     stat.zuletzt = { fach: opt.fach || state.fach, themen: opt.themen, nurBuchung: opt.nurBuchung, filter: opt.filter, titel: sitzungTitel(opt), t: Date.now() };
     speichern();
   }
@@ -366,6 +388,7 @@ const aktAntwort = () => s().antworten[s().index];
 
 function sitzungTitel(x) {
   if (x.modus === "klausur") return "Klausur " + MODUL[x.fach || "bsr"].kurz;
+  if (x.duell) return "Duell " + MODUL[x.fach || "bsr"].kurz;
   if (x.wiederholung) return "Wiederholung";
   if (x.einzeln) return "Einzelaufgabe";
   if (x.nurBuchung) return "Buchungssätze";
@@ -441,7 +464,7 @@ function selbstBewerten(i, korrekt) {
 function weiter() {
   const x = s();
   if (x.index < x.fragen.length - 1) { x.index += 1; render(); scrollOben(); return; }
-  if (x.modus !== "klausur") { x.beendet = true; x.ende = Date.now(); render(); scrollOben(); }
+  if (x.modus !== "klausur") { x.beendet = true; x.ende = Date.now(); if (x.duell) duellAbschliessen(x); render(); scrollOben(); }
 }
 function abgeben() {
   const x = s();
@@ -642,6 +665,7 @@ function tabStart() {
         <div class="grow"><h2>${titel}</h2><div class="zeile-klein">${text}</div>
           <div class="werte">
             <span class="wert-pille"><span class="${tageSerie ? "flamme-an" : ""}">${ic("flamme")}</span>${tageSerie} ${tageSerie === 1 ? "Tag" : "Tage"} in Folge</span>
+            <button class="wert-pille knopf-pille" data-a="garderobe" aria-label="Garderobe öffnen – ${meineKasse().guthaben} Taler">${talerBetrag(meineKasse().guthaben)} Garderobe</button>
           </div></div>
       </div>
       ${levelZeile(stat)}
@@ -651,14 +675,195 @@ function tabStart() {
       <button class="leeren ${state.suche ? "" : "versteckt"}" data-a="sucheLeeren" aria-label="Suche leeren">${ic("kreuz", "klein")}</button></div>
     <div id="sucheErgebnis">${state.suche.trim() ? suchErgebnisse(state.suche) : ""}</div>
     <div id="startRest" class="${state.suche.trim() ? "versteckt" : ""}">
-      <div class="gruppe"><div class="gruppe-titel">Deine Module <span class="sub" style="text-transform:none;letter-spacing:0">${aktiveModule(state.rolle || "studium").length} von ${moduleDerRolle(state.rolle || "studium").length} verfügbar</span></div>
-        ${rollenSchalter()}
-        <div class="modul-grid">${moduleDerRolle(state.rolle || "studium").map(modulKachel).join("")}</div></div>
-      <div class="gruppe"><div class="gruppe-titel">Diese Woche <span class="sub" style="text-transform:none;letter-spacing:0">${zahlText(woche(stat.tage).reduce((a, t) => a + t.n, 0))} Aufgaben</span></div>
-        <div class="liste">${wocheView()}</div></div>
+      ${startReihenfolge().filter((b) => !b.aus).map((b) => START_BEREICHE[b.id].html()).join("")}
+      <button class="start-anpassen" data-a="startAnpassen">${ic("einstellungen", "klein")} Startseite anpassen</button>
       ${installHinweis()}
     </div>`;
 }
+
+// ======================= Startseite anpassen =======================
+// Kopfzeile, Tagesziel, Level und Garderobe stehen fest oben; die Bereiche darunter lassen sich sortieren und ausblenden.
+const START_BEREICHE = {
+  module: { name: "Deine Module", text: "Module deiner Rolle", html: () => `<div class="gruppe"><div class="gruppe-titel">Deine Module <span class="sub" style="text-transform:none;letter-spacing:0">${aktiveModule(state.rolle || "studium").length} von ${moduleDerRolle(state.rolle || "studium").length} verfügbar</span></div>
+        ${rollenSchalter()}
+        <div class="modul-grid">${moduleDerRolle(state.rolle || "studium").map(modulKachel).join("")}</div></div>` },
+  klausuren: { name: "Klausur-Countdown", text: "Tage bis zur nächsten Klausur", html: () => countdownBereich() },
+  woche: { name: "Diese Woche", text: "Aufgaben der letzten sieben Tage", html: () => `<div class="gruppe"><div class="gruppe-titel">Diese Woche <span class="sub" style="text-transform:none;letter-spacing:0">${zahlText(woche(stat.tage).reduce((a, t) => a + t.n, 0))} Aufgaben</span></div>
+        <div class="liste">${wocheView()}</div></div>` },
+  statistik: { name: "Rückblick und Statistik", text: "Wochen- und Monatsrückblick, Diagramme", html: () => statistikBereich() },
+  gemeinsam: { name: "Gemeinsam lernen", text: "Lerngruppe, Rangliste und Duell", html: () => gemeinsamBereich() },
+};
+const START_STANDARD = ["klausuren", "module", "woche", "statistik", "gemeinsam"];
+/** Gespeicherte Reihenfolge („a,b,!c“ – ! = ausgeblendet), ergänzt um neue Bereiche. */
+function startReihenfolge() {
+  const roh = (lies("bsr.startLayout", "") || "").split(",").filter(Boolean).map((x) => ({ id: x.replace(/^!/, ""), aus: x.startsWith("!") })).filter((b) => START_BEREICHE[b.id]);
+  for (const id of START_STANDARD) if (!roh.some((b) => b.id === id)) roh.push({ id, aus: false });
+  return roh;
+}
+const startSpeichern = (liste) => { einstellungMerken("startLayout", liste.map((b) => (b.aus ? "!" : "") + b.id).join(",")); render(); };
+function startAnpassenView() {
+  const l = startReihenfolge();
+  return `<div class="gruppe-fuss" style="margin:0 4px 12px">Kopfzeile, Tagesziel, Level und Garderobe bleiben immer oben. Die Bereiche darunter kannst du verschieben und ausblenden.</div>
+    <ol class="start-liste">${l.map((b, i) => `<li class="start-zeile${b.aus ? " aus" : ""}">
+      <span class="sz-griff" aria-hidden="true">${i + 1}</span><span class="grow"><b>${START_BEREICHE[b.id].name}</b><span class="sub">${START_BEREICHE[b.id].text}</span></span>
+      <button class="icon-btn klein" data-a="startHoch" data-v="${i}" ${i === 0 ? "disabled" : ""} aria-label="${START_BEREICHE[b.id].name} nach oben">${ic("pfeil", "klein hoch")}</button>
+      <button class="icon-btn klein" data-a="startRunter" data-v="${i}" ${i === l.length - 1 ? "disabled" : ""} aria-label="${START_BEREICHE[b.id].name} nach unten">${ic("pfeil", "klein runter")}</button>
+      <button class="schalter klein" role="switch" aria-checked="${!b.aus}" data-a="startZeigen" data-v="${i}" aria-label="${START_BEREICHE[b.id].name} ${b.aus ? "einblenden" : "ausblenden"}"><span class="sch-bahn" aria-hidden="true"><span class="sch-knopf"></span></span></button></li>`).join("")}</ol>
+    <button class="knopf zweit" data-a="startStandard" style="margin:14px 0 20px">Standard wiederherstellen</button>`;
+}
+// Platzhalter, werden weiter unten ersetzt
+function statistikBereich() { return statistikStart(stat); }
+/** Hilfen für Rückblick und Statistik. */
+const statHilfen = () => ({
+  themaTitel: (id) => THEMA[id]?.titel || id, themaFach: (id) => (THEMA[id] ? fachFuerThema(id) : "bsr"), modulKurz: (f) => MODUL[f]?.kurz || f, modulFarbe: (f) => MODUL[f]?.farbe || "var(--m)",
+  module: aktiveModule(state.rolle || "studium"), summeFach, laengsteSerie: laengsteSerie(stat.tage),
+});
+// ======================= Duell =======================
+const meinName = () => stat.profil?.name || "";
+/** Name aus dem Eingabefeld übernehmen; ohne Namen geht es nicht weiter. */
+function namePruefen() {
+  const n = document.getElementById("profilName")?.value.trim().slice(0, 20);
+  if (n !== undefined && n !== meinName()) { stat.profil = { ...(stat.profil || {}), name: n, t: Date.now() }; speichern(); }
+  if (!meinName()) { toast("Bitte zuerst einen Namen eintragen."); document.getElementById("profilName")?.focus(); return false; }
+  return true;
+}
+const duellErgebnisVon = (x) => ({ r: x.bewertungen.filter((b) => b?.korrekt === true).length, z: Math.round(((x.ende || Date.now()) - x.start) / 1000) });
+/** Duell beendet: Ergebnis merken, bei Sieg XP und Erfolg. */
+function duellAbschliessen(x) {
+  const ich = duellErgebnisVon(x), g = x.duell.gegner, id = String(x.duell.seed);
+  stat.duelle = { ...(stat.duelle || {}), [id]: { f: x.fach, ich, gegner: g || stat.duelle?.[id]?.gegner || null, t: Date.now() } };
+  if (g && duellSieger(ich, g) === 1) {
+    const vorher = levelJetzt();
+    stat.xpBonus = (stat.xpBonus || 0) + XP.duellSieg;
+    belohnen(vorher, ["duellsieg"]);
+  }
+  speichern();
+}
+/** VS-Karte: ich gegen Gegner (oder Hinweis zum Herausfordern). */
+function duellKarte(ichName, ich, gegner) {
+  const sieg = gegner ? duellSieger(ich, gegner) : null;
+  const seite = (name, e, mein, gewinnt) => `<div class="vs-seite${gewinnt ? " sieger" : ""}">${taler(gewinnt ? "jubeln" : "hallo", { groesse: 64, klasse: "ruhig", ...(mein ? {} : { outfit: STANDARD }) })}
+    <b>${esc(name || (mein ? "Du" : "Gegner"))}</b><span class="vs-wert">${e ? `${e.r}/${DUELL_ANZAHL}` : "?"}</span><small>${e ? zeitText(e.z) : "noch offen"}</small></div>`;
+  return `<div class="vs-karte">${seite(ichName || "Du", ich, true, sieg === 1)}<span class="vs-mitte">VS</span>${seite(gegner?.n, gegner, false, sieg === -1)}</div>
+    ${gegner ? `<div class="vs-urteil ${sieg === 1 ? "sieg" : sieg === -1 ? "niederlage" : ""}">${sieg === 1 ? `Gewonnen! +${XP.duellSieg} XP` : sieg === -1 ? "Knapp verloren – Revanche?" : "Unentschieden!"}</div>` : ""}`;
+}
+function duellErgebnis(x) {
+  return `<div class="gruppe"><div class="gruppe-titel">Duell</div>${duellKarte(meinName(), duellErgebnisVon(x), x.duell.gegner)}
+    ${x.duell.gegner ? `<div class="gruppe-fuss">Schick ${esc(x.duell.gegner.n)} dein Ergebnis zurück, dann sieht ${esc(x.duell.gegner.n)} es auch.</div>` : `<div class="gruppe-fuss">Schick den Link an jemanden aus deinem Kurs: Er oder sie bekommt dieselben ${DUELL_ANZAHL} Aufgaben.</div>`}</div>`;
+}
+async function linkTeilen(titel, text, url) {
+  if (navigator.share) { try { await navigator.share({ title: titel, text, url }); return; } catch (e) { if (e?.name === "AbortError") return; } }
+  try { await navigator.clipboard.writeText(`${text} ${url}`); toast("Link kopiert – jetzt in WhatsApp & Co. einfügen."); } catch (_) { prompt("Link kopieren:", url); }
+}
+function duellView() {
+  const module = aktiveModule(state.rolle || "studium"), liste = Object.entries(stat.duelle || {}).filter(([, d]) => d && !d.x).sort((a, b) => b[1].t - a[1].t);
+  const bilanz = liste.reduce((a, [, d]) => { if (!d.gegner) return a; const s = duellSieger(d.ich, d.gegner); a[s === 1 ? "s" : s === -1 ? "n" : "u"] += 1; return a; }, { s: 0, n: 0, u: 0 });
+  return `<section class="duell-held">${taler("jubeln", { groesse: 72, klasse: "ruhig" })}<span class="vs-mitte gross">VS</span>${taler("hallo", { groesse: 72, klasse: "ruhig", outfit: STANDARD })}
+      <p>${DUELL_ANZAHL} Aufgaben, dieselben für beide. Mehr richtig gewinnt – bei Gleichstand die schnellere Zeit.</p></section>
+    <div class="gruppe"><div class="gruppe-titel">Dein Name im Duell</div><div class="liste"><label class="zeile"><span class="grow">Name</span>
+      <input type="text" id="profilName" class="feld-klein" value="${esc(meinName())}" placeholder="z. B. Alex" maxlength="20" autocomplete="nickname"></label></div></div>
+    <div class="gruppe"><div class="gruppe-titel">Modul wählen und starten</div><div class="duell-module">${module.map((m) => `<button class="duell-modul" style="--mc:${m.farbe}" data-a="duellStart" data-v="${m.id}">${ic(m.icon)}<b>${esc(m.kurz)}</b></button>`).join("")}</div></div>
+    ${liste.length ? `<div class="gruppe"><div class="gruppe-titel">Bisherige Duelle <span class="sub" style="text-transform:none;letter-spacing:0">${bilanz.s} Siege · ${bilanz.n} Niederlagen${bilanz.u ? ` · ${bilanz.u} unentschieden` : ""}</span></div><div class="liste">${liste.slice(0, 12).map(([, d]) => {
+      const s = d.gegner ? duellSieger(d.ich, d.gegner) : null;
+      return `<div class="zeile"><span class="duell-marke ${s === 1 ? "sieg" : s === -1 ? "niederlage" : ""}">${s === 1 ? "S" : s === -1 ? "N" : s === 0 ? "U" : "…"}</span><span class="grow"><b>${d.gegner ? `gegen ${esc(d.gegner.n)}` : "Wartet auf Antwort"}</b><div class="sub">${esc(MODUL[d.f]?.kurz || "")} · ${new Date(d.t).toLocaleDateString("de-DE")}</div></span>
+        <b class="duell-stand">${d.ich.r}${d.gegner ? ` : ${d.gegner.r}` : ""}</b></div>`;
+    }).join("")}</div></div>` : ""}`;
+}
+function duellEinladungView(d) {
+  const m = MODUL[d.f], antwort = !!d.g, abw = d.a && d.a !== ALLE.length;
+  if (antwort) {
+    // Antwort auf meine Herausforderung: d = Gegner, d.g = mein eigenes Ergebnis
+    return `<div class="duell-einladung">${duellKarte(d.g.n, { r: d.g.r, z: d.g.z }, { n: d.n, r: d.r, z: d.z })}
+      <div class="gruppe-fuss" style="text-align:center">${esc(d.n)} hat dein Duell in ${esc(m?.kurz || "")} gespielt.</div></div>`;
+  }
+  return `<div class="duell-einladung"><div class="vs-karte">
+      <div class="vs-seite">${taler("hallo", { groesse: 64, klasse: "ruhig", outfit: STANDARD })}<b>${esc(d.n)}</b><span class="vs-wert">${d.r}/${DUELL_ANZAHL}</span><small>${zeitText(d.z)}</small></div>
+      <span class="vs-mitte">VS</span><div class="vs-seite">${taler("jubeln", { groesse: 64, klasse: "ruhig" })}<b>${esc(meinName() || "Du")}</b><span class="vs-wert">?</span><small>du bist dran</small></div></div>
+    <p class="duell-text"><b>${esc(d.n)}</b> fordert dich heraus: ${DUELL_ANZAHL} Aufgaben in <b>${esc(m?.titel || d.f)}</b>. Schaffst du mehr als ${d.r} richtig – oder gleich viele, aber schneller?</p>
+    ${abw ? `<div class="hinweis-box"><div class="sub">Ihr nutzt unterschiedliche App-Versionen – die Aufgaben können sich unterscheiden. Am besten beide die App neu öffnen.</div></div>` : ""}
+    ${m && !m.bald ? `<button class="knopf" data-a="duellAnnehmen">${ic("blitz")} Duell annehmen</button>` : `<div class="sub">Dieses Modul gibt es in deiner App noch nicht.</div>`}</div>`;
+}
+/** Beim Start: Duell-Link aus der Adresse lesen. */
+function duellAusAdresse() {
+  const gm = location.hash.match(/^#gruppe=([A-Z2-9]{16})$/);
+  if (gm) { history.replaceState(null, "", location.pathname + location.search); if (stat.gruppe?.code !== gm[1]) state.sheet = { art: "gruppeEinladung", code: gm[1] }; return; }
+  const m = location.hash.match(/^#duell=([A-Za-z0-9_-]+)/);
+  if (!m) return;
+  history.replaceState(null, "", location.pathname + location.search);
+  const d = duellLesen(m[1]);
+  if (!d) { toast("Der Duell-Link ist ungültig."); return; }
+  if (d.g) { // Antwort: Ergebnis des Gegners eintragen
+    const id = String(d.s), alt = stat.duelle?.[id];
+    stat.duelle = { ...(stat.duelle || {}), [id]: { f: d.f, ich: alt?.ich || { r: d.g.r, z: d.g.z }, gegner: { n: d.n, r: d.r, z: d.z }, t: Date.now() } };
+    if (duellSieger(stat.duelle[id].ich, stat.duelle[id].gegner) === 1 && !alt?.gegner) { const vorher = levelJetzt(); stat.xpBonus = (stat.xpBonus || 0) + XP.duellSieg; belohnen(vorher, ["duellsieg"]); }
+    speichern();
+  }
+  state.sheet = { art: "duellEinladung", d };
+}
+// ======================= Lerngruppe und Rangliste =======================
+const gruppe = { daten: null, laedt: false, fehler: null, art: "woche", zuletzt: 0 };
+function profilId() {
+  if (!stat.profil?.id) { stat.profil = { ...(stat.profil || {}), id: neueGeraeteId(), t: stat.profil?.t || 0 }; speichernLokal(); }
+  return stat.profil.id;
+}
+function meinEintrag() {
+  const lv = levelJetzt(), w = zeitraum("woche", 0), { hintergrund, ...outfit } = meinOutfit();
+  return { name: meinName() || "Anonym", xp: lv.xp, level: lv.level, xpWoche: zeitraumAuswerten(stat, w).xp, wocheVon: w.von, outfit, t: Date.now() };
+}
+/** Eigenen Stand in die Lerngruppe schreiben und die Rangliste holen. */
+async function gruppeAktualisieren(erzwingen = false) {
+  const code = stat.gruppe?.code;
+  if (!code || !syncVerfuegbar() || gruppe.laedt || !navigator.onLine) return;
+  if (!erzwingen && Date.now() - gruppe.zuletzt < 60 * 1000) return;
+  gruppe.laedt = true;
+  try {
+    gruppe.daten = await gruppeSchreiben(SERVER, code, (d) => eintragen(d, profilId(), meinEintrag()));
+    gruppe.fehler = null; gruppe.zuletzt = Date.now();
+  } catch (e) { gruppe.fehler = e.message || "Server nicht erreichbar"; }
+  gruppe.laedt = false;
+  if (!state.sitzung && !state.deck && !state.pfad && (state.tab === "start" || state.sheet?.art === "rangliste")) render();
+}
+/** Treppchen für die ersten drei – jeder mit seinem eigenen Taler-Outfit. */
+function treppchen(liste) {
+  const top = [liste[1], liste[0], liste[2]];
+  return `<div class="treppchen">${top.map((e, i) => e ? `<div class="tp-platz p${e.platz}${e.id === stat.profil?.id ? " ich" : ""}">
+      ${taler(e.platz === 1 ? "jubeln" : "hallo", { groesse: e.platz === 1 ? 76 : 62, klasse: "ruhig", outfit: { ...STANDARD, ...(e.outfit || {}) } })}
+      <b>${esc(e.name)}</b><span>${zahlText(e.wert)} XP</span><div class="tp-stufe">${e.platz}</div></div>` : `<div class="tp-platz leer"></div>`).join("")}</div>`;
+}
+function ranglisteView() {
+  if (!syncVerfuegbar()) return `<div class="gruppe-fuss">Ranglisten brauchen den Sync-Server – in dieser Version nicht verfügbar.</div>`;
+  const g = stat.gruppe;
+  if (!g?.code) {
+    return `<section class="duell-held">${taler("jubeln", { groesse: 72, klasse: "ruhig" })}<p>Lernt ihr zu mehreren? In einer Lerngruppe seht ihr, wer diese Woche die meisten XP sammelt.</p></section>
+      <div class="gruppe"><div class="gruppe-titel">Dein Name</div><div class="liste"><label class="zeile"><span class="grow">Name</span><input type="text" id="profilName" class="feld-klein" value="${esc(meinName())}" placeholder="z. B. Alex" maxlength="20"></label></div></div>
+      <div class="gruppe"><div class="gruppe-titel">Neue Gruppe</div><div class="liste"><label class="zeile"><span class="grow">Gruppenname</span><input type="text" id="gruppeName" class="feld-klein" placeholder="z. B. Lehrgang 2026 B" maxlength="30"></label></div>
+        <button class="knopf" data-a="gruppeErstellen" style="margin-top:10px">${ic("plus")} Gruppe erstellen</button></div>
+      <div class="gruppe"><div class="gruppe-titel">Gruppe beitreten</div><div class="liste"><label class="zeile"><span class="grow">Gruppen-Code</span><input type="text" id="gruppeCode" class="feld-klein mono" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocapitalize="characters"></label></div>
+        <button class="knopf zweit" data-a="gruppeBeitreten" style="margin-top:10px">Beitreten</button></div>
+      <div class="gruppe-fuss" style="margin:8px 4px 20px">Geteilt werden nur dein Name, deine XP, dein Level und Talers Outfit – nicht dein Lernstand.</div>`;
+  }
+  const d = gruppe.daten, liste = d ? rangliste(d, gruppe.art, zeitraum("woche", 0).von) : [];
+  const ich = liste.find((e) => e.id === stat.profil?.id);
+  return `<section class="gruppen-kopf"><div><b>${esc(d?.name || g.name || "Lerngruppe")}</b><span>${liste.length} ${liste.length === 1 ? "Mitglied" : "Mitglieder"} · Code ${codeAnzeige(g.code)}</span></div>
+      <button class="knopf zweit klein-knopf" data-a="gruppeEinladen">${ic("export", "klein")} Einladen</button></section>
+    <div class="segment" style="margin-top:12px">${[["woche", "Diese Woche"], ["gesamt", "Gesamt"]].map(([id, t]) => `<button data-a="gruppeArt" data-v="${id}" class="${gruppe.art === id ? "aktiv" : ""}">${t}</button>`).join("")}</div>
+    ${!d ? `<div class="gruppe-fuss" style="margin:20px 4px">${gruppe.laedt ? "Rangliste wird geladen …" : gruppe.fehler ? esc(gruppe.fehler) : "Noch nicht geladen."}</div>`
+      : `${treppchen(liste)}
+    <ol class="rang-liste">${liste.slice(3).map((e) => `<li class="${e.id === stat.profil?.id ? "ich" : ""}"><span class="rl-platz">${e.platz}</span>${taler("hallo", { groesse: 36, klasse: "ruhig", outfit: { ...STANDARD, ...(e.outfit || {}) } })}
+      <span class="grow"><b>${esc(e.name)}</b><span class="sub">Level ${e.level || 1}</span></span><b class="rl-xp">${zahlText(e.wert)} XP</b></li>`).join("")}</ol>
+    ${ich ? `<div class="gruppe-fuss" style="margin:10px 4px">Du bist auf Platz <b>${ich.platz}</b>${gruppe.art === "woche" ? " dieser Woche. Montags beginnt eine neue Runde." : "."}</div>` : ""}`}
+    <button class="knopf zweit" data-a="gruppeNeuLaden" style="margin-top:14px">${ic("wiederholen")} Aktualisieren</button>
+    <button class="link gefahr" data-a="gruppeVerlassen" style="display:block;margin:18px auto 24px">Gruppe verlassen</button>`;
+}
+function gemeinsamStart() {
+  const g = stat.gruppe, d = gruppe.daten, liste = g?.code && d ? rangliste(d, "woche", zeitraum("woche", 0).von) : [];
+  const ich = liste.find((e) => e.id === stat.profil?.id);
+  const mini = liste.length ? `<button class="gm-rangliste" data-a="rangliste"><span class="gm-kopf"><b>${esc(d.name)}</b><span class="sub">Rangliste dieser Woche${ich ? ` · du bist auf Platz ${ich.platz}` : ""}</span></span>
+      <span class="gm-top">${liste.slice(0, 3).map((e) => `<span class="gm-person${e.id === stat.profil?.id ? " ich" : ""}">${taler(e.platz === 1 ? "jubeln" : "hallo", { groesse: 40, klasse: "ruhig", outfit: { ...STANDARD, ...(e.outfit || {}) } })}<b>${e.platz}. ${esc(e.name)}</b><small>${zahlText(e.wert)} XP</small></span>`).join("")}</span></button>` : "";
+  return `<div class="gruppe"><div class="gruppe-titel">Gemeinsam lernen</div>${mini}
+    <div class="ss-knoepfe" style="${mini ? "margin-top:8px" : ""}"><button data-a="rangliste">${ic("pokal", "klein")} ${g?.code ? "Rangliste" : "Lerngruppe"}</button><button data-a="duell">${ic("blitz", "klein")} Duell</button></div></div>`;
+}
+function gemeinsamBereich() { return gemeinsamStart(); }
 
 /** Umschalter Studium / Ausbildung (Startseite und Einstellungen). */
 function rollenSchalter() {
@@ -689,6 +894,39 @@ function modulKachel(m) {
       <span><div class="m-titel">${m.titel}</div><div class="m-unter">${m.kurz} · ${ids.length} Aufgaben</div></span>
       <span class="m-fuss"><span class="balken"><span style="width:${Math.max(p, begonnen ? 3 : 0)}%"></span></span><span>${p} %</span></span></button>
     ${unten}</div>`;
+}
+
+// ======================= Klausur-Countdown =======================
+const termineDerRolle = () => kommende(stat.termine, moduleDerRolle(state.rolle || "studium").map((m) => m.id));
+const datumLang = (d) => new Date(d + "T12:00").toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+/** Karte eines Klausurtermins: Abreißkalender mit den Tagen bis zur Klausur, darunter der Lernplan. */
+function countdownKarte(e) {
+  const m = MODUL[e.fach], ids = idsVon(e.fach), offen = ids.filter((id) => !(stat.lern[id]?.fach >= 3)).length, n = proTag(offen, e.tage);
+  const plan = !offen ? "Alle Aufgabentypen gefestigt – jetzt nur noch wiederholen." : e.tage <= 1 ? "Ruhig bleiben: Kompaktwissen und Fallen durchgehen."
+    : `Noch ${offen} Aufgabentypen festigen – etwa <b>${n} pro Tag</b>.`;
+  return `<button class="countdown-karte" style="--mc:${m.farbe}" data-a="modul" data-v="${e.fach}" aria-label="${esc(m.kurz)}: ${esc(e.titel || "Klausur")} ${countdownText(e.tage)}">
+    <span class="cd-blatt${e.tage <= 7 ? " bald" : ""}"><span class="cd-ring" aria-hidden="true"></span><b>${e.tage === 0 ? "!" : e.tage}</b><small>${e.tage === 0 ? "heute" : e.tage === 1 ? "Tag" : "Tage"}</small></span>
+    <span class="cd-text"><span class="cd-modul">${esc(m.kurz)} · ${esc(e.titel || "Klausur")}</span><b>${countdownText(e.tage)[0].toUpperCase() + countdownText(e.tage).slice(1)}</b>
+      <span class="cd-datum">${datumLang(e.datum)}</span><span class="cd-plan">${plan}</span></span></button>`;
+}
+function countdownBereich() {
+  const t = termineDerRolle().slice(0, 3);
+  return `<div class="gruppe"><div class="gruppe-titel">Klausuren <button class="titel-link" data-a="termine">${t.length ? "Bearbeiten" : "Eintragen"}</button></div>
+    ${t.length ? `<div class="countdown-liste">${t.map(countdownKarte).join("")}</div>`
+      : `<button class="countdown-leer" data-a="termine">${ic("kalender")}<span><b>Klausurtermin eintragen</b><span class="sub">Dann zählt die Startseite die Tage herunter und zeigt, wie viel du pro Tag schaffen solltest.</span></span></button>`}</div>`;
+}
+function termineView() {
+  const alle = termineDerRolle(), module = aktiveModule(state.rolle || "studium");
+  const heute = tagSchluessel();
+  return `<div class="liste">${alle.length ? alle.map((e) => `<div class="zeile"><span class="cd-punkt" style="--mc:${MODUL[e.fach].farbe}"></span><span class="grow"><b>${esc(MODUL[e.fach].kurz)} · ${esc(e.titel || "Klausur")}</b><div class="sub">${datumLang(e.datum)} · ${countdownText(e.tage)}</div></span>
+      <button class="icon-btn klein" data-a="terminLoeschen" data-v="${e.id}" aria-label="Termin löschen">${ic("muell")}</button></div>`).join("")
+    : `<div class="zeile"><span class="grow sub">Noch keine Klausur eingetragen.</span></div>`}</div>
+    <div class="gruppe"><div class="gruppe-titel">Neuer Termin</div><div class="liste termin-form">
+      <label class="zeile"><span class="grow">Modul</span><select id="terminFach">${module.map((m) => `<option value="${m.id}"${m.id === state.fach ? " selected" : ""}>${esc(m.titel)}</option>`).join("")}</select></label>
+      <label class="zeile"><span class="grow">Datum</span><input type="date" id="terminDatum" min="${heute}"></label>
+      <label class="zeile"><span class="grow">Bezeichnung</span><input type="text" id="terminTitel" placeholder="Klausur" maxlength="40"></label>
+    </div><button class="knopf" data-a="terminNeu" style="margin-top:12px">${ic("plus")} Termin speichern</button></div>
+    <div class="gruppe-fuss" style="margin:8px 4px 20px">Termine werden mit dem Sync-Code auf deine anderen Geräte übertragen.</div>`;
 }
 
 function wocheView() {
@@ -840,6 +1078,7 @@ function tabLernen() {
         <div><b>${gemeistert}</b><span>gefestigt</span></div>
       </div>
     </section>
+    ${(() => { const e = termineDerRolle().find((x) => x.fach === state.fach); return e ? `<button class="countdown-chip" data-a="termine">${ic("kalender", "klein")} ${esc(e.titel || "Klausur")} ${countdownText(e.tage)} · ${new Date(e.datum + "T12:00").toLocaleDateString("de-DE")}</button>` : ""; })()}
     ${modusSchalter()}
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     ${pfadKachel()}
@@ -1475,6 +1714,7 @@ function ergebnisView() {
         <div class="stat-kachel"><div class="zahl" style="color:var(--err)">${falsch}</div><div class="lbl">falsch</div></div>
         <div class="stat-kachel"><div class="zahl">${Math.floor(dauer / 60)}:${String(dauer % 60).padStart(2, "0")}</div><div class="lbl">Minuten</div></div>
       </div>
+      ${x.duell ? duellErgebnis(x) : ""}
       ${unbewertet ? `<div class="hinweis-box" style="margin-top:14px"><span class="symbol" style="background:var(--warn-weak);color:var(--warn)">${ic("stift")}</span><div><b>${unbewertet} Frage-Antwort-Aufgabe${unbewertet > 1 ? "n" : ""} noch selbst bewerten</b><div class="sub">Antippen, mit der Musterantwort vergleichen und „Gewusst“ oder „Nicht gewusst“ wählen.</div></div></div>` : ""}
       <div class="gruppe"><div class="gruppe-titel">Aufgaben – antippen für die Lösung</div><div class="liste">
         ${x.fragen.map((f, i) => {
@@ -1488,7 +1728,8 @@ function ergebnisView() {
     </div>
     <div class="vb-fuss"><div class="reihe">
       <button class="knopf zweit" data-a="beenden">Fertig</button>
-      <button class="knopf" data-a="nochmal">${ic("wiederholen")} ${x.modus === "klausur" ? "Neue Klausur" : "Neue Runde"}</button>
+      ${x.duell ? `<button class="knopf" data-a="duellTeilen">${ic("export")} ${x.duell.gegner ? "Ergebnis senden" : "Herausfordern"}</button>`
+        : `<button class="knopf" data-a="nochmal">${ic("wiederholen")} ${x.modus === "klausur" ? "Neue Klausur" : "Neue Runde"}</button>`}
     </div></div>
   </div>`;
 }
@@ -1719,6 +1960,36 @@ function sheetView() {
     const x = s();
     inhalt = `<div class="raster">${x.fragen.map((f, i) => `<button data-a="springe" data-v="${i}" class="${istLeer(f, x.antworten[i]) ? "" : "bearbeitet"} ${i === x.index ? "aktuell" : ""}">${i + 1}</button>`).join("")}</div>
       <div class="gruppe-fuss" style="padding-bottom:16px">${x.antworten.filter((a, i) => !istLeer(x.fragen[i], a)).length} von ${x.fragen.length} bearbeitet</div>`;
+  } else if (sh.art === "rueckblick") {
+    titel = sh.art2 === "monat" ? "Monatsrückblick" : "Wochenrückblick";
+    inhalt = rueckblickView(stat, { art: sh.art2, versatz: sh.versatz || 0 }, statHilfen());
+  } else if (sh.art === "statistik") {
+    titel = "Statistik";
+    inhalt = statistikView(stat, statHilfen());
+  } else if (sh.art === "rangliste") {
+    titel = stat.gruppe?.code ? "Rangliste" : "Lerngruppe";
+    inhalt = ranglisteView();
+  } else if (sh.art === "gruppeEinladung") {
+    titel = "Lerngruppe";
+    inhalt = `<section class="duell-held">${taler("jubeln", { groesse: 72, klasse: "ruhig" })}<p>Du wurdest in eine Lerngruppe eingeladen. In der Rangliste sehen alle Mitglieder deinen Namen, deine XP, dein Level und Talers Outfit.</p></section>
+      ${stat.gruppe?.code && stat.gruppe.code !== sh.code ? `<div class="gruppe-fuss" style="margin:0 4px 10px">Du bist schon in einer anderen Gruppe – beim Beitreten verlässt du sie.</div>` : ""}
+      <div class="liste"><label class="zeile"><span class="grow">Dein Name</span><input type="text" id="profilName" class="feld-klein" value="${esc(meinName())}" placeholder="z. B. Alex" maxlength="20"></label></div>
+      <button class="knopf" data-a="gruppeBeitreten" data-v="${sh.code}" style="margin:14px 0 20px">Gruppe beitreten</button>`;
+  } else if (sh.art === "duell") {
+    titel = "Duell";
+    inhalt = duellView();
+  } else if (sh.art === "duellEinladung") {
+    titel = sh.d.g ? "Duell-Ergebnis" : "Herausforderung";
+    inhalt = duellEinladungView(sh.d);
+  } else if (sh.art === "startAnpassen") {
+    titel = "Startseite anpassen";
+    inhalt = startAnpassenView();
+  } else if (sh.art === "termine") {
+    titel = "Klausurtermine";
+    inhalt = termineView();
+  } else if (sh.art === "garderobe") {
+    titel = "Garderobe";
+    inhalt = garderobeView(state.garderobe, { outfit: meinOutfit(), gekauft: stat.gekauft || {}, guthaben: meineKasse().guthaben, level: levelJetzt().level });
   } else if (sh.art === "level") {
     titel = "Level und Erfolge";
     inhalt = levelSeite(stat);
@@ -1735,6 +2006,11 @@ function sheetView() {
         <span class="grow"><b>Animationen</b><div class="sub">Aus = Bewegung reduzieren: Taler, Konfetti und Übergänge bleiben still. Auch während der Aufgaben oben rechts umschaltbar.</div></span>${bewegungSchalter()}</div></div></div>
       ${syncVerfuegbar() ? `<div class="gruppe"><div class="gruppe-titel">Mehrere Geräte</div><div class="liste"><button class="zeile" data-a="syncOeffnen"><span class="symbol">${ic("wechsel")}</span>
         <span class="grow"><b>Geräte synchronisieren</b><div class="sub">${esc(syncStatusText())}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
+      <div class="gruppe"><div class="gruppe-titel">Datensicherung</div><div class="liste">
+        <button class="zeile" data-a="backupSpeichern"><span class="symbol">${ic("export")}</span><span class="grow"><b>Backup speichern</b><div class="sub">${lies("bsr.letztesBackup", "") ? `Zuletzt am ${new Date(Number(lies("bsr.letztesBackup", "0"))).toLocaleDateString("de-DE")}` : "Lernstand, Garderobe und Einstellungen als Datei"}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>
+        <label class="zeile" style="cursor:pointer"><span class="symbol">${ic("install")}</span><span class="grow"><b>Backup wiederherstellen</b><div class="sub">Ersetzt den Lernstand auf diesem Gerät</div></span><span class="chev">${ic("pfeil", "klein")}</span>
+          <input type="file" id="bImport" accept=".json,application/json" hidden></label></div>
+        <div class="gruppe-fuss">Praktisch beim Handywechsel oder ohne Synchronisierung. Der Sync-Code wird aus Sicherheitsgründen nicht mitgespeichert.</div></div>
       <div class="gruppe"><div class="gruppe-titel">So funktioniert's</div><div class="liste">
         ${[
           ["🧠", "Lernkartei: Jede Aufgabe kommt nach 1, 3, 7, 16 und 35 Tagen wieder. Fehler kommen am nächsten Tag zurück."],
@@ -1999,6 +2275,108 @@ const AKTIONEN = {
     if (inp && !inp.value) inp.focus();
   },
   level: () => { state.sheet = { art: "level" }; render(); },
+  rueckblick: (v) => { state.sheet = { art: "rueckblick", art2: v === "monat" ? "monat" : "woche", versatz: 0 }; render(); },
+  rbArt: (v) => { state.sheet = { ...state.sheet, art2: v, versatz: 0 }; render(); },
+  rbZurueck: () => { state.sheet.versatz = (state.sheet.versatz || 0) - 1; render(); },
+  rbVor: () => { state.sheet.versatz = Math.min(0, (state.sheet.versatz || 0) + 1); render(); },
+  statistik: () => { state.sheet = { art: "statistik" }; render(); },
+  backupSpeichern: () => {
+    const einst = {};
+    try { for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k.startsWith("bsr.") && k !== SPEICHER && k !== SYNC_SPEICHER) einst[k] = localStorage.getItem(k); } } catch (_) { /* egal */ }
+    const daten = { app: "finanzwirt-trainer", art: "backup", v: 1, erstellt: new Date().toISOString(), version: VERSION, stat, einstellungen: einst };
+    dateiSpeichern(`finanzwirt-backup-${tagSchluessel()}.json`, JSON.stringify(daten), "application/json");
+    schreib("bsr.letztesBackup", String(Date.now()));
+    render();
+  },
+  duell: () => { state.sheet = { art: "duell" }; render(); },
+  rangliste: () => { state.sheet = { art: "rangliste" }; render(); gruppeAktualisieren(true); },
+  gruppeArt: (v) => { gruppe.art = v; render(); },
+  gruppeNeuLaden: () => gruppeAktualisieren(true),
+  gruppeErstellen: async () => {
+    const name = document.getElementById("gruppeName")?.value.trim() || "Lerngruppe";
+    if (!namePruefen()) return;
+    if (!navigator.onLine) { toast("Zum Erstellen wird Internet benötigt."); return; }
+    const code = neuerCode();
+    try {
+      gruppe.daten = await gruppeSchreiben(SERVER, code, (d) => eintragen(d, profilId(), { ...meinEintrag(), gruppenName: name.slice(0, 30) }));
+      stat.gruppe = { code, name, t: Date.now() }; speichern(); gruppe.zuletzt = Date.now(); render(); toast("Gruppe erstellt – jetzt einladen!");
+    } catch (e) { toast(e.message || "Die Gruppe konnte nicht erstellt werden."); }
+  },
+  gruppeBeitreten: async (v) => {
+    const code = codeNormal(v || document.getElementById("gruppeCode")?.value);
+    if (!codeGueltig(code)) { toast("Der Code hat 16 Zeichen, z. B. ABCD-EFGH-JKLM-NPQR."); return; }
+    if (!namePruefen()) return;
+    if (!navigator.onLine) { toast("Zum Beitreten wird Internet benötigt."); return; }
+    try {
+      const alt = await SERVER.holen(code);
+      if (alt?.daten?.typ !== "gruppe") { toast("Diese Gruppe gibt es nicht."); return; }
+      if (stat.gruppe?.code && stat.gruppe.code !== code) await gruppeSchreiben(SERVER, stat.gruppe.code, (d) => austragen(d, profilId())).catch(() => {});
+      gruppe.daten = await gruppeSchreiben(SERVER, code, (d) => eintragen(d, profilId(), meinEintrag()));
+      stat.gruppe = { code, name: gruppe.daten.name, t: Date.now() }; speichern(); gruppe.zuletzt = Date.now();
+      state.sheet = { art: "rangliste" }; render(); toast(`Willkommen in „${gruppe.daten.name}“!`);
+    } catch (e) { toast(e.message || "Beitreten hat nicht geklappt."); }
+  },
+  gruppeEinladen: () => {
+    const g = stat.gruppe; if (!g?.code) return;
+    linkTeilen("Lerngruppe – Finanzwirt-Trainer", `Komm in unsere Lerngruppe „${gruppe.daten?.name || g.name}“ im Finanzwirt-Trainer (Code ${codeAnzeige(g.code)}):`, `${location.origin}${location.pathname}#gruppe=${g.code}`);
+  },
+  gruppeVerlassen: async () => {
+    const g = stat.gruppe; if (!g?.code || !confirm("Lerngruppe verlassen? Dein Eintrag in der Rangliste wird gelöscht.")) return;
+    try { await gruppeSchreiben(SERVER, g.code, (d) => austragen(d, profilId())); } catch (_) { /* offline: Eintrag bleibt, Gruppe trotzdem verlassen */ }
+    stat.gruppe = { code: "", name: "", t: Date.now() }; gruppe.daten = null; speichern(); render();
+  },
+  duellStart: (v) => {
+    const name = document.getElementById("profilName")?.value.trim();
+    if (name !== undefined && name !== meinName()) stat.profil = { ...(stat.profil || {}), name, t: Date.now() };
+    if (!meinName()) { toast("Bitte zuerst einen Namen eintragen."); document.getElementById("profilName")?.focus(); return; }
+    fachSetzen(v);
+    starte({ modus: "uebung", fach: v, themen: pruefungsThemen(v).map((t) => t.id), anzahl: DUELL_ANZAHL + 6, duell: { seed: neuerSeed(), gegner: null } });
+  },
+  duellAnnehmen: () => {
+    const d = state.sheet?.d;
+    if (!d) return;
+    if (!meinName()) { const n = prompt("Dein Name für das Duell:", ""); if (!n?.trim()) return; stat.profil = { ...(stat.profil || {}), name: n.trim().slice(0, 20), t: Date.now() }; speichern(); }
+    fachSetzen(d.f);
+    starte({ modus: "uebung", fach: d.f, themen: pruefungsThemen(d.f).map((t) => t.id), anzahl: DUELL_ANZAHL + 6, duell: { seed: d.s, gegner: { n: d.n, r: d.r, z: d.z } } });
+  },
+  duellTeilen: () => {
+    const x = s(), ich = duellErgebnisVon(x), basis = location.origin + location.pathname;
+    const g = x.duell.gegner;
+    const daten = { f: x.fach, s: x.duell.seed, n: meinName() || "Jemand", r: ich.r, z: ich.z, a: ALLE.length, ...(g ? { g: { n: g.n, r: g.r, z: g.z } } : {}) };
+    const text = g ? `Mein Ergebnis in unserem Duell (${MODUL[x.fach].kurz}): ${ich.r}/${DUELL_ANZAHL} in ${zeitText(ich.z)}.` : `Duell im Finanzwirt-Trainer (${MODUL[x.fach].kurz}): Ich habe ${ich.r}/${DUELL_ANZAHL} in ${zeitText(ich.z)} geschafft. Schaffst du mehr?`;
+    linkTeilen("Duell – Finanzwirt-Trainer", text, duellLink(basis, daten));
+  },
+  startAnpassen: () => { state.sheet = { art: "startAnpassen" }; render(); },
+  startHoch: (v) => { const l = startReihenfolge(), i = Number(v); if (i > 0) { [l[i - 1], l[i]] = [l[i], l[i - 1]]; startSpeichern(l); } },
+  startRunter: (v) => { const l = startReihenfolge(), i = Number(v); if (i < l.length - 1) { [l[i + 1], l[i]] = [l[i], l[i + 1]]; startSpeichern(l); } },
+  startZeigen: (v) => { const l = startReihenfolge(), i = Number(v); l[i].aus = !l[i].aus; startSpeichern(l); },
+  startStandard: () => { einstellungMerken("startLayout", ""); render(); },
+  termine: () => { state.sheet = { art: "termine" }; render(); },
+  terminNeu: () => {
+    const fach = document.getElementById("terminFach")?.value, datum = document.getElementById("terminDatum")?.value;
+    const titel = document.getElementById("terminTitel")?.value.trim() || "Klausur";
+    if (!fach || !/^\d{4}-\d{2}-\d{2}$/.test(datum || "")) { toast("Bitte ein Datum wählen."); return; }
+    if (datum < tagSchluessel()) { toast("Das Datum liegt in der Vergangenheit."); return; }
+    stat.termine = { ...(stat.termine || {}), ["k" + Date.now().toString(36)]: { fach, titel, datum, t: Date.now() } };
+    speichern(); render(); toast("Termin gespeichert.");
+  },
+  terminLoeschen: (v) => { if (!stat.termine?.[v]) return; stat.termine = { ...stat.termine, [v]: { x: 1, t: Date.now() } }; speichern(); render(); },
+  garderobe: () => { state.garderobe.probe = null; state.sheet = { art: "garderobe" }; render(); },
+  garSlot: (v) => { state.garderobe = { slot: v, probe: null }; render(); },
+  garProbe: (v) => { state.garderobe.probe = state.garderobe.probe === v ? null : v; render(); document.querySelector(".sheet .vb-inhalt")?.scrollTo({ top: 0, behavior: state.bewegungAus ? "auto" : "smooth" }); },
+  garKaufen: (v) => {
+    const a = artikel(v), k = kaufbar(v, { gekauft: stat.gekauft || {}, guthaben: meineKasse().guthaben, level: levelJetzt().level });
+    if (!a || !k.ok) return;
+    stat.gekauft = { ...(stat.gekauft || {}), [v]: Date.now() };
+    stat.outfit = { ...meinOutfit(), [a.slot]: v, t: Date.now() };
+    speichern();
+    render();
+    const fig = document.querySelector(".gar-figur");
+    if (fig) { const [x, y] = mitte(fig); funken(x, y); schwebeText(x, y - 40, `−${a.preis} Taler`); fig.classList.add("gekauft"); }
+    if (navigator.vibrate) navigator.vibrate([15, 40, 25]);
+  },
+  garAnziehen: (v) => { const a = artikel(v); if (!a) return; stat.outfit = { ...meinOutfit(), [a.slot]: v, t: Date.now() }; speichern(); render(); },
+  garAblegen: (v) => { stat.outfit = { ...meinOutfit(), [v]: STANDARD[v] || "", t: Date.now() }; speichern(); render(); },
   sheetZu: () => {
     if (state.sheet?.zurueck) { state.sheet = state.sheet.zurueck; render(); return; }
     if (state.sheet?.art === "willkommen") schreib("bsr.willkommen", "1");
@@ -2239,6 +2617,8 @@ app.addEventListener("input", (e) => {
 
 // Import eigener Karteikarten aus einer Datei
 app.addEventListener("change", async (e) => {
+  if (e.target.id === "profilName") { const n = e.target.value.trim().slice(0, 20); if (n !== meinName()) { stat.profil = { ...(stat.profil || {}), name: n, t: Date.now() }; speichern(); } return; }
+  if (e.target.id === "bImport" && e.target.files?.[0]) { backupLaden(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id !== "kImport" || !e.target.files?.[0]) return;
   const datei = e.target.files[0], gn = /\.goodnotes$/i.test(datei.name);
   e.target.value = ""; // dieselbe Datei später erneut wählbar
@@ -2368,8 +2748,12 @@ document.addEventListener("visibilitychange", () => {
 
 // ======================= Start =======================
 const VERSION = "1.0.0";
+duellAusAdresse();
+window.addEventListener("hashchange", () => { if (/^#(duell|gruppe)=/.test(location.hash)) { duellAusAdresse(); render(); } });
 render();
 levelEinfuehren();
+gruppeAktualisieren();
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") gruppeAktualisieren(); });
 zaehleStart();
 syncBeimStart();
 
@@ -2386,5 +2770,21 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+/** Backup-Datei einlesen und den Lernstand dieses Geräts ersetzen. */
+async function backupLaden(datei) {
+  if (datei.size > 20e6) { toast("Die Datei ist zu groß für ein Backup."); return; }
+  let d;
+  try { d = JSON.parse(await datei.text()); } catch (_) { toast("Die Datei ist kein gültiges Backup."); return; }
+  if (d?.app !== "finanzwirt-trainer" || d.art !== "backup" || !d.stat?.proThema) { toast("Die Datei ist kein Backup des Finanzwirt-Trainers."); return; }
+  const n = Object.values(d.stat.proThema).reduce((a, z) => a + (z.b || 0), 0), verbunden = syncVerbunden();
+  if (!confirm(`Backup vom ${new Date(d.erstellt).toLocaleDateString("de-DE")} wiederherstellen (${n} bearbeitete Aufgaben)? Der jetzige Lernstand auf diesem Gerät wird ersetzt.${verbunden ? "\n\nDieses Gerät wird dabei von der Synchronisierung getrennt. Danach kannst du es neu verbinden." : ""}`)) return;
+  if (verbunden) { syncLokal = null; syncMerken(); } // sonst würde der Abgleich den Unterschied als Änderung auf alle Geräte übertragen
+  stat = { ...LEER(), ...d.stat };
+  for (const [k, v] of Object.entries(d.einstellungen || {})) if (k.startsWith("bsr.") && k !== SYNC_SPEICHER && typeof v === "string") schreib(k, v);
+  speichernLokal();
+  toast("Backup wiederhergestellt – die App lädt neu.");
+  setTimeout(() => location.reload(), 900);
+}
+
 // Für Tests/Debugging
-window.__bsr = { state, KONTEN };
+window.__bsr = { state, KONTEN, render };

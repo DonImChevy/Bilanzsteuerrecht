@@ -36,6 +36,9 @@ const P = {
   pokal: '<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4.5v1.5A3 3 0 0 0 7.5 10.5M17 6h2.5v1.5a3 3 0 0 1-3 3M12 14v3.5M8.5 20.5h7M9.5 17.5h5"/>',
   paare: '<rect x="3" y="5" width="8" height="12" rx="2" transform="rotate(-8 7 11)"/><rect x="13" y="6" width="8" height="12" rx="2" transform="rotate(8 17 12)"/>',
   sonne: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/>',
+  herz: '<path d="M12 20.5 4.2 12.8A4.8 4.8 0 0 1 12 6.6a4.8 4.8 0 0 1 7.8 6.2z"/>',
+  muenze: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="5.5"/><path d="M12 9.5v5"/>',
+  bild: '<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="9.5" r="1.8"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4.5 4"/>',
   // Module
   tkonto: '<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M12 9v11"/>',
   saeulen: '<path d="M3 20.5h18M4.5 17.5h15M6 10v7.5M10 10v7.5M14 10v7.5M18 10v7.5M3 9.5 12 4l9 5.5z"/>',

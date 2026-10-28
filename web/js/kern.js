@@ -122,9 +122,16 @@ export const imTeil = (thema, teil = "beide") => teil === "beide" || !thema.teil
 export function reihum(liste) {
   let stapel = [];
   return (r) => {
+    if (gleichbleibend) return liste[r.zahl(0, liste.length - 1)]; // Duell: nur vom Startwert abhängig
     if (!stapel.length) stapel = r.mischen(liste.map((_, i) => i));
     return liste[stapel.pop()];
   };
+}
+let gleichbleibend = false;
+/** fn so ausführen, dass erzeugte Aufgaben nur vom Zufallsstartwert abhängen (gleiche Aufgaben auf allen Geräten). */
+export function gleichbleibendErzeugen(fn) {
+  gleichbleibend = true;
+  try { return fn(); } finally { gleichbleibend = false; }
 }
 
 export class Zufall {
