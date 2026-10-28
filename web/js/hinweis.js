@@ -1,7 +1,7 @@
 // Hinweise zu Aufgaben direkt an den Entwickler: Versand über Web3Forms (api.web3forms.com).
 // Die Empfängeradresse ist nur beim Dienst hinterlegt – in der App steht allein der öffentliche Access Key.
 // Leer = kein Versand, der Knopf „Hinweis“ teilt den Text dann über das Teilen-Menü.
-export const HINWEIS_SCHLUESSEL = "";
+export const HINWEIS_SCHLUESSEL = "df9a545c-fe87-464d-bbd8-b9ba3b66404a";
 
 const OFFEN = "bsr.hinweise.offen";
 export const hinweisAktiv = () => !!HINWEIS_SCHLUESSEL;
