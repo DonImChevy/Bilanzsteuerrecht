@@ -840,3 +840,21 @@ test("Gesetzestext: Satzgrenzen bei Verweisen („Satz 2.“), Sätzen mit § am
   assert.equal(NT.saetze("Dazu gehören z. B. Mieten. Das gilt (z. B. Erbbaurecht) auch. Siehe BGBl. I S. 1.").length, 3);
   assert.equal(NT.saetze("Es gelten folgende Fälle: 1. erste Nr. 2 und\n2. zweite Nr.").length, 1);
 });
+
+test("Gesetzesfarben: Standard, Palette, eigene Farbe lesbar in hell und dunkel, Text-Format", async () => {
+  const F = await import("../js/gesetzfarben.js");
+  assert.deepEqual(F.farbeVon("hgb"), { hell: "#2b4f8c", dunkel: "#8fb2f0" });
+  assert.equal(F.farbeVon("hgb", { hgb: "pink" }).hell, "#be185d");
+  const gelb = F.farbeVon("estg", { estg: "#ffff00" }), schwarz = F.farbeVon("estg", { estg: "#000000" });
+  assert.notEqual(gelb.hell, "#ffff00"); // zu hell für weiße Karten → abgedunkelt
+  assert.notEqual(schwarz.dunkel, "#000000"); // zu dunkel für die dunkle Ansicht → aufgehellt
+  assert.equal(F.schriftAuf("#ffffff"), "#12151d");
+  assert.equal(F.schriftAuf("#2b4f8c"), "#ffffff");
+  assert.deepEqual(F.farbenAusText("hgb=pink,estg=#1F7A4D,ao=quatsch,xy=rot"), { hgb: "pink", estg: "#1F7A4D" });
+  assert.equal(F.farbenText({ hgb: "pink", ao: "nein" }), "hgb=pink");
+  const css = F.farbenCss({ gg: "blau" });
+  for (const g of F.GESETZE) assert.match(css, new RegExp(`--gz-${g.id}: #[0-9a-f]{6}; --gz-${g.id}-auf: #`));
+  assert.match(css, /--gz-gg: #2b4f8c/);
+  assert.equal(new Set(F.PALETTE.map((p) => p.id)).size, F.PALETTE.length);
+  for (const g of F.GESETZE) assert.ok(F.PALETTE.some((p) => p.id === g.standard), g.id);
+});
