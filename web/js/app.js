@@ -29,6 +29,7 @@ import { DUELL_ANZAHL, neuerSeed, duellLesen, duellLink, duellSieger, zeitText }
 import { eintragen, austragen, rangliste, gruppeSchreiben } from "./gruppe.js";
 import { NEUIGKEITEN, NEUESTE, ungesehen } from "./neuigkeiten.js";
 import { hinweisAktiv, hinweisSenden, offeneHinweiseSenden } from "./hinweis.js";
+import { GESETZE as GESETZBUECHER, PALETTE, farbeVon, farbenCss, farbenText, farbenAusText, farbeGueltig } from "./gesetzfarben.js";
 import { zeitraum, auswerten as zeitraumAuswerten } from "./statistik.js";
 import { levelAus, xpGesamt, bonusFuerAntwort, erfolgePruefen, tagesBonus, laengsteSerie, XP } from "./level.js";
 import { levelZeile, levelSeite, levelFeier, erfolgBanner, levelStartFeier } from "./levelansicht.js";
@@ -343,7 +344,7 @@ const farbe = (q) => (q >= 0.8 ? "var(--ok)" : q >= 0.5 ? "var(--warn)" : "var(-
 const zahlText = (n) => n.toLocaleString("de-DE");
 
 // ======================= Einstellungen (werden mit dem Sync-Code abgeglichen) =======================
-const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus2", "bewegungAus", "rolle", "startLayout", "farbwelt"];
+const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus2", "bewegungAus", "rolle", "startLayout", "farbwelt", "gesetzFarben"];
 // Erster Stand ohne Zeitstempel (t = 0): Ein neu verbundenes Gerät übernimmt die Einstellungen der anderen.
 if (!stat.einstellungen) stat.einstellungen = { ziel: String(state.ziel), design: state.design, teil: state.bilrTeil, oerModus2: state.oerModus, t: 0 };
 /** Einstellung lokal speichern und für den Abgleich mit Zeitstempel im Lernstand vermerken. */
@@ -367,6 +368,41 @@ function einstellungenAnwenden() {
 }
 
 /** Akzentfarbe und Hell/Dunkel anwenden. */
+// Farben der Gesetzbücher („Paare finden“): als <style> mit --gz-* für hell und dunkel
+let gesetzFarbenStand = null;
+const gesetzFarbenWahl = () => farbenAusText(lies("bsr.gesetzFarben", ""));
+function gesetzFarbenAnwenden(wahl = null) {
+  const text = wahl ? farbenText(wahl) : lies("bsr.gesetzFarben", "");
+  if (text === gesetzFarbenStand) return;
+  gesetzFarbenStand = text;
+  let st = document.getElementById("gesetzFarbenStil");
+  if (!st) { st = document.createElement("style"); st.id = "gesetzFarbenStil"; document.head.appendChild(st); }
+  st.textContent = farbenCss(farbenAusText(text));
+}
+function gesetzFarbeSetzen(id, wert) {
+  const w = gesetzFarbenWahl();
+  if (wert == null) delete w[id]; else if (farbeGueltig(wert)) w[id] = wert; else return;
+  einstellungMerken("gesetzFarben", farbenText(w));
+  render();
+}
+function gesetzFarbenView() {
+  const w = gesetzFarbenWahl();
+  const beispiel = { hgb: "§ 238", estg: "§ 4", ao: "§ 141", ustg: "§ 15", gg: "Art. 20", bgb: "§ 449", gobt: "§ 10", vo: "§ 9a" };
+  return `<div class="gf-intro sub">Jedes Gesetz hat im Spiel „Paare finden“ seinen eigenen Buchrücken. Wähle eine Farbe oder mische dir eine eigene.</div>
+    ${GESETZBUECHER.map((g) => {
+      const c = farbeVon(g.id, w), eigen = w[g.id] && w[g.id].startsWith("#"), aktiv = w[g.id] || g.standard;
+      return `<div class="gf-karte gz-${g.id}">
+        <div class="gf-kopf"><span class="paar-karte l gf-muster" aria-hidden="true"><span class="pk-ruecken">${esc(g.name === "VO" ? "EStDV" : g.name)}</span><span class="pk-zitat"><span class="pk-nr">${esc(beispiel[g.id])}</span></span></span>
+          <span class="grow"><b>${esc(g.name === "VO" ? "Verordnungen" : g.name)}</b><span class="sub">${esc(g.name === "VO" ? "EStDV, LStDV, UStDV" : g.titel)}</span></span>
+          ${w[g.id] ? `<button class="link" data-a="gesetzFarbeStandard" data-v="${g.id}">Standard</button>` : ""}</div>
+        <div class="gf-palette" role="radiogroup" aria-label="Farbe für ${esc(g.name)}">
+          ${PALETTE.map((p) => `<button class="gf-farbe${aktiv === p.id ? " an" : ""}" role="radio" aria-checked="${aktiv === p.id}" aria-label="${esc(p.name)}" title="${esc(p.name)}" data-a="gesetzFarbe" data-v="${g.id}:${p.id}" style="--fh:${p.hell};--fd:${p.dunkel}"></button>`).join("")}
+          <label class="gf-farbe gf-eigen${eigen ? " an" : ""}" title="Eigene Farbe" style="--fh:${c.hell};--fd:${c.dunkel}">${ic("stift", "klein")}<input type="color" data-gesetz="${g.id}" value="${eigen ? w[g.id] : c.hell}" aria-label="Eigene Farbe für ${esc(g.name)}"></label>
+        </div></div>`;
+    }).join("")}
+    <button class="knopf zweit" data-a="gesetzFarbenStandard" style="margin:8px 0 6px">${ic("wiederholen")} Alle Farben zurücksetzen</button>
+    <div class="gruppe-fuss" style="margin:4px 4px 20px">Die Farben gelten in heller und dunkler Ansicht – eigene Farben werden dafür automatisch angepasst, damit alles lesbar bleibt. Sie werden mit dem Sync-Code übertragen.</div>`;
+}
 function designAnwenden() {
   // Startseite in der App-Farbe, innerhalb eines Moduls in dessen Farbe
   const fw = FARBWELTEN.find((f) => f.id === state.farbwelt) || FARBWELTEN[0];
@@ -377,6 +413,7 @@ function designAnwenden() {
   if (state.design === "light" || state.design === "dark") root.dataset.theme = state.design;
   else delete root.dataset.theme;
   root.dataset.bewegung = state.bewegungAus ? "aus" : "an";
+  gesetzFarbenAnwenden();
   const o = meinOutfit();
   talerOutfitSetzen(o);
   // Bild liegt nur auf dem Gerät, auf dem es gewählt wurde; während der Vorschau gilt der angeprobte Hintergrund
@@ -1136,7 +1173,8 @@ function tabLernen() {
   if (mkFaellig) heute += `<button class="kachel breit" data-a="meineLernen" data-v="faellig"><span class="k-icon">${ic("karten")}</span>
       <span class="grow"><b>${mkFaellig} ${mkFaellig === 1 ? "eigene Karteikarte" : "eigene Karteikarten"} fällig</b><div class="sub">Umdrehen, bewerten – dauert nur kurz</div></span><span class="rechts">${ic("pfeil")}</span></button>`;
   const kachel = (a, icon, titel, text, v = "") => `<button class="kachel" data-a="schnell" data-v="${a}" data-t="${v}"><span class="k-icon">${ic(icon)}</span><span class="k-text"><b>${titel}</b><span class="sub">${esc(text)}</span></span></button>`;
-  const paareKachel = PAARE[state.fach] ? `<button class="kachel" data-a="paareStart"><span class="k-icon">${ic("karten")}</span><span class="k-text"><b>Paare finden</b><span class="sub">Klausurnormen und ihre Bedeutung</span></span></button>` : "";
+  const paareKachel = PAARE[state.fach] ? `<div class="kachel-huelle"><button class="kachel" data-a="paareStart"><span class="k-icon">${ic("karten")}</span><span class="k-text"><b>Paare finden</b><span class="sub">Klausurnormen und ihre Bedeutung</span></span></button>
+      <button class="kachel-zusatz" data-a="gesetzFarben" aria-label="Farben der Gesetzbücher einstellen" title="Farben der Gesetzbücher">${ic("einstellungen", "klein")}</button></div>` : "";
   const schnell = state.fach === "oer"
     ? kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "75 % der Klausur") +
       kachel("uebertragung", "diagramm", "Übertragung", "Grafiken auswerten · 25 %") +
@@ -2110,6 +2148,9 @@ function sheetView() {
   } else if (sh.art === "duellEinladung") {
     titel = sh.d.g ? "Duell-Ergebnis" : "Herausforderung";
     inhalt = duellEinladungView(sh.d);
+  } else if (sh.art === "gesetzFarben") {
+    titel = "Gesetzesfarben";
+    inhalt = gesetzFarbenView();
   } else if (sh.art === "hinweis") {
     titel = "Hinweis zur Aufgabe"; links = "Abbrechen";
     inhalt = `<div class="gruppe"><div class="gruppe-titel">Aufgabe</div><div class="liste"><div class="zeile"><span class="grow"><b>${esc(sh.h.modul)} · ${esc(sh.h.thema)}</b><div class="sub" style="margin-top:4px">${esc(sh.h.text.length > 220 ? sh.h.text.slice(0, 220) + " …" : sh.h.text)}</div></span></div></div></div>
@@ -2685,6 +2726,10 @@ const AKTIONEN = {
     const text = `Finanzwirt-Trainer – Hinweis zur Aufgabe „${f.id}“ (${modul} · ${th?.titel || f.thema}):\n\n${auszug}\n\nMein Hinweis: `;
     textTeilen("Hinweis zur Aufgabe", text, "Aufgabe kopiert – Hinweis ergänzen und verschicken.");
   },
+  gesetzFarben: () => { state.sheet = { art: "gesetzFarben" }; render(); },
+  gesetzFarbe: (v) => { const [id, wert] = v.split(":"); gesetzFarbeSetzen(id, wert); },
+  gesetzFarbeStandard: (v) => gesetzFarbeSetzen(v, null),
+  gesetzFarbenStandard: () => { einstellungMerken("gesetzFarben", ""); render(); toast("Standardfarben wiederhergestellt."); },
   hinweisAbschicken: async () => {
     const sh = state.sheet, feld = document.getElementById("hinweisText"), knopf = document.querySelector('[data-a="hinweisAbschicken"]');
     const hinweis = feld?.value.trim() || "";
@@ -2773,6 +2818,7 @@ app.addEventListener("click", (e) => {
 });
 
 app.addEventListener("input", (e) => {
+  if (e.target.dataset?.gesetz && e.target.type === "color") { gesetzFarbenAnwenden({ ...gesetzFarbenWahl(), [e.target.dataset.gesetz]: e.target.value.toLowerCase() }); return; } // Vorschau beim Ziehen
   const t = e.target;
   if (t.id === "bildStaerke") { state.bildEinst.s = Number(t.value) / 100; bildEinstAnwenden(); bildEinstSpeichern(); return; }
   if (t.id === "bildZoom") { state.bildEinst.z = Number(t.value) / 100; bildEinstAnwenden(); bildEinstSpeichern(); return; }
@@ -2827,6 +2873,7 @@ app.addEventListener("input", (e) => {
 
 // Import eigener Karteikarten aus einer Datei
 app.addEventListener("change", async (e) => {
+  if (e.target.dataset?.gesetz && e.target.type === "color") { gesetzFarbeSetzen(e.target.dataset.gesetz, e.target.value.toLowerCase()); return; }
   if (e.target.id === "hgBildVorschau" && e.target.files?.[0]) { bildVorschauWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "hgBildDatei" && e.target.files?.[0]) { eigenesBildWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "profilName") { const n = e.target.value.trim().slice(0, 20); if (n !== meinName()) { stat.profil = { ...(stat.profil || {}), name: n, t: Date.now() }; speichern(); } return; }

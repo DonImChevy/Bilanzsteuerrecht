@@ -4,6 +4,14 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-gesetzesfarben",
+    datum: "2026-10-28",
+    titel: "Eigene Farben für die Gesetzbücher",
+    punkte: [
+      ["einstellungen", "Farben selbst festlegen", "Über das Regler-Symbol an „Paare finden“ bekommt jedes Gesetz die Farbe, die du willst – aus Vorschlägen oder frei gemischt.", "gesetzFarben"],
+    ],
+  },
+  {
     id: "2026-10-paare-gesetzbuch",
     datum: "2026-10-28",
     titel: "Paare finden im neuen Look",
