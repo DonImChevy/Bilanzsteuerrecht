@@ -15,7 +15,7 @@ export const KOMPAKT_UST = {
       "**Steuerschuldner** ist grundsätzlich der leistende Unternehmer (§ 13a Abs. 1 Nr. 1 UStG); die Steuer wird für den Voranmeldungszeitraum angemeldet (§ 18 UStG).",
     ],
     fallen: [
-      "Arbeitnehmer sind nicht selbständig (§ 2 Abs. 2 Nr. 1 UStG) – Leitende Angestellte sind keine Unternehmer.",
+      "Arbeitnehmer sind nicht selbständig (§ 2 Abs. 2 Nr. 1 UStG) – auch leitende Angestellte sind keine Unternehmer.",
       "„Gewinnerzielungsabsicht“ ist **kein** Merkmal – Einnahmeerzielung genügt (§ 2 Abs. 1 S. 3 UStG).",
       "Die Unternehmereigenschaft nur einmal prüfen – außer der Rahmen des Unternehmens ändert sich im Sachverhalt.",
     ],
@@ -28,7 +28,7 @@ export const KOMPAKT_UST = {
       "**Eigentumsvorbehalt (§ 449 BGB):** Die Lieferung ist trotzdem mit der **Übergabe** ausgeführt – zivilrechtliches Eigentum ist nicht entscheidend.",
       "**Sonstige Leistung (§ 3 Abs. 9 UStG):** alle Leistungen, die keine Lieferungen sind – Vermietung, Beratung, Reparatur, Unterricht, Beförderung, Restaurantumsätze.",
       "**Werklieferung (§ 3 Abs. 4 UStG):** Der Unternehmer bearbeitet einen Gegenstand und verwendet dabei **eigene Hauptstoffe** → Lieferung. Werden nur Zutaten/Nebensachen beigesteuert, bleibt es eine Werkleistung (sonstige Leistung).",
-      "**Einheitlichkeit der Leistung:** Eine **Nebenleistung** teilt das Schicksal der Hauptleistung (Ort, Steuersatz, Befreiung). Nebenleistung = für den Kunden kein eigener Zweck, sondern Mittel, die Hauptleistung besser in Anspruch zu nehmen (Abschn. 3.10 UStAE) (Abschn. 3.10 Abs. 5 UStAE).",
+      "**Einheitlichkeit der Leistung:** Eine **Nebenleistung** teilt das Schicksal der Hauptleistung (Ort, Steuersatz, Befreiung). Nebenleistung = für den Kunden kein eigener Zweck, sondern Mittel, die Hauptleistung besser in Anspruch zu nehmen (Abschn. 3.10 Abs. 5 UStAE).",
       "**Typische Nebenleistungen:** Verpackung und **Versandkosten** zur Lieferung, das **Wollknäuel im Strickkurs**, **Heizkosten** und Betriebskosten zur Miete, das Medikament bei der Heilbehandlung (Abschn. 3.10 Abs. 5 UStAE).",
       "**Mehrere Hauptleistungen** zu einem Gesamtpreis (z. B. ein zusammengestellter **Präsentkorb**): Preis nach den Einzelwerten aufteilen und jede Lieferung mit ihrem Steuersatz besteuern (Aufteilung des Entgelts nach § 10 Abs. 1 UStG).",
     ],
@@ -54,7 +54,7 @@ export const KOMPAKT_UST = {
       "**B2B-Grundregel (§ 3a Abs. 2 UStG):** Ort ist der Sitz des **Empfängers**, wenn dieser Unternehmer ist und für sein Unternehmen bezieht.",
       "**B2C-Grundregel (§ 3a Abs. 1 UStG):** Ort ist der Sitz des **leistenden** Unternehmers.",
       "**Grundstücksleistungen (§ 3a Abs. 3 Nr. 1 UStG):** Lage des Grundstücks – Vermietung, Makler, Architekt, Bauleistungen, Ferienwohnung.",
-      "**Weitere Sonderregeln:** kurzfristige Vermietung von Beförderungsmitteln (§ 3a Abs. 3 Nr. 2), Kultur-, Unterrichts- und Unterhaltungsleistungen an Nichtunternehmer am Tätigkeitsort, per Streaming am Wohnort des Empfängers (§ 3a Abs. 3 Nr. 3), Restaurantleistungen und Reparaturen für Privatleute dort, wo sie erbracht werden (§ 3a Abs. 3 Nr. 3a Buchst. a, b), Eintritt zu Messen für Unternehmer am Veranstaltungsort (§ 3a Abs. 3 Nr. 5), Beratung an Privatleute im Drittland an deren Wohnsitz (§ 3a Abs. 4), Personenbeförderung auf der Strecke (§ 3b Abs. 1).",
+      "**Weitere Sonderregeln:** kurzfristige Vermietung von Beförderungsmitteln (§ 3a Abs. 3 Nr. 2), Kultur-, Unterrichts- und Unterhaltungsleistungen an Nichtunternehmer am Tätigkeitsort, per Streaming am Wohnort des Empfängers (§ 3a Abs. 3 Nr. 3), Restaurantleistungen (an alle Kunden) und Arbeiten an beweglichen Gegenständen für Privatleute dort, wo sie erbracht werden (§ 3a Abs. 3 Nr. 3a Buchst. a, b), Eintritt zu Messen für Unternehmer am Veranstaltungsort (§ 3a Abs. 3 Nr. 5), Beratung an Privatleute im Drittland an deren Wohnsitz (§ 3a Abs. 4), Personenbeförderung auf der Strecke (§ 3b Abs. 1).",
     ],
     fallen: [
       "§ 3a Abs. 2 UStG nicht prüfen, bevor die Sonderregeln des Abs. 3 ausgeschlossen sind.",
@@ -94,7 +94,7 @@ export const KOMPAKT_UST = {
     punkte: [
       "**§ 4 Nr. 12 a UStG – Vermietung von Grundstücken** ist steuerfrei. **Ausnahmen (S. 2):** kurzfristige Beherbergung (Hotel, **Ferienwohnung**), Vermietung von **Stellplätzen**, Betriebsvorrichtungen → steuerpflichtig. Parkplätze **zusammen mit** der Wohnung/Praxis sind aber Nebenleistung und ebenfalls frei.",
       "**§ 4 Nr. 14 a UStG – Heilbehandlungen** von Ärzten, Heilpraktikern, Physiotherapeuten sind steuerfrei, wenn ein **therapeutisches Ziel** im Vordergrund steht: Vorsorge, Diagnose, Behandlung, Beratung zur Krankheitsvorbeugung.",
-      "**Nicht frei** sind z. B. Gutachten für eine **Lebensversicherung**, Schönheitsoperationen ohne medizinischen Grund, **Tierarztleistungen**. Ein im Rahmen der Behandlung verabreichtes Medikament ist Nebenleistung → frei (kein therapeutisches Ziel i. S. d. § 4 Nr. 14 a UStG).",
+      "**Nicht frei** sind z. B. Gutachten für eine **Lebensversicherung** und Schönheitsoperationen ohne medizinischen Grund (kein therapeutisches Ziel) sowie **Tierarztleistungen** (keine Humanmedizin, § 4 Nr. 14 a UStG). Ein im Rahmen der Behandlung verabreichtes Medikament ist Nebenleistung → ebenfalls frei (Abschn. 3.10 Abs. 5 UStAE).",
       "**§ 4 Nr. 9 a UStG:** Umsätze, die unter das Grunderwerbsteuergesetz fallen (Grundstücksverkauf). **§ 4 Nr. 8 UStG:** Geld- und Kreditgeschäfte. **§ 4 Nr. 10, 11 UStG:** Versicherungen und Versicherungsvertreter.",
       "**§ 4 Nr. 28 UStG:** Verkauf von Gegenständen, die **ausschließlich für steuerfreie Tätigkeiten** nach § 4 Nr. 8–27, 29 genutzt wurden (z. B. Untersuchungsgerät der Ärztin) oder für die der Vorsteuerabzug nach § 15 Abs. 1a ausgeschlossen war – steuerfrei.",
       "**Option (§ 9 Abs. 1 UStG):** Verzicht auf die Befreiung bei bestimmten Umsätzen (u. a. Nr. 8, 9a, 12), wenn der Umsatz an einen **anderen Unternehmer für dessen Unternehmen** ausgeführt wird.",
