@@ -305,6 +305,8 @@ const state = {
   design: lies("bsr.design", "system"),
   farbwelt: FARBWELTEN.some((f) => f.id === lies("bsr.farbwelt", "")) ? lies("bsr.farbwelt", "") : "standard", // Farbwelt der App
   hatBild: false, // eigenes Hintergrundbild auf diesem Gerät gespeichert
+  bildDaten: null, // dessen data-URL
+  hgVorschau: null, // Hintergrund zur Probe auf der ganzen App: {id, bild?}
   // Animationen aus („Bewegung reduzieren“): eigener Schalter, Startwert = Systemeinstellung des Geräts
   bewegungAus: (() => { const v = lies("bsr.bewegungAus", ""); return v ? v === "1" : !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; })(),
   hinweisWeg: lies("bsr.hinweisWeg", "") === "1",
@@ -371,8 +373,12 @@ function designAnwenden() {
   root.dataset.bewegung = state.bewegungAus ? "aus" : "an";
   const o = meinOutfit();
   talerOutfitSetzen(o);
-  root.dataset.hintergrund = o.hintergrund === "eigenesbild" && !state.hatBild ? "leuchten" : o.hintergrund; // Bild liegt nur auf dem Gerät, auf dem es gewählt wurde
+  // Bild liegt nur auf dem Gerät, auf dem es gewählt wurde; während der Vorschau gilt der angeprobte Hintergrund
+  root.dataset.hintergrund = state.hgVorschau ? state.hgVorschau.id : o.hintergrund === "eigenesbild" && !state.hatBild ? "leuchten" : o.hintergrund;
+  const bild = state.hgVorschau?.bild || state.bildDaten;
+  if (bild !== hgBildGesetzt) { hgBildGesetzt = bild; if (bild) root.style.setProperty("--hg-bild", `url("${bild}")`); else root.style.removeProperty("--hg-bild"); }
 }
+let hgBildGesetzt = null;
 /** Getragenes Outfit (nur Gekauftes) und Taler-Kasse (1 Taler je 10 XP). */
 const meinOutfit = () => outfitVon(stat.outfit, stat.gekauft);
 const meineKasse = () => kasse(xpGesamt(stat).gesamt, stat.gekauft);
@@ -592,6 +598,7 @@ function render() {
   }
   if (state.kompakt) html += kompaktEbene();
   if (state.sheet) html += sheetView();
+  if (state.hgVorschau) html += vorschauLeiste();
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
   const scrollVoll = animVoll ? [] : [...app.querySelectorAll(".vollbild .vb-inhalt")].map((el) => el.scrollTop);
   const scrollSheet = animSheet ? 0 : app.querySelector(".sheet .vb-inhalt")?.scrollTop || 0;
@@ -612,7 +619,7 @@ function render() {
 // Jede geöffnete Ebene (Unterseite, Übung, Rückschau, Lernkarten, Menü) bekommt einen Eintrag im Browserverlauf.
 // So schließt die Zurück-Geste (Android) bzw. Zurück-Taste die oberste Ebene, statt die App zu verlassen.
 let verlaufTiefe = 0, popIgnorieren = 0;
-const ansichtTiefe = () => (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.sheet ? 1 : 0);
+const ansichtTiefe = () => (state.hgVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.sheet ? 1 : 0);
 function verlaufAbgleichen() {
   const t = ansichtTiefe();
   while (verlaufTiefe < t) { verlaufTiefe += 1; history.pushState({ tiefe: verlaufTiefe }, ""); }
@@ -620,7 +627,8 @@ function verlaufAbgleichen() {
 }
 /** Oberste Ebene schließen (Zurück-Geste, Escape-Taste). */
 function ebeneZurueck() {
-  if (state.sheet) AKTIONEN.sheetZu();
+  if (state.hgVorschau) AKTIONEN.vorschauEnde();
+  else if (state.sheet) AKTIONEN.sheetZu();
   else if (state.kompakt) AKTIONEN.kompaktZu();
   else if (state.deck) AKTIONEN.deckZu();
   else if (state.paare) AKTIONEN.paareZu();
@@ -2402,6 +2410,33 @@ const AKTIONEN = {
     speichern(); render(); toast("Termin gespeichert.");
   },
   terminLoeschen: (v) => { if (!stat.termine?.[v]) return; stat.termine = { ...stat.termine, [v]: { x: 1, t: Date.now() } }; speichern(); render(); },
+  hgVorschau: (v, bild) => {
+    if (artikel(v)?.slot !== "hintergrund") return;
+    state.hgVorschau = { id: v, bild: typeof bild === "string" ? bild : null };
+    state.sheet = null; state.tab = "start";
+    render(); scrollOben();
+  },
+  vorschauEnde: () => {
+    const id = state.hgVorschau?.id;
+    state.hgVorschau = null;
+    state.garderobe = { slot: "hintergrund", probe: id || null }; state.sheet = { art: "garderobe" };
+    render();
+  },
+  vorschauKaufen: async () => {
+    const v = state.hgVorschau; if (!v) return;
+    const a = artikel(v.id), hat = !!stat.gekauft?.[v.id] || a.preis === 0;
+    if (!hat) {
+      const k = kaufbar(v.id, { gekauft: stat.gekauft || {}, guthaben: meineKasse().guthaben, level: levelJetzt().level });
+      if (!k.ok) return;
+      stat.gekauft = { ...(stat.gekauft || {}), [v.id]: Date.now() };
+    }
+    if (v.bild) { try { await bildSpeichern(v.bild); eigenesBildSetzen(v.bild); } catch (_) { toast("Das Bild konnte nicht gespeichert werden."); } }
+    stat.outfit = { ...meinOutfit(), hintergrund: v.id, t: Date.now() };
+    state.hgVorschau = null;
+    speichern(); render();
+    if (!state.bewegungAus) document.body.insertAdjacentHTML("beforeend", konfetti()), setTimeout(() => document.querySelector("body > .konfetti")?.remove(), 2600);
+    toast(hat ? `${a.name} ist jetzt dein Hintergrund.` : `Gekauft! ${a.name} ist jetzt dein Hintergrund.`);
+  },
   farbwelt: (v) => { if (!FARBWELTEN.some((f) => f.id === v)) return; state.farbwelt = v; einstellungMerken("farbwelt", v); render(); },
   hintergrundWaehlen: () => { state.garderobe = { slot: "hintergrund", probe: null }; state.sheet = { art: "garderobe" }; render(); },
   garderobe: () => { state.garderobe.probe = null; state.sheet = { art: "garderobe" }; render(); },
@@ -2660,6 +2695,7 @@ app.addEventListener("input", (e) => {
 
 // Import eigener Karteikarten aus einer Datei
 app.addEventListener("change", async (e) => {
+  if (e.target.id === "hgBildVorschau" && e.target.files?.[0]) { bildVorschauWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "hgBildDatei" && e.target.files?.[0]) { eigenesBildWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "profilName") { const n = e.target.value.trim().slice(0, 20); if (n !== meinName()) { stat.profil = { ...(stat.profil || {}), name: n, t: Date.now() }; speichern(); } return; }
   if (e.target.id === "bImport" && e.target.files?.[0]) { backupLaden(e.target.files[0]); e.target.value = ""; return; }
@@ -2830,8 +2866,25 @@ async function eigenesBildWaehlen(datei) {
 }
 function eigenesBildSetzen(daten) {
   state.hatBild = !!daten;
-  if (daten) document.documentElement.style.setProperty("--hg-bild", `url("${daten}")`);
-  else document.documentElement.style.removeProperty("--hg-bild");
+  state.bildDaten = daten || null;
+  designAnwenden();
+}
+/** Vorschau mit eigenem Bild: Foto wählen, verkleinern, noch nicht speichern (erst beim Kauf). */
+async function bildVorschauWaehlen(datei) {
+  if (!/^image\//.test(datei.type)) { toast("Bitte ein Bild auswählen."); return; }
+  try { AKTIONEN.hgVorschau("eigenesbild", await bildVerkleinern(datei)); } catch (err) { toast(err.message || "Das Bild konnte nicht geöffnet werden."); }
+}
+/** Leiste unten während der Vorschau: zurück zur Garderobe oder kaufen bzw. verwenden. */
+function vorschauLeiste() {
+  const v = state.hgVorschau, a = artikel(v.id), hat = !!stat.gekauft?.[v.id] || a.preis === 0;
+  const k = kaufbar(v.id, { gekauft: stat.gekauft || {}, guthaben: meineKasse().guthaben, level: levelJetzt().level });
+  const haupt = hat ? `<button class="knopf" data-a="vorschauKaufen">${ic("haken")} Verwenden</button>`
+    : k.ok ? `<button class="knopf gold" data-a="vorschauKaufen">Kaufen für ${talerBetrag(a.preis, "im-knopf")}</button>`
+    : k.grund === "level" ? `<button class="knopf zweit" disabled>${ic("schloss")} Ab Level ${a.level}</button>`
+    : `<button class="knopf zweit" disabled>Noch ${talerBetrag(k.fehlt, "im-knopf")} fehlen</button>`;
+  return `<div class="hg-vorschau-leiste" role="region" aria-label="Vorschau des Hintergrunds">
+    <div class="hvl-text">${ic("auge")}<span><small>Vorschau</small><b>${esc(a.name)}</b></span></div>
+    <div class="hvl-knoepfe"><button class="knopf zweit" data-a="vorschauEnde">${ic("zurueck")} Zurück</button>${haupt}</div></div>`;
 }
 
 /** Backup-Datei einlesen und den Lernstand dieses Geräts ersetzen. */
