@@ -26,6 +26,7 @@ import { kommende, countdownText, proTag } from "./termine.js";
 import { rueckblickView, statistikView, statistikStart } from "./statistikansicht.js";
 import { DUELL_ANZAHL, neuerSeed, duellLesen, duellLink, duellSieger, zeitText } from "./duell.js";
 import { eintragen, austragen, rangliste, gruppeSchreiben } from "./gruppe.js";
+import { NEUIGKEITEN, NEUESTE, ungesehen } from "./neuigkeiten.js";
 import { zeitraum, auswerten as zeitraumAuswerten } from "./statistik.js";
 import { levelAus, xpGesamt, bonusFuerAntwort, erfolgePruefen, tagesBonus, laengsteSerie, XP } from "./level.js";
 import { levelZeile, levelSeite, levelFeier, erfolgBanner, levelStartFeier } from "./levelansicht.js";
@@ -235,24 +236,49 @@ function naechstesBanner() {
   setTimeout(() => { el.classList.add("weg"); setTimeout(() => { el.remove(); bannerWarteschlange.shift(); naechstesBanner(); }, 350); }, 3200);
 }
 /** Feier-Ebene (Level-Up, Start des Levelsystems) – liegt außerhalb von #app und überlebt das Neuzeichnen. */
+const feierWarteschlange = [];
 function feierZeigen(html, verzoegerung = 0) {
   setTimeout(() => {
-    document.querySelector(".lv-feier")?.remove();
+    // Läuft schon eine Feier (z. B. Level-Up), kommt die nächste danach
+    if (document.querySelector(".lv-feier:not(.weg)")) { feierWarteschlange.push(html); return; }
     const el = document.createElement("div");
     el.className = "lv-feier";
     el.innerHTML = konfetti() + html;
-    const zu = () => { el.classList.add("weg"); setTimeout(() => el.remove(), 260); };
+    const zu = () => {
+      el.classList.add("weg");
+      setTimeout(() => { el.remove(); const n = feierWarteschlange.shift(); if (n) feierZeigen(n, 250); }, 260);
+    };
     el.addEventListener("click", (e) => {
-      const a = e.target.closest("[data-lv]")?.dataset.lv;
+      const z = e.target.closest("[data-lv]"), a = z?.dataset.lv;
       if (a === "album") { zu(); state.sheet = { art: "level" }; render(); }
+      else if (a === "gehe") { zu(); AKTIONEN[z.dataset.ziel]?.(z.dataset.wert); }
       else if (a === "zu" || e.target === el) zu();
     });
     el.addEventListener("keydown", (e) => { if (e.key === "Escape") zu(); });
     document.body.appendChild(el);
     if (navigator.vibrate && navigator.userActivation?.hasBeenActive) navigator.vibrate([20, 50, 20, 50, 40]);
-    el.querySelector("[data-lv]")?.focus();
+    el.querySelector(".knopf[data-lv]")?.focus({ preventScroll: true });
   }, verzoegerung);
 }
+// ======================= Neuigkeiten nach einem Update =======================
+function neuigkeitenListe(eintraege, mitAktion = true) {
+  return eintraege.map((n) => `<section class="neu-abschnitt">${eintraege.length > 1 || !mitAktion ? `<h3>${esc(n.titel)} <small>${new Date(n.datum + "T12:00").toLocaleDateString("de-DE", { day: "numeric", month: "long", year: "numeric" })}</small></h3>` : ""}
+    <ul class="neu-liste">${n.punkte.map(([icon, t, text, ziel, wert]) => `<li><span class="neu-ic">${ic(icon)}</span><span class="neu-text"><b>${esc(t)}</b><span>${esc(text)}</span>
+      ${ziel && mitAktion ? `<button class="neu-link" data-lv="gehe" data-ziel="${ziel}"${wert ? ` data-wert="${wert}"` : ""}>Ansehen ${ic("pfeil", "klein")}</button>` : ziel ? `<button class="neu-link" data-a="${ziel}"${wert ? ` data-v="${wert}"` : ""}>Ansehen ${ic("pfeil", "klein")}</button>` : ""}</span></li>`).join("")}</ul></section>`).join("");
+}
+/** Beim Start nach einem Update einmal zeigen, was neu ist (nicht beim allerersten Start). */
+function neuigkeitenPruefen() {
+  const gesehen = lies("bsr.neuGesehen", "");
+  if (gesehen === NEUESTE) return;
+  schreib("bsr.neuGesehen", NEUESTE);
+  if (!lies("bsr.willkommen", "")) return; // neue Nutzer bekommen die Einführung
+  const neu = ungesehen(gesehen);
+  feierZeigen(`<div class="lv-feier-karte neu-karte" role="dialog" aria-modal="true" aria-labelledby="lvFeierTitel">
+    <div class="neu-kopf">${taler("jubeln", { groesse: 72 })}<div><small>Neu in der App</small><h2 id="lvFeierTitel">${esc(neu.length > 1 ? "Das ist neu" : neu[0].titel)}</h2></div></div>
+    <div class="neu-rolle">${neuigkeitenListe(neu)}</div>
+    <button class="knopf" data-lv="zu">Los geht's</button></div>`, 600);
+}
+
 /** Erster Start mit Levelsystem: bisherige Aufgaben zählen rückwirkend, Erfolge werden still nachgetragen. */
 function levelEinfuehren() {
   if (lies("bsr.levelStart", "")) return;
@@ -1981,6 +2007,9 @@ function sheetView() {
   } else if (sh.art === "duellEinladung") {
     titel = sh.d.g ? "Duell-Ergebnis" : "Herausforderung";
     inhalt = duellEinladungView(sh.d);
+  } else if (sh.art === "neuigkeiten") {
+    titel = "Neuigkeiten";
+    inhalt = `<div class="neu-seite">${neuigkeitenListe(NEUIGKEITEN, false)}</div>`;
   } else if (sh.art === "startAnpassen") {
     titel = "Startseite anpassen";
     inhalt = startAnpassenView();
@@ -2006,6 +2035,8 @@ function sheetView() {
         <span class="grow"><b>Animationen</b><div class="sub">Aus = Bewegung reduzieren: Taler, Konfetti und Übergänge bleiben still. Auch während der Aufgaben oben rechts umschaltbar.</div></span>${bewegungSchalter()}</div></div></div>
       ${syncVerfuegbar() ? `<div class="gruppe"><div class="gruppe-titel">Mehrere Geräte</div><div class="liste"><button class="zeile" data-a="syncOeffnen"><span class="symbol">${ic("wechsel")}</span>
         <span class="grow"><b>Geräte synchronisieren</b><div class="sub">${esc(syncStatusText())}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
+      <div class="gruppe"><div class="gruppe-titel">Was ist neu?</div><div class="liste"><button class="zeile" data-a="neuigkeiten"><span class="symbol">${ic("sterne")}</span>
+        <span class="grow"><b>Neuigkeiten</b><div class="sub">${esc(NEUIGKEITEN[0].titel)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>
       <div class="gruppe"><div class="gruppe-titel">Datensicherung</div><div class="liste">
         <button class="zeile" data-a="backupSpeichern"><span class="symbol">${ic("export")}</span><span class="grow"><b>Backup speichern</b><div class="sub">${lies("bsr.letztesBackup", "") ? `Zuletzt am ${new Date(Number(lies("bsr.letztesBackup", "0"))).toLocaleDateString("de-DE")}` : "Lernstand, Garderobe und Einstellungen als Datei"}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>
         <label class="zeile" style="cursor:pointer"><span class="symbol">${ic("install")}</span><span class="grow"><b>Backup wiederherstellen</b><div class="sub">Ersetzt den Lernstand auf diesem Gerät</div></span><span class="chev">${ic("pfeil", "klein")}</span>
@@ -2346,6 +2377,7 @@ const AKTIONEN = {
     const text = g ? `Mein Ergebnis in unserem Duell (${MODUL[x.fach].kurz}): ${ich.r}/${DUELL_ANZAHL} in ${zeitText(ich.z)}.` : `Duell im Finanzwirt-Trainer (${MODUL[x.fach].kurz}): Ich habe ${ich.r}/${DUELL_ANZAHL} in ${zeitText(ich.z)} geschafft. Schaffst du mehr?`;
     linkTeilen("Duell – Finanzwirt-Trainer", text, duellLink(basis, daten));
   },
+  neuigkeiten: () => { state.sheet = { art: "neuigkeiten" }; render(); },
   startAnpassen: () => { state.sheet = { art: "startAnpassen" }; render(); },
   startHoch: (v) => { const l = startReihenfolge(), i = Number(v); if (i > 0) { [l[i - 1], l[i]] = [l[i], l[i - 1]]; startSpeichern(l); } },
   startRunter: (v) => { const l = startReihenfolge(), i = Number(v); if (i < l.length - 1) { [l[i + 1], l[i]] = [l[i], l[i + 1]]; startSpeichern(l); } },
@@ -2752,6 +2784,7 @@ duellAusAdresse();
 window.addEventListener("hashchange", () => { if (/^#(duell|gruppe)=/.test(location.hash)) { duellAusAdresse(); render(); } });
 render();
 levelEinfuehren();
+neuigkeitenPruefen();
 gruppeAktualisieren();
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") gruppeAktualisieren(); });
 zaehleStart();

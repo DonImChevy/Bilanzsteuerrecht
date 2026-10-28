@@ -800,3 +800,13 @@ test("Duell: gleicher Startwert → gleiche Aufgaben, auch nach anderen Übungen
   assert.equal(D.duellSieger({ r: 7, z: 300 }, { r: 7, z: 100 }), -1);
   assert.equal(D.duellSieger({ r: 7, z: 100 }, { r: 7, z: 100 }), 0);
 });
+
+test("Neuigkeiten: eindeutige Einträge, nur Ungesehenes", async () => {
+  const N = await import("../js/neuigkeiten.js");
+  const ids = N.NEUIGKEITEN.map((n) => n.id);
+  assert.equal(new Set(ids).size, ids.length);
+  for (const n of N.NEUIGKEITEN) { assert.match(n.datum, /^\d{4}-\d{2}-\d{2}$/); assert.ok(n.punkte.length && n.punkte.every((p) => p[1] && p[2])); }
+  assert.deepEqual(N.ungesehen(N.NEUESTE), []);
+  assert.deepEqual(N.ungesehen("").map((n) => n.id), [N.NEUESTE]);
+  assert.deepEqual(N.ungesehen(ids[1]).map((n) => n.id), [ids[0]]);
+});
