@@ -405,8 +405,8 @@ test("Synchronisierung: zwei Geräte, nichts doppelt, nichts verloren", async ()
   // Lernpfad (beste Sterne je Block), Einstellungen und „Weiterlernen“ (jeweils der neueste Stand)
   handy.pfad = { ust: { system: { sterne: 2, t: 700 } } };
   ipad.pfad = { ust: { system: { sterne: 3, t: 650 }, unternehmer: { sterne: 1, t: 660 } }, bsr: { "b1-pflicht": { sterne: 3, t: 670 } } };
-  handy.einstellungen = { ziel: "30", design: "dark", teil: "1", oerModus: "mc", t: 800 };
-  ipad.einstellungen = { ziel: "20", design: "system", teil: "beide", oerModus: "qa", t: 0 };
+  handy.einstellungen = { ziel: "30", design: "dark", teil: "1", oerModus2: "mc", t: 800 };
+  ipad.einstellungen = { ziel: "20", design: "system", teil: "beide", oerModus2: "qa", t: 0 };
   ipad.zuletzt = { fach: "ust", titel: "Vorsteuer", t: 900 };
   [handy, lh] = await sync(handy, lh); [ipad, li] = await sync(ipad, li); [handy, lh] = await sync(handy, lh);
   for (const st of [handy, ipad]) {

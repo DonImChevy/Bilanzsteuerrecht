@@ -187,7 +187,9 @@ const state = {
   fach: ["oer", "est", "ust", "bbf"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
   // Studium (Grundstudium I) oder Ausbildung (FTA I); leer = noch nicht gewählt (Willkommen fragt danach). Alte Nutzer: Studium
   rolle: ["studium", "ausbildung"].includes(lies("bsr.rolle", "")) ? lies("bsr.rolle", "") : (lies("bsr.willkommen", "") ? "studium" : ""),
-  oerModus: lies("bsr.oerModus", "qa") === "mc" ? "mc" : "qa", // "qa" = selbst formulieren, "mc" = Multiple Choice
+  // "mc" = Multiple Choice (Standard), "qa" = selbst formulieren. Eigener Schlüssel „oerModus2“: Der frühere Standard „qa“
+  // (bsr.oerModus) wird bewusst nicht übernommen, damit alle einmal auf Multiple Choice starten.
+  oerModus: lies("bsr.oerModus2", "mc") === "qa" ? "qa" : "mc",
   bilrTeil: ["1", "2"].includes(lies("bsr.teil", "beide")) ? lies("bsr.teil", "beide") : "beide", // Bilanzrecht: "1" | "2" | "beide"
   ziel: Number(lies("bsr.ziel", "20")) || 20,
   design: lies("bsr.design", "system"),
@@ -220,9 +222,9 @@ const farbe = (q) => (q >= 0.8 ? "var(--ok)" : q >= 0.5 ? "var(--warn)" : "var(-
 const zahlText = (n) => n.toLocaleString("de-DE");
 
 // ======================= Einstellungen (werden mit dem Sync-Code abgeglichen) =======================
-const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus", "bewegungAus", "rolle"];
+const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus2", "bewegungAus", "rolle"];
 // Erster Stand ohne Zeitstempel (t = 0): Ein neu verbundenes Gerät übernimmt die Einstellungen der anderen.
-if (!stat.einstellungen) stat.einstellungen = { ziel: String(state.ziel), design: state.design, teil: state.bilrTeil, oerModus: state.oerModus, t: 0 };
+if (!stat.einstellungen) stat.einstellungen = { ziel: String(state.ziel), design: state.design, teil: state.bilrTeil, oerModus2: state.oerModus, t: 0 };
 /** Einstellung lokal speichern und für den Abgleich mit Zeitstempel im Lernstand vermerken. */
 function einstellungMerken(k, v) {
   schreib("bsr." + k, v);
@@ -237,7 +239,7 @@ function einstellungenAnwenden() {
   if (e.ziel != null) state.ziel = Number(e.ziel) || state.ziel;
   if (e.design) state.design = e.design;
   if (e.teil) state.bilrTeil = ["1", "2"].includes(e.teil) ? e.teil : "beide";
-  if (e.oerModus) state.oerModus = e.oerModus === "mc" ? "mc" : "qa";
+  if (e.oerModus2) state.oerModus = e.oerModus2 === "qa" ? "qa" : "mc";
   if (e.bewegungAus != null) state.bewegungAus = e.bewegungAus === "1";
   if (e.rolle) state.rolle = e.rolle === "ausbildung" ? "ausbildung" : "studium";
 }
@@ -796,7 +798,7 @@ function themenListe() {
 function modusSchalter() {
   if (state.fach === "bsr") return teilSchalter();
   if (state.fach === "bbf") return "";
-  const m = [["qa", "stift", "Frage – Antwort"], ["mc", "haken", "Multiple Choice"]];
+  const m = [["mc", "haken", "Multiple Choice"], ["qa", "stift", "Frage – Antwort"]];
   return `<div class="gruppe"><div class="gruppe-titel">Antwortmodus</div><div class="modus-karte"><div class="segment">${m.map(([id, i, t]) =>
     `<button data-a="oerModus" data-v="${id}" class="${state.oerModus === id ? "aktiv" : ""}">${ic(i, "klein")}${t}</button>`).join("")}</div>
     <div class="gruppe-fuss">${state.oerModus === "mc"
@@ -1824,8 +1826,8 @@ const AKTIONEN = {
     render();
   },
   oerModus: (v) => {
-    state.oerModus = v === "mc" ? "mc" : "qa";
-    einstellungMerken("oerModus", state.oerModus);
+    state.oerModus = v === "qa" ? "qa" : "mc";
+    einstellungMerken("oerModus2", state.oerModus);
     render();
   },
   schnell: (v, el) => {
