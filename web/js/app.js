@@ -20,10 +20,14 @@ import { ic } from "./icons.js";
 import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, codeAnzeige, abgleichen, SERVER } from "./sync.js";
 import qrcode from "./lib/qrcode.js";
 import { taler, talerBuehne, TALER_SPRUECHE } from "./maskottchen.js";
+import { levelAus, xpGesamt, bonusFuerAntwort, erfolgePruefen, tagesBonus, XP } from "./level.js";
+import { levelZeile, levelSeite, levelFeier, erfolgBanner, levelStartFeier } from "./levelansicht.js";
 
 // ======================= Speicher =======================
 const SPEICHER = "bsr.stat.v1";
-const LEER = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null, pfad: {}, kompakt: {}, meineKarten: {}, einstellungen: null });
+// xpBonus/erfolge/rekorde: Levelsystem (level.js), lauf: aktuelle Serien dieses Geräts (nicht synchronisiert)
+const LEER = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, zuletzt: null, pfad: {}, kompakt: {}, meineKarten: {}, einstellungen: null,
+  xpBonus: 0, erfolge: {}, rekorde: {}, lauf: { serie: 0, bs: 0 } });
 function laden() {
   let s = LEER();
   try {
@@ -73,6 +77,7 @@ async function syncJetzt() {
   try {
     const { ergebnis, lokal } = await abgleichen(stat, syncLokal, SERVER);
     stat = ergebnis(stat); // berücksichtigt auch Antworten, die während des Abgleichs gegeben wurden
+    erfolgePruefen(stat); // Erfolge aus dem zusammengeführten Stand (still)
     speichernLokal();
     einstellungenAnwenden();
     syncLokal = lokal; syncMerken();
@@ -167,7 +172,16 @@ function syncBeimStart() {
 
 const zaehler = (t) => stat.proThema[t] || { b: 0, r: 0 };
 const quote = (z) => (z.b ? z.r / z.b : 0);
+/** Bearbeitete Aufgabe zählen. Gibt die gewonnenen XP und die aktuelle Serie zurück (für die Rückmeldung). */
 function erfasse(frage, korrekt) {
+  const vorher = levelJetzt(), basisVorher = xpGesamt(stat).basis, heuteVorher = stat.tage[tagSchluessel()] || 0;
+  if (korrekt === true || korrekt === false) {
+    const l = (stat.lauf ||= { serie: 0, bs: 0 });
+    l.serie = korrekt ? l.serie + 1 : 0;
+    if (frage.typ === "buchung") l.bs = korrekt ? l.bs + 1 : 0;
+    stat.rekorde = { ...stat.rekorde, serie: Math.max(stat.rekorde?.serie || 0, l.serie), bs: Math.max(stat.rekorde?.bs || 0, l.bs) };
+    stat.xpBonus = (stat.xpBonus || 0) + bonusFuerAntwort({ korrekt, typ: frage.typ, serie: l.serie });
+  }
   const z = { ...zaehler(frage.thema) };
   z.b += 1;
   if (korrekt) z.r += 1;
@@ -175,7 +189,63 @@ function erfasse(frage, korrekt) {
   if (korrekt !== null && korrekt !== undefined) stat.lern[frage.id] = planen(stat.lern[frage.id], korrekt);
   const heute = tagSchluessel();
   stat.tage[heute] = (stat.tage[heute] || 0) + 1;
+  const h = new Date().getHours(), momente = h >= 23 || h < 4 ? ["nachteule"] : h >= 4 && h < 7 ? ["fruehaufsteher"] : [];
+  belohnen(vorher, momente);
   speichern();
+  // XP dieser Aufgabe und Tagesbonus getrennt (Erfolge erscheinen als eigenes Banner)
+  const tagBonus = tagesBonus(stat.tage[heute]) - tagesBonus(heuteVorher);
+  return { plus: xpGesamt(stat).basis - basisVorher - tagBonus, tagBonus, serie: stat.lauf?.serie || 0 };
+}
+
+// ======================= Levelsystem =======================
+const levelJetzt = () => levelAus(xpGesamt(stat).gesamt);
+/** Nach einer Änderung am Lernstand: Erfolge prüfen, Level-Up und neue Erfolge feiern. */
+function belohnen(vorher, momente = []) {
+  const neu = erfolgePruefen(stat, momente), nachher = levelJetzt();
+  neu.forEach((e) => erfolgMelden(e));
+  if (nachher.level > vorher.level) feierZeigen(levelFeier(vorher, nachher), 1300);
+}
+const bannerWarteschlange = [];
+function erfolgMelden(e) {
+  bannerWarteschlange.push(e);
+  if (bannerWarteschlange.length === 1) setTimeout(naechstesBanner, 900);
+}
+function naechstesBanner() {
+  const e = bannerWarteschlange[0];
+  if (!e) return;
+  const el = document.createElement("div");
+  el.className = "erfolg-banner"; el.setAttribute("role", "status");
+  el.innerHTML = erfolgBanner(e);
+  el.addEventListener("click", () => { el.remove(); state.sheet = { art: "level" }; render(); });
+  document.body.appendChild(el);
+  if (navigator.vibrate && navigator.userActivation?.hasBeenActive) navigator.vibrate([12, 30, 12]);
+  setTimeout(() => { el.classList.add("weg"); setTimeout(() => { el.remove(); bannerWarteschlange.shift(); naechstesBanner(); }, 350); }, 3200);
+}
+/** Feier-Ebene (Level-Up, Start des Levelsystems) – liegt außerhalb von #app und überlebt das Neuzeichnen. */
+function feierZeigen(html, verzoegerung = 0) {
+  setTimeout(() => {
+    document.querySelector(".lv-feier")?.remove();
+    const el = document.createElement("div");
+    el.className = "lv-feier";
+    el.innerHTML = konfetti() + html;
+    const zu = () => { el.classList.add("weg"); setTimeout(() => el.remove(), 260); };
+    el.addEventListener("click", (e) => {
+      const a = e.target.closest("[data-lv]")?.dataset.lv;
+      if (a === "album") { zu(); state.sheet = { art: "level" }; render(); }
+      else if (a === "zu" || e.target === el) zu();
+    });
+    el.addEventListener("keydown", (e) => { if (e.key === "Escape") zu(); });
+    document.body.appendChild(el);
+    if (navigator.vibrate && navigator.userActivation?.hasBeenActive) navigator.vibrate([20, 50, 20, 50, 40]);
+    el.querySelector("[data-lv]")?.focus();
+  }, verzoegerung);
+}
+/** Erster Start mit Levelsystem: bisherige Aufgaben zählen rückwirkend, Erfolge werden still nachgetragen. */
+function levelEinfuehren() {
+  if (lies("bsr.levelStart", "")) return;
+  schreib("bsr.levelStart", "1");
+  if (erfolgePruefen(stat).length) { speichernLokal(); render(); }
+  if (levelJetzt().xp > 0 && lies("bsr.willkommen", "")) feierZeigen(levelStartFeier(stat), 400);
 }
 function schwaechstesThema() {
   return pruefImTeil(state.fach).filter((t) => zaehler(t.id).b >= 3).sort((a, b) => quote(zaehler(a.id)) - quote(zaehler(b.id)))[0];
@@ -326,7 +396,7 @@ function pruefen() {
   if (istLeer(aktFrage(), aktAntwort())) return;
   const b = bewerte(aktFrage(), aktAntwort());
   x.bewertungen[x.index] = b;
-  erfasse(aktFrage(), b.korrekt);
+  Object.assign(b, erfasse(aktFrage(), b.korrekt));
   if (navigator.vibrate) navigator.vibrate(b.korrekt ? 20 : [30, 40, 30]);
   render();
   setTimeout(() => document.getElementById("auswertung")?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
@@ -334,19 +404,20 @@ function pruefen() {
 /** Wie erfasse(), merkt sich aber den Lernstand davor – für eine spätere Korrektur der automatischen Prüfung. */
 function erfasseMitVorher(f, b) {
   b.lernVorher = stat.lern[f.id] || null;
-  erfasse(f, b.korrekt);
+  Object.assign(b, erfasse(f, b.korrekt));
 }
 /** Automatische Prüfung einer offenen Antwort umkehren („Doch gewusst“ / „Doch nicht gewusst“). */
 function korrigieren(i) {
   const x = s(), f = x.fragen[i], b = x.bewertungen[i];
   if (!b?.auto || b.korrigiert) return;
-  const korrekt = !b.korrekt;
+  const korrekt = !b.korrekt, vorher = levelJetzt();
   const z = { ...zaehler(f.thema) };
   z.r = Math.max(0, z.r + (korrekt ? 1 : -1));
   stat.proThema[f.thema] = z;
   stat.lern[f.id] = planen(b.lernVorher || undefined, korrekt);
   x.bewertungen[i] = { ...b, korrekt, korrigiert: true };
   klausurZaehlen(x);
+  belohnen(vorher);
   speichern();
   render();
 }
@@ -360,8 +431,7 @@ function selbstBewerten(i, korrekt) {
   const x = s(), f = x.fragen[i];
   const vorher = x.bewertungen[i];
   if (vorher && vorher.korrekt !== null) return;
-  x.bewertungen[i] = { korrekt, offen: true };
-  erfasse(f, korrekt);
+  x.bewertungen[i] = { korrekt, offen: true, ...erfasse(f, korrekt) };
   klausurZaehlen(x);
   if (navigator.vibrate) navigator.vibrate(korrekt ? 20 : [30, 40, 30]);
   if (x.review == null && x.modus !== "klausur") { weiter(); return; }
@@ -386,8 +456,10 @@ function abgeben() {
   x.ende = Date.now();
   const richtig = x.bewertungen.filter((b) => b.korrekt === true).length;
   const offen = x.bewertungen.filter((b) => b.korrekt === null).length;
+  const vorher = levelJetzt();
   stat.klausuren.push({ datum: x.start, richtig, offen, gesamt: x.fragen.length, sek: Math.round((x.ende - x.start) / 1000), fach: x.fach || "bsr" });
   x.klausurEintrag = x.start;
+  belohnen(vorher);
   speichern();
   state.sheet = null;
   render();
@@ -572,6 +644,7 @@ function tabStart() {
             <span class="wert-pille"><span class="${tageSerie ? "flamme-an" : ""}">${ic("flamme")}</span>${tageSerie} ${tageSerie === 1 ? "Tag" : "Tage"} in Folge</span>
           </div></div>
       </div>
+      ${levelZeile(stat)}
       ${knopf}
     </section>
     <div class="suchfeld">${ic("suche")}<input type="search" id="homeSuche" data-fokus="homeSuche" placeholder="Themen, Aufgaben, Normen, Konten …" autocomplete="off" enterkeyhint="search" value="${esc(state.suche)}">
@@ -1217,7 +1290,8 @@ function sitzungView() {
     // Die Show läuft nur beim ersten Zeichnen der Rückmeldung zu dieser Aufgabe
     const showKey = `${x.start}-${x.index}`, neu = state.talerShow !== showKey;
     state.talerShow = showKey;
-    feedback = `<div class="feedback">${talerBuehne(ok, { ruhig: !neu })}<span>${satz}<small>${ok ? "Kommt in der Lernkartei ein Fach weiter." : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
+    const xpInfo = b.plus ? `<span class="xp-chips"><span class="xp-chip${neu ? " neu" : ""}">+${b.plus} XP</span>${b.tagBonus ? `<span class="xp-chip">+${b.tagBonus} Tagesbonus</span>` : ""}${ok && b.serie >= XP.serieAb ? `<span class="xp-chip serie">${ic("flamme", "klein")}${b.serie} in Folge</span>` : ""}</span>` : "";
+    feedback = `<div class="feedback">${talerBuehne(ok, { ruhig: !neu })}<span>${satz}${xpInfo}<small>${ok ? "Kommt in der Lernkartei ein Fach weiter." : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
     fuss = `<button class="knopf ${ok ? "gruen" : "rot"}" data-a="weiter">${x.index === n - 1 ? "Auswertung" : "Weiter"} ${ic("pfeil")}</button>`;
   }
 
@@ -1477,9 +1551,10 @@ function pfadAntwort(eingabe, el) {
   const { ok } = auswerten(q, eingabe);
   z.antwort = { eingabe, ok };
   if (!ok) z.fehler += 1;
+  if (ok) { const vorher = levelJetzt(); stat.xpBonus = (stat.xpBonus || 0) + XP.pfadFrage; belohnen(vorher); speichern(); }
   const pos = el ? mitte(el) : null;
   render();
-  if (ok && pos) { funken(...pos); schwebeText(pos[0], pos[1] - 10, "+10 XP"); }
+  if (ok && pos) { funken(...pos); schwebeText(pos[0], pos[1] - 10, `+${XP.pfadFrage} XP`); }
   if (!ok) document.querySelector(".pf-frage")?.classList.add("wackeln");
 }
 
@@ -1565,7 +1640,7 @@ function paarWahl(v) {
     p.serie += 1;
     setTimeout(() => { funken(mx, my); schwebeText(mx, my - 10, p.serie >= 2 ? `Serie ×${p.serie} 🔥` : "+1", p.serie >= 2 ? "serie" : ""); }, 260);
     if (navigator.vibrate) navigator.vibrate(p.serie >= 3 ? [15, 40, 15] : 20);
-    setTimeout(() => { p.weg.push(id); p.wahl = null; p.sperre = false; if (p.weg.length === p.links.length) p.ende = Date.now(); render(); }, 560);
+    setTimeout(() => { p.weg.push(id); p.wahl = null; p.sperre = false; if (p.weg.length === p.links.length) { p.ende = Date.now(); paareGeschafft(p); } render(); }, 560);
   } else {
     // Fehler: Karten wackeln, Bildschirm bebt kurz, ein Herz zerbricht
     [el, andere].forEach((x) => { x?.classList.remove("gewaehlt"); x?.classList.add("falsch"); });
@@ -1576,6 +1651,14 @@ function paarWahl(v) {
     if (navigator.vibrate) navigator.vibrate([30, 40, 30]);
     setTimeout(() => { p.wahl = null; p.sperre = false; if (p.leben <= 0) p.ende = Date.now(); render(); }, 700);
   }
+}
+
+/** Runde „Paare finden“ geschafft: XP und ggf. der Erfolg „Gutes Gedächtnis“. */
+function paareGeschafft(p) {
+  const vorher = levelJetzt(), fehlerfrei = p.leben === PAAR_LEBEN;
+  stat.xpBonus = (stat.xpBonus || 0) + XP.paare + (fehlerfrei ? XP.paareFehlerfrei : 0);
+  belohnen(vorher, fehlerfrei ? ["paareFehlerfrei"] : []);
+  speichern();
 }
 
 // ======================= Render: Sheets =======================
@@ -1636,6 +1719,9 @@ function sheetView() {
     const x = s();
     inhalt = `<div class="raster">${x.fragen.map((f, i) => `<button data-a="springe" data-v="${i}" class="${istLeer(f, x.antworten[i]) ? "" : "bearbeitet"} ${i === x.index ? "aktuell" : ""}">${i + 1}</button>`).join("")}</div>
       <div class="gruppe-fuss" style="padding-bottom:16px">${x.antworten.filter((a, i) => !istLeer(x.fragen[i], a)).length} von ${x.fragen.length} bearbeitet</div>`;
+  } else if (sh.art === "level") {
+    titel = "Level und Erfolge";
+    inhalt = levelSeite(stat);
   } else if (sh.art === "einstellungen") {
     titel = "Einstellungen";
     inhalt = `
@@ -1912,6 +1998,7 @@ const AKTIONEN = {
     const inp = document.querySelector(`.betrag[data-z="${id}"]`);
     if (inp && !inp.value) inp.focus();
   },
+  level: () => { state.sheet = { art: "level" }; render(); },
   sheetZu: () => {
     if (state.sheet?.zurueck) { state.sheet = state.sheet.zurueck; render(); return; }
     if (state.sheet?.art === "willkommen") schreib("bsr.willkommen", "1");
@@ -2070,7 +2157,7 @@ const AKTIONEN = {
     const frage = z.schritt > b.karten.length && z.schritt < n - 1;
     if (frage && !z.antwort) return;
     z.schritt = Math.min(n - 1, z.schritt + 1); z.antwort = null;
-    if (z.schritt === n - 1) { z.ende = Date.now(); sterneSpeichern(state.pfad.fach, z.id, sterneFuer(z.fehler)); }
+    if (z.schritt === n - 1) { z.ende = Date.now(); const vorher = levelJetzt(); sterneSpeichern(state.pfad.fach, z.id, sterneFuer(z.fehler)); belohnen(vorher); speichernLokal(); }
     render();
   },
   pfadWahl: (v, el) => pfadAntwort(String(v), el),
@@ -2282,6 +2369,7 @@ document.addEventListener("visibilitychange", () => {
 // ======================= Start =======================
 const VERSION = "1.0.0";
 render();
+levelEinfuehren();
 zaehleStart();
 syncBeimStart();
 

@@ -32,6 +32,10 @@ const P = {
   muell: '<path d="M4 6.5h16M9.5 6.5V4h5v2.5M6 6.5l1 13.5h10l1-13.5M10 10.5v6M14 10.5v6"/>',
   export: '<path d="M12 15V3.5M7.5 8 12 3.5 16.5 8"/><path d="M5 13v6.5h14V13"/>',
   hut: '<path d="M12 4 22 8.5 12 13 2 8.5z"/><path d="M6 10.8V15c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.2"/><path d="M20 9.5V15"/>',
+  stern: '<path d="m12 3.2 2.6 5.5 6 .8-4.4 4.1 1.1 6-5.3-2.9-5.3 2.9 1.1-6-4.4-4.1 6-.8z"/>',
+  pokal: '<path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4.5v1.5A3 3 0 0 0 7.5 10.5M17 6h2.5v1.5a3 3 0 0 1-3 3M12 14v3.5M8.5 20.5h7M9.5 17.5h5"/>',
+  paare: '<rect x="3" y="5" width="8" height="12" rx="2" transform="rotate(-8 7 11)"/><rect x="13" y="6" width="8" height="12" rx="2" transform="rotate(8 17 12)"/>',
+  sonne: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/>',
   // Module
   tkonto: '<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M12 9v11"/>',
   saeulen: '<path d="M3 20.5h18M4.5 17.5h15M6 10v7.5M10 10v7.5M14 10v7.5M18 10v7.5M3 9.5 12 4l9 5.5z"/>',
