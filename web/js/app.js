@@ -836,6 +836,10 @@ function duellErgebnis(x) {
   return `<div class="gruppe"><div class="gruppe-titel">Duell</div>${duellKarte(meinName(), duellErgebnisVon(x), x.duell.gegner)}
     ${x.duell.gegner ? `<div class="gruppe-fuss">Schick ${esc(x.duell.gegner.n)} dein Ergebnis zurück, dann sieht ${esc(x.duell.gegner.n)} es auch.</div>` : `<div class="gruppe-fuss">Schick den Link an jemanden aus deinem Kurs: Er oder sie bekommt dieselben ${DUELL_ANZAHL} Aufgaben.</div>`}</div>`;
 }
+async function textTeilen(titel, text, kopiert) {
+  if (navigator.share) { try { await navigator.share({ title: titel, text }); return; } catch (e) { if (e?.name === "AbortError") return; } }
+  try { await navigator.clipboard.writeText(text); toast(kopiert); } catch (_) { prompt("Text kopieren:", text); }
+}
 async function linkTeilen(titel, text, url) {
   if (navigator.share) { try { await navigator.share({ title: titel, text, url }); return; } catch (e) { if (e?.name === "AbortError") return; } }
   try { await navigator.clipboard.writeText(`${text} ${url}`); toast("Link kopiert – jetzt in WhatsApp & Co. einfügen."); } catch (_) { prompt("Link kopieren:", url); }
@@ -1236,7 +1240,7 @@ function pfadKachel() {
   if (!PFADE[schluessel]) return "";
   const st = pfadStand(schluessel);
   return `<button class="pfad-kachel" data-a="pfadOeffnen"><span class="pk-glanz"></span>
-    <span class="pk-text"><span class="pk-neu">Neu · eigener Modus</span><b>Lernpfad${state.fach === "bsr" && state.bilrTeil !== "beide" ? ` · Teil ${state.bilrTeil === "1" ? "I" : "II"}` : ""}</b><span>${st.fertig ? `${st.fertig} von ${st.gesamt} Blöcken · ★ ${st.sterne}` : `${st.gesamt} Blöcke – Stoff Schritt für Schritt aufbauen`}</span></span>
+    <span class="pk-text"><span class="pk-neu">Eigener Modus</span><b>Lernpfad${state.fach === "bsr" && state.bilrTeil !== "beide" ? ` · Teil ${state.bilrTeil === "1" ? "I" : "II"}` : ""}</b><span>${st.fertig ? `${st.fertig} von ${st.gesamt} Blöcken · ★ ${st.sterne}` : `${st.gesamt} Blöcke – Stoff Schritt für Schritt aufbauen`}</span></span>
     <span class="pk-orbit">${PFADE[schluessel].bloecke.slice(0, 3).map((x) => `<i>${x.icon}</i>`).join("")}</span></button>`;
 }
 
@@ -1715,7 +1719,8 @@ function auswertungView(f, b) {
   const html = auswertungInhalt(f, b);
   const x = s();
   if (x?.modus === "klausur" && !x.beendet) return html;
-  const karte = f.grafik ? "" : `<div class="mk-aufgabe-fuss">${alsKarteKnopf("frage")}</div>`;
+  const hinweis = `<button class="als-karte" data-a="hinweisTeilen" aria-label="Fehler oder Hinweis zu dieser Aufgabe teilen" title="Fehler oder Hinweis zu dieser Aufgabe teilen">${ic("info", "klein")}<span>Hinweis</span></button>`;
+  const karte = `<div class="mk-aufgabe-fuss">${hinweis}${f.grafik ? "" : alsKarteKnopf("frage")}</div>`;
   const link = KOMPAKT[f.thema] ? `<button class="km-link" data-a="kompaktSitzung" data-v="${f.thema}">${ic("akte", "klein")}<span><b>Überblick: ${esc(THEMA[f.thema].titel)}</b><span class="sub">Das Wichtigste in ${lesezeit(KOMPAKT[f.thema])} Min. – danach geht es hier weiter</span></span></button>` : "";
   return html.replace(/<\/div><\/div>\s*$/, `${karte}${link}</div></div>`);
 }
@@ -2118,7 +2123,7 @@ function sheetView() {
           ["📊", `Beim Start wird anonym gezählt, ob die App im Browser oder vom Home-Bildschirm geöffnet wurde (GoatCounter, ohne Cookies). ${syncVerfuegbar() ? "Lernergebnisse werden nur übertragen, wenn du die Synchronisierung einschaltest – ohne Namen oder E-Mail, gespeichert in der EU." : "Lernergebnisse werden nie übertragen."}`],
         ].map(([i, t]) => `<div class="zeile"><span style="font-size:20px">${i}</span><span class="grow" style="font-size:14.5px">${t}</span></div>`).join("")}
       </div></div>
-      <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Finanzwirt-Trainer – inoffizielle Lernhilfe für das Studium zum Diplom-Finanzwirt. Inhalte orientiert am Skript „Bilanzsteuerrecht Grundstudium I, Teil I“ mit Übungen sowie am Unterrichtsskript Öffentliches Recht GS I, den Altklausuren und den Gesetzestexten (Stand GG 22.03.2025, BWahlG 03.07.2026). Ohne Gewähr – maßgeblich sind Skript, Gesetz und Lehrveranstaltung.</span></div>
+      <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Finanzwirt-Trainer – inoffizielle, private Lernhilfe für das Grundstudium I zum Diplom-Finanzwirt (Bilanzrecht Teil I und II, Einkommensteuer, Umsatzsteuer, Öffentliches Recht) und für die Ausbildung FTA I (Buchführung und Bilanzwesen). Aufgaben, Fälle und Zusammenfassungen sind selbst formuliert und orientieren sich am Lehrstoff; Rechtsstand 2026. Gesetzestexte von gesetze-im-internet.de (u. a. EStG Stand 15.10.2026, UStG 29.06.2026, HGB 04.02.2026, GG 22.03.2025, BWahlG 03.07.2026). Ohne Gewähr – maßgeblich sind Gesetz und Lehrveranstaltung. Fehler gefunden? Nach jeder Aufgabe über „Hinweis“ teilen.</span></div>
         <div class="zeile"><span class="grow">Version</span><span class="sub">${VERSION}</span></div></div></div>
       <div class="liste" style="margin-bottom:24px"><button class="zeile" data-a="willkommenZeigen" style="justify-content:center;color:var(--accent);font-weight:600">Einführung erneut anzeigen</button>
         <button class="zeile" data-a="reset" style="justify-content:center;color:var(--err);font-weight:600">Gesamten Fortschritt löschen</button></div>`;
@@ -2624,6 +2629,14 @@ const AKTIONEN = {
     else dateiSpeichern(`karteikarten-${state.fach}-${tag}.txt`, MK.exportText(meine(), state.fach), "text/plain");
   },
   /** „+ Als Karte“: Entwurf aus dem jeweiligen Inhalt, im Editor noch anpassbar. */
+  hinweisTeilen: () => {
+    const x = s(), f = x?.review != null ? x.fragen[x.review] : aktFrage();
+    if (!f) return;
+    const th = THEMA[f.thema], modul = MODUL[fachFuerThema(f.thema)]?.titel || "";
+    const kurz = String(f.text || "").replace(/\s+/g, " ").trim(), auszug = kurz.length > 500 ? `${kurz.slice(0, 500)} …` : kurz;
+    const text = `Finanzwirt-Trainer – Hinweis zur Aufgabe „${f.id}“ (${modul} · ${th?.titel || f.thema}):\n\n${auszug}\n\nMein Hinweis: `;
+    textTeilen("Hinweis zur Aufgabe", text, "Aufgabe kopiert – Hinweis ergänzen und verschicken.");
+  },
   alsKarte: (v, el) => {
     const q = el.dataset.q;
     if (q === "frage") {

@@ -1084,7 +1084,7 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .als-karte.mini span { display: none; }
 .als-karte.mini:hover, .als-karte.mini:focus-visible { opacity: 1; }
 .km-liste li:has(> .als-karte.mini) { padding-right: 34px; }
-.mk-aufgabe-fuss, .mk-norm-fuss, .km-bsp-karte { display: flex; justify-content: flex-end; margin: 12px 0 2px; }
+.mk-aufgabe-fuss, .mk-norm-fuss, .km-bsp-karte { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin: 12px 0 2px; }
 .km-bsp-karte { margin: 0; padding: 10px 14px 14px; }
 
 /* Bereich „Meine Karten“ im Reiter Karten */
