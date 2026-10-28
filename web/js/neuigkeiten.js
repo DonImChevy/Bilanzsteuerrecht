@@ -4,6 +4,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-vorschau",
+    datum: "2026-10-28",
+    titel: "Erst ansehen, dann kaufen",
+    punkte: [
+      ["auge", "Vorschau für Hintergründe", "Jeden Hintergrund kannst du vor dem Kauf auf der ganzen App ausprobieren – mit „Zurück“ oder „Kaufen“ unten.", "hintergrundWaehlen"],
+      ["bild", "Eigenes Bild vorher testen", "Foto aus der Galerie wählen, ansehen und erst dann für 1.000 Taler übernehmen.", "hintergrundWaehlen"],
+    ],
+  },
+  {
     id: "2026-10-hintergruende",
     datum: "2026-10-28",
     titel: "Neue Hintergründe und Farbwelten",

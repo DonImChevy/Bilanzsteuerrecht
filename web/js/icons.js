@@ -39,6 +39,7 @@ const P = {
   herz: '<path d="M12 20.5 4.2 12.8A4.8 4.8 0 0 1 12 6.6a4.8 4.8 0 0 1 7.8 6.2z"/>',
   muenze: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="5.5"/><path d="M12 9.5v5"/>',
   bild: '<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="9.5" r="1.8"/><path d="m4 17 5-4.5 4 3.5 3-2.5 4.5 4"/>',
+  auge: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
   // Module
   tkonto: '<rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9h17M12 9v11"/>',
   saeulen: '<path d="M3 20.5h18M4.5 17.5h15M6 10v7.5M10 10v7.5M14 10v7.5M18 10v7.5M3 9.5 12 4l9 5.5z"/>',

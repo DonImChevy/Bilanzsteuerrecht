@@ -1927,9 +1927,9 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 :root[data-theme="dark"][data-hintergrund="galaxie"], :root[data-theme="dark"] .hg-galaxie { --hg-grund: #04030c; --hg-a: rgba(139,92,246,.6); --hg-b: rgba(236,72,153,.45); --hg-c: rgba(56,189,248,.38); --hg-kern: rgba(255,240,255,.35); --hg-stern: #ffffff; }
 :root[data-hintergrund="galaxie"] body::before, .hg-galaxie { background: radial-gradient(20% 12% at 55% 42%, var(--hg-kern), transparent 70%), radial-gradient(42% 26% at 35% 35%, var(--hg-a), transparent 70%), radial-gradient(36% 30% at 70% 55%, var(--hg-b), transparent 70%), radial-gradient(45% 20% at 45% 72%, var(--hg-c), transparent 70%), var(--hg-grund); }
 :root[data-hintergrund="galaxie"] body::after, .hg-galaxie::after { mask-image: none; -webkit-mask-image: none; opacity: 1; background-image: radial-gradient(circle at 12% 18%, var(--hg-stern) 0 1.3px, transparent 1.9px), radial-gradient(circle at 63% 9%, var(--hg-stern) 0 0.9px, transparent 1.5px), radial-gradient(circle at 38% 46%, var(--hg-stern) 0 1.8px, transparent 2.4px), radial-gradient(circle at 84% 58%, var(--hg-stern) 0 1px, transparent 1.6px), radial-gradient(circle at 22% 80%, var(--hg-stern) 0 1.4px, transparent 2px), radial-gradient(circle at 58% 88%, var(--hg-stern) 0 0.8px, transparent 1.4px), radial-gradient(circle at 92% 28%, var(--hg-stern) 0 1.2px, transparent 1.8px), radial-gradient(circle at 12% 18%, var(--hg-stern) 0 1.3px, transparent 1.9px), radial-gradient(circle at 63% 9%, var(--hg-stern) 0 0.9px, transparent 1.5px), radial-gradient(circle at 38% 46%, var(--hg-stern) 0 1.8px, transparent 2.4px), radial-gradient(circle at 84% 58%, var(--hg-stern) 0 1px, transparent 1.6px), radial-gradient(circle at 22% 80%, var(--hg-stern) 0 1.4px, transparent 2px), radial-gradient(circle at 58% 88%, var(--hg-stern) 0 0.8px, transparent 1.4px), radial-gradient(circle at 92% 28%, var(--hg-stern) 0 1.2px, transparent 1.8px); background-size: 220px 220px, 130px 130px; background-position: 0 0, 60px 90px; animation: hgFunkeln 4s ease-in-out infinite alternate; }
-:root[data-hintergrund="eigenesbild"], .hg-eigenesbild { --hg-schleier: rgba(255,255,255,.28); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="eigenesbild"], :root:not([data-theme="light"]) .hg-eigenesbild { --hg-schleier: rgba(0,0,0,.42); } }
-:root[data-theme="dark"][data-hintergrund="eigenesbild"], :root[data-theme="dark"] .hg-eigenesbild { --hg-schleier: rgba(0,0,0,.42); }
+:root[data-hintergrund="eigenesbild"], .hg-eigenesbild { --hg-schleier: rgba(255,255,255,.4); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="eigenesbild"], :root:not([data-theme="light"]) .hg-eigenesbild { --hg-schleier: rgba(0,0,0,.5); } }
+:root[data-theme="dark"][data-hintergrund="eigenesbild"], :root[data-theme="dark"] .hg-eigenesbild { --hg-schleier: rgba(0,0,0,.5); }
 :root[data-hintergrund="eigenesbild"] body::before, .hg-eigenesbild { background: linear-gradient(var(--hg-schleier), var(--hg-schleier)), var(--hg-bild, none) center / cover no-repeat, var(--bg); }
 :root[data-hintergrund="eigenesbild"] body::after { display: none; }
 :root[data-hintergrund="eigenesbild"] body::before { inset: 0; animation: none; }
@@ -1995,3 +1995,24 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .gar-buehne .gar-podest { position: relative; z-index: 1; }
 .gar-buehne > .gar-hg-vorschau ~ .gar-licht { opacity: 0.4; }
 .gar-hg-vorschau::after { border-radius: inherit; }
+
+/* ======================= Hintergrund-Vorschau auf der ganzen App ======================= */
+.hg-vorschau-leiste { position: fixed; z-index: 60; left: 50%; bottom: calc(14px + var(--safe-b)); transform: translateX(-50%); width: min(520px, calc(100% - 20px));
+  display: grid; gap: 10px; padding: 12px; border-radius: 22px; background: var(--glas-stark); border: 1px solid var(--glas-rand);
+  box-shadow: var(--schatten), 0 20px 40px -12px rgba(0, 0, 0, 0.35); backdrop-filter: blur(20px) saturate(1.4); -webkit-backdrop-filter: blur(20px) saturate(1.4); animation: ebRein 0.4s cubic-bezier(0.2, 1.3, 0.4, 1) both; }
+@keyframes hvlRein { from { opacity: 0; transform: translate(-50%, 30px); } }
+.hg-vorschau-leiste { animation-name: hvlRein; }
+.hvl-text { display: flex; align-items: center; gap: 10px; padding: 0 4px; }
+.hvl-text > .ic { width: 22px; height: 22px; color: var(--accent); }
+.hvl-text span { display: grid; line-height: 1.2; }
+.hvl-text small { font-size: 11.5px; font-weight: 700; color: var(--text2); }
+.hvl-text b { font-size: 16px; }
+.hvl-knoepfe { display: grid; grid-template-columns: auto 1fr; gap: 8px; }
+.hvl-knoepfe .knopf { padding: 12px 14px; font-size: 15.5px; }
+/* Platz für die Leiste, damit unten nichts verdeckt wird */
+:root:has(.hg-vorschau-leiste) .screen { padding-bottom: 150px; }
+
+/* Lesbarkeit auf kräftigen Hintergründen und eigenen Fotos: Flächen ohne Glas bekommen Glas, Texte direkt auf dem Bild einen Schein */
+.countdown-leer { background: color-mix(in srgb, var(--m) 7%, var(--glas)); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+:root:is([data-hintergrund="eigenesbild"], [data-hintergrund="neon"], [data-hintergrund="galaxie"], [data-hintergrund="datenregen"], [data-hintergrund="lava"]) :is(.gruppe-titel, .gruss, .start-anpassen, .gruppe-fuss) {
+  text-shadow: 0 0 6px var(--bg), 0 0 14px var(--bg); }

@@ -35,7 +35,11 @@ export function garderobeView(z, { outfit, gekauft, guthaben, level, farbwelt = 
       : k.ok ? `<button class="knopf gold" data-a="garKaufen" data-v="${probe.id}">Kaufen für ${talerBetrag(probe.preis, "im-knopf")}</button>`
       : k.grund === "level" ? `<button class="knopf zweit" disabled>${ic("schloss")} Ab Level ${probe.level}</button>`
       : `<button class="knopf zweit" disabled>Noch ${talerBetrag(k.fehlt, "im-knopf")} fehlen</button>`;
-    aktion = `<div class="gar-info"><div><b>${esc(probe.name)}</b><span>${esc(probe.text)}</span></div>${bildWahl}${knopf}</div>`;
+    // Hintergründe vor dem Kauf auf der ganzen App ausprobieren; beim eigenen Bild zuerst das Foto wählen
+    const vorschau = probe.slot !== "hintergrund" || an ? ""
+      : probe.id === "eigenesbild" ? (besitzt(probe.id, gekauft) ? "" : `<label class="knopf zweit" style="cursor:pointer">${ic("bild")} Bild wählen und Vorschau ansehen<input type="file" id="hgBildVorschau" accept="image/*" hidden></label>`)
+      : `<button class="knopf zweit" data-a="hgVorschau" data-v="${probe.id}">${ic("auge")} Vorschau auf der ganzen App</button>`;
+    aktion = `<div class="gar-info"><div><b>${esc(probe.name)}</b><span>${esc(probe.text)}</span></div>${bildWahl}${vorschau}${knopf}</div>`;
   }
   const slot = z.slot || "kopf";
   const karten = ARTIKEL.filter((a) => a.slot === slot).map((a) => {
