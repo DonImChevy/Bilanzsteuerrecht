@@ -810,3 +810,21 @@ test("Neuigkeiten: eindeutige Einträge, nur Ungesehenes", async () => {
   assert.deepEqual(N.ungesehen("").map((n) => n.id), [N.NEUESTE]);
   assert.deepEqual(N.ungesehen(ids[1]).map((n) => n.id), [ids[0]]);
 });
+
+test("Garderobe: jeder Hintergrund hat ein Muster in style.css, alle außer dem Standard kosten", async () => {
+  const fs = await import("node:fs");
+  const G = await import("../js/garderobe.js");
+  const css = fs.readFileSync(new URL("../css/style.css", import.meta.url), "utf8");
+  const hg = G.ARTIKEL.filter((a) => a.slot === "hintergrund");
+  assert.ok(hg.length >= 20);
+  for (const a of hg) {
+    assert.ok(css.includes(`.hg-${a.id}`), `Muster fehlt: ${a.id}`);
+    if (a.id !== G.STANDARD.hintergrund) assert.ok(a.preis > 0, `${a.id} kostet nichts`);
+  }
+  assert.equal(G.artikel("eigenesbild").preis, 1000);
+  assert.ok(G.FARBWELTEN.some((f) => f.id === "rosa"));
+  for (const f of G.FARBWELTEN) if (f.id !== "standard") assert.ok(css.includes(`[data-farbwelt="${f.id}"]`), f.id);
+  // Gekauftes außerhalb des Besitzes fällt auf den Standard zurück
+  assert.equal(G.outfitVon({ hintergrund: "neon" }, {}).hintergrund, "leuchten");
+  assert.equal(G.outfitVon({ hintergrund: "neon" }, { neon: 1 }).hintergrund, "neon");
+});

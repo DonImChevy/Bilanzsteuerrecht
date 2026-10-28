@@ -7,12 +7,19 @@ export const TALER_JE_XP = 0.1;
 
 export const SLOTS = [
   { id: "kopf", name: "Kopf", icon: "hut" },
+  { id: "hintergrund", name: "Hintergrund & Farben", icon: "bild" },
   { id: "augen", name: "Brille", icon: "suche" },
   { id: "hals", name: "Hals", icon: "herz" },
   { id: "hand", name: "Hand", icon: "akte" },
   { id: "metall", name: "Metall", icon: "muenze" },
   { id: "aura", name: "Aura", icon: "sterne" },
-  { id: "hintergrund", name: "Hintergrund", icon: "bild" },
+];
+
+/** Farbwelten der App (kostenlos): Startfarbe hell/dunkel; Flächen und Text in style.css über data-farbwelt. */
+export const FARBWELTEN = [
+  { id: "standard", name: "Indigo", text: "Klassisch und klar", hell: "#4f46e5", dunkel: "#8b8cf8" },
+  { id: "rosa", name: "Pastellrosa", text: "Zart, süß und verspielt", hell: "#e0609a", dunkel: "#f9a8d4" },
+  { id: "salbei", name: "Salbei", text: "Ruhiges Grün zum Durchatmen", hell: "#3f8f6f", dunkel: "#7fd1a8" },
 ];
 
 // Standard (kostenlos, immer im Besitz): Brille „Lernbrille“, Metall „Gold“, Hintergrund „Leuchten“
@@ -78,15 +85,30 @@ const K = [
   ["heiligenschein", "aura", "Heiligenschein", 1200, 20, "Ab Level 20 – fehlerfrei gebucht"],
   ["flammen", "aura", "Flammen", 1500, 35, "Ab Level 35 – Lernen in Flammen"],
   // Hintergrund der App
-  ["leuchten", "hintergrund", "Leuchten", 0, 0, "Weiche Leuchtflächen in der Modulfarbe"],
-  ["schlicht", "hintergrund", "Schlicht", 0, 0, "Ruhig, ohne Effekte"],
-  ["karopapier", "hintergrund", "Rechenpapier", 0, 0, "Kariert wie der Block in der Klausur"],
+  // Hintergründe – Standard „Leuchten“, alle anderen kosten. Jeder hat eine helle und eine dunkle Fassung.
+  ["leuchten", "hintergrund", "Leuchten", 0, 0, "Der Standard: weiche Leuchtflächen in der Modulfarbe"],
+  ["schlicht", "hintergrund", "Schlicht", 100, 0, "Ruhig, ohne Effekte"],
+  ["nebel", "hintergrund", "Nebel", 150, 0, "Elegant und still in Grau-Blau"],
+  ["karopapier", "hintergrund", "Rechenpapier", 150, 0, "Kariert wie der Block in der Klausur"],
   ["kontenblatt", "hintergrund", "Kontenblatt", 200, 0, "Liniert mit Soll- und Haben-Spalte"],
+  ["zuckerwatte", "hintergrund", "Zuckerwatte", 250, 0, "Pastell in Rosa, Himmelblau und Flieder"],
+  ["pfirsich", "hintergrund", "Pfirsich", 250, 0, "Sanfte Wellen in Apricot"],
+  ["lavendel", "hintergrund", "Lavendel", 300, 0, "Flieder mit kleinen Blüten"],
+  ["marmor", "hintergrund", "Marmor", 350, 0, "Hell wie Carrara, dunkel mit Goldadern"],
+  ["konfetti", "hintergrund", "Konfetti", 350, 0, "Bunte Punkte – jeder Tag ist eine Feier"],
+  ["regenbogen", "hintergrund", "Regenbogen", 400, 0, "Pastellstreifen in allen Farben"],
   ["aurora", "hintergrund", "Aurora", 400, 0, "Nordlicht in Grün und Violett"],
   ["abendrot", "hintergrund", "Abendrot", 400, 0, "Warmer Sonnenuntergang"],
+  ["kirschbluete", "hintergrund", "Kirschblüte", 450, 0, "Rosa Blütenblätter"],
+  ["artdeco", "hintergrund", "Art déco", 500, 0, "Goldene Fächer wie in den 20ern"],
   ["ozean", "hintergrund", "Ozean", 500, 0, "Tiefes Blau mit Wellen"],
   ["sternennacht", "hintergrund", "Sternennacht", 600, 0, "Funkelnde Sterne"],
+  ["lava", "hintergrund", "Lava", 600, 0, "Glühendes Rot und Orange"],
+  ["datenregen", "hintergrund", "Datenregen", 600, 0, "Grüne Zeichenströme wie im Rechenzentrum"],
+  ["neon", "hintergrund", "Neon", 700, 0, "Synthwave: Sonne, Horizont und Leuchtgitter"],
+  ["galaxie", "hintergrund", "Galaxie", 800, 0, "Nebel und Sterne aus einer fernen Galaxie"],
   ["schatzkammer", "hintergrund", "Schatzkammer", 900, 15, "Ab Level 15 – Goldmünzen überall"],
+  ["eigenesbild", "hintergrund", "Eigenes Bild", 1000, 0, "Ein Foto aus deiner Galerie als Hintergrund (nur auf diesem Gerät)"],
 ];
 export const ARTIKEL = K.map(([id, slot, name, preis, level, text]) => ({ id, slot, name, preis, level, text }));
 const ART = Object.fromEntries(ARTIKEL.map((a) => [a.id, a]));
