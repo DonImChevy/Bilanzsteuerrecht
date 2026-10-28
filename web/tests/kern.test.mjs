@@ -809,6 +809,7 @@ test("Neuigkeiten: eindeutige Einträge, nur Ungesehenes", async () => {
   assert.deepEqual(N.ungesehen(N.NEUESTE), []);
   assert.deepEqual(N.ungesehen("").map((n) => n.id), [N.NEUESTE]);
   assert.deepEqual(N.ungesehen(ids[1]).map((n) => n.id), [ids[0]]);
+  for (const n of N.NEUIGKEITEN) assert.ok(n.klein === undefined || n.klein === true, n.id);
 });
 
 test("Garderobe: jeder Hintergrund hat ein Muster in style.css, alle außer dem Standard kosten", async () => {

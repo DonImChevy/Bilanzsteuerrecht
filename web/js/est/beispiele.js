@@ -220,4 +220,19 @@ export const BEISPIELE_EST = {
       ],
     },
   ],
+
+  "est-gewinn": [
+    {
+      titel: "Betrieblicher Pkw eines Arztes",
+      sv: "Allgemeinarzt A ermittelt seinen Gewinn 2026 nach § 4 Abs. 3 EStG (nur steuerfreie Umsätze). Sein Pkw (AfA 9.000 €, laufende Kosten 6.000 €, beides als Betriebsausgaben erfasst) wird zu 85 % betrieblich genutzt, einschließlich der Fahrten zur 15 km entfernten Praxis an 210 Tagen. Listenpreis bei Erstzulassung 50.000 € zzgl. USt, werkseitige Sonderausstattung 4.000 € zzgl. USt. Ein Fahrtenbuch führt A nicht.",
+      aufgabe: "Welche Gewinnkorrekturen ergeben sich?",
+      loesung: [
+        "Betriebliche Nutzung über 50 % → notwendiges Betriebsvermögen; AfA und laufende Kosten bleiben Betriebsausgaben (§ 4 Abs. 4 EStG).",
+        "**Privatnutzung:** Nutzungsentnahme (§ 4 Abs. 1 S. 2 EStG), ohne Fahrtenbuch 1 %-Regelung (§ 6 Abs. 1 Nr. 4 S. 2 EStG): 54.000 € × 1,19 = 64.260 € → abgerundet 64.200 €; × 1 % × 12 = **7.704 €** fiktive Betriebseinnahme.",
+        "**Wege Wohnung–Praxis:** 0,03 % × 64.200 € × 15 km × 12 = 3.466,80 € − Entfernungspauschale 210 × 15 km × 0,38 € = 1.197 € → nicht abziehbare Betriebsausgaben **2.269,80 €** (§ 4 Abs. 5 S. 1 Nr. 6 S. 3 EStG).",
+        "**Kostendeckelung:** 7.704 € + 3.466,80 € = 11.170,80 € < Gesamtkosten 15.000 € → keine Begrenzung.",
+        "Gewinn: + 7.704 € + 2.269,80 € = **+ 9.973,80 €**.",
+      ],
+    },
+  ],
 };

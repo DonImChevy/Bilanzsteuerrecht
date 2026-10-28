@@ -588,6 +588,11 @@ details.norm p { font-size: 14.5px; margin: 8px 0 2px; line-height: 1.55; }
 .modul-kachel .m-unten.leer { color: var(--text3); font-weight: 600; }
 .modul-kachel.bald .m-unten { border-top: 1.5px dashed var(--line); }
 mark.norm-hl { background: color-mix(in srgb, var(--gold) 32%, transparent); color: inherit; border-radius: 4px; padding: 1px 2px; box-decoration-break: clone; -webkit-box-decoration-break: clone; font-weight: 550; }
+.norm-tz { display: grid; grid-template-columns: minmax(0, 1.15fr) repeat(3, minmax(0, 1fr)); gap: 6px; padding: 3px 8px; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--line); text-align: right; }
+.norm-tz > span:first-child { text-align: left; }
+.norm-tz.kopf { margin-top: 6px; padding-bottom: 6px; font-size: 10.5px; line-height: 1.3; color: var(--text2); text-align: left; align-items: end; border-bottom-color: var(--text3, var(--line)); }
+.norm-tz.kopf > span { text-align: left; min-width: 0; overflow-wrap: break-word; hyphens: manual; }
+.norm-tz:not(.kopf):nth-of-type(even) { background: color-mix(in srgb, var(--m) 5%, transparent); }
 .hl-legende { font-weight: 500; margin-left: 6px; padding: 1px 6px; border-radius: 6px; background: color-mix(in srgb, var(--gold) 32%, transparent); color: var(--text); font-size: 11.5px; }
 
 /* ======================= Lernpfad-Modus (eigene, immer dunkle Welt) ======================= */
@@ -1733,6 +1738,8 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
   background: var(--glas); border: 1px solid var(--glas-rand); }
 .cd-punkt { width: 10px; height: 10px; border-radius: 50%; background: var(--mc); flex: none; }
 .termin-form select, .termin-form input { font: inherit; color: var(--text); background: var(--card2); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; max-width: 58%; }
+.zeile.termin-aktiv { background: color-mix(in srgb, var(--m) 12%, transparent); box-shadow: inset 3px 0 0 var(--m); }
+.zeile .icon-btn.klein + .icon-btn.klein { margin-left: -4px; }
 
 /* ======================= Startseite anpassen ======================= */
 .start-anpassen { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin: 22px 0 6px; padding: 10px; font-size: 14px; font-weight: 700; color: var(--text2); }
