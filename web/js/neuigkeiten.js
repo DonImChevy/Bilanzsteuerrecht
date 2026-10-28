@@ -10,7 +10,7 @@ export const NEUIGKEITEN = [
     punkte: [
       ["haken", "Alle Module durchgesehen", "Aufgaben, Überblick, Klausurbeispiele und Lernpfade wurden mit dem Gesetz (Stand 2026) abgeglichen – Zitate und Formulierungen sind an einigen Stellen genauer."],
       ["nachschlagen", "Gesetzestext: Satznummern stimmen", "Die Sätze eines Absatzes werden jetzt auch bei Verweisen wie „Satz 2.“ oder Fundstellen im Text richtig gezählt."],
-      ["info", "Hinweis zu einer Aufgabe teilen", "Etwas falsch oder unklar? Nach jeder Aufgabe über „Hinweis“ den Aufgabentext teilen und deine Anmerkung ergänzen."],
+      ["info", "Hinweis zu einer Aufgabe senden", "Etwas falsch oder unklar? Nach jeder Aufgabe auf „Hinweis“ tippen, kurz beschreiben und absenden – der Hinweis kommt mit der Aufgabe direkt beim Entwickler an."],
     ],
   },
   {
