@@ -1,6 +1,7 @@
 // Neuigkeiten: erscheinen beim ersten Start nach einem Update (einmal, wie die Einführung des Levelsystems).
 // Neueste zuerst. Bei jeder für Nutzer sichtbaren Änderung einen Eintrag oben anfügen (neue, eindeutige id).
 // punkte: [icon, Titel, Text, Aktion (data-a der App, optional), Wert (data-v, optional)]
+// klein: true = kleine Verbesserung – erscheint nicht beim Start, nur unter Einstellungen → Neuigkeiten.
 
 export const NEUIGKEITEN = [
   {
@@ -16,6 +17,7 @@ export const NEUIGKEITEN = [
   {
     id: "2026-10-termine-bearbeiten",
     datum: "2026-10-28",
+    klein: true,
     titel: "Klausurtermine bearbeiten",
     punkte: [
       ["kalender", "Termine ändern", "Datum, Fach oder Bezeichnung falsch? Über den Stift neben dem Termin lässt er sich jetzt ändern, statt ihn neu anzulegen.", "termine"],

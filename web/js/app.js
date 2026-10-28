@@ -277,7 +277,8 @@ function neuigkeitenPruefen() {
   if (gesehen === NEUESTE) return;
   schreib("bsr.neuGesehen", NEUESTE);
   if (!lies("bsr.willkommen", "")) return; // neue Nutzer bekommen die Einführung
-  const neu = ungesehen(gesehen);
+  const neu = ungesehen(gesehen).filter((n) => !n.klein); // kleine Verbesserungen nur unter Einstellungen → Neuigkeiten
+  if (!neu.length) return;
   feierZeigen(`<div class="lv-feier-karte neu-karte" role="dialog" aria-modal="true" aria-labelledby="lvFeierTitel">
     <div class="neu-kopf">${taler("jubeln", { groesse: 72 })}<div><small>Neu in der App</small><h2 id="lvFeierTitel">${esc(neu.length > 1 ? "Das ist neu" : neu[0].titel)}</h2></div></div>
     <div class="neu-rolle">${neuigkeitenListe(neu)}</div>
