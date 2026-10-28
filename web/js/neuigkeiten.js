@@ -26,9 +26,9 @@ export const NEUIGKEITEN = [
     datum: "2026-10-28",
     titel: "Neue Hintergründe und Farbwelten",
     punkte: [
-      ["bild", "13 neue Hintergründe", "Von elegant (Marmor, Art déco, Nebel) über Pastell (Zuckerwatte, Kirschblüte, Lavendel) bis heftig (Neon, Galaxie, Lava, Datenregen) – jeweils hell und dunkel.", "hintergrundWaehlen"],
+      ["bild", "13 neue Hintergründe", "Unter anderem Marmor, Art déco, Pastell, Kirschblüte, Galaxie und Neon – jeweils mit heller und dunkler Fassung.", "hintergrundWaehlen"],
       ["bild", "Eigenes Bild als Hintergrund", "Für 1.000 Taler wird ein Foto aus deiner Galerie zum Hintergrund der App.", "hintergrundWaehlen"],
-      ["herz", "Drei Farbwelten", "Indigo, Pastellrosa oder Salbei – kostenlos umschaltbar in der Garderobe und in den Einstellungen.", "hintergrundWaehlen"],
+      ["herz", "Drei Farbwelten", "Indigo, Rosa oder Salbei – kostenlos umschaltbar in der Garderobe und in den Einstellungen.", "hintergrundWaehlen"],
       ["muenze", "Hintergründe kosten jetzt Taler", "Außer dem Standard „Leuchten“. Zu finden unter Garderobe → Hintergrund & Farben."],
     ],
   },
