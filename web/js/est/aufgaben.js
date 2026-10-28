@@ -345,6 +345,54 @@ const einnahmen = [
       "Welche Aussagen zum Übungsleiterfreibetrag und zur Ehrenamtspauschale sind richtig?")),
 ];
 
+// Versorgungsbezüge (§ 19 Abs. 2 EStG): Prozentsatz, Höchstbetrag und Zuschlag nach dem Jahr des Versorgungsbeginns
+const VERSORGUNG = { 2018: [19.2, 1440, 432], 2019: [17.6, 1320, 396], 2020: [16.0, 1200, 360], 2021: [15.2, 1140, 342], 2022: [14.4, 1080, 324],
+  2023: [14.0, 1050, 315], 2024: [13.6, 1020, 306], 2025: [13.2, 990, 297], 2026: [12.8, 960, 288] };
+const pz = (x) => String(x.toFixed(1)).replace(".", ",");
+const versorgung = A("est-versorgung", "est-einnahmen",
+  "Ein pensionierter Beamter bezieht Ruhegehalt. Wie werden diese Bezüge besteuert, und welche Freibeträge stehen ihm zu?",
+  "• Das Ruhegehalt ist Arbeitslohn aus einem früheren Dienstverhältnis → Einkünfte aus nichtselbständiger Arbeit (§ 19 Abs. 1 S. 1 Nr. 2 EStG); es ist ein Versorgungsbezug (§ 19 Abs. 2 S. 2 Nr. 1 a EStG).\n• Steuerfrei bleiben der Versorgungsfreibetrag (Prozentsatz der Bemessungsgrundlage, höchstens ein Höchstbetrag) und ein Zuschlag zum Versorgungsfreibetrag (§ 19 Abs. 2 S. 1 EStG).\n• Prozentsatz, Höchstbetrag und Zuschlag richten sich nach dem Jahr des Versorgungsbeginns (Tabelle in § 19 Abs. 2 S. 3 EStG) – z. B. Beginn 2026: 12,8 %, höchstens 960 €, Zuschlag 288 €.\n• Bemessungsgrundlage: das Zwölffache des Versorgungsbezugs für den ersten vollen Monat (§ 19 Abs. 2 S. 4 b EStG).\n• Die so berechneten Beträge gelten für die gesamte Laufzeit; regelmäßige Anpassungen (Erhöhungen) führen nicht zu einer Neuberechnung (§ 19 Abs. 2 S. 8, 9 EStG).\n• Für jeden vollen Kalendermonat ohne Versorgungsbezüge ermäßigen sich Freibetrag und Zuschlag um je ein Zwölftel (§ 19 Abs. 2 S. 12 EStG) – wichtig im Jahr des Beginns.\n• Werbungskosten-Pauschbetrag für Versorgungsbezüge: 102 € (§ 9a S. 1 Nr. 1 b EStG) statt des Arbeitnehmer-Pauschbetrags.",
+  ["EStG 19 2", "EStG 9a"],
+  M(["Das Ruhegehalt eines Beamten ist ein Versorgungsbezug im Sinne des § 19 Abs. 2 EStG.", "Prozentsatz und Höchstbetrag des Versorgungsfreibetrags richten sich nach dem Jahr des Versorgungsbeginns.", "Eine regelmäßige Erhöhung der Pension führt nicht zu einer Neuberechnung des Versorgungsfreibetrags.", "Für Versorgungsbezüge beträgt der Werbungskosten-Pauschbetrag 102 €."],
+    ["Der Versorgungsfreibetrag wird jedes Jahr nach dem aktuellen Ruhegehalt neu berechnet.", "Für Versorgungsbezüge gilt der Arbeitnehmer-Pauschbetrag von 1.230 €.", "Maßgeblich ist immer der Prozentsatz des laufenden Veranlagungszeitraums.", "Ruhegehalt eines Beamten gehört zu den sonstigen Einkünften nach § 22 EStG."],
+    "Welche Aussagen zur Besteuerung von Versorgungsbezügen sind richtig?"));
+const versorgungRechnen = R("est-versorgung-rechnen", "est-einnahmen", (r) => {
+  if (r.zahl(0, 2) === 0) { // Versorgungsbeginn im Jahr 2026 – Zwölftelung
+    const m = r.zahl(2, 10), mon = 13 - m, b = r.zahl(40, 70) * 50, [p, hb, zs] = VERSORGUNG[2026];
+    const e = mon * b, vfb = Math.min(12 * b * p / 100, hb) * mon / 12, z = zs * mon / 12, eink = e - vfb - z - 102;
+    const MONAT = ["", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+    return {
+      text: `Beamtin Gerda tritt mit Ablauf des Monats ${MONAT[m - 1]} 2026 in den Ruhestand. Ab ${MONAT[m]} 2026 erhält sie ein Ruhegehalt von ${eur(b)} monatlich. Werbungskosten weist sie nicht nach.
+
+Wie hoch sind ihre Einkünfte aus nichtselbständiger Arbeit aus dem Ruhegehalt 2026 (in €)?`,
+      euro: eink,
+      erklaerung: `Ruhegehalt = Versorgungsbezug (§ 19 Abs. 2 S. 2 Nr. 1 a EStG); Versorgungsbeginn 2026 → ${pz(p)} %, höchstens ${eur(hb)}, Zuschlag ${eur(zs)} (§ 19 Abs. 2 S. 3 EStG).
+• Einnahmen: ${mon} × ${eur(b)} = ${eur(e)}
+• Bemessungsgrundlage: 12 × ${eur(b)} = ${eur(12 * b)} (§ 19 Abs. 2 S. 4 b); ${pz(p)} % = ${eur(12 * b * p / 100)} → höchstens ${eur(hb)}
+• Für ${12 - mon} volle Monate ohne Bezüge je ein Zwölftel weniger (§ 19 Abs. 2 S. 12): Versorgungsfreibetrag ${eur(hb)} × ${mon}/12 = ${eur(vfb)}, Zuschlag ${eur(zs)} × ${mon}/12 = ${eur(z)}
+• Werbungskosten-Pauschbetrag (§ 9a S. 1 Nr. 1 b EStG): 102 €
+= ${eur(e)} − ${eur(vfb)} − ${eur(z)} − 102 € = ${eur(eink)}`,
+      normen: ["EStG 19 2", "EStG 9a"],
+    };
+  }
+  const jahr = r.zahl(2018, 2025), [p, hb, zs] = VERSORGUNG[jahr], b0 = r.zahl(40, 64) * 50;
+  const b1 = Math.round(b0 * (1 + (2026 - jahr) * r.zahl(15, 30) / 1000) / 10) * 10, b2 = Math.round(b1 * (1 + r.zahl(15, 35) / 1000) / 10) * 10;
+  const e = 6 * b1 + 6 * b2, eink = e - hb - zs - 102;
+  return {
+    text: `Pensionär Horst ist seit 01.01.${jahr} im Ruhestand. Sein Ruhegehalt betrug im Januar ${jahr} ${eur(b0)}. Nach mehreren regelmäßigen Anpassungen erhält er von Januar bis Juni 2026 ${eur(b1)} und ab Juli 2026 ${eur(b2)} monatlich. Werbungskosten weist er nicht nach.
+
+Wie hoch sind seine Einkünfte aus nichtselbständiger Arbeit 2026 (in €)?`,
+    euro: eink,
+    erklaerung: `Ruhegehalt = Versorgungsbezug (§ 19 Abs. 2 S. 2 Nr. 1 a EStG). Maßgeblich ist das Jahr des Versorgungsbeginns ${jahr}: ${pz(p)} %, höchstens ${eur(hb)}, Zuschlag ${eur(zs)} (§ 19 Abs. 2 S. 3 EStG).
+• Bemessungsgrundlage: 12 × ${eur(b0)} (erster voller Monat) = ${eur(12 * b0)} (§ 19 Abs. 2 S. 4 b); ${pz(p)} % = ${eur(12 * b0 * p / 100)} → höchstens ${eur(hb)}
+• Die Anpassungen führen nicht zu einer Neuberechnung (§ 19 Abs. 2 S. 8, 9 EStG).
+• Einnahmen 2026: 6 × ${eur(b1)} + 6 × ${eur(b2)} = ${eur(e)}
+− Versorgungsfreibetrag ${eur(hb)} − Zuschlag ${eur(zs)} − Werbungskosten-Pauschbetrag 102 € (§ 9a S. 1 Nr. 1 b EStG)
+= ${eur(eink)}`,
+    normen: ["EStG 19 2", "EStG 9a"],
+  };
+});
+
 const ZUFLUSS_OPT = ["Nicht steuerbar", "Steuerbar und steuerpflichtig", "Steuerbar, aber steuerfrei"];
 const zuflussFall = F("est-zufluss-fall", "est-einnahmen", "Wie ist der Zufluss einkommensteuerlich einzuordnen?", ZUFLUSS_OPT, [
   { text: "Eine Finanzbeamtin gewinnt 80.000 € im Lotto.", richtig: 0, erkl: "Glücksspielgewinne fallen unter keine Einkunftsart (§ 2 Abs. 1 EStG) → nicht steuerbar.", normen: ["EStG 2 1"] },
@@ -361,6 +409,10 @@ const zuflussFall = F("est-zufluss-fall", "est-einnahmen", "Wie ist der Zufluss 
   { text: "Eine Arbeitnehmerin bezieht während der Elternzeit Elterngeld.", richtig: 2, erkl: "Elterngeld ist steuerfrei (§ 3 Nr. 67 EStG), unterliegt aber dem Progressionsvorbehalt (§ 32b EStG).", normen: ["EStG 3"] },
   { text: "Ein Student erhält für 4 Stunden pro Woche als nebenberuflicher Dozent an einer staatlichen Hochschule 2.000 € im Jahr.", richtig: 2, erkl: "Nebenberufliche unterrichtende Tätigkeit im Auftrag einer juristischen Person des öffentlichen Rechts → steuerfrei nach § 3 Nr. 26 EStG (bis 3.300 €).", normen: ["EStG 3"] },
   { text: "Ein Arbeitnehmer erhält von seinem Arbeitgeber 60 € in bar zum Geburtstag.", richtig: 1, erkl: "Geldzuwendungen des Arbeitgebers sind stets Arbeitslohn – auch aus persönlichem Anlass (R 19.6 Abs. 1 S. 3 LStR) → steuerpflichtig.", normen: ["EStG 8 1"] },
+  { text: "Zur bestandenen Steuerberaterprüfung schenkt der Arbeitgeber seiner angestellten Steuerberaterin eine Flasche Champagner im Wert von 55 €.", richtig: 0, erkl: "Sachzuwendung aus Anlass eines besonderen persönlichen Ereignisses bis 60 € = Aufmerksamkeit, kein Arbeitslohn (R 19.6 Abs. 1 S. 2 LStR) → nicht steuerbar.", normen: ["EStG 8 1"] },
+  { text: "Zum 40. Geburtstag schenkt der Arbeitgeber einem Mitarbeiter eine Armbanduhr im Wert von 85 €. Weitere Sachbezüge erhält er in diesem Monat nicht.", richtig: 1, erkl: "Die 60-€-Grenze für Aufmerksamkeiten (R 19.6 Abs. 1 S. 2 LStR) ist überschritten – dann ist der gesamte Wert Arbeitslohn (§ 8 Abs. 1 EStG); auch die Sachbezugsfreigrenze von 50 € (§ 8 Abs. 2 S. 11 EStG) ist überschritten → steuerpflichtig.", normen: ["EStG 8 1"] },
+  { text: "Die Kolleginnen und Kollegen einer Finanzbeamtin sammeln zu ihrer Hochzeit und schenken ihr einen Gutschein über 150 €.", richtig: 0, erkl: "Keine Zuwendung des Arbeitgebers und keine Gegenleistung für die Arbeitsleistung, sondern eine private Schenkung → nicht steuerbar.", normen: ["EStG 2 1"] },
+  { text: "Der Arbeitgeber stellt seinen Mitarbeitern in der Teeküche kostenlos Kaffee, Mineralwasser und Obst zur Verfügung.", richtig: 0, erkl: "Getränke und Genussmittel, die der Arbeitgeber zum Verzehr im Betrieb unentgeltlich überlässt, gehören nicht zum Arbeitslohn (R 19.6 Abs. 2 S. 1 LStR) → nicht steuerbar.", normen: ["EStG 8 1"] },
 ]);
 
 const uebungsleiterRechnen = R("est-uebungsleiter-rechnen", "est-einnahmen", (r) => {
@@ -799,6 +851,78 @@ const epWechsel = R("est-ep-wechsel", "est-entfernung", (r) => {
   };
 });
 
+// ======================================================================= Gewinnermittlung nach § 4 Abs. 3 EStG (Klausur Teil II)
+const gewinn = [
+  A("est-euer", "est-gewinn",
+    "Wer darf seinen Gewinn nach § 4 Abs. 3 EStG ermitteln, und welche Besonderheiten gelten gegenüber dem reinen Zu- und Abflussprinzip?",
+    "• Berechtigt: wer nicht gesetzlich verpflichtet ist, Bücher zu führen und Abschlüsse zu machen, und dies auch nicht freiwillig tut (§ 4 Abs. 3 S. 1 EStG) – typisch Freiberufler (§ 18 EStG), die als Nicht-Kaufleute weder nach § 238 HGB noch nach §§ 140, 141 AO buchführungspflichtig sind.\n• Gewinn = Betriebseinnahmen − Betriebsausgaben (§ 4 Abs. 4 EStG); es gilt das Zu- und Abflussprinzip (§ 11 EStG).\n• Durchlaufende Posten scheiden aus (§ 4 Abs. 3 S. 2 EStG).\n• Abnutzbares Anlagevermögen: nicht der Kaufpreis, sondern AfA bzw. GWG-Regel (§ 4 Abs. 3 S. 3 EStG); die AfA beginnt mit der Lieferung (§ 9a EStDV).\n• Nicht abnutzbares Anlagevermögen (z. B. Grund und Boden): Anschaffungskosten erst bei Veräußerung oder Entnahme als Betriebsausgabe (§ 4 Abs. 3 S. 4 EStG).\n• Darlehen: Auszahlung ist keine Betriebseinnahme, Tilgung keine Betriebsausgabe; nur die Zinsen sind Betriebsausgaben.\n• Umlaufvermögen (Waren, Material) ist bei Zahlung Betriebsausgabe – Verderb oder Diebstahl führen nicht zu einem zweiten Abzug.\n• Entnahmen werden als fiktive Betriebseinnahmen erfasst (Bewertung § 6 Abs. 1 Nr. 4 EStG); Geldentnahmen bleiben ohne Korrektur, weil das Geld schon bei Zufluss erfasst wurde.",
+    ["EStG 4 3", "EStG 4 4", "EStG 11"],
+    M(["Ein Freiberufler ohne Buchführungspflicht darf seinen Gewinn nach § 4 Abs. 3 EStG ermitteln.", "Für abnutzbares Anlagevermögen ist auch bei § 4 Abs. 3 EStG die AfA anzusetzen.", "Die Anschaffungskosten für Grund und Boden sind erst bei Veräußerung oder Entnahme Betriebsausgabe.", "Darlehenstilgungen sind keine Betriebsausgaben."],
+      ["Bei § 4 Abs. 3 EStG ist der Kaufpreis eines Pkw im Jahr der Zahlung voll Betriebsausgabe.", "Die Auszahlung eines Darlehens ist eine Betriebseinnahme.", "Werden bezahlte Waren gestohlen, ist ihr Wert ein zweites Mal als Betriebsausgabe abziehbar.", "Eine Geldentnahme vom Praxiskonto ist als fiktive Betriebseinnahme zu erfassen."],
+      "Welche Aussagen zur Gewinnermittlung nach § 4 Abs. 3 EStG sind richtig?")),
+  A("est-pkw-privat", "est-gewinn",
+    "Ein Arzt nutzt seinen betrieblichen Pkw auch privat und für die Fahrten zwischen Wohnung und Praxis. Wie sind diese Nutzungen bei der Gewinnermittlung zu erfassen?",
+    "• Betriebliche Nutzung über 50 % (Fahrten Wohnung–Praxis zählen dazu) → notwendiges Betriebsvermögen (R 4.2 Abs. 1 S. 4 EStR): AfA und laufende Kosten sind Betriebsausgaben.\n• Die Privatnutzung ist eine Nutzungsentnahme (§ 4 Abs. 1 S. 2 EStG) → fiktive Betriebseinnahme.\n• Bewertung nach der 1 %-Regelung: je Kalendermonat 1 % des inländischen Listenpreises im Zeitpunkt der Erstzulassung zzgl. Sonderausstattung einschließlich USt (§ 6 Abs. 1 Nr. 4 S. 2 EStG) – abgerundet auf volle 100 € (vgl. BMF vom 18.11.2009, Rz. 10). Kaufpreis, Rabatt oder Gebrauchtwagenpreis spielen keine Rolle.\n• Alternativ die tatsächlichen Kosten der Privatfahrten, wenn ein ordnungsgemäßes Fahrtenbuch geführt wird (§ 6 Abs. 1 Nr. 4 S. 3 EStG); es muss das ganze Jahr fortlaufend geführt werden, die Methode gilt einheitlich für das Jahr (vgl. BMF vom 18.11.2009, Rz. 8, 21, 24).\n• Wege Wohnung–Betrieb: nicht abziehbare Betriebsausgaben in Höhe des positiven Unterschieds zwischen 0,03 % des Listenpreises je Kalendermonat und Entfernungskilometer und der Entfernungspauschale (§ 4 Abs. 5 S. 1 Nr. 6 S. 3 EStG) → Gewinn erhöhen.\n• Kostendeckelung: 1 %-Wert und 0,03 %-Betrag zusammen höchstens die Gesamtkosten des Kfz (vgl. BMF vom 18.11.2009, Rz. 18–20).",
+    ["EStG 6 1", "EStG 4 5", "EStG 4 1"],
+    M(["Die Privatnutzung des betrieblichen Pkw ist als Nutzungsentnahme zu erfassen.", "Bemessungsgrundlage der 1 %-Regelung ist der Bruttolistenpreis bei Erstzulassung einschließlich Sonderausstattung.", "Bei einem Gebrauchtwagen ist ebenfalls der Listenpreis bei Erstzulassung maßgeblich.", "Für die Wege zwischen Wohnung und Betrieb ergeben sich nicht abziehbare Betriebsausgaben nach der 0,03 %-Methode."],
+      ["Bemessungsgrundlage der 1 %-Regelung ist der tatsächlich gezahlte Kaufpreis.", "Ein Fahrtenbuch, das nur ein halbes Jahr geführt wird, genügt.", "Die 1 %-Regelung gilt auch für einen Pkw, der nur zu 30 % betrieblich genutzt wird.", "Die Fahrten zwischen Wohnung und Betrieb sind Privatfahrten und zählen nicht zur betrieblichen Nutzung."],
+      "Welche Aussagen zur privaten Nutzung eines betrieblichen Pkw sind richtig?")),
+];
+
+const KORREKTUR_OPT = ["Gewinn erhöhen", "Gewinn mindern", "Keine Korrektur"];
+const SV_Z = "Zahnärztin Zoe ermittelt ihren Gewinn 2026 zulässigerweise nach § 4 Abs. 3 EStG. Sie erzielt nur steuerfreie Umsätze und hat keinen Vorsteuerabzug.";
+const korrekturFall = F("est-euer-korrektur", "est-gewinn", "Wie ist der vorläufige Gewinn 2026 zu korrigieren?", KORREKTUR_OPT, [
+  { text: `${SV_Z} Für ein unbebautes Grundstück, auf dem sie ihre neue Praxis bauen will, hat sie 90.000 € gezahlt und als Betriebsausgabe abgezogen.`, richtig: 0, erkl: "Grund und Boden ist nicht abnutzbares Anlagevermögen – die Anschaffungskosten sind erst bei Veräußerung oder Entnahme Betriebsausgabe (§ 4 Abs. 3 S. 4 EStG) → + 90.000 €.", normen: ["EStG 4 3"] },
+  { text: `${SV_Z} Für ein betriebliches Darlehen hat sie 2026 Tilgungen von 6.000 € gezahlt und als Betriebsausgaben abgezogen.`, richtig: 0, erkl: "Die Tilgung ist Rückzahlung von Kapital und keine Betriebsausgabe (vgl. H 4.5 (2) „Darlehen“ EStH) → + 6.000 €.", normen: ["EStG 4 4"] },
+  { text: `${SV_Z} Die Zinsen für ihr Praxisdarlehen (2.400 €) hat sie bezahlt, aber noch nicht erfasst.`, richtig: 1, erkl: "Zinsen für ein betrieblich verwendetes Darlehen sind Betriebsausgaben (§ 4 Abs. 4 EStG), abgezogen im Jahr der Zahlung (§ 11 Abs. 2 S. 1 EStG) → − 2.400 €.", normen: ["EStG 4 4", "EStG 11"] },
+  { text: `${SV_Z} Prophylaxeartikel, die sie im November bezahlt und als Betriebsausgabe erfasst hat, wurden im Dezember gestohlen. Den Verlust von 700 € hat sie zusätzlich als Betriebsausgabe abgezogen.`, richtig: 0, erkl: "Umlaufvermögen war schon bei Zahlung Betriebsausgabe (§ 4 Abs. 4, § 11 Abs. 2 S. 1 EStG) – ein zweiter Abzug scheidet aus → + 700 €.", normen: ["EStG 4 4", "EStG 11"] },
+  { text: `${SV_Z} Ihre Einkommensteuer-Vorauszahlungen von 20.000 € hat sie vom Praxiskonto gezahlt und als Betriebsausgaben erfasst.`, richtig: 0, erkl: "Steuern vom Einkommen sind nicht abziehbar (§ 12 Nr. 3 EStG); sie werden auf die ESt angerechnet (§ 36 Abs. 2 Nr. 1 EStG) → + 20.000 €.", normen: ["EStG 12", "EStG 36 2"] },
+  { text: `${SV_Z} Ihre Einkommensteuer-Vorauszahlungen von 20.000 € hat sie vom Privatkonto gezahlt; in der Gewinnermittlung sind sie nicht erfasst.`, richtig: 2, erkl: "Die Vorauszahlungen sind keine Betriebsausgaben (§ 12 Nr. 3 EStG) und richtigerweise nicht erfasst → keine Korrektur.", normen: ["EStG 12"] },
+  { text: `${SV_Z} Sie hat 1.500 € vom Praxiskonto für ihren privaten Urlaub abgehoben. Erfasst ist nichts.`, richtig: 2, erkl: "Eine Geldentnahme (§ 4 Abs. 1 S. 2 EStG) wird nicht als Betriebseinnahme erfasst – das Geld war schon bei Zufluss Betriebseinnahme → keine Korrektur.", normen: ["EStG 4 1"] },
+  { text: `${SV_Z} Den Kaufpreis eines am 01.07.2026 gelieferten Behandlungsstuhls (Nutzungsdauer 10 Jahre, 23.800 €) hat sie voll als Betriebsausgabe abgezogen.`, richtig: 0, erkl: "Abnutzbares Anlagevermögen: nur AfA (§ 4 Abs. 3 S. 3, § 7 Abs. 1 EStG), zeitanteilig ab Lieferung: 23.800 € / 10 × 6/12 = 1.190 € → + 23.800 € − 1.190 € = + 22.610 €.", normen: ["EStG 4 3", "EStG 7 1"] },
+  { text: `${SV_Z} Den Abschlag der Kassenzahnärztlichen Vereinigung für Dezember 2026 (25.000 €), fällig und gutgeschrieben am 08.01.2027, hat sie nicht erfasst.`, richtig: 0, erkl: "Regelmäßig wiederkehrende Einnahme, die kurze Zeit (bis 10 Tage) nach Jahresende zufließt und fällig ist → gilt im Jahr der wirtschaftlichen Zugehörigkeit als bezogen (§ 11 Abs. 1 S. 2 EStG; vgl. H 11 „Arzthonorar“ EStH) → + 25.000 €.", normen: ["EStG 11"] },
+  { text: `${SV_Z} Die privatärztliche Verrechnungsstelle hat am 21.12.2026 Honorare von 2.800 € für sie vereinnahmt und am 14.01.2027 ausgezahlt. Erfasst ist nichts.`, richtig: 0, erkl: "Die Verrechnungsstelle vereinnahmt als Bevollmächtigte – der Zufluss erfolgt schon bei ihr (vgl. R 11 S. 2 EStR) → Betriebseinnahme 2026 → + 2.800 €.", normen: ["EStG 11"] },
+  { text: `${SV_Z} Im Dezember 2026 hat sie die Miete für ein Lager für sechs Jahre im Voraus gezahlt (36.000 €, Mietbeginn 01.12.2026) und voll abgezogen.`, richtig: 0, erkl: "Vorauszahlung für eine Nutzungsüberlassung von mehr als fünf Jahren → gleichmäßig verteilen (§ 11 Abs. 2 S. 3 EStG): 2026 nur 36.000 € / 72 = 500 € → + 35.500 €.", normen: ["EStG 11"] },
+  { text: `${SV_Z} Einen voll abgeschriebenen Praxis-Laptop (Restbuchwert 0 €, Teilwert 250 €) hat sie ihrem Neffen geschenkt. Erfasst ist nichts.`, richtig: 0, erkl: "Sachentnahme für betriebsfremde Zwecke (§ 4 Abs. 1 S. 2 EStG), bewertet mit dem Teilwert (§ 6 Abs. 1 Nr. 4 S. 1 EStG) → fiktive Betriebseinnahme + 250 € (Restbuchwert 0 €).", normen: ["EStG 4 1", "EStG 6 1"] },
+  { text: `${SV_Z} Sie wohnt in der Wohnung über ihrer Praxis und nutzt ihren betrieblichen Pkw für Hausbesuche und privat.`, richtig: 2, erkl: "Ohne Wege zwischen Wohnung und Betriebsstätte fallen keine nicht abziehbaren Betriebsausgaben nach § 4 Abs. 5 S. 1 Nr. 6 EStG an → insoweit keine Korrektur (die Privatnutzung ist gesondert zu erfassen).", normen: ["EStG 4 5"] },
+  { text: `${SV_Z} Ihr betrieblicher Pkw (Bruttolistenpreis bei Erstzulassung 48.000 €, kein Fahrtenbuch, betriebliche Nutzung 75 %) wird auch privat genutzt. Erfasst ist dafür nichts.`, richtig: 0, erkl: "Nutzungsentnahme (§ 4 Abs. 1 S. 2 EStG), 1 %-Regelung (§ 6 Abs. 1 Nr. 4 S. 2 EStG): 48.000 € × 1 % × 12 = 5.760 € fiktive Betriebseinnahme → + 5.760 €.", normen: ["EStG 6 1"] },
+]);
+
+const pkwEinProzent = R("est-pkw-1prozent", "est-gewinn", (r) => {
+  const lp = r.zahl(280, 700) * 100, sa = r.zahl(0, 90) * 50, ab = r.wahl([1, 1, r.zahl(2, 10)]), mon = 13 - ab;
+  const brutto = (lp + sa) * 1.19, blp = Math.floor((lp + sa) * 119 / 10000) * 100, entn = blp / 100 * mon;
+  const gebraucht = r.zahl(0, 1) === 1, kauf = gebraucht ? Math.round(blp * r.zahl(45, 70) / 100 / 10) * 10 : Math.round(brutto * (100 - r.zahl(5, 15)) / 100 / 10) * 10;
+  const MONAT = ["", "Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+  return {
+    text: `Tierarzt Lars ermittelt seinen Gewinn nach § 4 Abs. 3 EStG. Am 01.${String(ab).padStart(2, "0")}.2026 erwirbt er einen ${gebraucht ? "gebrauchten " : ""}Pkw für ${eur(kauf)}${gebraucht ? "" : " (nach Rabatt)"}, den er zu 70 % betrieblich und im Übrigen privat nutzt. Ein Fahrtenbuch führt er nicht. Laut Hersteller betrug der inländische Listenpreis bei Erstzulassung ${eur(lp)} zzgl. USt${sa ? `; werkseitige Sonderausstattung: ${eur(sa)} zzgl. USt` : ", Sonderausstattung hat der Wagen nicht"}.
+
+Mit welchem Betrag ist die private Nutzung 2026 als Betriebseinnahme zu erfassen (in €)?`,
+    euro: entn,
+    erklaerung: `Betriebliche Nutzung über 50 % → notwendiges Betriebsvermögen; Privatnutzung = Nutzungsentnahme (§ 4 Abs. 1 S. 2 EStG), ohne Fahrtenbuch nach der 1 %-Regelung (§ 6 Abs. 1 Nr. 4 S. 2 EStG).
+• ${sa ? `Listenpreis + Sonderausstattung: ${eur(lp)} + ${eur(sa)} = ${eur(lp + sa)}` : `Listenpreis ${eur(lp)}`}, zzgl. 19 % USt = ${eur(brutto)}
+• abgerundet auf volle 100 € (vgl. BMF vom 18.11.2009, Rz. 10): ${eur(blp)}
+• Der ${gebraucht ? "Gebrauchtwagenpreis" : "rabattierte Kaufpreis"} (${eur(kauf)}) ist ohne Bedeutung.
+• ${eur(blp)} × 1 % × ${mon} Monate${mon < 12 ? ` (${MONAT[ab]} bis Dezember)` : ""} = ${eur(entn)}`,
+    normen: ["EStG 6 1", "EStG 4 1"],
+  };
+});
+
+const pkwWohnung = R("est-pkw-wohnung", "est-gewinn", (r) => {
+  const blp = r.zahl(300, 800) * 100, km = r.zahl(6, 35), tage = r.zahl(180, 230);
+  const pausch = blp * 0.0003 * km * 12, ep = tage * km * EP, nab = pausch - ep;
+  return {
+    text: `Rechtsanwältin Ida ermittelt ihren Gewinn nach § 4 Abs. 3 EStG. Ihren betrieblichen Pkw (Bruttolistenpreis bei Erstzulassung abgerundet ${eur(blp)}; die private Nutzung wird nach der 1 %-Regelung erfasst) nutzt sie 2026 an ${tage} Tagen für die Fahrt zur ${km} km entfernten Kanzlei. Die gesamten Kfz-Kosten sind als Betriebsausgaben gebucht.
+
+Um welchen Betrag ist der Gewinn wegen der Fahrten zwischen Wohnung und Betriebsstätte zu erhöhen (in €)?`,
+    euro: nab,
+    erklaerung: `Aufwendungen für Wege zwischen Wohnung und Betriebsstätte dürfen den Gewinn nur in Höhe der Entfernungspauschale mindern (§ 4 Abs. 5 S. 1 Nr. 6 S. 1, 2 EStG). Nicht abziehbar ist der positive Unterschied (S. 3):
+• 0,03 % × ${eur(blp)} × ${km} km × 12 Monate = ${eur(pausch)}
+• − Entfernungspauschale: ${tage} Tage × ${km} km × 0,38 € = ${eur(ep)}
+= nicht abziehbare Betriebsausgaben ${eur(nab)} → Gewinn + ${eur(nab)}`,
+    normen: ["EStG 4 5", "EStG 9 1"],
+  };
+});
+
 // ======================================================================= Klausurfälle
 const fall1 = (() => {
   const epP = 210 * 23 * EP, laptop = 1428, gewP = 360, wkP = Math.ceil(epP + laptop + gewP), eP = 52000 - wkP;
@@ -827,13 +951,28 @@ const fall2 = (() => {
     { fall: true });
 })();
 
+const fall3 = (() => {
+  const vor = 168000, kzv = 28000, pvs = 3200, grund = 95000, zins = 1200, kauf = 30940, afa = kauf / 4, blp = 55000, eins = blp / 100 * 12;
+  const w = blp * 0.0003 * 12 * 12, ep = 200 * 12 * EP, nab = w - ep, dieb = 900, vz = 24000, laptop = 250, kosten = afa + 4300;
+  const gewinn = vor + kzv + pvs + grund - zins + kauf - afa + eins + nab + dieb + vz + laptop, sa = 9000, zv = gewinn - sa, st = grundtarif(zv), erg = st - vz;
+  return A("est-fall-zahnaerztin", "est-gewinn",
+    `Die ledige Zahnärztin Dr. Mira Albers betreibt in Lübeck eine eigene Praxis. Sie erzielt ausschließlich steuerfreie Umsätze (kein Vorsteuerabzug) und ermittelt ihren Gewinn nach § 4 Abs. 3 EStG. Ihr vorläufiger Gewinn 2026 beträgt 168.000 €. Noch zu beurteilen sind:\n1. Den Abschlag der Kassenzahnärztlichen Vereinigung für Dezember 2026 (28.000 €), fällig und gutgeschrieben am 08.01.2027, hat sie nicht erfasst.\n2. Die privatärztliche Verrechnungsstelle hat am 20.12.2026 Honorare von 3.200 € für sie vereinnahmt und am 12.01.2027 ausgezahlt. Erfasst ist nichts.\n3. Am 01.09.2026 hat sie ein unbebautes Grundstück für 95.000 € erworben, auf dem 2027 ihre neue Praxis entstehen soll. Den Kaufpreis hat sie als Betriebsausgabe abgezogen.\n4. Den Kauf finanzierte sie teilweise mit einem Bankdarlehen über 60.000 € (Auszahlung 01.09.2026). 2026 zahlte sie Tilgung von 2.000 € und Zinsen von 1.200 €; erfasst ist bisher nichts.\n5. Am 02.01.2026 wurde ihr ein gebrauchter Pkw geliefert (Kaufpreis 30.940 € inkl. USt, Restnutzungsdauer 4 Jahre); den Kaufpreis hat sie als Betriebsausgabe abgezogen. Inländischer Listenpreis bei Erstzulassung: 41.900 € zzgl. USt, werkseitige Sonderausstattung 4.320 € zzgl. USt. Fahrleistung 2026: 8.200 km betrieblich, 4.800 km zwischen Wohnung und Praxis (200 Tage, Entfernung 12 km), 3.000 km privat. Aufzeichnungen über die Fahrten führte sie nur von März bis August. Die laufenden Kfz-Kosten (4.300 €) sind zutreffend als Betriebsausgaben erfasst; für die Nutzung des Pkw ist sonst nichts erfasst.\n6. Prophylaxeartikel, die sie im November für 900 € gekauft, bezahlt und als Betriebsausgabe erfasst hat, wurden im Dezember gestohlen. Den Verlust hat sie nochmals als Betriebsausgabe abgezogen.\n7. Ihre ESt-Vorauszahlungen 2026 (24.000 €) zahlte sie vom Praxiskonto und erfasste sie als Betriebsausgaben.\n8. Für ihren Urlaub hob sie 2.500 € vom Praxiskonto ab. Erfasst ist nichts.\n9. Einen voll abgeschriebenen Praxis-Laptop (Teilwert 250 €) schenkte sie im Dezember ihrem Neffen. Erfasst ist nichts.\nAbziehbare Sonderausgaben: 9.000 €.\n\nAufgabe: Ermitteln Sie den Gewinn 2026, das zu versteuernde Einkommen und die Abschlusszahlung.`,
+    `Zahnärztin → Katalogberuf, Einkünfte aus selbständiger Arbeit (§ 2 Abs. 1 Nr. 3, § 18 Abs. 1 Nr. 1 EStG); Gewinn (§ 2 Abs. 2 S. 1 Nr. 1) zulässig nach § 4 Abs. 3 EStG, da keine Buchführungspflicht (§§ 140, 141 AO, § 238 HGB); Zu- und Abflussprinzip (§ 11 EStG).\n\nVorläufiger Gewinn: ${eur(vor)}\n1. KZV-Abschlag: regelmäßig wiederkehrend, Zufluss und Fälligkeit innerhalb kurzer Zeit nach Jahresende → BE 2026 (§ 11 Abs. 1 S. 2; vgl. H 11 „Arzthonorar“ EStH) → + ${eur(kzv)}\n2. Verrechnungsstelle: Zufluss mit Vereinnahmung durch die Bevollmächtigte (vgl. R 11 S. 2 EStR) → BE 2026 → + ${eur(pvs)}\n3. Grundstück: notwendiges BV, nicht abnutzbares Anlagevermögen → AK erst bei Veräußerung oder Entnahme BA (§ 4 Abs. 3 S. 4) → + ${eur(grund)}\n4. Darlehen: Auszahlung keine BE, Tilgung keine BA; Zinsen BA (§ 4 Abs. 4) → − ${eur(zins)}\n5. Pkw: betriebliche Nutzung (8.200 + 4.800) / 16.000 km = 81,25 % → notwendiges BV.\n   • Kaufpreis keine BA, sondern AfA (§ 4 Abs. 3 S. 3, § 7 Abs. 1): AK inkl. USt, da kein Vorsteuerabzug (§ 9b Abs. 1 i. U.); Lieferung im Januar (§ 9a EStDV) → 30.940 € / 4 = ${eur(afa)} → + ${eur(kauf)} − ${eur(afa)}\n   • Privatnutzung = Nutzungsentnahme (§ 4 Abs. 1 S. 2); Aufzeichnungen nur für ein halbes Jahr sind kein ordnungsgemäßes Fahrtenbuch (vgl. BMF vom 18.11.2009, Rz. 21, 24) → 1 %-Regelung (§ 6 Abs. 1 Nr. 4 S. 2): (41.900 € + 4.320 €) × 1,19 = 55.001,80 € → abgerundet ${eur(blp)}; × 1 % × 12 = ${eur(eins)} → + ${eur(eins)}\n   • Wege Wohnung–Praxis (§ 4 Abs. 5 S. 1 Nr. 6 S. 3): 0,03 % × ${eur(blp)} × 12 km × 12 = ${eur(w)} − Entfernungspauschale 200 × 12 km × 0,38 € = ${eur(ep)} → nicht abziehbar ${eur(nab)} → + ${eur(nab)}\n   • Kostendeckelung: ${eur(eins)} + ${eur(w)} = ${eur(eins + w)} übersteigen die Gesamtkosten (${eur(afa)} + 4.300 € = ${eur(kosten)}) nicht (vgl. BMF vom 18.11.2009, Rz. 18–20).\n6. Diebstahl: Umlaufvermögen war bei Zahlung bereits BA – kein zweiter Abzug → + ${eur(dieb)}\n7. ESt-Vorauszahlungen: nicht abziehbar (§ 12 Nr. 3) → + ${eur(vz)}\n8. Geldentnahme: keine Korrektur – das Geld war bei Zufluss bereits BE.\n9. Laptop: Sachentnahme (§ 4 Abs. 1 S. 2) mit dem Teilwert (§ 6 Abs. 1 Nr. 4 S. 1), Restbuchwert 0 € → + ${eur(laptop)}\n\nGewinn = Summe der Einkünfte = Gesamtbetrag der Einkünfte: ${eur(gewinn)}\n− Sonderausgaben 9.000 € = Einkommen = zvE (§ 2 Abs. 3–5): ${eur(zv)}\nTarifliche ESt (Grundtarif, § 32a Abs. 1 Nr. 5: 0,45 × x − 19.470,38): ${eur(st)} = festzusetzende ESt (§ 2 Abs. 6)\n− Vorauszahlungen (§ 36 Abs. 2 Nr. 1): ${eur(vz)}\n= Abschlusszahlung ${eur(erg)} (§ 36 Abs. 4 S. 1)`,
+    ["EStG 4 3", "EStG 11", "EStG 6 1", "EStG 4 5", "EStG 12", "EStG 32a 1", "EStG 36 2"],
+    M(["Der Kaufpreis des Grundstücks ist 2026 keine Betriebsausgabe.", "Die private Pkw-Nutzung ist nach der 1 %-Regelung mit 6.600 € zu erfassen.", "Für die Wege zwischen Wohnung und Praxis ergeben sich nicht abziehbare Betriebsausgaben von 1.464 €.", `Der Gewinn 2026 beträgt ${eur(gewinn)}.`],
+      ["Die Aufzeichnungen von März bis August genügen als Fahrtenbuch.", "Bemessungsgrundlage der 1 %-Regelung ist der Kaufpreis von 30.940 €.", "Die Tilgung des Darlehens ist Betriebsausgabe.", "Die Geldentnahme für den Urlaub erhöht den Gewinn um 2.500 €."],
+      "Fall Zahnärztin Dr. Mira Albers (2026): Welche Aussagen treffen zu?"),
+    { fall: true });
+})();
+
 export const EST_AUFGABEN = [
   ...grundlagen, ...stpfl, stpflFall, ...einkuenfte, einkunftsartFall, einkuenfteRechnen, ...zve, zveRechnen,
   ...veranlagung, veranlagungFall, ...tarif, tarifGrund, tarifSplit, abschluss, fall1,
-  ...einnahmen, zuflussFall, uebungsleiterRechnen, ...ausgaben, aufwandFall, gemischtRechnen,
+  ...einnahmen, versorgung, versorgungRechnen, zuflussFall, uebungsleiterRechnen, ...ausgaben, aufwandFall, gemischtRechnen,
   ...zufluss, elfFall, vorauszahlungRechnen, fall2, ...wk, wkSumme,
   ...arbeitsmittel, arbeitsmittelFall, afaRechnen, gemischtAfa, ...homeoffice, homeofficeFall, homeofficeRechnen, arbeitszimmerRechnen,
   ...entfernung, epPkw, epOepnv, epGemischt, epJobticket, epWechsel, ...reisekosten, reiseFall, verpflegungRechnen, reiseRechnen,
+  ...gewinn, korrekturFall, pkwEinProzent, pkwWohnung, fall3,
 ];
 
 export const MC_EST = Object.fromEntries(EST_AUFGABEN.filter((v) => v.mc).map((v) => [v.id, v.mc]));

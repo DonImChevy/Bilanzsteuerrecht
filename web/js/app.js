@@ -1599,7 +1599,19 @@ function absatzHtml(n, a, zs) {
   } else if (passend.length && n.absaetze.length > 1) {
     inhalt = mark(text); treffer = true;
   }
-  return { html: `<p>${a.abs ? `<b>(${a.abs})</b> ` : ""}${inhalt}</p>`, treffer };
+  return { html: `<p>${a.abs ? `<b>(${a.abs})</b> ` : ""}${normTabelle(inhalt)}</p>`, treffer };
+}
+/** Zeilen mit „ | “ (Tabelle im Gesetz, z. B. § 19 Abs. 2 EStG) als Raster; Markierungen bleiben erhalten. */
+function normTabelle(h) {
+  if (!h.includes(" | ")) return h;
+  const zeile = (z) => / \| .* \| /.test(z.replace(/<\/?mark[^>]*>/g, ""));
+  return h.split("<br>").reduce((aus, z, i, alle) => {
+    if (!zeile(z)) return aus + (i && !zeile(alle[i - 1]) ? "<br>" : "") + z;
+    const kopf = i && !zeile(alle[i - 1]);
+    // Kopfzeile: lange Zusammensetzungen dürfen an der Wortfuge umbrechen (weiches Trennzeichen)
+    const zelle = kopf ? z.replace(/(Versorgungs|frei)(?=[a-zäöü])/g, "$1&shy;") : z;
+    return aus + `<span class="norm-tz${kopf ? " kopf" : ""}"><span>${zelle.replace(/ \| /g, "</span><span>")}</span></span>`;
+  }, "");
 }
 
 /** Überschrift über Musterantwort/Erklärung – macht klar, dass hier erläutert und nicht das Gesetz zitiert wird. */
@@ -2108,7 +2120,7 @@ function sheetView() {
     inhalt = r2 ? `<div class="sub" style="margin:2px 4px 6px">Einkommensteuer-Richtlinien · ${esc(n.titel)}</div>
       ${r2View(sh.ref.split(" ")[2], kompaktInline)}`
       : `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
-      ${(schema ? n.absaetze.filter((a) => a.abs === "1") : n.absaetze).map((a) => `<p style="margin:8px 0;line-height:1.55">${a.abs ? `<b>(${a.abs})</b> ` : ""}${esc(a.text).replace(/\n/g, "<br>")}</p>`).join("")}</span></div></div>
+      ${(schema ? n.absaetze.filter((a) => a.abs === "1") : n.absaetze).map((a) => `<p style="margin:8px 0;line-height:1.55">${a.abs ? `<b>(${a.abs})</b> ` : ""}${normTabelle(esc(a.text).replace(/\n/g, "<br>"))}</p>`).join("")}</span></div></div>
       ${schema ? gliederungView() : ""}
       <div class="mk-norm-fuss">${alsKarteKnopf("norm", sh.ref)}</div>
       <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: ${r2 ? "Amtliches Einkommensteuer-Handbuch des BMF (esth.bundesfinanzministerium.de), Ausgabe 2025" : "www.gesetze-im-internet.de"}</div>`;

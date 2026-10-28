@@ -26,10 +26,10 @@ AUSWAHL = {
 }
 # Einkommensteuer (Aufruf mit --est als erstem Argument → web/js/est/normen.js, Export NORMEN_EST)
 AUSWAHL_EST = {
-    "EStG": {"1": ["1", "4"], "2": None, "3": ["|15,16,26,26a,51,62"], "3c": ["1"], "4": ["4", "5|6b,6c"],
-             "6": ["2"], "7": ["1"], "8": ["1"], "9": ["1", "2", "4", "4a", "5"], "9a": None, "11": None, "12": None,
+    "EStG": {"1": ["1", "4"], "2": None, "3": ["|15,16,26,26a,51,62"], "3c": ["1"], "4": ["1", "3", "4", "5|6,6b,6c"],
+             "6": ["1|4", "2"], "7": ["1"], "8": ["1"], "9": ["1", "2", "4", "4a", "5"], "9a": None, "11": None, "12": None,
              "25": ["1", "3"], "26": None, "26a": ["1"], "26b": None, "32a": ["1", "5", "6"], "36": ["1", "2", "4"],
-             "46": ["2", "4"], "15": ["1", "2"], "19": ["1"], "20": ["1|7"], "21": ["1", "3"], "23": ["1|1", "3"],
+             "46": ["2", "4"], "15": ["1", "2"], "19": ["1", "2"], "20": ["1|7"], "21": ["1", "3"], "23": ["1|1", "3"],
              "24b": ["1", "2"], "31": None, "33": ["1", "2"], "37": ["1"], "38": ["1"], "38a": ["1"], "43": ["5"], "49": ["1|4"],
              "10": ["1|2,3,4"], "10c": None, "32b": ["1"], "33b": ["1"], "43a": ["1"]},
     "AO": {"8": None, "9": None, "149": ["2"], "169": ["2"]},
@@ -126,16 +126,58 @@ def ustg_4_ust(roh):
     return [{"abs": "", "text": "Von den unter § 1 Abs. 1 Nr. 1 fallenden Umsätzen sind steuerfrei:\n…\n9. " + nr9 + "\n…\n12. " + nr12 + "\n…\n14. " + nr14 + "\n…\n28. " + nr28 + "\n…"}]
 
 
+def estg_19_tabelle(roh):
+    """Tabelle in § 19 Abs. 2 S. 3 EStG als eine Zeile je Jahr. Die Werte folgen dem Aufbau des Gesetzes
+    (Höchstbetrag = Prozentsatz × 75 €, Zuschlag = 30 % des Höchstbetrags) und werden Zeile für Zeile
+    im Gesetzestext nachgewiesen – fehlt eine, bricht die Erzeugung ab."""
+    i = roh.index("Tabelle zu entnehmen:"); j = roh.index("Bemessungsgrundlage für den Versorgungsfreibetrag ist", i)
+    tab = re.sub(r"\s+", " ", roh[i:j])
+    zeilen, pos, pz = [], 0, 400
+    for jahr in ["bis 2005", "ab 2006", *map(str, range(2007, 2059))]:
+        pz = 400 if jahr == "bis 2005" else pz - (16 if int(jahr[-4:]) <= 2020 else 8 if int(jahr[-4:]) <= 2022 else 4)
+        hb = pz * 75 // 10; zs = hb * 3 // 10
+        tsd = lambda x: f"{x // 1000} {x % 1000:03d}" if x >= 1000 else str(x)
+        werte = [jahr, f"{pz // 10},{pz % 10}", tsd(hb), tsd(zs)]
+        m = re.compile(r"\s+".join(re.escape(w) for w in werte)).search(tab, pos)
+        if not m:
+            raise SystemExit(f"§ 19 Abs. 2 EStG: Tabellenzeile {werte} nicht gefunden")
+        pos = m.end()
+        zeilen.append(" | ".join(werte))
+    return ("Jahr des Versorgungsbeginns | Versorgungsfreibetrag in % der Versorgungsbezüge | Höchstbetrag in Euro | "
+            "Zuschlag zum Versorgungsfreibetrag in Euro\n" + "\n".join(zeilen))
+
+
 def nummern(text, auswahl):
-    """Behält aus einer Aufzählung (1. … 2. …) nur die Einleitung und die gewählten Nummern."""
+    """Behält aus einer Aufzählung (1. … 2. …) nur die Einleitung und die gewählten Nummern.
+    Eine neu beginnende Zählung (1. nach 4.) ist eine Aufzählung innerhalb der Nummer und bleibt bei ihr,
+    solange sie fortläuft (§ 6 Abs. 1 Nr. 4 EStG enthält zwei solche Listen bis „5.“)."""
     teile = re.split(r"\n(?=\d+[a-z]?\.\s)", text)
-    einleitung, rest = teile[0], teile[1:]
-    behalten = [t for t in rest if re.match(r"(\d+[a-z]?)\.", t).group(1) in auswahl]
+    einleitung, punkte, letzte, innen = teile[0], [], 0, None
+    for t in teile[1:]:
+        nr = re.match(r"(\d+[a-z]?)\.", t).group(1)
+        z = int(re.match(r"\d+", nr).group())
+        if punkte and (nr == "1" and letzte >= 1 or innen is not None and nr == str(innen + 1)):
+            punkte[-1][1] += "\n" + t; innen = z  # Aufzählung innerhalb der Nummer
+        elif z > letzte or (punkte and z == letzte and nr != punkte[-1][0]):  # 26a, 26b … nach 26
+            punkte.append([nr, t]); letzte, innen = z, None
+        elif punkte:
+            punkte[-1][1] += "\n" + t
+        else:
+            einleitung += "\n" + t
+    behalten = [t for nr, t in punkte if nr in auswahl]
     return "\n".join([einleitung.strip(), *behalten, "…"]).strip()
 
 
-def paragraf(n, filter_):
+# Vor der Nummernauswahl: im PDF verrutschte Nummern (§ 6 Abs. 1 Nr. 4 EStG steht hinter „f)“ von Nr. 3a)
+VOR_KORREKTUR = {("EStG", "6"): [(r"\nf\) 4\. (bei der Bewertung sind die Wertverhältnisse am Bilanzstichtag maßgebend; künftige Preis- und "
+                                 r"Kostensteigerungen dürfen nicht berücksichtigt werden\.) (Entnahmen des Steuerpflichtigen)", r"\nf) \1\n4. \2")]}
+
+
+def paragraf(n, filter_, vor=()):
     abs_ = absaetze(bindestriche(n["z"]))
+    for muster, ersatz in vor:
+        for a in abs_:
+            a["text"] = re.sub(muster, ersatz, a["text"])
     titel = n["titel"]
     # Überschrift über zwei Zeilen: Rest steht im ersten, unnummerierten Absatz
     if abs_ and abs_[0]["abs"] == "" and len(abs_) > 1 and len(abs_[0]["text"]) < 90 and not abs_[0]["text"].endswith("."):
@@ -173,9 +215,14 @@ def main():
         for nr, filter_ in AUSWAHL[g].items():
             if nr not in normen:
                 print("FEHLT", g, nr, file=sys.stderr); continue
-            titel, abs_, auszug = paragraf(normen[nr], filter_)
+            titel, abs_, auszug = paragraf(normen[nr], filter_, VOR_KORREKTUR.get((g, nr), ()))
             if (g, nr) == ("UStG", "4"):
                 abs_ = ustg_4_ust(open(datei, encoding="utf-8").read()) if name == "NORMEN_UST" else ustg_4(open(datei, encoding="utf-8").read())
+            if (g, nr) == ("EStG", "19"):
+                tabelle = estg_19_tabelle(open(datei, encoding="utf-8").read())
+                for a in abs_:
+                    a["text"] = re.sub(r"(zu entnehmen:) .*?Jahr des Versorgungsbeginns (Bemessungsgrundlage für den)",
+                                       lambda m: f"{m.group(1)}\n{tabelle}\n{m.group(2)}", a["text"], flags=re.S)
             titel = titel or TITEL.get((g, nr), "")
             for muster, ersatz in TEXT_KORREKTUR.get((g, nr), []):
                 for a in abs_:

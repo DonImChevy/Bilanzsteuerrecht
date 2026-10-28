@@ -132,7 +132,7 @@ export const KOMPAKT_EST = {
 
   "est-einnahmen": {
     satz: "Einnahmen sind alle Güter in Geld oder Geldeswert, die im Rahmen einer Überschusseinkunftsart zufließen – manche davon stellt § 3 EStG ausdrücklich steuerfrei.",
-    zahlen: [["50 €", "Sachbezugsfreigrenze monatlich"], ["1.080 €", "Rabattfreibetrag (§ 8 Abs. 3)"], ["3.300 € / 960 €", "Übungsleiter / Ehrenamt"]],
+    zahlen: [["50 €", "Sachbezugsfreigrenze monatlich"], ["60 €", "Aufmerksamkeit (Sachgeschenk, persönlicher Anlass)"], ["1.080 €", "Rabattfreibetrag (§ 8 Abs. 3)"], ["3.300 € / 960 €", "Übungsleiter / Ehrenamt"], ["960 € + 288 €", "Versorgungsfreibetrag + Zuschlag (Beginn 2026)"]],
     punkte: [
       "**Einnahmen (§ 8 Abs. 1 EStG):** alle Güter in Geld oder Geldeswert, die dem Steuerpflichtigen im Rahmen einer der Einkunftsarten des § 2 Abs. 1 Nr. 4–7 zufließen.",
       "**Sachbezüge (§ 8 Abs. 2 EStG):** mit dem üblichen Endpreis am Abgabeort; steuerfrei bis **50 € im Monat** (Freigrenze – bei Überschreiten ist alles steuerpflichtig).",
@@ -142,9 +142,12 @@ export const KOMPAKT_EST = {
       "**Nebenberuflich:** höchstens ein Drittel einer Vollzeitstelle (ca. 14 Std./Woche); eine Haupttätigkeit ist nicht erforderlich (zu § 3 Nr. 26 S. 1 EStG, R 3.26 Abs. 2 LStR).",
       "**§ 3c Abs. 1 EStG:** Ausgaben, die mit steuerfreien Einnahmen unmittelbar zusammenhängen, sind nicht abziehbar. **Ausnahme § 3 Nr. 26 S. 2 EStG:** Ausgaben sind abziehbar, soweit sie die steuerfreien Einnahmen übersteigen.",
       "**Weitere Befreiungen:** z. B. Arbeitslosengeld (§ 3 Nr. 2, mit Progressionsvorbehalt), Reisekostenerstattungen des Arbeitgebers (§ 3 Nr. 13, 16), private Nutzung betrieblicher PCs und Handys (§ 3 Nr. 45).",
+      "**Aufmerksamkeiten:** Sachgeschenke des Arbeitgebers zu einem besonderen persönlichen Ereignis bis **60 €** sind kein Arbeitslohn; **Geld** ist immer Arbeitslohn und zählt nicht zur 60-€-Grenze (R 19.6 Abs. 1 LStR). Geschenke der Kollegen sind privat und nicht steuerbar.",
+      "**Versorgungsbezüge (§ 19 Abs. 2 EStG):** Versorgungsfreibetrag (Prozentsatz der Bemessungsgrundlage = 12 × erster voller Monat, höchstens Höchstbetrag) und Zuschlag nach dem **Jahr des Versorgungsbeginns** – 2026: 12,8 %, höchstens 960 €, Zuschlag 288 €. Gilt für die ganze Laufzeit, Anpassungen ändern nichts (S. 8, 9); im ersten Jahr je fehlendem Monat ein Zwölftel weniger (S. 12). Werbungskosten-Pauschbetrag **102 €** (§ 9a S. 1 Nr. 1 b EStG).",
     ],
     fallen: [
       "Die Sachbezugsgrenze ist eine Freigrenze, kein Freibetrag (§ 8 Abs. 2 S. 11 EStG).",
+      "Den Versorgungsfreibetrag nach dem aktuellen Jahr oder der aktuellen Pension berechnen – maßgeblich sind Jahr und erster voller Monat des Versorgungsbeginns (§ 19 Abs. 2 S. 3, 4 EStG).",
       "Der Übungsleiterfreibetrag gilt nicht für Tätigkeiten für private, nicht gemeinnützige Unternehmen (§ 3 Nr. 26 S. 1 EStG).",
     ],
   },
@@ -303,16 +306,46 @@ export const KOMPAKT_EST = {
       "Kürzung für Mahlzeiten vom Preis der Mahlzeit berechnen – sie bemisst sich an den 28 € des vollen Tages (§ 9 Abs. 4a S. 8 EStG).",
     ],
   },
+  "est-gewinn": {
+    satz: "Freiberufler ohne Buchführungspflicht ermitteln ihren Gewinn als Überschuss der Betriebseinnahmen über die Betriebsausgaben (§ 4 Abs. 3 S. 1 EStG) – in der Klausur wird ein vorläufiger Gewinn Schritt für Schritt korrigiert.",
+    zahlen: [["1 %", "des Bruttolistenpreises je Monat (Privatnutzung)"], ["0,03 %", "je Monat und Entfernungskilometer (Wohnung–Betrieb)"], ["0,38 €", "Entfernungspauschale je km (gegenrechnen)"], ["50 %", "betriebliche Nutzung → notwendiges Betriebsvermögen"], ["5 Jahre", "Vorauszahlungen darüber verteilen (§ 11 Abs. 2 S. 3)"]],
+    schema: [
+      "Einkunftsart (§ 18 Abs. 1 Nr. 1 EStG) und Gewinnermittlungsart (§ 4 Abs. 3 EStG) begründen",
+      "Vorläufiger Gewinn",
+      "Jeden Vorgang prüfen: Betriebseinnahme / Betriebsausgabe / Zeitpunkt (§ 11) / Ausnahme?",
+      "Korrektur mit Vorzeichen (+ / −) oder „keine Korrektur“",
+      "Endgültiger Gewinn",
+    ],
+    punkte: [
+      "**Berechtigt (§ 4 Abs. 3 S. 1 EStG):** wer weder nach § 238 HGB noch nach §§ 140, 141 AO Bücher führen muss und es auch nicht freiwillig tut – typisch Ärzte, Anwälte, Steuerberater (§ 18 Abs. 1 Nr. 1 EStG).",
+      "**Zu- und Abfluss (§ 11 EStG):** Ausnahme regelmäßig wiederkehrender Zahlungen innerhalb von 10 Tagen um den Jahreswechsel (KV-Abschläge, Miete); Honorare über eine Verrechnungsstelle fließen schon dort zu.",
+      "**Anlagevermögen:** abnutzbar → nur **AfA** bzw. GWG (§ 4 Abs. 3 S. 3 EStG), ab Lieferung (§ 9a EStDV); bei fehlendem Vorsteuerabzug gehört die USt zu den Anschaffungskosten (§ 9b Abs. 1 EStG im Umkehrschluss). **Nicht abnutzbar** (Grund und Boden) → erst bei Veräußerung oder Entnahme Betriebsausgabe (§ 4 Abs. 3 S. 4 EStG).",
+      "**Darlehen:** Auszahlung und Tilgung bleiben außer Ansatz; nur die **Zinsen** sind Betriebsausgaben (§ 4 Abs. 4 EStG).",
+      "**Umlaufvermögen** ist bei Zahlung Betriebsausgabe – Diebstahl oder Verderb führen nicht zu einem zweiten Abzug.",
+      "**Nicht abziehbar:** ESt-Vorauszahlungen (§ 12 Nr. 3 EStG) – nur korrigieren, wenn sie als Betriebsausgabe gebucht sind.",
+      "**Entnahmen** (§ 4 Abs. 1 S. 2 EStG) als fiktive Betriebseinnahme: Sachen mit dem Teilwert (§ 6 Abs. 1 Nr. 4 S. 1 EStG); **Geldentnahmen** ohne Korrektur.",
+      "**Pkw über 50 % betrieblich:** Privatnutzung nach der **1 %-Regelung** (§ 6 Abs. 1 Nr. 4 S. 2 EStG) vom Bruttolistenpreis bei Erstzulassung inkl. Sonderausstattung, auf volle 100 € abgerundet – Kaufpreis, Rabatt und Gebrauchtwagenpreis zählen nicht. Fahrtenbuch nur, wenn ganzjährig ordnungsgemäß (§ 6 Abs. 1 Nr. 4 S. 3 EStG).",
+      "**Wege Wohnung–Betrieb (§ 4 Abs. 5 S. 1 Nr. 6 S. 3 EStG):** 0,03 % × Listenpreis × km × Monate − Entfernungspauschale = nicht abziehbare Betriebsausgaben → Gewinn erhöhen. Danach die **Kostendeckelung** prüfen (pauschale Werte höchstens Gesamtkosten des Kfz).",
+    ],
+    fallen: [
+      "Den Pkw-Kaufpreis oder das Grundstück im Jahr der Zahlung als Betriebsausgabe stehen lassen – richtig ist AfA bzw. Abzug erst bei Veräußerung (§ 4 Abs. 3 S. 3, 4 EStG).",
+      "Die 1 %-Regelung vom Kaufpreis berechnen – maßgeblich ist der Bruttolistenpreis bei Erstzulassung (§ 6 Abs. 1 Nr. 4 S. 2 EStG).",
+      "Bei 0,03 % die Entfernungspauschale vergessen – nicht abziehbar ist nur der Unterschiedsbetrag (§ 4 Abs. 5 S. 1 Nr. 6 S. 3 EStG).",
+      "Fahrten Wohnung–Betrieb als Privatfahrten zählen – sie gehören zur betrieblichen Nutzung.",
+      "Eine Geldentnahme als Betriebseinnahme hinzurechnen.",
+    ],
+  },
 };
 
 export const KLAUSUR_EST = {
   titel: "ESt-Klausur: so holst du die Punkte",
   aufbau: [
     "**Gesamtfall-Charakter:** Steuerpflicht prüfen → Einkunftsarten bestimmen → Einkünfte berechnen → Schema bis zum zvE → ggf. Tarif.",
+    "**Typischer Aufbau:** Teil I ein Ehepaar mit Arbeitslohn (oft auch Versorgungsbezüge oder eine nebenberufliche Tätigkeit) bis zur Abschlusszahlung; Teil II ein Freiberufler, dessen vorläufiger Gewinn nach § 4 Abs. 3 EStG zu korrigieren ist.",
     "**Sichere Punkte:** saubere Definitionen (Steuerpflicht, Einkunftsart, Werbungskosten) mit genauer Norm; Rechenwege mit Zwischenergebnissen.",
     "**Punktesammler:** auswendig gelernte Klausursätze bringen Punkte, ohne dass gerechnet werden muss.",
   ],
-  top: ["est-werbungskosten", "est-arbeitsmittel", "est-entfernung", "est-reisekosten", "est-steuerpflicht", "est-einkuenfte", "est-zufluss", "est-zve"],
+  top: ["est-werbungskosten", "est-arbeitsmittel", "est-entfernung", "est-reisekosten", "est-gewinn", "est-steuerpflicht", "est-einkuenfte", "est-zufluss", "est-zve"],
   tipps: [
     "Immer prüfen: Pauschbetrag oder tatsächliche Werbungskosten?",
     "Bei Zahlungen um den Jahreswechsel an § 11 EStG denken.",

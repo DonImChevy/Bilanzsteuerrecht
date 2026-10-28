@@ -4,6 +4,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-est-gewinnermittlung",
+    datum: "2026-10-28",
+    titel: "ESt: was in jeder Klausur drankommt",
+    punkte: [
+      ["tkonto", "Neues Thema: Gewinnermittlung § 4 Abs. 3", "Vorläufigen Gewinn korrigieren wie in Teil II der Klausur: Grundstück, Darlehen, Diebstahl, Vorauszahlungen, Entnahmen – und der Praxis-Pkw mit 1 %-Regelung, 0,03 % und Kostendeckelung.", "thema", "est-gewinn"],
+      ["person", "Versorgungsbezüge und Aufmerksamkeiten", "Versorgungsfreibetrag nach dem Jahr des Versorgungsbeginns rechnen; Geschenke vom Arbeitgeber und von Kollegen richtig einordnen."],
+      ["nachschlagen", "Gesetzestext ergänzt", "§ 4 Abs. 3, § 6 Abs. 1 Nr. 4 und § 19 Abs. 2 EStG (mit Tabelle) stehen jetzt im Normen-Tab."],
+    ],
+  },
+  {
     id: "2026-10-termine-bearbeiten",
     datum: "2026-10-28",
     titel: "Klausurtermine bearbeiten",

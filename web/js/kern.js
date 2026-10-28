@@ -50,7 +50,7 @@ export const THEMEN = [
   { id: "est-zve", titel: "Zu versteuerndes Einkommen", unter: "§ 2 Abs. 3–5 EStG · Schema", icon: "Σ", fach: "est" },
   { id: "est-veranlagung", titel: "Veranlagung", unter: "§§ 25, 26, 26a, 26b, 46 EStG", icon: "💍", fach: "est" },
   { id: "est-tarif", titel: "Tarif & festzusetzende ESt", unter: "§§ 32a, 2 Abs. 6, 36 EStG", icon: "📊", fach: "est" },
-  { id: "est-einnahmen", titel: "Einnahmen & Steuerbefreiungen", unter: "§§ 8, 3, 3c EStG · Übungsleiter", icon: "💶", fach: "est" },
+  { id: "est-einnahmen", titel: "Einnahmen & Steuerbefreiungen", unter: "§§ 8, 3, 3c, 19 Abs. 2 EStG · Übungsleiter, Versorgungsbezüge", icon: "💶", fach: "est" },
   { id: "est-ausgaben", titel: "Nicht abziehbare Ausgaben", unter: "§ 12 EStG · gemischte Aufwendungen", icon: "🚫", fach: "est" },
   { id: "est-zufluss", titel: "Zu- und Abfluss", unter: "§ 11 EStG", icon: "📅", fach: "est" },
   { id: "est-werbungskosten", titel: "Werbungskosten", unter: "§§ 9, 9a EStG · Begriff, Pauschbetrag", icon: "💼", fach: "est" },
@@ -58,6 +58,7 @@ export const THEMEN = [
   { id: "est-homeoffice", titel: "Arbeitszimmer & Home-Office", unter: "§ 4 Abs. 5 S. 1 Nr. 6b, 6c, § 9 Abs. 5 EStG", icon: "🏠", fach: "est" },
   { id: "est-entfernung", titel: "Entfernungspauschale", unter: "§ 9 Abs. 1 S. 3 Nr. 4, Abs. 2, 4 EStG", icon: "🚗", fach: "est" },
   { id: "est-reisekosten", titel: "Reisekosten", unter: "§ 9 Abs. 1 S. 3 Nr. 4a, 5a, Abs. 4a EStG · Auswärtstätigkeit", icon: "🧳", fach: "est" },
+  { id: "est-gewinn", titel: "Gewinnermittlung § 4 Abs. 3", unter: "EÜR · Korrekturen · private Pkw-Nutzung", icon: "🧮", fach: "est" },
   // Umsatzsteuer (Skript GS I, Klausurtechnik, Semesterklausuren; Rechtsstand 2026)
   { id: "ust-grundlagen", titel: "System & Unternehmer", unter: "§§ 1, 2 UStG · Rahmen des Unternehmens", icon: "🏢", fach: "ust" },
   { id: "ust-leistung", titel: "Lieferung & sonstige Leistung", unter: "§ 3 Abs. 1, 9 UStG · Nebenleistungen", icon: "📦", fach: "ust" },

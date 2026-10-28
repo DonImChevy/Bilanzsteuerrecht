@@ -118,6 +118,9 @@ export function saetze(text) {
     if (ABKUERZUNG.test(davor) || (/^\d+[a-z]?$/.test(davor) && !verweis) || /^\d+\.$/.test(davor)) continue;
     grenzen.push(m.index + m[0].length);
   }
+  // Tabellen (Zeilen mit „ | “, z. B. § 19 Abs. 2 EStG): der Satz nach der Tabelle beginnt ohne Punkt davor
+  for (const m of text.matchAll(/ \| [^\n]*\n(?=[A-ZÄÖÜ])/g)) grenzen.push(m.index + m[0].length);
+  grenzen.sort((a, b) => a - b);
   const teile = [];
   let start = 0;
   for (const g of [...grenzen, text.length]) {
