@@ -108,7 +108,7 @@ export const KOMPAKT_BSR = {
       "**Abschluss:** Aufwandskonten: **GuV an Aufwandskonto**; Ertragskonten: **Ertragskonto an GuV** (§ 242 Abs. 2 HGB).",
       "**GuV-Saldo:** Gewinn → **GuV an Eigenkapital**; Verlust → Eigenkapital an GuV.",
       "**Erfolgswirksam** sind Vorfälle, die das Eigenkapital ändern; **erfolgsneutral** sind reine Vermögensumschichtungen.",
-      "**Betriebliche Steuern** (Kfz-Steuer, Grundsteuer, Gewerbesteuer) sind Aufwand – **private** Steuern (Einkommensteuer) sind Privatentnahmen (Betriebsausgaben nach § 4 Abs. 4 EStG; private Steuern § 12 Nr. 3 EStG).",
+      "**Betriebliche Steuern** (Kfz-Steuer, Grundsteuer, Gewerbesteuer) sind Aufwand – **private** Steuern (Einkommensteuer) sind Privatentnahmen (Betriebsausgaben nach § 4 Abs. 4 EStG; private Steuern § 12 Nr. 3 EStG). Die Gewerbesteuer ist in der Buchführung Aufwand, mindert den steuerlichen Gewinn aber nicht (§ 4 Abs. 5b EStG).",
     ],
     fallen: [
       "Erlöse werden ohne Umsatzsteuer gebucht (Nettomethode) (§ 277 Abs. 1 HGB).",
@@ -383,7 +383,7 @@ export const KOMPAKT_BSR = {
       "**Handelsrecht (§ 253 Abs. 3 S. 1, 2 HGB):** planmäßige Abschreibung über die voraussichtliche Nutzungsdauer – Pflicht.",
       "**GWG (§ 6 Abs. 2 EStG):** abnutzbare, bewegliche, **selbständig nutzbare** Wirtschaftsgüter mit AK **bis 800 € netto** können im Anschaffungsjahr voll abgesetzt werden (Wahlrecht).",
       "**Sammelposten (§ 6 Abs. 2a EStG):** WG über 250 € bis 1.000 € können wahlweise in einen jahrgangsbezogenen Pool, der **5 Jahre mit je 20 %** aufgelöst wird – unabhängig von Abgang oder Nutzungsdauer. Das Wahlrecht gilt einheitlich für alle WG des Jahres.",
-      "**Selbständig nutzbar** ist ein WG nicht, wenn es nur mit anderen zusammen genutzt werden kann (Drucker zum PC: technisch abgestimmt → **nicht** selbständig) (§ 6 Abs. 2 S. 2, 3 EStG).",
+      "**Selbständig nutzbar** ist ein WG nicht, wenn es nur mit anderen zusammen genutzt werden kann (Drucker zum PC: technisch abgestimmt → **nicht** selbständig; voll abschreibbar ist er trotzdem über die Digital-AfA mit einem Jahr Nutzungsdauer) (§ 6 Abs. 2 S. 2, 3 EStG).",
       "**Degressive AfA:** für bewegliche WG, die nach dem 30.06.2025 und vor 2028 angeschafft werden, wieder möglich (bis 30 %) – in Klausuren meist ausdrücklich ausgeschlossen (§ 7 Abs. 2 EStG).",
     ],
     fallen: [

@@ -154,7 +154,7 @@ export const KOMPAKT_EST = {
     zahlen: [["< 10 %", "untergeordneter Anteil – voller Abzug bzw. Ausschluss"]],
     punkte: [
       "**§ 12 Nr. 1 EStG:** Aufwendungen für den Haushalt und den Unterhalt der Familie (Wohnung, Essen, Kleidung) sowie für die Lebensführung, die die wirtschaftliche oder gesellschaftliche Stellung mit sich bringt (**Repräsentationsaufwand**), sind nicht abziehbar – auch wenn sie den Beruf fördern.",
-      "**Gemischte Aufwendungen (BFH, Großer Senat):** Lassen sich berufliche und private Veranlassung nach **objektiven Kriterien** trennen (Zeit, Fläche, Kilometer), wird **aufgeteilt**. Ist der private oder berufliche Anteil **untergeordnet (unter 10 %)**, gilt alles als privat bzw. beruflich (§ 12 Nr. 1 S. 2 EStG).",
+      "**Gemischte Aufwendungen (BFH, Großer Senat):** Lassen sich berufliche und private Veranlassung nach **objektiven Kriterien** trennen (Zeit, Fläche, Kilometer), wird **aufgeteilt**. Ist der private oder berufliche Anteil **untergeordnet (unter 10 %)**, gilt alles als beruflich bzw. privat (BMF vom 06.07.2010; vgl. § 12 Nr. 1 S. 2 EStG).",
       "**Nicht trennbar** (z. B. bürgerliche Kleidung, Brille, Tageszeitung) → insgesamt nicht abziehbar (§ 12 Nr. 1 S. 2 EStG).",
       "**Typische Berufskleidung** (Uniform, Robe, Schutzkleidung) ist dagegen Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 6 EStG).",
       "**§ 12 Nr. 2 EStG:** freiwillige Zuwendungen und Zuwendungen an gesetzlich unterhaltsberechtigte Personen. **Nr. 3:** Steuern vom Einkommen (ESt, Soli) und die USt auf Entnahmen. **Nr. 4:** Geldstrafen.",
@@ -171,7 +171,7 @@ export const KOMPAKT_EST = {
     zahlen: [["10 Tage", "kurze Zeit um den Jahreswechsel"], ["> 5 Jahre", "Vorauszahlung für Nutzung – verteilbar"]],
     punkte: [
       "**Zufluss (§ 11 Abs. 1 S. 1 EStG):** wenn der Steuerpflichtige die **wirtschaftliche Verfügungsmacht** erlangt – Barzahlung, Gutschrift auf dem Konto, Scheck mit Übergabe (bei Deckung).",
-      "**Abfluss (§ 11 Abs. 2 S. 1 EStG):** wenn der Steuerpflichtige die wirtschaftliche Verfügungsmacht verliert – bei Überweisung mit Eingang des Auftrags bei der Bank (gedecktes Konto), bei Lastschrift mit Abbuchung.",
+      "**Abfluss (§ 11 Abs. 2 S. 1 EStG):** wenn der Steuerpflichtige die wirtschaftliche Verfügungsmacht verliert – bei Überweisung mit Eingang des Auftrags bei der Bank (gedecktes Konto), bei Lastschrift mit Fälligkeit, wenn eine Einzugsermächtigung vorliegt und das Konto gedeckt ist (H 11 EStH).",
       "**Regelmäßig wiederkehrende Einnahmen/Ausgaben (§ 11 Abs. 1 S. 2, Abs. 2 S. 2 EStG):** Werden sie **kurze Zeit (10 Tage)** vor Beginn oder nach Ende des Kalenderjahres gezahlt, zu dem sie wirtschaftlich gehören, gelten sie in diesem Jahr als zu- bzw. abgeflossen. Auch die **Fälligkeit** muss in diesem Zeitraum liegen.",
       "**Typische Fälle:** Miete, Zinsen, **USt-Vorauszahlungen** (fällig am 10.01.), Versicherungsbeiträge (§ 11 Abs. 1 S. 2, Abs. 2 S. 2 EStG; Fälligkeit der USt-Vorauszahlung § 18 Abs. 1 S. 4 UStG).",
       "**Vorauszahlungen für eine Nutzungsüberlassung von mehr als 5 Jahren** können gleichmäßig verteilt werden (Einnahmen: Wahlrecht, § 11 Abs. 1 S. 3; Ausgaben: Pflicht, § 11 Abs. 2 S. 3 EStG).",

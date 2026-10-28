@@ -147,7 +147,7 @@ export const KOMPAKT_OER = {
       "**Wahlprüfung (Art. 41 GG):** zunächst durch den Bundestag, dagegen Beschwerde zum Bundesverfassungsgericht.",
     ],
     fallen: [
-      "Seit der Wahlrechtsreform 2023 gibt es keine Überhang- und Ausgleichsmandate mehr – alte Lehrbücher sind veraltet (§ 6 Abs. 1 BWahlG).",
+      "Seit der Wahlrechtsreform 2023 gibt es keine Überhang- und Ausgleichsmandate mehr – ältere Lehrbücher sind insoweit überholt (§ 6 Abs. 1 BWahlG).",
       "Gleichheit der Wahl betrifft Zähl- **und** Erfolgswert (Art. 38 Abs. 1 S. 1 GG).",
     ],
   },

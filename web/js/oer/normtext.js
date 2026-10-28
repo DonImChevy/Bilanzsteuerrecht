@@ -105,15 +105,17 @@ export function zitate(text) {
   return erg;
 }
 
-const ABKUERZUNG = /^(?:Abs|Nr|Nrn|Art|S|Buchst|bzw|vgl|ggf|Ziff|z|B|u|a|d|h|m|i\.V\.m|i\.S\.d|Bek|BGBl|Ges|Kap)$/;
+const ABKUERZUNG = /^(?:Abs|Nr|Nrn|Art|S|Buchst|bzw|vgl|ggf|Ziff|z|B|u|a|d|h|m|v|E|gem|i\.V\.m|i\.S\.d|Bek|BGBl|ABl|Ges|Kap|Gz|lfd|Rn|Tz)$/;
 /** Teilt einen Absatz in Sätze: [[start, ende], …] – Aufzählungsnummern und Abkürzungen sind keine Satzenden. */
 export function saetze(text) {
   const grenzen = [];
-  for (const m of text.matchAll(/\.["“]?(?=\s+[A-ZÄÖÜ„])/g)) {
-    const davor = text.slice(0, m.index).match(/(\S+)$/)?.[1] || "";
+  for (const m of text.matchAll(/\.["“]?(?=\s+[A-ZÄÖÜ„§])/g)) {
+    const vorne = text.slice(0, m.index), davor = (vorne.match(/(\S+)$/)?.[1] || "").replace(/^[(\[„"]+/, "");
     // Innerhalb wörtlich zitierter Texte (z. B. Eidesformel in Art. 56 GG) endet kein Satz
     if (((text.slice(0, m.index + m[0].length).match(/["„“]/g) || []).length % 2) === 1) continue;
-    if (ABKUERZUNG.test(davor) || /^\d+[a-z]?$/.test(davor) || /^\d+\.$/.test(davor)) continue;
+    // „… § 40 Absatz 3 Satz 2. Die …“: Zahl nach Satz/Absatz/Nummer ist ein Verweis – danach endet der Satz
+    const verweis = /(?:Satz|Sätze|Absatz|Absätze|Abs\.|Nummer|Nr\.|§|Art\.|Artikel)[ \u00a0]+\d+[a-z]?(?:[ \u00a0]*(?:,|und|bis)[ \u00a0]*\d+[a-z]?)*$/.test(vorne);
+    if (ABKUERZUNG.test(davor) || (/^\d+[a-z]?$/.test(davor) && !verweis) || /^\d+\.$/.test(davor)) continue;
     grenzen.push(m.index + m[0].length);
   }
   const teile = [];

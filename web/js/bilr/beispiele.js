@@ -28,7 +28,7 @@ export const BEISPIELE_BSR = {
       loesung: [
         "**(1) E:** Istkaufmann, da er ein Handelsgewerbe betreibt, das einen kaufmännisch eingerichteten Geschäftsbetrieb erfordert (§ 1 Abs. 1, 2 HGB) → buchführungspflichtig nach § 238 Abs. 1 HGB. Befreiung nach § 241a HGB scheidet aus, weil die Umsatzerlöse 800.000 € übersteigen (beide Grenzen müssen eingehalten sein). Die Pflicht gilt nach § 140 AO auch für die Besteuerung.",
         "**(2) K:** Kein Kaufmann (§ 1 Abs. 2 HGB) → keine Pflicht nach HGB, daher auch nicht nach § 140 AO. Aber: Gewerbliche Unternehmerin mit einem Gewinn aus Gewerbebetrieb von mehr als 80.000 € (§ 141 Abs. 1 S. 1 Nr. 4 AO) → originär buchführungspflichtig, und zwar ab Beginn des Wirtschaftsjahres, das auf die Bekanntgabe der Mitteilung folgt (§ 141 Abs. 2 S. 1 AO) → ab 01.01.02.",
-        "**(3) Ä:** Freiberuflerin (§ 18 Abs. 1 Nr. 1 EStG), kein Gewerbe → weder § 238 HGB noch § 141 AO . Gewinnermittlung nach § 4 Abs. 3 EStG möglich.",
+        "**(3) Ä:** Freiberuflerin (§ 18 Abs. 1 Nr. 1 EStG), kein Gewerbe → weder § 238 HGB noch § 141 AO. Gewinnermittlung nach § 4 Abs. 3 EStG möglich.",
       ],
     },
   ],
@@ -152,6 +152,7 @@ export const BEISPIELE_BSR = {
         "Rückgängigmachung und neuer Verkauf; die USt ist zu berichtigen (§ 17 Abs. 2 Nr. 3, Abs. 1 S. 1 UStG).",
         "BS: Warenverkauf 2.000 € / Umsatzsteuer 380 € an Kasse 2.380 € (Rücknahme)",
         "BS: Kasse 1.190 € an Warenverkauf 1.000 € / Umsatzsteuer 190 € (neuer Verkauf)",
+        "Zusammengefasst (gleiche Wirkung wie beide Buchungen):",
         "BS: Warenverkauf 1.000 € / Umsatzsteuer 190 € an Kasse 1.190 €",
         "**Gewinnauswirkung:** GuV −1.000 € · BVV −1.000 € (Kasse −1.190 €, USt-Schuld −190 €).",
       ],
