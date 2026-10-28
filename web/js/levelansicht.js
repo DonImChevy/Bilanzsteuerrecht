@@ -35,6 +35,7 @@ const QUELLEN = [
   [`+${XP.pfadStern}`, "je Stern eines Lernpfad-Blocks (Bestwert)"],
   [`+${XP.klausur}`, `je abgegebene Klausur, +${XP.klausurGut} ab 80 % richtig`],
   [`+${XP.paare}`, `je geschaffte Runde „Paare finden“, +${XP.paareFehlerfrei} ohne Fehler`],
+  [`+${XP.duellSieg}`, "je gewonnenes Duell"],
   ["+25 bis +1.500", "je freigeschalteter Erfolg – je höher die Stufe, desto mehr"],
 ];
 

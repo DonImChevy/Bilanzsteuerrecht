@@ -28,6 +28,7 @@ export const XP = {
   klausurGut: 50, // zusätzlich bei mindestens 80 % richtig
   paare: 30, // Runde „Paare finden“ geschafft
   paareFehlerfrei: 20, // zusätzlich ohne Fehler
+  duellSieg: 30, // Duell gewonnen
 };
 
 /** XP, die man für den Schritt von Level n auf n + 1 braucht. */
@@ -118,6 +119,7 @@ export const EINZELN = [
   { id: "paareFehlerfrei", titel: "Gutes Gedächtnis", icon: "paare", text: "„Paare finden“ ohne Fehler geschafft", lohn: 100, moment: true },
   { id: "nachteule", titel: "Nachteule", icon: "mond", text: "Nach 23 Uhr eine Aufgabe gelöst", lohn: 50, moment: true },
   { id: "fruehaufsteher", titel: "Frühaufsteher", icon: "sonne", text: "Vor 7 Uhr eine Aufgabe gelöst", lohn: 50, moment: true },
+  { id: "duellsieg", titel: "Duellant", icon: "blitz", text: "Ein Duell gewonnen", lohn: 100, moment: true },
 ];
 
 /** Alle Erfolge als flache Liste: {id, titel, text, icon, lohn, reihe?, ziel?, stufe?}. */

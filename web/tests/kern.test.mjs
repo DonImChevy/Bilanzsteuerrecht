@@ -753,3 +753,50 @@ test("Synchronisierung: Bonus-XP, Erfolge und Rekorde ohne Doppelzählung", asyn
   [a, la] = await sync(a, la); [a, la] = await sync(a, la); [b, lb] = await sync(b, lb);
   assert.equal(a.xpBonus, 75); assert.equal(b.xpBonus, 75);
 });
+
+test("Synchronisierung: Tagesprotokoll, Tageszeiten, Termine, Garderobe, Profil", async () => {
+  const S = await import("../js/sync.js");
+  const db = {};
+  const server = {
+    holen: async (c) => (db[c] ? JSON.parse(JSON.stringify(db[c])) : null),
+    speichern: async (c, daten, v) => { if ((db[c]?.version || 0) !== v) return null; db[c] = { daten, version: v + 1 }; return v + 1; },
+  };
+  const code = S.neuerCode();
+  const sync = async (st, lok) => { const { ergebnis, lokal } = await S.abgleichen(st, lok, server, 1000); return [ergebnis(st), lokal]; };
+  const leer = () => ({ proThema: {}, klausuren: [], karten: [], lern: {}, tage: {} });
+  let a = { ...leer(), log: { "2026-10-20": { t1: [3, 2] } }, stunden: { 9: 3 }, termine: { k1: { fach: "bsr", datum: "2027-02-01", t: 5 } },
+    gekauft: { hut: 10 }, outfit: { kopf: "hut", t: 20 }, profil: { id: "AAA", name: "", t: 0 } }, la = { code, geraet: "A" };
+  let b = { ...leer(), log: { "2026-10-20": { t1: [1, 1], t2: [2, 0] } }, stunden: { 9: 1, 22: 2 }, termine: { k1: { x: 1, t: 9 } },
+    gekauft: { schal: 30 }, outfit: { kopf: "", t: 10 }, profil: { id: "BBB", name: "", t: 0 } }, lb = { code, geraet: "B" };
+  [a, la] = await sync(a, la); [b, lb] = await sync(b, lb); [a, la] = await sync(a, la); [a, la] = await sync(a, la);
+  for (const st of [a, b]) {
+    assert.deepEqual(st.log["2026-10-20"], { t1: [4, 3], t2: [2, 0] });
+    assert.deepEqual(st.stunden, { 9: 4, 22: 2 });
+    assert.equal(st.termine.k1.x, 1, "Löschen gewinnt, weil neuer");
+    assert.deepEqual(Object.keys(st.gekauft).sort(), ["hut", "schal"]);
+    assert.equal(st.outfit.kopf, "hut");
+    assert.equal(st.profil.id, "AAA", "das zuerst hochgeladene Profil bleibt");
+  }
+});
+
+test("Duell: gleicher Startwert → gleiche Aufgaben, auch nach anderen Übungen; Link hin und zurück", async () => {
+  const K = await import("../js/kern.js"), KA = await import("../js/katalog.js"), { alsMultipleChoice } = await import("../js/oer/mc.js"), D = await import("../js/duell.js");
+  const satz = (fach, seed) => K.gleichbleibendErzeugen(() => {
+    const r = new K.Zufall(seed);
+    return KA.fragen(K.pruefungsThemen(fach).map((t) => t.id), 16, r, null, true, KA.neueZiehung(fach)).map((f) => alsMultipleChoice(f, r)).filter((f) => f.typ !== "offen").slice(0, 10).map((f) => f.text);
+  });
+  for (const fach of ["bsr", "oer", "est", "ust", "bbf"]) {
+    const a = satz(fach, 12345);
+    // dazwischen „normal“ üben (verändert die Fallstapel)
+    KA.fragen(K.pruefungsThemen(fach).map((t) => t.id), 30, new K.Zufall(), null, false, KA.neueZiehung(fach));
+    assert.deepEqual(satz(fach, 12345), a, fach);
+    assert.equal(a.length, 10, fach);
+  }
+  const d = { f: "bsr", s: 4000000000, n: "Alex 🙂", r: 7, z: 185, a: 300 };
+  const l = D.duellLesen(D.duellLink("https://x.de/", d).split("#duell=")[1]);
+  assert.equal(l.n, "Alex 🙂"); assert.equal(l.s, 4000000000); assert.equal(l.g, null);
+  assert.equal(D.duellLesen("kaputt"), null);
+  assert.equal(D.duellSieger({ r: 8, z: 300 }, { r: 7, z: 100 }), 1);
+  assert.equal(D.duellSieger({ r: 7, z: 300 }, { r: 7, z: 100 }), -1);
+  assert.equal(D.duellSieger({ r: 7, z: 100 }, { r: 7, z: 100 }), 0);
+});

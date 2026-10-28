@@ -1521,3 +1521,320 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 @keyframes lvStrahlen { to { transform: rotate(360deg); } }
 @keyframes lvTaler { from { transform: translate(30px, 30px) scale(0.2) rotate(-30deg); opacity: 0; } }
 .lv-feier .konfetti { z-index: -1; }
+
+/* ======================= Währung „Taler“ und Garderobe ======================= */
+.taler-betrag { display: inline-flex; align-items: center; gap: 4px; font-weight: 900; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.taler-betrag i { width: 1.05em; height: 1.05em; border-radius: 50%; flex: none;
+  background: radial-gradient(circle at 35% 30%, var(--taler-hell), var(--taler-gold) 55%, var(--taler-tief)); box-shadow: inset 0 0 0 1.5px var(--taler-tief), 0 1px 2px rgba(0, 0, 0, 0.25); }
+.taler-betrag.zu-teuer { opacity: 0.55; }
+.taler-betrag.gross { font-size: 22px; }
+.hero .knopf-pille { background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.14)); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.3); color: #fff; }
+.hero .knopf-pille:active { transform: scale(0.97); }
+.knopf.gold { background: linear-gradient(180deg, var(--taler-hell), var(--taler-gold) 60%, var(--taler-tief)); color: var(--taler-tinte); box-shadow: 0 5px 0 var(--taler-dunkel), 0 14px 26px -10px var(--taler-tief); }
+.knopf .taler-betrag.im-knopf i { box-shadow: inset 0 0 0 1.5px var(--taler-dunkel); }
+
+.garderobe { padding-bottom: 8px; }
+.gar-buehne { position: relative; overflow: hidden; display: grid; justify-items: center; padding: 18px 16px 16px; border-radius: 26px;
+  background: radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--m) 30%, var(--card)) 0%, var(--card) 70%); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.gar-licht { position: absolute; top: -40px; left: 50%; width: 260px; height: 280px; transform: translateX(-50%); pointer-events: none;
+  background: conic-gradient(from 160deg at 50% 0%, transparent 0deg, color-mix(in srgb, var(--taler-hell) 40%, transparent) 20deg, transparent 40deg); filter: blur(6px); opacity: 0.8; }
+.gar-kasse { position: absolute; top: 12px; right: 14px; display: grid; justify-items: end; line-height: 1.1; z-index: 2; }
+.gar-kasse small { font-size: 11px; font-weight: 700; color: var(--text2); }
+.gar-figur { position: relative; z-index: 1; margin-top: 18px; height: 160px; display: grid; place-items: end center; }
+.gar-figur .taler { filter: drop-shadow(0 10px 14px color-mix(in srgb, var(--taler-dunkel) 35%, transparent)); }
+.gar-figur.gekauft .taler { animation: garKauf 0.7s cubic-bezier(0.2, 1.6, 0.4, 1); }
+@keyframes garKauf { 30% { transform: translateY(-16px) scale(1.08) rotate(-4deg); } }
+.gar-podest { width: 180px; height: 26px; margin-top: -14px; border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--m) 30%, var(--card2)), color-mix(in srgb, var(--m) 12%, var(--card)) 70%);
+  box-shadow: inset 0 -4px 0 color-mix(in srgb, var(--m) 22%, transparent), 0 8px 18px -8px color-mix(in srgb, var(--m) 50%, transparent); }
+.gar-info { position: relative; z-index: 1; width: 100%; display: grid; gap: 10px; margin-top: 14px; text-align: center; }
+.gar-info > div { display: grid; gap: 2px; }
+.gar-info b { font-size: 18px; letter-spacing: -0.2px; }
+.gar-info > div > span, .gar-info.leer > span { font-size: 13.5px; color: var(--text2); }
+.gar-info.leer { min-height: 40px; place-items: center; }
+.gar-tabs { display: flex; gap: 6px; overflow-x: auto; margin: 14px -2px 10px; padding: 2px; scrollbar-width: none; }
+.gar-tabs::-webkit-scrollbar { display: none; }
+.gar-tabs button { flex: none; display: inline-flex; align-items: center; gap: 5px; padding: 8px 13px; border-radius: 99px; font-weight: 700; font-size: 14px; color: var(--text2);
+  background: var(--glas); border: 1px solid var(--glas-rand); }
+.gar-tabs button.aktiv { color: #fff; background: var(--fill); border-color: transparent; box-shadow: 0 4px 12px -4px var(--fill); }
+.gar-raster { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.gar-karte { position: relative; display: grid; justify-items: center; gap: 4px; padding: 10px 6px 10px; border-radius: 18px; text-align: center;
+  background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); transition: transform 0.12s; }
+.gar-karte:active { transform: scale(0.97); }
+.gar-karte.gewaehlt { border-color: color-mix(in srgb, var(--m) 60%, transparent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--m) 35%, transparent), var(--schatten); }
+.gar-karte.gesperrt .gk-bild { filter: grayscale(1); opacity: 0.45; }
+.gk-bild { height: 82px; display: grid; place-items: end center; padding-top: 8px; }
+.gk-name { font-size: 12.5px; font-weight: 800; line-height: 1.2; }
+.gk-marke { font-size: 11.5px; font-weight: 700; color: var(--text3); display: inline-flex; align-items: center; gap: 3px; }
+.gk-marke .ic { width: 12px; height: 12px; }
+.gk-marke.an { color: var(--ok); }
+.gar-karte .taler-betrag { font-size: 13px; }
+.hg-muster { width: 74px; height: 74px; border-radius: 16px; display: block; box-shadow: inset 0 0 0 1px var(--glas-rand), var(--schatten); overflow: hidden; background-color: var(--bg); }
+
+/* ======================= App-Hintergründe (data-hintergrund auf <html>) ======================= */
+/* Jeder Hintergrund setzt seine Farben als --hg-*; Vorschau-Felder (.hg-muster.hg-<id>) nutzen dieselben Muster */
+:root { --hg-a: transparent; --hg-b: transparent; --hg-c: transparent; }
+:root[data-hintergrund="schlicht"] body::before, :root[data-hintergrund="schlicht"] body::after { display: none; }
+
+.hg-karopapier, :root[data-hintergrund="karopapier"] body::after {
+  background-image: linear-gradient(color-mix(in srgb, var(--m) 16%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--m) 16%, transparent) 1px, transparent 1px);
+  background-size: 18px 18px; }
+:root[data-hintergrund="karopapier"] body::after { mask-image: none; -webkit-mask-image: none; opacity: 1; }
+:root[data-hintergrund="karopapier"] body::before { opacity: 0.45; }
+
+/* Kontenblatt: Zeilen wie im Journal, in der Mitte das T-Konto (Soll | Haben) */
+.hg-kontenblatt, :root[data-hintergrund="kontenblatt"] body::after {
+  background-image:
+    linear-gradient(90deg, transparent calc(50% - 2px), color-mix(in srgb, var(--err) 45%, transparent) calc(50% - 2px), color-mix(in srgb, var(--err) 45%, transparent) calc(50% + 1px), transparent calc(50% + 1px)),
+    linear-gradient(transparent 26px, color-mix(in srgb, var(--m) 18%, transparent) 26px, color-mix(in srgb, var(--m) 18%, transparent) 27px, transparent 27px);
+  background-size: 100% 100%, 100% 28px; }
+:root[data-hintergrund="kontenblatt"] body::after { mask-image: none; -webkit-mask-image: none; opacity: 1; }
+:root[data-hintergrund="kontenblatt"] body::before { opacity: 0.35; }
+.hg-kontenblatt { background-size: 100% 100%, 100% 12px; }
+
+:root[data-hintergrund="aurora"], .hg-aurora { --hg-a: #34d399; --hg-b: #8b5cf6; --hg-c: #22d3ee; }
+:root[data-hintergrund="abendrot"], .hg-abendrot { --hg-a: #fb923c; --hg-b: #f43f5e; --hg-c: #a855f7; }
+:root[data-hintergrund="ozean"], .hg-ozean { --hg-a: #0ea5e9; --hg-b: #2563eb; --hg-c: #14b8a6; }
+:root[data-hintergrund="sternennacht"], .hg-sternennacht { --hg-a: #6366f1; --hg-b: #312e81; --hg-c: #a78bfa; --hg-stern: #4338ca; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]):is([data-hintergrund="sternennacht"]), :root:not([data-theme="light"]) .hg-sternennacht { --hg-stern: #fff; } }
+:root[data-theme="dark"][data-hintergrund="sternennacht"], :root[data-theme="dark"] .hg-sternennacht { --hg-stern: #fff; }
+:root[data-hintergrund="schatzkammer"], .hg-schatzkammer { --hg-a: var(--taler-gold); --hg-b: var(--taler-tief); --hg-c: var(--taler-hell); }
+.hg-aurora, .hg-abendrot, .hg-ozean, .hg-sternennacht, .hg-schatzkammer,
+:root:is([data-hintergrund="aurora"], [data-hintergrund="abendrot"], [data-hintergrund="ozean"], [data-hintergrund="sternennacht"], [data-hintergrund="schatzkammer"]) body::before {
+  background:
+    radial-gradient(50vmax 34vmax at 20% 8%, color-mix(in srgb, var(--hg-a) 62%, transparent), transparent 70%),
+    radial-gradient(44vmax 44vmax at 95% 35%, color-mix(in srgb, var(--hg-b) 52%, transparent), transparent 70%),
+    radial-gradient(56vmax 40vmax at 35% 100%, color-mix(in srgb, var(--hg-c) 55%, transparent), transparent 70%),
+    linear-gradient(165deg, color-mix(in srgb, var(--hg-a) 22%, transparent), color-mix(in srgb, var(--hg-b) 20%, transparent)); }
+.hg-aurora, .hg-abendrot, .hg-ozean, .hg-sternennacht, .hg-schatzkammer { background-size: 220% 220%; background-position: center; }
+/* Aurora: Lichtbänder */
+:root[data-hintergrund="aurora"] body::after, .hg-aurora::after {
+  background-image: repeating-linear-gradient(100deg, transparent 0 50px, color-mix(in srgb, var(--hg-a) 24%, transparent) 50px 58px, transparent 58px 110px, color-mix(in srgb, var(--hg-c) 18%, transparent) 110px 114px, transparent 114px 150px);
+  mask-image: linear-gradient(to bottom, #000, transparent 60%); -webkit-mask-image: linear-gradient(to bottom, #000, transparent 60%); background-size: auto; opacity: 1; }
+/* Ozean: Wellen am unteren Rand */
+:root[data-hintergrund="ozean"] body::after, .hg-ozean::after {
+  background-image: radial-gradient(60px 18px at 50% 100%, transparent 66%, color-mix(in srgb, var(--hg-a) 38%, transparent) 70%, transparent 78%);
+  background-size: 60px 22px; mask-image: linear-gradient(to top, #000, transparent 55%); -webkit-mask-image: linear-gradient(to top, #000, transparent 55%); opacity: 1; }
+/* Sternennacht: Sterne */
+:root[data-hintergrund="sternennacht"] body::after, .hg-sternennacht::after {
+  background-image: radial-gradient(1.8px 1.8px at 12% 18%, var(--hg-stern), transparent), radial-gradient(1.4px 1.4px at 70% 12%, var(--hg-stern), transparent), radial-gradient(2.4px 2.4px at 40% 40%, var(--hg-stern), transparent),
+    radial-gradient(1.4px 1.4px at 85% 60%, var(--hg-stern), transparent), radial-gradient(2px 2px at 25% 75%, var(--hg-stern), transparent), radial-gradient(1.3px 1.3px at 60% 85%, var(--hg-stern), transparent);
+  background-size: 180px 180px; mask-image: none; -webkit-mask-image: none; opacity: 0.9; }
+:root[data-hintergrund="sternennacht"] body::after { animation: hgFunkeln 4s ease-in-out infinite alternate; }
+@keyframes hgFunkeln { to { opacity: 0.45; } }
+/* Schatzkammer: verstreute Goldmünzen */
+:root[data-hintergrund="schatzkammer"] body::after, .hg-schatzkammer::after {
+  background-image: radial-gradient(circle at 30% 30%, color-mix(in srgb, var(--taler-hell) 85%, transparent) 0 7px, color-mix(in srgb, var(--taler-tief) 75%, transparent) 8px 10px, transparent 11px),
+    radial-gradient(circle at 75% 70%, color-mix(in srgb, var(--taler-gold) 80%, transparent) 0 4px, color-mix(in srgb, var(--taler-tief) 70%, transparent) 5px 6.5px, transparent 7.5px);
+  background-size: 120px 120px, 90px 90px; mask-image: linear-gradient(to bottom, #000, transparent 80%); -webkit-mask-image: linear-gradient(to bottom, #000, transparent 80%); opacity: 0.8; }
+.hg-aurora, .hg-ozean, .hg-sternennacht, .hg-schatzkammer { position: relative; }
+.hg-aurora::after, .hg-ozean::after, .hg-sternennacht::after, .hg-schatzkammer::after { content: ""; position: absolute; inset: 0; background-size: 40px 40px; }
+.hg-sternennacht::after { background-size: 60px 60px; }
+.hg-schatzkammer::after { background-size: 40px 40px, 30px 30px; }
+.hg-leuchten { background: radial-gradient(60px 60px at 20% 15%, color-mix(in srgb, var(--m) 40%, transparent), transparent), radial-gradient(60px 60px at 90% 60%, color-mix(in srgb, var(--m-licht) 35%, transparent), transparent), var(--bg); }
+.hg-schlicht { background: var(--bg); }
+
+/* Taler: Auren bewegen sich sanft */
+.taler .t-aura .a-dreh { animation: aDreh 18s linear infinite; }
+.taler .t-aura .a-dreh.langsam { animation-duration: 40s; }
+.taler .t-aura .a-schwebe { animation: aSchwebe 2.6s ease-in-out infinite alternate; animation-delay: calc(var(--i) * -0.6s); }
+.taler .t-aura .a-flacker { animation: aFlacker 0.9s ease-in-out infinite alternate; }
+.taler .t-aura .a-glanz { filter: drop-shadow(0 0 3px #fde047); }
+@keyframes aDreh { to { transform: rotate(360deg); } }
+@keyframes aSchwebe { to { transform: translateY(-5px); } }
+@keyframes aFlacker { to { transform: scale(1.04, 1.08); } }
+.taler.ruhig .t-aura * { animation: none !important; }
+
+/* ======================= Klausur-Countdown ======================= */
+.titel-link { float: right; font-size: 12.5px; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--accent); }
+.countdown-liste { display: grid; gap: 10px; }
+.countdown-karte { display: flex; align-items: stretch; gap: 14px; width: 100%; padding: 12px; border-radius: 20px; text-align: left;
+  background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.countdown-karte:active { transform: scale(0.99); }
+/* Abreißkalender: Ringbindung oben, Kopf in der Modulfarbe, darunter die Tage */
+.cd-blatt { position: relative; flex: none; width: 74px; display: grid; justify-items: center; align-content: end; padding: 22px 0 8px; border-radius: 14px; overflow: hidden;
+  background: linear-gradient(var(--mc) 0 18px, var(--card) 18px); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mc) 30%, transparent), 0 6px 14px -8px var(--mc); }
+.cd-ring { position: absolute; top: 5px; left: 0; right: 0; height: 8px; background: radial-gradient(circle, var(--card) 0 2.5px, transparent 3px) 13px 0 / 16px 8px repeat-x; }
+.cd-blatt b { font-size: 32px; font-weight: 900; line-height: 1; letter-spacing: -1px; color: var(--mc); font-variant-numeric: tabular-nums; }
+.cd-blatt small { font-size: 11px; font-weight: 700; color: var(--text2); }
+.cd-blatt.bald b { animation: cdPuls 2.4s ease-in-out infinite; }
+@keyframes cdPuls { 50% { transform: scale(1.08); } }
+.cd-text { flex: 1; min-width: 0; display: grid; align-content: center; gap: 2px; }
+.cd-modul { font-size: 12.5px; font-weight: 700; color: var(--mc); }
+.cd-text > b { font-size: 18px; letter-spacing: -0.3px; }
+.cd-datum { font-size: 13px; color: var(--text2); }
+.cd-plan { font-size: 13px; color: var(--text2); margin-top: 4px; padding-top: 6px; border-top: 1px dashed var(--glas-linie, var(--line)); }
+.cd-plan b { color: var(--text); }
+.countdown-leer { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px; border-radius: 20px; text-align: left; border: 1.5px dashed color-mix(in srgb, var(--m) 40%, transparent); background: color-mix(in srgb, var(--m) 6%, transparent); }
+.countdown-leer > .ic { width: 30px; height: 30px; color: var(--m); flex: none; }
+.countdown-leer > span { display: grid; gap: 2px; }
+.countdown-chip { display: inline-flex; align-items: center; gap: 6px; margin: 10px 0 0; padding: 7px 12px; border-radius: 99px; font-size: 13.5px; font-weight: 700; color: var(--accent);
+  background: var(--glas); border: 1px solid var(--glas-rand); }
+.cd-punkt { width: 10px; height: 10px; border-radius: 50%; background: var(--mc); flex: none; }
+.termin-form select, .termin-form input { font: inherit; color: var(--text); background: var(--card2); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; max-width: 58%; }
+
+/* ======================= Startseite anpassen ======================= */
+.start-anpassen { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin: 22px 0 6px; padding: 10px; font-size: 14px; font-weight: 700; color: var(--text2); }
+.start-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.start-zeile { display: flex; align-items: center; gap: 8px; padding: 10px 10px 10px 12px; border-radius: 16px; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.start-zeile .grow { display: grid; gap: 1px; min-width: 0; }
+.start-zeile .sub { font-size: 12.5px; }
+.start-zeile.aus .grow { opacity: 0.45; }
+.sz-griff { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-weight: 800; font-size: 13px; color: var(--m); background: color-mix(in srgb, var(--m) 12%, transparent); flex: none; }
+.ic.hoch { transform: rotate(-90deg); } .ic.runter { transform: rotate(90deg); }
+.icon-btn.klein { width: 34px; height: 34px; }
+.icon-btn:disabled { opacity: 0.35; }
+
+/* ======================= Rückblick und Statistik ======================= */
+.diagramm-karte { padding: 14px 14px 12px; border-radius: 20px; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.dk-fuss { margin-top: 10px; font-size: 13px; color: var(--text2); }
+.dk-fuss b { color: var(--text); }
+.dk-trenner { height: 1px; margin: 14px 0; background: var(--glas-linie, var(--line)); }
+/* Säulen: eine Reihe, 2px Abstand, oben 4px gerundet, an der Grundlinie verankert */
+.sl { --h: 120px; }
+.sl-flaeche { height: var(--h); display: flex; align-items: flex-end; gap: 2px; border-bottom: 1px solid var(--line); background: repeating-linear-gradient(to top, transparent 0 calc(var(--h) / 4 - 1px), color-mix(in srgb, var(--text3) 14%, transparent) calc(var(--h) / 4 - 1px) calc(var(--h) / 4)); }
+.sl-spalte { position: relative; flex: 1; height: 100%; display: flex; align-items: flex-end; justify-content: center; outline: none; }
+.sl-bar { width: 100%; max-width: 34px; border-radius: 4px 4px 0 0; background: color-mix(in srgb, var(--m) 55%, transparent); transition: background 0.15s; }
+.sl-bar.hervor { background: var(--m); }
+.sl-bar.null { height: 0 !important; }
+.sl-spalte:hover .sl-bar, .sl-spalte:focus-visible .sl-bar { background: var(--m); }
+.sl-spalte:hover::after, .sl-spalte:focus::after, .heat-tag:hover::after, .heat-tag:focus::after, .sb-teil:hover::after, .sb-teil:focus::after {
+  content: attr(data-tip); position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%); z-index: 5; white-space: nowrap; pointer-events: none;
+  padding: 5px 9px; border-radius: 9px; font-size: 12px; font-weight: 700; background: var(--text); color: var(--bg); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2); }
+.sl-spalte:nth-child(-n+3):hover::after, .sl-spalte:nth-child(-n+3):focus::after { left: 0; transform: none; }
+.sl-spalte:nth-last-child(-n+3):hover::after, .sl-spalte:nth-last-child(-n+3):focus::after { left: auto; right: 0; transform: none; }
+.heat-woche:nth-last-child(-n+6) .heat-tag:hover::after, .heat-woche:nth-last-child(-n+6) .heat-tag:focus::after { left: auto; right: 0; transform: none; }
+.heat-woche:nth-child(-n+6) .heat-tag:hover::after, .heat-woche:nth-child(-n+6) .heat-tag:focus::after { left: 0; transform: none; }
+.sl-achse { display: flex; gap: 2px; margin-top: 5px; }
+.sl-achse span { flex: 1; text-align: center; font-size: 11px; color: var(--text3); font-variant-numeric: tabular-nums; white-space: nowrap; overflow: visible; }
+.sl.dicht .sl-flaeche, .sl.dicht .sl-achse { gap: 1px; }
+.sl.dicht .sl-achse span { text-align: left; }
+.sl.mini { --h: 44px; width: 120px; flex: none; }
+.sl.mini .sl-flaeche { background: none; border-bottom-color: transparent; }
+.sl.mini .sl-achse { display: none; }
+
+/* Kennzahlen */
+.kz-raster { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-top: 12px; }
+.kz { position: relative; display: grid; gap: 2px; padding: 12px 14px; border-radius: 18px; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.kz b { font-size: 24px; font-weight: 900; letter-spacing: -0.6px; font-variant-numeric: tabular-nums; }
+.kz b small { font-size: 14px; color: var(--text3); font-weight: 700; }
+.kz > span { font-size: 12.5px; color: var(--text2); }
+.kz-delta { position: absolute; top: 12px; right: 12px; font-size: 11.5px !important; font-weight: 800; color: var(--text3) !important; }
+.kz-delta.plus { color: var(--ok) !important; } .kz-delta.minus { color: var(--err) !important; }
+
+/* Rückblick */
+.rb-art { margin-bottom: 10px; }
+.rb-nav { display: flex; align-items: center; gap: 10px; }
+.rb-nav > div { flex: 1; display: grid; text-align: center; }
+.rb-nav b { font-size: 18px; letter-spacing: -0.3px; }
+.rb-nav span { font-size: 12.5px; color: var(--text2); }
+.rb-held { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 12px 14px; border-radius: 20px; background: color-mix(in srgb, var(--m) 9%, var(--glas)); border: 1px solid var(--glas-rand); }
+.rb-held p { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.4; }
+.rb-erfolge { display: grid; gap: 8px; }
+.rb-erfolg { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 16px; background: var(--glas); border: 1px solid var(--glas-rand); }
+.rb-erfolg > span { display: grid; } .rb-erfolg small { color: var(--text2); font-size: 12.5px; }
+
+/* Waagerechte Balken mit Beschriftung */
+.hbalken { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.hbalken li { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.hb-name { display: flex; align-items: baseline; gap: 6px; min-width: 0; font-size: 14px; font-weight: 700; overflow: hidden; }
+.hb-name small { font-size: 11.5px; color: var(--text3); font-weight: 600; white-space: nowrap; }
+.hb-punkt { width: 8px; height: 8px; border-radius: 50%; background: var(--mc); flex: none; align-self: center; }
+.hb-spur { height: 10px; border-radius: 99px; background: color-mix(in srgb, var(--text3) 16%, transparent); overflow: hidden; }
+.hb-spur > span { display: block; height: 100%; border-radius: inherit; background: var(--m); }
+.hb-wert { display: grid; justify-items: end; font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.hb-wert small { font-size: 11px; color: var(--text3); font-weight: 600; }
+
+/* Heatmap: Abstufungen der Modulfarbe */
+.heat { overflow-x: auto; }
+.heat-monate { display: grid; grid-template-columns: repeat(26, 1fr); margin-left: 22px; font-size: 10.5px; color: var(--text3); min-width: 300px; }
+.heat-feld { display: flex; gap: 4px; min-width: 300px; }
+.heat-wt { display: grid; grid-template-rows: repeat(7, 1fr); gap: 2px; width: 18px; font-size: 9.5px; color: var(--text3); }
+.heat-raster { flex: 1; display: grid; grid-template-columns: repeat(26, 1fr); gap: 2px; }
+.heat-woche { display: grid; grid-template-rows: repeat(7, 1fr); gap: 2px; }
+.heat-tag { position: relative; aspect-ratio: 1; border-radius: 3px; background: color-mix(in srgb, var(--text3) 14%, transparent); outline: none; }
+.heat-tag.s1 { background: color-mix(in srgb, var(--m) 28%, transparent); }
+.heat-tag.s2 { background: color-mix(in srgb, var(--m) 52%, transparent); }
+.heat-tag.s3 { background: color-mix(in srgb, var(--m) 76%, transparent); }
+.heat-tag.s4 { background: var(--m); }
+.heat-tag.zukunft { background: transparent; }
+.heat-legende { display: flex; align-items: center; justify-content: flex-end; gap: 3px; margin-top: 8px; font-size: 11px; color: var(--text3); }
+.heat-legende .heat-tag { width: 11px; }
+
+/* Lernkartei als gestapelter Balken (eine Farbe, hell → dunkel), 2px Fuge */
+.stapelbalken { display: flex; gap: 2px; height: 22px; border-radius: 8px; overflow: visible; }
+.sb-teil { position: relative; display: block; min-width: 6px; height: 100%; outline: none; }
+.stapelbalken .sb-teil:first-child { border-radius: 8px 0 0 8px; } .stapelbalken .sb-teil:last-child { border-radius: 0 8px 8px 0; }
+.sb-teil.f0 { background: color-mix(in srgb, var(--m) 14%, transparent); } .sb-teil.f1 { background: color-mix(in srgb, var(--m) 30%, transparent); }
+.sb-teil.f2 { background: color-mix(in srgb, var(--m) 46%, transparent); } .sb-teil.f3 { background: color-mix(in srgb, var(--m) 64%, transparent); }
+.sb-teil.f4 { background: color-mix(in srgb, var(--m) 82%, transparent); } .sb-teil.f5 { background: var(--m); }
+.sb-legende { display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 10px; font-size: 12px; color: var(--text2); }
+.sb-legende span { display: inline-flex; align-items: center; gap: 5px; }
+.sb-legende i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.sb-legende b { color: var(--text); }
+
+/* Startseite */
+.stat-start { display: grid; gap: 8px; }
+.ss-haupt { display: flex; align-items: center; gap: 12px; padding: 14px; border-radius: 20px; text-align: left; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.ss-text { flex: 1; display: grid; gap: 3px; }
+.ss-text b { font-size: 16px; }
+.ss-knoepfe { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ss-knoepfe button { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 11px; border-radius: 16px; font-weight: 700; font-size: 14px; color: var(--accent); background: var(--glas); border: 1px solid var(--glas-rand); }
+
+/* ======================= Duell ======================= */
+.duell-held { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 10px; padding: 16px; border-radius: 24px; text-align: center;
+  background: radial-gradient(100% 120% at 50% 0%, color-mix(in srgb, var(--m) 22%, var(--card)), var(--card) 70%); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.duell-held p { flex-basis: 100%; margin: 6px 0 0; font-size: 14.5px; color: var(--text2); line-height: 1.45; }
+.vs-mitte { font-size: 18px; font-weight: 900; font-style: italic; letter-spacing: -0.5px; color: var(--m); text-shadow: 0 2px 0 color-mix(in srgb, var(--m) 25%, transparent); }
+.vs-mitte.gross { font-size: 30px; }
+.vs-karte { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; padding: 14px 10px; border-radius: 22px; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.vs-seite { display: grid; justify-items: center; gap: 2px; padding: 8px 4px; border-radius: 16px; text-align: center; }
+.vs-seite b { font-size: 15px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.vs-wert { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+.vs-seite small { font-size: 12px; color: var(--text2); font-variant-numeric: tabular-nums; }
+.vs-seite.sieger { background: color-mix(in srgb, var(--taler-gold) 16%, transparent); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--taler-gold) 55%, transparent); }
+.vs-urteil { margin-top: 10px; text-align: center; font-weight: 800; font-size: 17px; }
+.vs-urteil.sieg { color: var(--ok); } .vs-urteil.niederlage { color: var(--err); }
+.duell-text { margin: 14px 2px; font-size: 15px; line-height: 1.5; text-align: center; }
+.duell-einladung .knopf { margin-bottom: 20px; }
+.duell-module { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.duell-modul { display: grid; justify-items: center; gap: 6px; padding: 14px 8px; border-radius: 18px; color: var(--mc); background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.duell-modul b { color: var(--text); }
+.duell-modul .ic { width: 26px; height: 26px; }
+.duell-marke { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; flex: none; font-weight: 900; font-size: 13px; color: #fff; background: var(--text3); }
+.duell-marke.sieg { background: var(--ok); } .duell-marke.niederlage { background: var(--err); }
+.duell-stand { font-variant-numeric: tabular-nums; }
+.feld-klein { font: inherit; color: var(--text); background: var(--card2); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; width: 58%; min-width: 0; }
+.feld-klein.mono { font-variant-numeric: tabular-nums; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ======================= Lerngruppe und Rangliste ======================= */
+.gruppen-kopf { display: flex; align-items: center; gap: 10px; padding: 14px; border-radius: 20px; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.gruppen-kopf > div { flex: 1; display: grid; gap: 2px; min-width: 0; }
+.gruppen-kopf b { font-size: 18px; }
+.gruppen-kopf span { font-size: 12.5px; color: var(--text2); }
+.knopf.klein-knopf { width: auto; padding: 9px 12px; font-size: 14px; }
+/* Treppchen: Platz 2 | 1 | 3, Stufenhöhe = Platz */
+.treppchen { display: grid; grid-template-columns: 1fr 1.1fr 1fr; align-items: end; gap: 6px; margin-top: 18px; }
+.tp-platz { display: grid; justify-items: center; gap: 1px; text-align: center; min-width: 0; }
+.tp-platz b { font-size: 14px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
+.tp-platz > span { font-size: 12px; color: var(--text2); font-variant-numeric: tabular-nums; }
+.tp-stufe { width: 100%; margin-top: 6px; display: grid; place-items: center; border-radius: 14px 14px 4px 4px; font-size: 24px; font-weight: 900; color: #fff;
+  background: linear-gradient(180deg, var(--rang-silber), color-mix(in srgb, var(--rang-silber) 70%, #000)); height: 62px; box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4); }
+.tp-platz.p1 .tp-stufe { height: 86px; background: linear-gradient(180deg, var(--taler-hell), var(--taler-tief)); color: var(--taler-tinte); }
+.tp-platz.p3 .tp-stufe { height: 46px; background: linear-gradient(180deg, var(--rang-kupfer), color-mix(in srgb, var(--rang-kupfer) 70%, #000)); }
+.tp-platz.ich b { color: var(--accent); }
+.rang-liste { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }
+.rang-liste li { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 16px; background: var(--glas); border: 1px solid var(--glas-rand); }
+.rang-liste li.ich { box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--m) 50%, transparent); }
+.rang-liste .grow { display: grid; min-width: 0; }
+.rl-platz { width: 24px; text-align: center; font-weight: 900; color: var(--text3); font-variant-numeric: tabular-nums; }
+.rl-xp { font-variant-numeric: tabular-nums; }
+.link.gefahr { color: var(--err); font-weight: 600; }
+/* Startseite */
+.gm-rangliste { display: grid; gap: 10px; width: 100%; padding: 14px; border-radius: 20px; text-align: left; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.gm-kopf { display: grid; gap: 2px; }
+.gm-top { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.gm-person { display: grid; justify-items: center; gap: 1px; text-align: center; min-width: 0; }
+.gm-person b { font-size: 12.5px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.gm-person small { font-size: 11.5px; color: var(--text2); }
+.gm-person.ich b { color: var(--accent); }
