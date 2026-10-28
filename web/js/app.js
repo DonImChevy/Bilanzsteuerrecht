@@ -307,6 +307,9 @@ const state = {
   hatBild: false, // eigenes Hintergrundbild auf diesem Gerät gespeichert
   bildDaten: null, // dessen data-URL
   hgVorschau: null, // Hintergrund zur Probe auf der ganzen App: {id, bild?}
+  // Eigenes Bild: Ausschnitt (x/y in %) und Stärke (0 = Schrift am besten lesbar, 1 = Bild am kräftigsten); nur auf diesem Gerät
+  bildEinst: { x: Number(lies("bsr.hgBildX", "50")), y: Number(lies("bsr.hgBildY", "50")), s: Number(lies("bsr.hgBildStaerke", "0.35")), z: Number(lies("bsr.hgBildZoom", "1")) || 1 },
+  bildMasse: null, // Pixelmaße des Bilds (für den Zoom)
   // Animationen aus („Bewegung reduzieren“): eigener Schalter, Startwert = Systemeinstellung des Geräts
   bewegungAus: (() => { const v = lies("bsr.bewegungAus", ""); return v ? v === "1" : !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; })(),
   hinweisWeg: lies("bsr.hinweisWeg", "") === "1",
@@ -376,9 +379,51 @@ function designAnwenden() {
   // Bild liegt nur auf dem Gerät, auf dem es gewählt wurde; während der Vorschau gilt der angeprobte Hintergrund
   root.dataset.hintergrund = state.hgVorschau ? state.hgVorschau.id : o.hintergrund === "eigenesbild" && !state.hatBild ? "leuchten" : o.hintergrund;
   const bild = state.hgVorschau?.bild || state.bildDaten;
-  if (bild !== hgBildGesetzt) { hgBildGesetzt = bild; if (bild) root.style.setProperty("--hg-bild", `url("${bild}")`); else root.style.removeProperty("--hg-bild"); }
+  bildEinstAnwenden();
+  if (bild !== hgBildGesetzt) { hgBildGesetzt = bild; state.bildMasse = null; if (bild) { root.style.setProperty("--hg-bild", `url("${bild}")`); bildMasseLesen(bild); } else root.style.removeProperty("--hg-bild"); }
 }
 let hgBildGesetzt = null;
+function bildEinstAnwenden() {
+  const e = state.bildEinst, st = document.documentElement.style;
+  st.setProperty("--hg-pos-x", `${e.x}%`); st.setProperty("--hg-pos-y", `${e.y}%`); st.setProperty("--hg-staerke", String(e.s));
+  // Zoom: Bildgröße wie „cover“, mal Zoomfaktor – in px für den Bildschirm und anteilig für den Vorschau-Rahmen
+  const m = state.bildMasse;
+  if (m) {
+    const k = Math.max(innerWidth / m.w, innerHeight / m.h) * e.z, w = Math.round(m.w * k), h = Math.round(m.h * k);
+    st.setProperty("--hg-groesse", `${w}px ${h}px`);
+    st.setProperty("--hg-groesse-rel", `${(w / innerWidth) * 100}% ${(h / innerHeight) * 100}%`);
+  }
+}
+addEventListener("resize", () => { if (state.bildMasse) bildEinstAnwenden(); });
+/** Pixelmaße des aktuellen Bilds bestimmen (für Zoom und Ausschnitt). */
+function bildMasseLesen(daten) {
+  if (!daten) return;
+  const i = new Image();
+  i.onload = () => { state.bildMasse = { w: i.naturalWidth, h: i.naturalHeight }; bildEinstAnwenden(); };
+  i.src = daten;
+}
+function bildEinstSpeichern() {
+  const e = state.bildEinst;
+  schreib("bsr.hgBildX", String(Math.round(e.x))); schreib("bsr.hgBildY", String(Math.round(e.y))); schreib("bsr.hgBildStaerke", String(e.s)); schreib("bsr.hgBildZoom", String(e.z));
+}
+/** Ausschnitt und Stärke des eigenen Bilds: Handy-Rahmen zum Verschieben, Regler, Pfeile für Feinarbeit. */
+function bildAnpassenView() {
+  const e = state.bildEinst, seiten = `${window.innerWidth} / ${window.innerHeight}`;
+  return `<div class="bild-anpassen">
+    <div class="ba-rahmen" id="baRahmen" style="--seiten:${seiten}" role="img" aria-label="Vorschau des Bildausschnitts – zum Verschieben ziehen">
+      <div class="ba-skizze" aria-hidden="true"><i class="titel"></i><i class="held"></i><i class="karte"></i><i class="kurz"></i><i class="karte"></i><i class="karte"></i></div></div>
+    <div class="ba-hinweis">${ic("auge")} Bild im Rahmen ziehen, um den Ausschnitt zu wählen</div>
+    <div class="ba-pfeile">${[["links", "zurueck", "Ausschnitt nach links"], ["rechts", "pfeil", "Ausschnitt nach rechts"], ["hoch", "pfeil", "Ausschnitt nach oben"], ["runter", "pfeil", "Ausschnitt nach unten"]].map(([v, i, l]) =>
+      `<button data-a="bildVerschieben" data-v="${v}" aria-label="${l}">${ic(i, `klein${v === "hoch" ? " hoch" : v === "runter" ? " runter" : ""}`)}</button>`).join("")}</div>
+    <label class="ba-regler"><b>Zoom</b>
+      <input type="range" id="bildZoom" min="100" max="300" step="5" value="${Math.round(e.z * 100)}" aria-label="Zoom des Bilds">
+      <span class="ba-enden"><span>ganzes Bild</span><span>näher heran</span></span></label>
+    <label class="ba-regler"><b>Bild oder Schrift?</b>
+      <input type="range" id="bildStaerke" min="0" max="100" step="1" value="${Math.round(e.s * 100)}" aria-label="Stärke des Bilds">
+      <span class="ba-enden"><span>Schrift besser lesbar</span><span>Bild kräftiger</span></span></label>
+    <div class="ba-knoepfe"><button class="knopf zweit" data-a="bildZuruecksetzen">Zurücksetzen</button><button class="knopf" data-a="sheetZu">${ic("haken")} Fertig</button></div>
+    <div class="gruppe-fuss" style="text-align:center">Gilt nur auf diesem Gerät – wie das Bild selbst.</div></div>`;
+}
 /** Getragenes Outfit (nur Gekauftes) und Taler-Kasse (1 Taler je 10 XP). */
 const meinOutfit = () => outfitVon(stat.outfit, stat.gekauft);
 const meineKasse = () => kasse(xpGesamt(stat).gesamt, stat.gekauft);
@@ -598,7 +643,7 @@ function render() {
   }
   if (state.kompakt) html += kompaktEbene();
   if (state.sheet) html += sheetView();
-  if (state.hgVorschau) html += vorschauLeiste();
+  if (state.hgVorschau && !state.sheet) html += vorschauLeiste();
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
   const scrollVoll = animVoll ? [] : [...app.querySelectorAll(".vollbild .vb-inhalt")].map((el) => el.scrollTop);
   const scrollSheet = animSheet ? 0 : app.querySelector(".sheet .vb-inhalt")?.scrollTop || 0;
@@ -627,8 +672,8 @@ function verlaufAbgleichen() {
 }
 /** Oberste Ebene schließen (Zurück-Geste, Escape-Taste). */
 function ebeneZurueck() {
-  if (state.hgVorschau) AKTIONEN.vorschauEnde();
-  else if (state.sheet) AKTIONEN.sheetZu();
+  if (state.sheet) AKTIONEN.sheetZu();
+  else if (state.hgVorschau) AKTIONEN.vorschauEnde();
   else if (state.kompakt) AKTIONEN.kompaktZu();
   else if (state.deck) AKTIONEN.deckZu();
   else if (state.paare) AKTIONEN.paareZu();
@@ -2030,6 +2075,9 @@ function sheetView() {
   } else if (sh.art === "termine") {
     titel = "Klausurtermine";
     inhalt = termineView();
+  } else if (sh.art === "bildAnpassen") {
+    titel = "Bild anpassen"; links = "Fertig";
+    inhalt = bildAnpassenView();
   } else if (sh.art === "garderobe") {
     titel = "Garderobe";
     inhalt = garderobeView(state.garderobe, { outfit: meinOutfit(), gekauft: stat.gekauft || {}, guthaben: meineKasse().guthaben, level: levelJetzt().level, farbwelt: state.farbwelt, hatBild: state.hatBild });
@@ -2410,6 +2458,14 @@ const AKTIONEN = {
     speichern(); render(); toast("Termin gespeichert.");
   },
   terminLoeschen: (v) => { if (!stat.termine?.[v]) return; stat.termine = { ...stat.termine, [v]: { x: 1, t: Date.now() } }; speichern(); render(); },
+  bildAnpassen: () => { state.sheet = { art: "bildAnpassen", zurueck: state.sheet?.art === "garderobe" ? state.sheet : null }; render(); },
+  bildVerschieben: (v) => {
+    const e = state.bildEinst, d = 8;
+    if (v === "links") e.x = Math.max(0, e.x - d); if (v === "rechts") e.x = Math.min(100, e.x + d);
+    if (v === "hoch") e.y = Math.max(0, e.y - d); if (v === "runter") e.y = Math.min(100, e.y + d);
+    bildEinstAnwenden(); bildEinstSpeichern();
+  },
+  bildZuruecksetzen: () => { state.bildEinst = { x: 50, y: 50, s: 0.35, z: 1 }; bildEinstAnwenden(); bildEinstSpeichern(); render(); },
   hgVorschau: (v, bild) => {
     if (artikel(v)?.slot !== "hintergrund") return;
     state.hgVorschau = { id: v, bild: typeof bild === "string" ? bild : null };
@@ -2644,6 +2700,8 @@ app.addEventListener("click", (e) => {
 
 app.addEventListener("input", (e) => {
   const t = e.target;
+  if (t.id === "bildStaerke") { state.bildEinst.s = Number(t.value) / 100; bildEinstAnwenden(); bildEinstSpeichern(); return; }
+  if (t.id === "bildZoom") { state.bildEinst.z = Number(t.value) / 100; bildEinstAnwenden(); bildEinstSpeichern(); return; }
   if (t.classList.contains("betrag")) {
     const z = zeile(t.dataset.z);
     if (z) z.betrag = t.value;
@@ -2884,6 +2942,7 @@ function vorschauLeiste() {
     : `<button class="knopf zweit" disabled>Noch ${talerBetrag(k.fehlt, "im-knopf")} fehlen</button>`;
   return `<div class="hg-vorschau-leiste" role="region" aria-label="Vorschau des Hintergrunds">
     <div class="hvl-text">${ic("auge")}<span><small>Vorschau</small><b>${esc(a.name)}</b></span></div>
+    ${v.id === "eigenesbild" ? `<button class="hvl-anpassen" data-a="bildAnpassen">${ic("einstellungen", "klein")} Ausschnitt und Stärke anpassen</button>` : ""}
     <div class="hvl-knoepfe"><button class="knopf zweit" data-a="vorschauEnde">${ic("zurueck")} Zurück</button>${haupt}</div></div>`;
 }
 
@@ -2902,6 +2961,25 @@ async function backupLaden(datei) {
   toast("Backup wiederhergestellt – die App lädt neu.");
   setTimeout(() => location.reload(), 900);
 }
+
+// Bildausschnitt durch Ziehen im Handy-Rahmen verschieben (Bild folgt dem Finger)
+let bildZug = null;
+app.addEventListener("pointerdown", (e) => {
+  const r = e.target.closest("#baRahmen");
+  if (!r) return;
+  bildZug = { x: e.clientX, y: e.clientY, sx: state.bildEinst.x, sy: state.bildEinst.y, w: r.clientWidth, h: r.clientHeight };
+  r.setPointerCapture?.(e.pointerId);
+});
+app.addEventListener("pointermove", (e) => {
+  if (!bildZug) return;
+  // Bei „cover“ ragt das Bild über den Rahmen hinaus; 1 Rahmenbreite Ziehen ≈ 100 % Verschiebung
+  state.bildEinst.x = Math.min(100, Math.max(0, bildZug.sx - ((e.clientX - bildZug.x) / bildZug.w) * 100));
+  state.bildEinst.y = Math.min(100, Math.max(0, bildZug.sy - ((e.clientY - bildZug.y) / bildZug.h) * 100));
+  bildEinstAnwenden();
+});
+const bildZugEnde = () => { if (bildZug) { bildZug = null; bildEinstSpeichern(); } };
+app.addEventListener("pointerup", bildZugEnde);
+app.addEventListener("pointercancel", bildZugEnde);
 
 // Für Tests/Debugging
 window.__bsr = { state, KONTEN, render };

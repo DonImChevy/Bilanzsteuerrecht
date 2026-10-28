@@ -1927,10 +1927,10 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 :root[data-theme="dark"][data-hintergrund="galaxie"], :root[data-theme="dark"] .hg-galaxie { --hg-grund: #04030c; --hg-a: rgba(139,92,246,.6); --hg-b: rgba(236,72,153,.45); --hg-c: rgba(56,189,248,.38); --hg-kern: rgba(255,240,255,.35); --hg-stern: #ffffff; }
 :root[data-hintergrund="galaxie"] body::before, .hg-galaxie { background: radial-gradient(20% 12% at 55% 42%, var(--hg-kern), transparent 70%), radial-gradient(42% 26% at 35% 35%, var(--hg-a), transparent 70%), radial-gradient(36% 30% at 70% 55%, var(--hg-b), transparent 70%), radial-gradient(45% 20% at 45% 72%, var(--hg-c), transparent 70%), var(--hg-grund); }
 :root[data-hintergrund="galaxie"] body::after, .hg-galaxie::after { mask-image: none; -webkit-mask-image: none; opacity: 1; background-image: radial-gradient(circle at 12% 18%, var(--hg-stern) 0 1.3px, transparent 1.9px), radial-gradient(circle at 63% 9%, var(--hg-stern) 0 0.9px, transparent 1.5px), radial-gradient(circle at 38% 46%, var(--hg-stern) 0 1.8px, transparent 2.4px), radial-gradient(circle at 84% 58%, var(--hg-stern) 0 1px, transparent 1.6px), radial-gradient(circle at 22% 80%, var(--hg-stern) 0 1.4px, transparent 2px), radial-gradient(circle at 58% 88%, var(--hg-stern) 0 0.8px, transparent 1.4px), radial-gradient(circle at 92% 28%, var(--hg-stern) 0 1.2px, transparent 1.8px), radial-gradient(circle at 12% 18%, var(--hg-stern) 0 1.3px, transparent 1.9px), radial-gradient(circle at 63% 9%, var(--hg-stern) 0 0.9px, transparent 1.5px), radial-gradient(circle at 38% 46%, var(--hg-stern) 0 1.8px, transparent 2.4px), radial-gradient(circle at 84% 58%, var(--hg-stern) 0 1px, transparent 1.6px), radial-gradient(circle at 22% 80%, var(--hg-stern) 0 1.4px, transparent 2px), radial-gradient(circle at 58% 88%, var(--hg-stern) 0 0.8px, transparent 1.4px), radial-gradient(circle at 92% 28%, var(--hg-stern) 0 1.2px, transparent 1.8px); background-size: 220px 220px, 130px 130px; background-position: 0 0, 60px 90px; animation: hgFunkeln 4s ease-in-out infinite alternate; }
-:root[data-hintergrund="eigenesbild"], .hg-eigenesbild { --hg-schleier: rgba(255,255,255,.4); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="eigenesbild"], :root:not([data-theme="light"]) .hg-eigenesbild { --hg-schleier: rgba(0,0,0,.5); } }
-:root[data-theme="dark"][data-hintergrund="eigenesbild"], :root[data-theme="dark"] .hg-eigenesbild { --hg-schleier: rgba(0,0,0,.5); }
-:root[data-hintergrund="eigenesbild"] body::before, .hg-eigenesbild { background: linear-gradient(var(--hg-schleier), var(--hg-schleier)), var(--hg-bild, none) center / cover no-repeat, var(--bg); }
+:root[data-hintergrund="eigenesbild"], .hg-eigenesbild { --hg-schleier: rgba(255,255,255, calc(0.6 - 0.56 * var(--hg-staerke, 0.35))); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="eigenesbild"], :root:not([data-theme="light"]) .hg-eigenesbild { --hg-schleier: rgba(0,0,0, calc(0.72 - 0.64 * var(--hg-staerke, 0.35))); } }
+:root[data-theme="dark"][data-hintergrund="eigenesbild"], :root[data-theme="dark"] .hg-eigenesbild { --hg-schleier: rgba(0,0,0, calc(0.72 - 0.64 * var(--hg-staerke, 0.35))); }
+:root[data-hintergrund="eigenesbild"] body::before, .hg-eigenesbild { background: linear-gradient(var(--hg-schleier), var(--hg-schleier)), var(--hg-bild, none) var(--hg-pos-x, 50%) var(--hg-pos-y, 50%) / var(--hg-groesse, cover) no-repeat, var(--bg); }
 :root[data-hintergrund="eigenesbild"] body::after { display: none; }
 :root[data-hintergrund="eigenesbild"] body::before { inset: 0; animation: none; }
 .hg-eigenesbild { background: var(--hg-bild, none) center / cover no-repeat, color-mix(in srgb, var(--m) 14%, var(--card)); display: grid; place-items: center; }
@@ -2016,3 +2016,27 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .countdown-leer { background: color-mix(in srgb, var(--m) 7%, var(--glas)); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
 :root:is([data-hintergrund="eigenesbild"], [data-hintergrund="neon"], [data-hintergrund="galaxie"], [data-hintergrund="datenregen"], [data-hintergrund="lava"]) :is(.gruppe-titel, .gruss, .start-anpassen, .gruppe-fuss) {
   text-shadow: 0 0 6px var(--bg), 0 0 14px var(--bg); }
+
+/* ======================= Eigenes Bild anpassen: Ausschnitt und Stärke ======================= */
+.bild-anpassen { display: grid; justify-items: center; gap: 14px; padding: 4px 0 20px; }
+/* Handy-Rahmen im Seitenverhältnis des Bildschirms; darin eine Skizze der Startseite, um die Lesbarkeit zu beurteilen */
+.ba-rahmen { --breite: 190px; position: relative; width: var(--breite); aspect-ratio: var(--seiten, 9 / 19.5); border-radius: 26px; overflow: hidden; cursor: grab; touch-action: none; user-select: none;
+  background: linear-gradient(var(--hg-schleier), var(--hg-schleier)), var(--hg-bild, none) var(--hg-pos-x, 50%) var(--hg-pos-y, 50%) / var(--hg-groesse-rel, cover) no-repeat, var(--bg);
+  box-shadow: 0 0 0 6px var(--card), 0 0 0 7px var(--line), 0 18px 40px -14px rgba(0, 0, 0, 0.45); }
+.ba-rahmen:active { cursor: grabbing; }
+.ba-skizze { position: absolute; inset: 14px 12px; display: grid; align-content: start; gap: 7px; pointer-events: none; }
+.ba-skizze i { display: block; border-radius: 6px; background: var(--text); opacity: 0.85; height: 7px; }
+.ba-skizze i.titel { width: 60%; height: 11px; }
+.ba-skizze i.held { height: 58px; border-radius: 12px; background: linear-gradient(135deg, var(--m-licht), var(--m)); opacity: 1; }
+.ba-skizze i.karte { height: 26px; border-radius: 9px; background: var(--glas); border: 1px solid var(--glas-rand); opacity: 1; }
+.ba-skizze i.kurz { width: 45%; opacity: 0.6; height: 5px; }
+.ba-hinweis { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text2); }
+.ba-hinweis .ic { width: 16px; height: 16px; }
+.ba-regler { width: 100%; display: grid; gap: 6px; padding: 14px; border-radius: 18px; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.ba-regler b { font-size: 15px; }
+.ba-regler input[type="range"] { width: 100%; accent-color: var(--m); height: 28px; }
+.ba-regler .ba-enden { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); }
+.ba-knoepfe { width: 100%; display: grid; grid-template-columns: auto 1fr; gap: 8px; }
+.ba-pfeile { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; width: 100%; }
+.ba-pfeile button { padding: 9px 0; border-radius: 12px; background: var(--glas); border: 1px solid var(--glas-rand); color: var(--text2); display: grid; place-items: center; }
+.hvl-anpassen { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 8px; border-radius: 12px; font-size: 14px; font-weight: 700; color: var(--accent); background: color-mix(in srgb, var(--m) 8%, transparent); }
