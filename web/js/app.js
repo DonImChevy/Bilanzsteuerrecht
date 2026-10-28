@@ -1026,14 +1026,18 @@ function modulKachel(m) {
 }
 
 // ======================= Klausur-Countdown =======================
-const termineDerRolle = () => kommende(stat.termine, moduleDerRolle(state.rolle || "studium").map((m) => m.id));
+/** Fächer für Klausurtermine: alle der Rolle (auch die noch ohne Aufgaben) und „Anderes Fach“. */
+const ANDERES_FACH = { id: "andere", titel: "Anderes Fach", kurz: "Fach", farbe: "#64748b", bald: true };
+const terminModul = (fach) => MODUL[fach] || ANDERES_FACH;
+const terminFaecher = () => [...moduleDerRolle(state.rolle || "studium"), ANDERES_FACH];
+const termineDerRolle = () => kommende(stat.termine, terminFaecher().map((m) => m.id));
 const datumLang = (d) => new Date(d + "T12:00").toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 /** Karte eines Klausurtermins: Abreißkalender mit den Tagen bis zur Klausur, darunter der Lernplan. */
 function countdownKarte(e) {
-  const m = MODUL[e.fach], ids = idsVon(e.fach), offen = ids.filter((id) => !(stat.lern[id]?.fach >= 3)).length, n = proTag(offen, e.tage);
-  const plan = !offen ? "Alle Aufgabentypen gefestigt – jetzt nur noch wiederholen." : e.tage <= 1 ? "Ruhig bleiben: Kompaktwissen und Fallen durchgehen."
+  const m = terminModul(e.fach), ohne = !!m.bald, ids = ohne ? [] : idsVon(e.fach), offen = ids.filter((id) => !(stat.lern[id]?.fach >= 3)).length, n = proTag(offen, e.tage);
+  const plan = ohne ? "Für dieses Fach gibt es in der App noch keine Aufgaben." : !offen ? "Alle Aufgabentypen gefestigt – jetzt nur noch wiederholen." : e.tage <= 1 ? "Ruhig bleiben: Kompaktwissen und Fallen durchgehen."
     : `Noch ${offen} Aufgabentypen festigen – etwa <b>${n} pro Tag</b>.`;
-  return `<button class="countdown-karte" style="--mc:${m.farbe}" data-a="modul" data-v="${e.fach}" aria-label="${esc(m.kurz)}: ${esc(e.titel || "Klausur")} ${countdownText(e.tage)}">
+  return `<button class="countdown-karte" style="--mc:${m.farbe}" data-a="${ohne ? "termine" : "modul"}" data-v="${ohne ? "" : e.fach}" aria-label="${esc(m.kurz)}: ${esc(e.titel || "Klausur")} ${countdownText(e.tage)}">
     <span class="cd-blatt${e.tage <= 7 ? " bald" : ""}"><span class="cd-ring" aria-hidden="true"></span><b>${e.tage === 0 ? "!" : e.tage}</b><small>${e.tage === 0 ? "heute" : e.tage === 1 ? "Tag" : "Tage"}</small></span>
     <span class="cd-text"><span class="cd-modul">${esc(m.kurz)} · ${esc(e.titel || "Klausur")}</span><b>${countdownText(e.tage)[0].toUpperCase() + countdownText(e.tage).slice(1)}</b>
       <span class="cd-datum">${datumLang(e.datum)}</span><span class="cd-plan">${plan}</span></span></button>`;
@@ -1045,16 +1049,23 @@ function countdownBereich() {
       : `<button class="countdown-leer" data-a="termine">${ic("kalender")}<span><b>Klausurtermin eintragen</b><span class="sub">Dann zählt die Startseite die Tage herunter und zeigt, wie viel du pro Tag schaffen solltest.</span></span></button>`}</div>`;
 }
 function termineView() {
-  const alle = termineDerRolle(), module = aktiveModule(state.rolle || "studium");
-  const heute = tagSchluessel();
-  return `<div class="liste">${alle.length ? alle.map((e) => `<div class="zeile"><span class="cd-punkt" style="--mc:${MODUL[e.fach].farbe}"></span><span class="grow"><b>${esc(MODUL[e.fach].kurz)} · ${esc(e.titel || "Klausur")}</b><div class="sub">${datumLang(e.datum)} · ${countdownText(e.tage)}</div></span>
-      <button class="icon-btn klein" data-a="terminLoeschen" data-v="${e.id}" aria-label="Termin löschen">${ic("muell")}</button></div>`).join("")
+  const alle = termineDerRolle(), heute = tagSchluessel();
+  const id = state.sheet?.bearbeiten, e = id && stat.termine?.[id] && !stat.termine[id].x ? stat.termine[id] : null;
+  const fach = e ? e.fach : MODUL[state.fach] && rolleVon(MODUL[state.fach]) === (state.rolle || "studium") ? state.fach : terminFaecher()[0].id;
+  const wahl = (m) => `<option value="${m.id}"${m.id === fach ? " selected" : ""}>${esc(m.titel)}</option>`;
+  return `<div class="liste">${alle.length ? alle.map((t) => `<div class="zeile${t.id === id ? " termin-aktiv" : ""}"><span class="cd-punkt" style="--mc:${terminModul(t.fach).farbe}"></span><span class="grow"><b>${esc(terminModul(t.fach).kurz)} · ${esc(t.titel || "Klausur")}</b><div class="sub">${datumLang(t.datum)} · ${countdownText(t.tage)}</div></span>
+      <button class="icon-btn klein" data-a="terminBearbeiten" data-v="${t.id}" aria-label="Termin bearbeiten">${ic("stift")}</button>
+      <button class="icon-btn klein" data-a="terminLoeschen" data-v="${t.id}" aria-label="Termin löschen">${ic("muell")}</button></div>`).join("")
     : `<div class="zeile"><span class="grow sub">Noch keine Klausur eingetragen.</span></div>`}</div>
-    <div class="gruppe"><div class="gruppe-titel">Neuer Termin</div><div class="liste termin-form">
-      <label class="zeile"><span class="grow">Modul</span><select id="terminFach">${module.map((m) => `<option value="${m.id}"${m.id === state.fach ? " selected" : ""}>${esc(m.titel)}</option>`).join("")}</select></label>
-      <label class="zeile"><span class="grow">Datum</span><input type="date" id="terminDatum" min="${heute}"></label>
-      <label class="zeile"><span class="grow">Bezeichnung</span><input type="text" id="terminTitel" placeholder="Klausur" maxlength="40"></label>
-    </div><button class="knopf" data-a="terminNeu" style="margin-top:12px">${ic("plus")} Termin speichern</button></div>
+    <div class="gruppe" id="terminFormular"><div class="gruppe-titel">${e ? "Termin bearbeiten" : "Neuer Termin"}</div><div class="liste termin-form">
+      <label class="zeile"><span class="grow">Fach</span><select id="terminFach">${terminFaecher().filter((m) => !m.bald).map(wahl).join("")}
+        <optgroup label="Noch ohne Aufgaben in der App">${terminFaecher().filter((m) => m.bald).map(wahl).join("")}</optgroup></select></label>
+      <label class="zeile"><span class="grow">Datum</span><input type="date" id="terminDatum" min="${heute}" value="${e ? esc(e.datum) : ""}"></label>
+      <label class="zeile"><span class="grow">Bezeichnung</span><input type="text" id="terminTitel" placeholder="Klausur" maxlength="40" value="${e ? esc(e.titel || "") : ""}"></label>
+    </div><div class="knopf-reihe" style="margin-top:12px;display:flex;gap:8px">
+      ${e ? `<button class="knopf zweit" data-a="terminAbbrechen" style="flex:1">Abbrechen</button>` : ""}
+      <button class="knopf" data-a="terminNeu" style="flex:2">${ic(e ? "haken" : "plus")} ${e ? "Speichern" : "Termin speichern"}</button></div>
+      <div class="sub" style="margin:8px 4px 0">Fach nicht in der App? „Anderes Fach“ wählen und den Namen als Bezeichnung eintragen.</div></div>
     <div class="gruppe-fuss" style="margin:8px 4px 20px">Termine werden mit dem Sync-Code auf deine anderen Geräte übertragen.</div>`;
 }
 
@@ -2547,10 +2558,14 @@ const AKTIONEN = {
     const titel = document.getElementById("terminTitel")?.value.trim() || "Klausur";
     if (!fach || !/^\d{4}-\d{2}-\d{2}$/.test(datum || "")) { toast("Bitte ein Datum wählen."); return; }
     if (datum < tagSchluessel()) { toast("Das Datum liegt in der Vergangenheit."); return; }
-    stat.termine = { ...(stat.termine || {}), ["k" + Date.now().toString(36)]: { fach, titel, datum, t: Date.now() } };
-    speichern(); render(); toast("Termin gespeichert.");
+    const alt = state.sheet?.bearbeiten && stat.termine?.[state.sheet.bearbeiten] ? state.sheet.bearbeiten : null;
+    stat.termine = { ...(stat.termine || {}), [alt || "k" + Date.now().toString(36)]: { fach, titel, datum, t: Date.now() } };
+    state.sheet = { art: "termine" };
+    speichern(); render(); toast(alt ? "Termin geändert." : "Termin gespeichert.");
   },
-  terminLoeschen: (v) => { if (!stat.termine?.[v]) return; stat.termine = { ...stat.termine, [v]: { x: 1, t: Date.now() } }; speichern(); render(); },
+  terminBearbeiten: (v) => { state.sheet = { art: "termine", bearbeiten: v }; render(); document.getElementById("terminFormular")?.scrollIntoView({ behavior: "smooth", block: "center" }); },
+  terminAbbrechen: () => { state.sheet = { art: "termine" }; render(); },
+  terminLoeschen: (v) => { if (!stat.termine?.[v]) return; stat.termine = { ...stat.termine, [v]: { x: 1, t: Date.now() } }; if (state.sheet?.bearbeiten === v) state.sheet = { art: "termine" }; speichern(); render(); },
   bildAnpassen: () => { state.sheet = { art: "bildAnpassen", zurueck: state.sheet?.art === "garderobe" ? state.sheet : null }; render(); },
   bildVerschieben: (v) => {
     const e = state.bildEinst, d = 8;

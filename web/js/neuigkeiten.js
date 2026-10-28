@@ -4,6 +4,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-termine-bearbeiten",
+    datum: "2026-10-28",
+    titel: "Klausurtermine bearbeiten",
+    punkte: [
+      ["kalender", "Termine ändern", "Datum, Fach oder Bezeichnung falsch? Über den Stift neben dem Termin lässt er sich jetzt ändern, statt ihn neu anzulegen.", "termine"],
+      ["akte", "Alle Fächer wählbar", "Auch Abgabenordnung, Bewertungsrecht, Privatrecht und „Anderes Fach“ lassen sich eintragen – der Countdown läuft für jede Klausur."],
+    ],
+  },
+  {
     id: "2026-10-gesetzesfarben",
     datum: "2026-10-28",
     titel: "Eigene Farben für die Gesetzbücher",

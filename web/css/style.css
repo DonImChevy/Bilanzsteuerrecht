@@ -1733,6 +1733,8 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
   background: var(--glas); border: 1px solid var(--glas-rand); }
 .cd-punkt { width: 10px; height: 10px; border-radius: 50%; background: var(--mc); flex: none; }
 .termin-form select, .termin-form input { font: inherit; color: var(--text); background: var(--card2); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; max-width: 58%; }
+.zeile.termin-aktiv { background: color-mix(in srgb, var(--m) 12%, transparent); box-shadow: inset 3px 0 0 var(--m); }
+.zeile .icon-btn.klein + .icon-btn.klein { margin-left: -4px; }
 
 /* ======================= Startseite anpassen ======================= */
 .start-anpassen { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; margin: 22px 0 6px; padding: 10px; font-size: 14px; font-weight: 700; color: var(--text2); }
