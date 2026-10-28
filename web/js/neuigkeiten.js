@@ -4,6 +4,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-bild-anpassen",
+    datum: "2026-10-28",
+    titel: "Eigenes Bild anpassen",
+    punkte: [
+      ["einstellungen", "Ausschnitt und Zoom", "Bild im Handy-Rahmen ziehen und heranzoomen – so landet das Wichtigste dort, wo es nicht verdeckt wird.", "hintergrundWaehlen"],
+      ["auge", "Bild oder Schrift?", "Mit dem Regler entscheidest du selbst: kräftiges Bild oder besser lesbare Schrift.", "hintergrundWaehlen"],
+    ],
+  },
+  {
     id: "2026-10-vorschau",
     datum: "2026-10-28",
     titel: "Erst ansehen, dann kaufen",

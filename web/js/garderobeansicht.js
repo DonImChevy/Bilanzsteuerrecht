@@ -26,7 +26,8 @@ export function garderobeView(z, { outfit, gekauft, guthaben, level, farbwelt = 
   if (probe) {
     const k = kaufbar(probe.id, { gekauft, guthaben, level }), an = outfit[probe.slot] === probe.id;
     const bildWahl = probe.id === "eigenesbild" && besitzt(probe.id, gekauft)
-      ? `<label class="knopf${hatBild ? " zweit" : ""}" style="cursor:pointer">${ic("bild")} ${hatBild ? "Anderes Bild wählen" : "Bild aus der Galerie wählen"}<input type="file" id="hgBildDatei" accept="image/*" hidden></label>` : "";
+      ? `<label class="knopf${hatBild ? " zweit" : ""}" style="cursor:pointer">${ic("bild")} ${hatBild ? "Anderes Bild wählen" : "Bild aus der Galerie wählen"}<input type="file" id="hgBildDatei" accept="image/*" hidden></label>`
+        + (hatBild ? `<button class="knopf zweit" data-a="bildAnpassen">${ic("einstellungen")} Ausschnitt und Stärke anpassen</button>` : "") : "";
     const knopf = probe.id === "eigenesbild" && besitzt(probe.id, gekauft) && !hatBild ? ""
       : besitzt(probe.id, gekauft)
       ? (an ? (["augen", "metall", "hintergrund"].includes(probe.slot) ? `<button class="knopf zweit" disabled>${ic("haken")} ${probe.slot === "hintergrund" ? "Wird verwendet" : "Wird getragen"}</button>`
