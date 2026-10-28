@@ -1859,3 +1859,139 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .neu-link { justify-self: start; display: inline-flex; align-items: center; gap: 2px; margin-top: 4px; font-size: 13.5px; font-weight: 700; color: var(--accent); }
 .neu-link .ic { width: 14px; height: 14px; }
 .neu-seite { padding-bottom: 20px; }
+
+/* ======================= Weitere App-Hintergründe (erzeugt, je hell und dunkel) ======================= */
+:root[data-hintergrund="nebel"], .hg-nebel { --hg-grund: #edf0f5; --hg-a: rgba(148,163,184,.45); --hg-b: rgba(255,255,255,.9); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="nebel"], :root:not([data-theme="light"]) .hg-nebel { --hg-grund: #0a0d14; --hg-a: rgba(71,85,105,.4); --hg-b: rgba(30,41,59,.7); } }
+:root[data-theme="dark"][data-hintergrund="nebel"], :root[data-theme="dark"] .hg-nebel { --hg-grund: #0a0d14; --hg-a: rgba(71,85,105,.4); --hg-b: rgba(30,41,59,.7); }
+:root[data-hintergrund="nebel"] body::before, .hg-nebel { background: radial-gradient(60% 45% at 25% 15%, var(--hg-b), transparent 70%), radial-gradient(55% 45% at 85% 70%, var(--hg-a), transparent 70%), linear-gradient(170deg, var(--hg-grund), color-mix(in srgb, var(--hg-grund) 80%, var(--hg-a))); }
+:root[data-hintergrund="nebel"] body::after { display: none; }
+:root[data-hintergrund="marmor"], .hg-marmor { --hg-grund: #f5f4f7; --hg-a: rgba(90,90,110,.22); --hg-b: rgba(176,141,87,.32); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="marmor"], :root:not([data-theme="light"]) .hg-marmor { --hg-grund: #0d0c11; --hg-a: rgba(255,255,255,.08); --hg-b: rgba(212,175,95,.42); } }
+:root[data-theme="dark"][data-hintergrund="marmor"], :root[data-theme="dark"] .hg-marmor { --hg-grund: #0d0c11; --hg-a: rgba(255,255,255,.08); --hg-b: rgba(212,175,95,.42); }
+:root[data-hintergrund="marmor"] body::before, .hg-marmor { background: linear-gradient(118deg, transparent 38%, var(--hg-a) 38.6%, transparent 39.8%), linear-gradient(112deg, transparent 52%, var(--hg-b) 52.25%, transparent 52.9%), linear-gradient(160deg, transparent 63%, var(--hg-a) 63.5%, transparent 65.2%), linear-gradient(75deg, transparent 22%, var(--hg-a) 22.4%, transparent 24%), linear-gradient(140deg, transparent 72%, var(--hg-b) 72.15%, transparent 72.6%), linear-gradient(98deg, transparent 46%, var(--hg-a) 46.3%, transparent 47%), radial-gradient(50% 40% at 70% 30%, color-mix(in srgb, var(--hg-a) 70%, transparent), transparent 70%), var(--hg-grund); }
+:root[data-hintergrund="marmor"] body::after { display: none; }
+:root[data-hintergrund="artdeco"], .hg-artdeco { --hg-grund: #f8f3e6; --hg-a: rgba(166,124,46,.4); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="artdeco"], :root:not([data-theme="light"]) .hg-artdeco { --hg-grund: #0c0b0f; --hg-a: rgba(212,175,95,.45); } }
+:root[data-theme="dark"][data-hintergrund="artdeco"], :root[data-theme="dark"] .hg-artdeco { --hg-grund: #0c0b0f; --hg-a: rgba(212,175,95,.45); }
+:root[data-hintergrund="artdeco"] body::before, .hg-artdeco { background: radial-gradient(80% 60% at 50% 0%, color-mix(in srgb, var(--hg-a) 35%, transparent), transparent 70%), var(--hg-grund); }
+:root[data-hintergrund="artdeco"] body::after, .hg-artdeco::after { mask-image: none; -webkit-mask-image: none; opacity: 1; background-image: radial-gradient(circle at 50% 100%, transparent 0 10px, var(--hg-a) 10px 11px, transparent 11px 17px, var(--hg-a) 17px 18px, transparent 18px 24px, var(--hg-a) 24px 25px, transparent 25px 31px, var(--hg-a) 31px 32px, transparent 32px), radial-gradient(circle at 50% 100%, transparent 0 10px, var(--hg-a) 10px 11px, transparent 11px 17px, var(--hg-a) 17px 18px, transparent 18px 24px, var(--hg-a) 24px 25px, transparent 25px 31px, var(--hg-a) 31px 32px, transparent 32px); background-size: 64px 32px; background-position: 0 0, 32px 16px; }
+:root[data-hintergrund="zuckerwatte"], .hg-zuckerwatte { --hg-grund: #fdf4fb; --hg-a: rgba(249,168,212,.75); --hg-b: rgba(147,197,253,.65); --hg-c: rgba(196,181,253,.7); --hg-stern: rgba(255,255,255,.95); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="zuckerwatte"], :root:not([data-theme="light"]) .hg-zuckerwatte { --hg-grund: #150f1e; --hg-a: rgba(244,114,182,.32); --hg-b: rgba(96,165,250,.28); --hg-c: rgba(167,139,250,.32); --hg-stern: rgba(255,255,255,.45); } }
+:root[data-theme="dark"][data-hintergrund="zuckerwatte"], :root[data-theme="dark"] .hg-zuckerwatte { --hg-grund: #150f1e; --hg-a: rgba(244,114,182,.32); --hg-b: rgba(96,165,250,.28); --hg-c: rgba(167,139,250,.32); --hg-stern: rgba(255,255,255,.45); }
+:root[data-hintergrund="zuckerwatte"] body::before, .hg-zuckerwatte { background: radial-gradient(55% 45% at 15% 10%, var(--hg-a), transparent 70%), radial-gradient(50% 50% at 90% 35%, var(--hg-b), transparent 70%), radial-gradient(60% 45% at 40% 95%, var(--hg-c), transparent 70%), var(--hg-grund); }
+:root[data-hintergrund="zuckerwatte"] body::after, .hg-zuckerwatte::after { mask-image: none; -webkit-mask-image: none; opacity: 1; background-image: radial-gradient(circle at 20% 30%, var(--hg-stern) 0 1.4px, transparent 2px), radial-gradient(circle at 70% 75%, var(--hg-stern) 0 1.1px, transparent 1.7px), radial-gradient(circle at 85% 20%, var(--hg-stern) 0 0.9px, transparent 1.5px); background-size: 90px 90px; }
+:root[data-hintergrund="pfirsich"], .hg-pfirsich { --hg-grund: #fff6ef; --hg-a: rgba(253,186,116,.6); --hg-b: rgba(253,164,175,.5); --hg-c: rgba(253,224,140,.55); --hg-linie: rgba(251,146,60,.25); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="pfirsich"], :root:not([data-theme="light"]) .hg-pfirsich { --hg-grund: #1a110c; --hg-a: rgba(251,146,60,.24); --hg-b: rgba(244,114,182,.18); --hg-c: rgba(250,204,21,.12); --hg-linie: rgba(253,186,116,.18); } }
+:root[data-theme="dark"][data-hintergrund="pfirsich"], :root[data-theme="dark"] .hg-pfirsich { --hg-grund: #1a110c; --hg-a: rgba(251,146,60,.24); --hg-b: rgba(244,114,182,.18); --hg-c: rgba(250,204,21,.12); --hg-linie: rgba(253,186,116,.18); }
+:root[data-hintergrund="pfirsich"] body::before, .hg-pfirsich { background: radial-gradient(55% 45% at 20% 15%, var(--hg-a), transparent 70%), radial-gradient(50% 45% at 85% 45%, var(--hg-b), transparent 70%), radial-gradient(60% 40% at 45% 100%, var(--hg-c), transparent 70%), var(--hg-grund); }
+:root[data-hintergrund="pfirsich"] body::after, .hg-pfirsich::after { mask-image: linear-gradient(to top, #000, transparent 65%); -webkit-mask-image: linear-gradient(to top, #000, transparent 65%); opacity: 1; background-image: repeating-radial-gradient(circle at 50% 120%, transparent 0 26px, var(--hg-linie) 26px 28px); }
+:root[data-hintergrund="lavendel"], .hg-lavendel { --hg-grund: #f6f3ff; --hg-a: rgba(196,181,253,.9); --hg-b: #8b5cf6; --hg-glow: rgba(196,181,253,.55); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="lavendel"], :root:not([data-theme="light"]) .hg-lavendel { --hg-grund: #120f1c; --hg-a: rgba(196,181,253,.42); --hg-b: rgba(167,139,250,.6); --hg-glow: rgba(139,92,246,.25); } }
+:root[data-theme="dark"][data-hintergrund="lavendel"], :root[data-theme="dark"] .hg-lavendel { --hg-grund: #120f1c; --hg-a: rgba(196,181,253,.42); --hg-b: rgba(167,139,250,.6); --hg-glow: rgba(139,92,246,.25); }
+:root[data-hintergrund="lavendel"] body::before, .hg-lavendel { background: radial-gradient(60% 50% at 80% 10%, var(--hg-glow), transparent 70%), radial-gradient(50% 40% at 10% 90%, var(--hg-glow), transparent 70%), var(--hg-grund); }
+:root[data-hintergrund="lavendel"] body::after, .hg-lavendel::after { mask-image: none; -webkit-mask-image: none; opacity: 1; background-image: radial-gradient(circle at 10px 5px, var(--hg-a) 0 2.2px, transparent 2.8px), radial-gradient(circle at 10px 15px, var(--hg-a) 0 2.2px, transparent 2.8px), radial-gradient(circle at 5px 10px, var(--hg-a) 0 2.2px, transparent 2.8px), radial-gradient(circle at 15px 10px, var(--hg-a) 0 2.2px, transparent 2.8px), radial-gradient(circle at 10px 10px, var(--hg-b) 0 1.7px, transparent 2.2px), radial-gradient(circle at 36px 35px, var(--hg-a) 0 2.2px, transparent 2.8px), radial-gradient(circle at 36px 45px, var(--hg-a) 0 2.2px, transparent 2.8px), radial-gradient(circle at 31px 40px, var(--hg-a) 0 2.2px, transparent 2.8px), radial-gradient(circle at 41px 40px, var(--hg-a) 0 2.2px, transparent 2.8px), radial-gradient(circle at 36px 40px, var(--hg-b) 0 1.7px, transparent 2.2px); background-size: 56px 60px; }
+:root[data-hintergrund="konfetti"], .hg-konfetti { --hg-grund: #f8f7fc; --hg-s: 70%; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="konfetti"], :root:not([data-theme="light"]) .hg-konfetti { --hg-grund: #0b0c14; --hg-s: 55%; } }
+:root[data-theme="dark"][data-hintergrund="konfetti"], :root[data-theme="dark"] .hg-konfetti { --hg-grund: #0b0c14; --hg-s: 55%; }
+:root[data-hintergrund="konfetti"] body::before, .hg-konfetti { background: radial-gradient(50% 40% at 80% 10%, color-mix(in srgb, #f472b6 18%, transparent), transparent 70%), radial-gradient(50% 40% at 10% 80%, color-mix(in srgb, #22d3ee 15%, transparent), transparent 70%), var(--hg-grund); }
+:root[data-hintergrund="konfetti"] body::after, .hg-konfetti::after { mask-image: none; -webkit-mask-image: none; opacity: 1; background-image: radial-gradient(circle at 12px 18px, color-mix(in srgb, #f472b6 var(--hg-s), transparent) 0 3px, transparent 3.6px), radial-gradient(circle at 48px 8px, color-mix(in srgb, #facc15 var(--hg-s), transparent) 0 2.2px, transparent 2.8000000000000003px), radial-gradient(circle at 80px 30px, color-mix(in srgb, #22d3ee var(--hg-s), transparent) 0 2.8px, transparent 3.4px), radial-gradient(circle at 115px 12px, color-mix(in srgb, #a78bfa var(--hg-s), transparent) 0 2px, transparent 2.6px), radial-gradient(circle at 30px 55px, color-mix(in srgb, #4ade80 var(--hg-s), transparent) 0 2.4px, transparent 3.0px), radial-gradient(circle at 95px 62px, color-mix(in srgb, #fb923c var(--hg-s), transparent) 0 3.2px, transparent 3.8000000000000003px), radial-gradient(circle at 138px 48px, color-mix(in srgb, #f472b6 var(--hg-s), transparent) 0 2px, transparent 2.6px), radial-gradient(circle at 60px 92px, color-mix(in srgb, #facc15 var(--hg-s), transparent) 0 2.6px, transparent 3.2px), radial-gradient(circle at 20px 120px, color-mix(in srgb, #22d3ee var(--hg-s), transparent) 0 2.2px, transparent 2.8000000000000003px), radial-gradient(circle at 110px 110px, color-mix(in srgb, #a78bfa var(--hg-s), transparent) 0 2.8px, transparent 3.4px), radial-gradient(circle at 140px 135px, color-mix(in srgb, #4ade80 var(--hg-s), transparent) 0 2.2px, transparent 2.8000000000000003px), radial-gradient(circle at 70px 140px, color-mix(in srgb, #fb923c var(--hg-s), transparent) 0 2px, transparent 2.6px); background-size: 150px 150px; }
+:root[data-hintergrund="regenbogen"], .hg-regenbogen { --hg-grund: #fbfaff; --hg-s: 42%; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="regenbogen"], :root:not([data-theme="light"]) .hg-regenbogen { --hg-grund: #0c0b12; --hg-s: 14%; } }
+:root[data-theme="dark"][data-hintergrund="regenbogen"], :root[data-theme="dark"] .hg-regenbogen { --hg-grund: #0c0b12; --hg-s: 14%; }
+:root[data-hintergrund="regenbogen"] body::before, .hg-regenbogen { background: repeating-linear-gradient(125deg, color-mix(in srgb, #fca5a5 var(--hg-s), transparent) 0px 80px, color-mix(in srgb, #fdba74 var(--hg-s), transparent) 80px 160px, color-mix(in srgb, #fde047 var(--hg-s), transparent) 160px 240px, color-mix(in srgb, #86efac var(--hg-s), transparent) 240px 320px, color-mix(in srgb, #7dd3fc var(--hg-s), transparent) 320px 400px, color-mix(in srgb, #c4b5fd var(--hg-s), transparent) 400px 480px), var(--hg-grund); }
+:root[data-hintergrund="regenbogen"] body::after { display: none; }
+:root[data-hintergrund="kirschbluete"], .hg-kirschbluete { --hg-grund: #fff3f7; --hg-a: rgba(249,168,212,.9); --hg-b: rgba(251,207,232,1); --hg-glow: rgba(251,182,206,.55); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="kirschbluete"], :root:not([data-theme="light"]) .hg-kirschbluete { --hg-grund: #1a0f15; --hg-a: rgba(244,114,182,.5); --hg-b: rgba(249,168,212,.32); --hg-glow: rgba(190,24,93,.25); } }
+:root[data-theme="dark"][data-hintergrund="kirschbluete"], :root[data-theme="dark"] .hg-kirschbluete { --hg-grund: #1a0f15; --hg-a: rgba(244,114,182,.5); --hg-b: rgba(249,168,212,.32); --hg-glow: rgba(190,24,93,.25); }
+:root[data-hintergrund="kirschbluete"] body::before, .hg-kirschbluete { background: radial-gradient(60% 45% at 85% 8%, var(--hg-glow), transparent 70%), radial-gradient(55% 45% at 10% 85%, var(--hg-glow), transparent 70%), var(--hg-grund); }
+:root[data-hintergrund="kirschbluete"] body::after, .hg-kirschbluete::after { mask-image: none; -webkit-mask-image: none; opacity: 1; background-image: radial-gradient(7px 4.5px at 20% 25%, var(--hg-a) 80%, transparent 100%), radial-gradient(4.5px 8px at 65% 15%, var(--hg-b) 80%, transparent 100%), radial-gradient(8px 5px at 80% 65%, var(--hg-a) 80%, transparent 100%), radial-gradient(4px 6.5px at 35% 72%, var(--hg-b) 80%, transparent 100%), radial-gradient(6px 4px at 52% 45%, var(--hg-a) 80%, transparent 100%); background-size: 170px 170px; }
+:root[data-hintergrund="lava"], .hg-lava { --hg-grund: #fff4ee; --hg-a: rgba(239,68,68,.45); --hg-b: rgba(249,115,22,.5); --hg-c: rgba(250,204,21,.45); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="lava"], :root:not([data-theme="light"]) .hg-lava { --hg-grund: #120403; --hg-a: rgba(220,38,38,.6); --hg-b: rgba(234,88,12,.55); --hg-c: rgba(250,204,21,.28); } }
+:root[data-theme="dark"][data-hintergrund="lava"], :root[data-theme="dark"] .hg-lava { --hg-grund: #120403; --hg-a: rgba(220,38,38,.6); --hg-b: rgba(234,88,12,.55); --hg-c: rgba(250,204,21,.28); }
+:root[data-hintergrund="lava"] body::before, .hg-lava { background: radial-gradient(45% 35% at 20% 85%, var(--hg-a), transparent 70%), radial-gradient(40% 40% at 80% 70%, var(--hg-b), transparent 70%), radial-gradient(35% 25% at 50% 100%, var(--hg-c), transparent 70%), radial-gradient(30% 30% at 90% 10%, var(--hg-a), transparent 70%), var(--hg-grund); }
+:root[data-hintergrund="lava"] body::after, .hg-lava::after { mask-image: linear-gradient(to top, #000, transparent 70%); -webkit-mask-image: linear-gradient(to top, #000, transparent 70%); opacity: 1; background-image: radial-gradient(circle at 30% 40%, color-mix(in srgb, var(--hg-c) 80%, transparent) 0 1.5px, transparent 2.2px), radial-gradient(circle at 75% 80%, color-mix(in srgb, var(--hg-b) 90%, transparent) 0 1.2px, transparent 1.9px); background-size: 110px 130px; animation: hgSteigen 9s linear infinite; }
+:root[data-hintergrund="datenregen"], .hg-datenregen { --hg-grund: #effcf3; --hg-a: rgba(22,163,74,.38); --hg-glow: rgba(74,222,128,.28); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="datenregen"], :root:not([data-theme="light"]) .hg-datenregen { --hg-grund: #020a05; --hg-a: rgba(74,222,128,.6); --hg-glow: rgba(34,197,94,.2); } }
+:root[data-theme="dark"][data-hintergrund="datenregen"], :root[data-theme="dark"] .hg-datenregen { --hg-grund: #020a05; --hg-a: rgba(74,222,128,.6); --hg-glow: rgba(34,197,94,.2); }
+:root[data-hintergrund="datenregen"] body::before, .hg-datenregen { background: radial-gradient(70% 60% at 50% 0%, var(--hg-glow), transparent 70%), var(--hg-grund); }
+:root[data-hintergrund="datenregen"] body::after, .hg-datenregen::after { mask-image: repeating-linear-gradient(to bottom, #000 0 34px, transparent 34px 52px, #000 52px 60px, transparent 60px 96px); -webkit-mask-image: repeating-linear-gradient(to bottom, #000 0 34px, transparent 34px 52px, #000 52px 60px, transparent 60px 96px); opacity: 1; background-image: repeating-linear-gradient(90deg, var(--hg-a) 0 2px, transparent 2px 26px), repeating-linear-gradient(90deg, transparent 0 13px, color-mix(in srgb, var(--hg-a) 60%, transparent) 13px 14.5px, transparent 14.5px 26px); mask-size: 100% 96px; -webkit-mask-size: 100% 96px; animation: hgRegen 2.8s linear infinite; }
+:root[data-hintergrund="neon"], .hg-neon { --hg-grund: #fbf2ff; --hg-a: rgba(236,72,153,.6); --hg-b: rgba(14,165,233,.45); --hg-sonne1: #fb7185; --hg-sonne2: #fbbf24; --hg-himmel: rgba(167,139,250,.38); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="neon"], :root:not([data-theme="light"]) .hg-neon { --hg-grund: #0a0320; --hg-a: rgba(255,47,179,.8); --hg-b: rgba(34,211,238,.75); --hg-sonne1: #ff2fb3; --hg-sonne2: #ffb347; --hg-himmel: rgba(124,58,237,.55); } }
+:root[data-theme="dark"][data-hintergrund="neon"], :root[data-theme="dark"] .hg-neon { --hg-grund: #0a0320; --hg-a: rgba(255,47,179,.8); --hg-b: rgba(34,211,238,.75); --hg-sonne1: #ff2fb3; --hg-sonne2: #ffb347; --hg-himmel: rgba(124,58,237,.55); }
+:root[data-hintergrund="neon"] body::before, .hg-neon { background: radial-gradient(circle at 50% 50%, var(--hg-sonne2) 0, var(--hg-sonne1) 8%, transparent 8.3%), linear-gradient(to bottom, var(--hg-himmel) 0%, transparent 42%, transparent 50%, var(--hg-a) 51%, transparent 53%), var(--hg-grund); }
+:root[data-hintergrund="neon"] body::after, .hg-neon::after { mask-image: linear-gradient(to bottom, transparent, #000 35%); -webkit-mask-image: linear-gradient(to bottom, transparent, #000 35%); opacity: 1; inset: 52% -60% -20% -60%; background-image: linear-gradient(var(--hg-b) 2px, transparent 2px), linear-gradient(90deg, var(--hg-b) 2px, transparent 2px); background-size: 70px 44px; transform: perspective(240px) rotateX(58deg); transform-origin: 50% 0; animation: hgGitter 2.2s linear infinite; }
+:root[data-hintergrund="neon"] body::before { animation: none; }
+:root[data-hintergrund="galaxie"], .hg-galaxie { --hg-grund: #f3f1ff; --hg-a: rgba(139,92,246,.45); --hg-b: rgba(236,72,153,.35); --hg-c: rgba(56,189,248,.35); --hg-kern: rgba(255,255,255,.9); --hg-stern: rgba(91,33,182,.55); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="galaxie"], :root:not([data-theme="light"]) .hg-galaxie { --hg-grund: #04030c; --hg-a: rgba(139,92,246,.6); --hg-b: rgba(236,72,153,.45); --hg-c: rgba(56,189,248,.38); --hg-kern: rgba(255,240,255,.35); --hg-stern: #ffffff; } }
+:root[data-theme="dark"][data-hintergrund="galaxie"], :root[data-theme="dark"] .hg-galaxie { --hg-grund: #04030c; --hg-a: rgba(139,92,246,.6); --hg-b: rgba(236,72,153,.45); --hg-c: rgba(56,189,248,.38); --hg-kern: rgba(255,240,255,.35); --hg-stern: #ffffff; }
+:root[data-hintergrund="galaxie"] body::before, .hg-galaxie { background: radial-gradient(20% 12% at 55% 42%, var(--hg-kern), transparent 70%), radial-gradient(42% 26% at 35% 35%, var(--hg-a), transparent 70%), radial-gradient(36% 30% at 70% 55%, var(--hg-b), transparent 70%), radial-gradient(45% 20% at 45% 72%, var(--hg-c), transparent 70%), var(--hg-grund); }
+:root[data-hintergrund="galaxie"] body::after, .hg-galaxie::after { mask-image: none; -webkit-mask-image: none; opacity: 1; background-image: radial-gradient(circle at 12% 18%, var(--hg-stern) 0 1.3px, transparent 1.9px), radial-gradient(circle at 63% 9%, var(--hg-stern) 0 0.9px, transparent 1.5px), radial-gradient(circle at 38% 46%, var(--hg-stern) 0 1.8px, transparent 2.4px), radial-gradient(circle at 84% 58%, var(--hg-stern) 0 1px, transparent 1.6px), radial-gradient(circle at 22% 80%, var(--hg-stern) 0 1.4px, transparent 2px), radial-gradient(circle at 58% 88%, var(--hg-stern) 0 0.8px, transparent 1.4px), radial-gradient(circle at 92% 28%, var(--hg-stern) 0 1.2px, transparent 1.8px), radial-gradient(circle at 12% 18%, var(--hg-stern) 0 1.3px, transparent 1.9px), radial-gradient(circle at 63% 9%, var(--hg-stern) 0 0.9px, transparent 1.5px), radial-gradient(circle at 38% 46%, var(--hg-stern) 0 1.8px, transparent 2.4px), radial-gradient(circle at 84% 58%, var(--hg-stern) 0 1px, transparent 1.6px), radial-gradient(circle at 22% 80%, var(--hg-stern) 0 1.4px, transparent 2px), radial-gradient(circle at 58% 88%, var(--hg-stern) 0 0.8px, transparent 1.4px), radial-gradient(circle at 92% 28%, var(--hg-stern) 0 1.2px, transparent 1.8px); background-size: 220px 220px, 130px 130px; background-position: 0 0, 60px 90px; animation: hgFunkeln 4s ease-in-out infinite alternate; }
+:root[data-hintergrund="eigenesbild"], .hg-eigenesbild { --hg-schleier: rgba(255,255,255,.28); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"])[data-hintergrund="eigenesbild"], :root:not([data-theme="light"]) .hg-eigenesbild { --hg-schleier: rgba(0,0,0,.42); } }
+:root[data-theme="dark"][data-hintergrund="eigenesbild"], :root[data-theme="dark"] .hg-eigenesbild { --hg-schleier: rgba(0,0,0,.42); }
+:root[data-hintergrund="eigenesbild"] body::before, .hg-eigenesbild { background: linear-gradient(var(--hg-schleier), var(--hg-schleier)), var(--hg-bild, none) center / cover no-repeat, var(--bg); }
+:root[data-hintergrund="eigenesbild"] body::after { display: none; }
+:root[data-hintergrund="eigenesbild"] body::before { inset: 0; animation: none; }
+.hg-eigenesbild { background: var(--hg-bild, none) center / cover no-repeat, color-mix(in srgb, var(--m) 14%, var(--card)); display: grid; place-items: center; }
+.hg-artdeco, .hg-zuckerwatte, .hg-pfirsich, .hg-lavendel, .hg-konfetti, .hg-kirschbluete, .hg-lava, .hg-datenregen, .hg-neon, .hg-galaxie { position: relative; }
+.hg-artdeco::after, .hg-zuckerwatte::after, .hg-pfirsich::after, .hg-lavendel::after, .hg-konfetti::after, .hg-kirschbluete::after, .hg-lava::after, .hg-datenregen::after, .hg-neon::after, .hg-galaxie::after { content: ""; position: absolute; inset: 0; }
+.hg-neon::after { inset: 52% -60% -20% -60%; }
+@keyframes hgGitter { to { background-position: 0 44px; } }
+@keyframes hgRegen { to { mask-position: 0 96px; -webkit-mask-position: 0 96px; } }
+@keyframes hgSteigen { to { background-position: 0 -130px; } }
+
+/* ======================= Farbwelten (data-farbwelt auf <html>) ======================= */
+/* Pastellrosa: zarte Flächen, warme Beerentöne für Text */
+:root[data-farbwelt="rosa"] {
+  --bg: #fff0f6; --card: #fffafd; --card2: #fdeef5; --text: #3d1f2e; --text2: #8b5a72; --text3: #c49bb0; --line: #f6dae7;
+  --glas: rgba(255, 248, 252, 0.74); --glas-stark: rgba(255, 250, 253, 0.88); --glas-rand: rgba(255, 255, 255, 0.95); --glas-linie: rgba(160, 60, 110, 0.08);
+  --schatten: 0 1px 1px rgba(120, 30, 70, 0.03), 0 8px 24px -6px rgba(219, 39, 119, 0.14), 0 2px 6px -2px rgba(219, 39, 119, 0.07);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-farbwelt="rosa"] {
+    --bg: #1a0d15; --card: #26131e; --card2: rgba(255, 220, 238, 0.07); --text: #fde8f2; --text2: #d9abc2; --text3: #9c6b84; --line: rgba(255, 200, 225, 0.1);
+    --glas: rgba(52, 24, 40, 0.62); --glas-stark: rgba(60, 28, 46, 0.86); --glas-rand: rgba(255, 210, 232, 0.1); --glas-linie: rgba(255, 210, 232, 0.08);
+    --schatten: 0 1px 0 rgba(255, 220, 238, 0.05) inset, 0 12px 30px -10px rgba(0, 0, 0, 0.6);
+  }
+}
+:root[data-theme="dark"][data-farbwelt="rosa"] {
+  --bg: #1a0d15; --card: #26131e; --card2: rgba(255, 220, 238, 0.07); --text: #fde8f2; --text2: #d9abc2; --text3: #9c6b84; --line: rgba(255, 200, 225, 0.1);
+  --glas: rgba(52, 24, 40, 0.62); --glas-stark: rgba(60, 28, 46, 0.86); --glas-rand: rgba(255, 210, 232, 0.1); --glas-linie: rgba(255, 210, 232, 0.08);
+  --schatten: 0 1px 0 rgba(255, 220, 238, 0.05) inset, 0 12px 30px -10px rgba(0, 0, 0, 0.6);
+}
+/* Salbei: ruhiges Graugrün */
+:root[data-farbwelt="salbei"] {
+  --bg: #eef4f0; --card: #fbfdfc; --card2: #e8f1ec; --text: #13241c; --text2: #4f6b5d; --text3: #93ab9e; --line: #dbe8e0;
+  --glas: rgba(250, 253, 251, 0.74); --glas-stark: rgba(252, 254, 253, 0.88); --glas-rand: rgba(255, 255, 255, 0.92); --glas-linie: rgba(20, 60, 40, 0.07);
+  --schatten: 0 1px 1px rgba(20, 50, 35, 0.03), 0 8px 24px -6px rgba(30, 90, 60, 0.13), 0 2px 6px -2px rgba(30, 90, 60, 0.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-farbwelt="salbei"] {
+    --bg: #07110c; --card: #10201a; --card2: rgba(210, 240, 225, 0.06); --text: #e6f2eb; --text2: #9fbcae; --text3: #62806f; --line: rgba(200, 240, 220, 0.09);
+    --glas: rgba(18, 36, 28, 0.62); --glas-stark: rgba(22, 42, 33, 0.86); --glas-rand: rgba(210, 240, 225, 0.09); --glas-linie: rgba(210, 240, 225, 0.07);
+    --schatten: 0 1px 0 rgba(210, 240, 225, 0.04) inset, 0 12px 30px -10px rgba(0, 0, 0, 0.6);
+  }
+}
+:root[data-theme="dark"][data-farbwelt="salbei"] {
+  --bg: #07110c; --card: #10201a; --card2: rgba(210, 240, 225, 0.06); --text: #e6f2eb; --text2: #9fbcae; --text3: #62806f; --line: rgba(200, 240, 220, 0.09);
+  --glas: rgba(18, 36, 28, 0.62); --glas-stark: rgba(22, 42, 33, 0.86); --glas-rand: rgba(210, 240, 225, 0.09); --glas-linie: rgba(210, 240, 225, 0.07);
+  --schatten: 0 1px 0 rgba(210, 240, 225, 0.04) inset, 0 12px 30px -10px rgba(0, 0, 0, 0.6);
+}
+/* Auswahl der Farbwelt */
+.farbwelten { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.farbwelt-karte { display: grid; justify-items: center; gap: 4px; padding: 12px 6px 10px; border-radius: 18px; text-align: center; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.farbwelt-karte.aktiv { border-color: var(--fw); box-shadow: 0 0 0 2px color-mix(in srgb, var(--fw) 45%, transparent), var(--schatten); }
+.farbwelt-karte b { font-size: 13.5px; }
+.farbwelt-karte small { font-size: 11px; color: var(--text2); line-height: 1.25; }
+.fw-muster { display: flex; margin-bottom: 2px; }
+.fw-muster i { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--card); margin-left: -7px; }
+.fw-muster i:first-child { margin-left: 0; background: var(--fw); }
+.fw-standard i:nth-child(2) { background: #eef0f8; } .fw-standard i:nth-child(3) { background: #8b8cf8; }
+.fw-rosa i:nth-child(2) { background: #fff0f6; } .fw-rosa i:nth-child(3) { background: #f9a8d4; }
+.fw-salbei i:nth-child(2) { background: #eef4f0; } .fw-salbei i:nth-child(3) { background: #7fd1a8; }
+/* Garderobe: Vorschau des Hintergrunds hinter Taler */
+.gar-hg-vorschau { position: absolute; inset: 0; border-radius: inherit; opacity: 0.95; }
+.gar-buehne .gar-podest { position: relative; z-index: 1; }
+.gar-buehne > .gar-hg-vorschau ~ .gar-licht { opacity: 0.4; }
+.gar-hg-vorschau::after { border-radius: inherit; }

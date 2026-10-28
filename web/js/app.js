@@ -20,7 +20,8 @@ import { ic } from "./icons.js";
 import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, codeAnzeige, abgleichen, SERVER } from "./sync.js";
 import qrcode from "./lib/qrcode.js";
 import { taler, talerBuehne, TALER_SPRUECHE, talerOutfitSetzen } from "./maskottchen.js";
-import { kasse, kaufbar, outfitVon, artikel, STANDARD } from "./garderobe.js";
+import { kasse, kaufbar, outfitVon, artikel, STANDARD, FARBWELTEN } from "./garderobe.js";
+import { bildLaden, bildSpeichern, bildVerkleinern } from "./bildspeicher.js";
 import { garderobeView, talerBetrag } from "./garderobeansicht.js";
 import { kommende, countdownText, proTag } from "./termine.js";
 import { rueckblickView, statistikView, statistikStart } from "./statistikansicht.js";
@@ -302,6 +303,8 @@ const state = {
   bilrTeil: ["1", "2"].includes(lies("bsr.teil", "beide")) ? lies("bsr.teil", "beide") : "beide", // Bilanzrecht: "1" | "2" | "beide"
   ziel: Number(lies("bsr.ziel", "20")) || 20,
   design: lies("bsr.design", "system"),
+  farbwelt: FARBWELTEN.some((f) => f.id === lies("bsr.farbwelt", "")) ? lies("bsr.farbwelt", "") : "standard", // Farbwelt der App
+  hatBild: false, // eigenes Hintergrundbild auf diesem Gerät gespeichert
   // Animationen aus („Bewegung reduzieren“): eigener Schalter, Startwert = Systemeinstellung des Geräts
   bewegungAus: (() => { const v = lies("bsr.bewegungAus", ""); return v ? v === "1" : !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; })(),
   hinweisWeg: lies("bsr.hinweisWeg", "") === "1",
@@ -332,7 +335,7 @@ const farbe = (q) => (q >= 0.8 ? "var(--ok)" : q >= 0.5 ? "var(--warn)" : "var(-
 const zahlText = (n) => n.toLocaleString("de-DE");
 
 // ======================= Einstellungen (werden mit dem Sync-Code abgeglichen) =======================
-const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus2", "bewegungAus", "rolle", "startLayout"];
+const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus2", "bewegungAus", "rolle", "startLayout", "farbwelt"];
 // Erster Stand ohne Zeitstempel (t = 0): Ein neu verbundenes Gerät übernimmt die Einstellungen der anderen.
 if (!stat.einstellungen) stat.einstellungen = { ziel: String(state.ziel), design: state.design, teil: state.bilrTeil, oerModus2: state.oerModus, t: 0 };
 /** Einstellung lokal speichern und für den Abgleich mit Zeitstempel im Lernstand vermerken. */
@@ -348,6 +351,7 @@ function einstellungenAnwenden() {
   for (const k of EINSTELLUNGEN) if (e[k] != null) schreib("bsr." + k, e[k]);
   if (e.ziel != null) state.ziel = Number(e.ziel) || state.ziel;
   if (e.design) state.design = e.design;
+  if (e.farbwelt && FARBWELTEN.some((f) => f.id === e.farbwelt)) state.farbwelt = e.farbwelt;
   if (e.teil) state.bilrTeil = ["1", "2"].includes(e.teil) ? e.teil : "beide";
   if (e.oerModus2) state.oerModus = e.oerModus2 === "qa" ? "qa" : "mc";
   if (e.bewegungAus != null) state.bewegungAus = e.bewegungAus === "1";
@@ -357,7 +361,9 @@ function einstellungenAnwenden() {
 /** Akzentfarbe und Hell/Dunkel anwenden. */
 function designAnwenden() {
   // Startseite in der App-Farbe, innerhalb eines Moduls in dessen Farbe
-  const m = state.tab === "start" && !state.sitzung && !state.deck ? { farbe: "#4f46e5", farbeDunkel: "#8b8cf8" } : MODUL[state.fach], root = document.documentElement;
+  const fw = FARBWELTEN.find((f) => f.id === state.farbwelt) || FARBWELTEN[0];
+  const m = state.tab === "start" && !state.sitzung && !state.deck ? { farbe: fw.hell, farbeDunkel: fw.dunkel } : MODUL[state.fach], root = document.documentElement;
+  root.dataset.farbwelt = fw.id;
   root.style.setProperty("--m-hell", m.farbe);
   root.style.setProperty("--m-dunkel", m.farbeDunkel);
   if (state.design === "light" || state.design === "dark") root.dataset.theme = state.design;
@@ -365,7 +371,7 @@ function designAnwenden() {
   root.dataset.bewegung = state.bewegungAus ? "aus" : "an";
   const o = meinOutfit();
   talerOutfitSetzen(o);
-  root.dataset.hintergrund = o.hintergrund;
+  root.dataset.hintergrund = o.hintergrund === "eigenesbild" && !state.hatBild ? "leuchten" : o.hintergrund; // Bild liegt nur auf dem Gerät, auf dem es gewählt wurde
 }
 /** Getragenes Outfit (nur Gekauftes) und Taler-Kasse (1 Taler je 10 XP). */
 const meinOutfit = () => outfitVon(stat.outfit, stat.gekauft);
@@ -2018,7 +2024,7 @@ function sheetView() {
     inhalt = termineView();
   } else if (sh.art === "garderobe") {
     titel = "Garderobe";
-    inhalt = garderobeView(state.garderobe, { outfit: meinOutfit(), gekauft: stat.gekauft || {}, guthaben: meineKasse().guthaben, level: levelJetzt().level });
+    inhalt = garderobeView(state.garderobe, { outfit: meinOutfit(), gekauft: stat.gekauft || {}, guthaben: meineKasse().guthaben, level: levelJetzt().level, farbwelt: state.farbwelt, hatBild: state.hatBild });
   } else if (sh.art === "level") {
     titel = "Level und Erfolge";
     inhalt = levelSeite(stat);
@@ -2029,7 +2035,10 @@ function sheetView() {
         <span class="grow sub" style="min-width:100%">Wie viele Aufgaben möchtest du pro Tag schaffen?</span>
         <span class="chip-reihe">${[10, 20, 30, 50].map((z) => `<button class="chip ${state.ziel === z ? "aktiv" : ""}" data-a="ziel" data-v="${z}">${z} Aufgaben</button>`).join("")}</span></div></div></div>
       <div class="gruppe"><div class="gruppe-titel">Darstellung</div><div class="modus-karte"><div class="segment">
-        ${[["system", "System"], ["light", "Hell"], ["dark", "Dunkel"]].map(([id, t]) => `<button data-a="design" data-v="${id}" class="${state.design === id ? "aktiv" : ""}">${t}</button>`).join("")}</div></div></div>
+        ${[["system", "System"], ["light", "Hell"], ["dark", "Dunkel"]].map(([id, t]) => `<button data-a="design" data-v="${id}" class="${state.design === id ? "aktiv" : ""}">${t}</button>`).join("")}</div></div>
+        <div class="farbwelten" style="margin-top:10px">${FARBWELTEN.map((f) => `<button class="farbwelt-karte${state.farbwelt === f.id ? " aktiv" : ""}" data-a="farbwelt" data-v="${f.id}" aria-pressed="${state.farbwelt === f.id}" style="--fw:${f.hell};--fw-d:${f.dunkel}">
+          <span class="fw-muster fw-${f.id}" aria-hidden="true"><i></i><i></i><i></i></span><b>${esc(f.name)}</b><small>${esc(f.text)}</small></button>`).join("")}</div>
+        <div class="liste" style="margin-top:10px"><button class="zeile" data-a="hintergrundWaehlen"><span class="symbol">${ic("bild")}</span><span class="grow"><b>Hintergrund ändern</b><div class="sub">${esc(artikel(meinOutfit().hintergrund)?.name || "Leuchten")} – weitere in der Garderobe</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>
       <div class="gruppe"><div class="gruppe-titel">Studium oder Ausbildung</div>${rollenSchalter()}<div class="gruppe-fuss">Bestimmt, welche Module auf der Startseite stehen. Der Lernstand bleibt erhalten.</div></div>
       <div class="gruppe"><div class="gruppe-titel">Animationen</div><div class="liste"><div class="zeile">
         <span class="grow"><b>Animationen</b><div class="sub">Aus = Bewegung reduzieren: Taler, Konfetti und Übergänge bleiben still. Auch während der Aufgaben oben rechts umschaltbar.</div></span>${bewegungSchalter()}</div></div></div>
@@ -2393,6 +2402,8 @@ const AKTIONEN = {
     speichern(); render(); toast("Termin gespeichert.");
   },
   terminLoeschen: (v) => { if (!stat.termine?.[v]) return; stat.termine = { ...stat.termine, [v]: { x: 1, t: Date.now() } }; speichern(); render(); },
+  farbwelt: (v) => { if (!FARBWELTEN.some((f) => f.id === v)) return; state.farbwelt = v; einstellungMerken("farbwelt", v); render(); },
+  hintergrundWaehlen: () => { state.garderobe = { slot: "hintergrund", probe: null }; state.sheet = { art: "garderobe" }; render(); },
   garderobe: () => { state.garderobe.probe = null; state.sheet = { art: "garderobe" }; render(); },
   garSlot: (v) => { state.garderobe = { slot: v, probe: null }; render(); },
   garProbe: (v) => { state.garderobe.probe = state.garderobe.probe === v ? null : v; render(); document.querySelector(".sheet .vb-inhalt")?.scrollTo({ top: 0, behavior: state.bewegungAus ? "auto" : "smooth" }); },
@@ -2649,6 +2660,7 @@ app.addEventListener("input", (e) => {
 
 // Import eigener Karteikarten aus einer Datei
 app.addEventListener("change", async (e) => {
+  if (e.target.id === "hgBildDatei" && e.target.files?.[0]) { eigenesBildWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "profilName") { const n = e.target.value.trim().slice(0, 20); if (n !== meinName()) { stat.profil = { ...(stat.profil || {}), name: n, t: Date.now() }; speichern(); } return; }
   if (e.target.id === "bImport" && e.target.files?.[0]) { backupLaden(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id !== "kImport" || !e.target.files?.[0]) return;
@@ -2786,6 +2798,7 @@ render();
 levelEinfuehren();
 neuigkeitenPruefen();
 gruppeAktualisieren();
+bildLaden().then((d) => { if (d) { eigenesBildSetzen(d); designAnwenden(); if (state.sheet?.art === "garderobe") render(); } });
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") gruppeAktualisieren(); });
 zaehleStart();
 syncBeimStart();
@@ -2801,6 +2814,24 @@ if ("serviceWorker" in navigator) {
       });
     }).catch(() => {});
   });
+}
+
+/** Eigenes Hintergrundbild aus der Galerie übernehmen (nur nach dem Kauf). */
+async function eigenesBildWaehlen(datei) {
+  if (!stat.gekauft?.eigenesbild) return;
+  if (!/^image\//.test(datei.type)) { toast("Bitte ein Bild auswählen."); return; }
+  try {
+    const daten = await bildVerkleinern(datei);
+    await bildSpeichern(daten);
+    eigenesBildSetzen(daten);
+    stat.outfit = { ...meinOutfit(), hintergrund: "eigenesbild", t: Date.now() };
+    speichern(); render(); toast("Dein Bild ist jetzt der Hintergrund.");
+  } catch (err) { toast(err.message || "Das Bild konnte nicht gespeichert werden."); }
+}
+function eigenesBildSetzen(daten) {
+  state.hatBild = !!daten;
+  if (daten) document.documentElement.style.setProperty("--hg-bild", `url("${daten}")`);
+  else document.documentElement.style.removeProperty("--hg-bild");
 }
 
 /** Backup-Datei einlesen und den Lernstand dieses Geräts ersetzen. */
