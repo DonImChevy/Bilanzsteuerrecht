@@ -1897,11 +1897,30 @@ function neuePaarRunde() {
   const auswahl = r.mischen((PAARE[state.fach] || []).filter((p) => imTeil({ teil: p[2] }, teilVon(state.fach)))).slice(0, PAAR_ANZAHL).map(([norm, text], id) => ({ id, norm, text }));
   state.paare = { links: r.mischen(auswahl), rechts: r.mischen(auswahl), weg: [], leben: PAAR_LEBEN, serie: 0, wahl: null, start: Date.now(), ende: null, sperre: false, frisch: true };
 }
+// Gesetzesfarben: jede Norm trägt den „Buchrücken“ ihres Gesetzes (Verordnungen gemeinsam grau).
+const GESETZ_KLASSE = { HGB: "hgb", EStG: "estg", AO: "ao", UStG: "ustg", GG: "gg", BGB: "bgb", GOBT: "gobt" };
+/** „§ 9 Abs. 1 S. 3 Nr. 4 EStG“ → { zeichen: "§", nr: "9", rest: "Abs. 1 S. 3 Nr. 4", g: "EStG" } */
+function normTeile(norm) {
+  const m = String(norm).match(/^(§|Art\.)\s*(\S+)\s*(.*?)\s*([A-Za-zÄÖÜäöü]+)$/);
+  return m ? { zeichen: m[1], nr: m[2], rest: m[3], g: m[4] } : { zeichen: "", nr: norm, rest: "", g: "" };
+}
+const gesetzKlasse = (g) => "gz-" + (GESETZ_KLASSE[g] || "vo");
+/** Bücherregal: je gefundenem Paar ein Buchrücken in der Farbe seines Gesetzes. */
+function paarRegal(p, gross = false) {
+  const n = p.links.length, nach = Object.fromEntries(p.links.map((k) => [k.id, k]));
+  const faecher = Array.from({ length: n }, (_, i) => {
+    const k = nach[p.weg[i]];
+    if (!k) return `<span class="regal-fach" data-slot="${i}"></span>`;
+    const t = normTeile(k.norm);
+    return `<span class="regal-fach voll ${gesetzKlasse(t.g)}${i === p.weg.length - 1 && !p.ende ? " frisch" : ""}" data-slot="${i}" title="${esc(k.norm)}">${gross ? `<b>${esc(t.zeichen)} ${esc(t.nr)}</b>` : ""}<i>${esc(t.g)}</i></span>`;
+  }).join("");
+  return `<div class="paar-regal${gross ? " gross" : ""}" role="img" aria-label="${p.weg.length} von ${n} Paaren gefunden">${faecher}</div>`;
+}
 function paareView() {
   const p = state.paare, n = p.links.length;
   const herzen = Array.from({ length: PAAR_LEBEN }, (_, i) => `<span class="herz${i < p.leben ? "" : " leer"}">${i < p.leben ? "♥" : "♡"}</span>`).join("");
   const kopf = `<div class="vb-kopf"><button class="rund" data-a="paareZu" aria-label="Beenden">${ic("kreuz")}</button>
-    <div class="sitzung-fortschritt" aria-label="${p.weg.length} von ${n} Paaren"><span style="width:${(p.weg.length / n) * 100}%"></span></div>
+    ${p.ende ? `<span style="flex:1"></span>` : paarRegal(p)}
     <span class="herzen" aria-label="${p.leben} Leben">${herzen}</span></div>`;
   if (p.ende) {
     const geschafft = p.weg.length === n, sek = Math.round((p.ende - p.start) / 1000);
@@ -1910,21 +1929,34 @@ function paareView() {
     return `<div class="vollbild">${geschafft ? konfetti() : ""}${kopf}
       <div class="vb-inhalt zentriert" style="display:flex;flex-direction:column"><div style="margin:auto 0">
         ${sterne}
+        ${paarRegal(p, true)}
         <div class="ergebnis-titel">${geschafft ? (p.leben === PAAR_LEBEN ? "Perfekt – ohne Fehler!" : "Alle Paare gefunden!") : "Keine Leben mehr"}</div>
         <p class="sub" style="font-size:15px">${geschafft ? `Mit ${p.leben} von ${PAAR_LEBEN} Leben übrig` : `${p.weg.length} von ${n} Paaren gefunden`} · ${Math.floor(sek / 60)}:${String(sek % 60).padStart(2, "0")} min</p>
-        ${rest.length ? `<div class="liste" style="text-align:left;margin-top:8px"><div class="zeile"><span class="grow sub">Diese Paare fehlten noch:</span></div>${rest.map((k) => `<div class="zeile"><span class="grow"><b>${esc(k.norm)}</b><div class="sub">${esc(k.text)}</div></span></div>`).join("")}</div>` : ""}
+        ${rest.length ? `<div class="paar-rest"><div class="sub">Diese Paare fehlten noch:</div>${rest.map((k) => `<div class="paar-rest-karte ${gesetzKlasse(normTeile(k.norm).g)}"><b>${esc(k.norm)}</b><span>${esc(k.text)}</span></div>`).join("")}</div>` : ""}
         <button class="knopf" data-a="paareStart" style="max-width:300px;margin:16px auto 6px">${ic("wiederholen")} Neue Runde</button>
         <button class="link" data-a="paareZu">Fertig</button></div></div></div>`;
   }
   const karte = (seite, k, i) => {
-    const weg = p.weg.includes(k.id), gewaehlt = p.wahl?.seite === seite && p.wahl.id === k.id;
-    return `<button class="paar-karte ${seite}${weg ? " weg" : ""}${gewaehlt ? " gewaehlt" : ""}${p.frisch ? " neu" : ""}" style="--i:${i * 2 + (seite === "r" ? 1 : 0)}" data-a="paarWahl" data-v="${seite}:${k.id}" ${weg ? "disabled" : ""}>${esc(seite === "l" ? k.norm : k.text)}</button>`;
+    const weg = p.weg.includes(k.id), gewaehlt = p.wahl?.seite === seite && p.wahl.id === k.id, t = normTeile(k.norm);
+    const inhalt = seite === "l"
+      ? `<span class="pk-ruecken" aria-hidden="true">${esc(t.g)}</span><span class="pk-zitat"><span class="pk-nr">${esc(t.zeichen)}&nbsp;${esc(t.nr)}</span>${t.rest ? `<span class="pk-rest">${esc(t.rest)}</span>` : ""}</span>`
+      : `<span class="pk-text">${esc(k.text)}</span>`;
+    return `<button class="paar-karte ${seite}${seite === "l" ? " " + gesetzKlasse(t.g) : ""}${weg ? " weg" : ""}${gewaehlt ? " gewaehlt" : ""}${p.frisch ? " neu" : ""}" style="--i:${i * 2 + (seite === "r" ? 1 : 0)}" data-a="paarWahl" data-v="${seite}:${k.id}" aria-label="${esc(seite === "l" ? k.norm : k.text)}" ${weg ? "disabled" : ""}>${inhalt}</button>`;
   };
+  const gewaehlteNorm = p.wahl?.seite === "l" ? p.links.find((k) => k.id === p.wahl.id) : null;
   return `<div class="vollbild paar-spiel">${kopf}
     <div class="vb-inhalt">
-      <div class="sub" style="text-align:center;margin:2px 0 10px">Tippe eine Norm und die passende Bedeutung an.</div>
-      <div class="paar-feld"><div class="paar-spalte">${p.links.map((k, i) => karte("l", k, i)).join("")}</div><div class="paar-spalte">${p.rechts.map((k, i) => karte("r", k, i)).join("")}</div></div>
+      <div class="paar-anleitung">Norm antippen, dann die passende Bedeutung.</div>
+      <div class="paar-feld${gewaehlteNorm ? " " + gesetzKlasse(normTeile(gewaehlteNorm.norm).g) + " mit-wahl" : ""}"><div class="paar-spalte">${p.links.map((k, i) => karte("l", k, i)).join("")}</div><div class="paar-spalte">${p.rechts.map((k, i) => karte("r", k, i)).join("")}</div></div>
     </div></div>`;
+}
+/** Gewählte Norm färbt die Karteikarten in ihrer Gesetzesfarbe ein (ohne Neuzeichnen). */
+function paarFeldFarbe() {
+  const p = state.paare, feld = document.querySelector(".paar-feld");
+  if (!feld) return;
+  feld.className = "paar-feld";
+  const k = p.wahl?.seite === "l" ? p.links.find((x) => x.id === p.wahl.id) : null;
+  if (k) feld.classList.add(gesetzKlasse(normTeile(k.norm).g), "mit-wahl");
 }
 const paarKarte = (seite, id) => document.querySelector(`[data-a="paarWahl"][data-v="${seite}:${id}"]`);
 const mitte = (el) => { const r = el.getBoundingClientRect(); return [r.left + r.width / 2, r.top + r.height / 2]; };
@@ -1956,25 +1988,29 @@ function paarWahl(v) {
   // erste Karte wählen, auf derselben Seite umwählen oder abwählen
   if (!p.wahl || p.wahl.seite === seite) {
     document.querySelectorAll(".paar-karte.gewaehlt").forEach((x) => x.classList.remove("gewaehlt"));
-    if (p.wahl?.seite === seite && p.wahl.id === id) { p.wahl = null; return; }
+    if (p.wahl?.seite === seite && p.wahl.id === id) { p.wahl = null; paarFeldFarbe(); return; }
     p.wahl = { seite, id };
     el?.classList.add("gewaehlt");
+    paarFeldFarbe();
     return;
   }
   const andere = paarKarte(p.wahl.seite, p.wahl.id);
   p.sperre = true;
   if (p.wahl.id === id && el && andere) {
     // Treffer: beide Karten fliegen zueinander und lösen sich in Funken auf
-    const [x1, y1] = mitte(el), [x2, y2] = mitte(andere), mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    const [x1, y1] = mitte(el), [x2, y2] = mitte(andere), fach = document.querySelector(`.regal-fach[data-slot="${p.weg.length}"]`);
+    const [mx, my] = fach ? mitte(fach) : [(x1 + x2) / 2, (y1 + y2) / 2], norm = p.links.find((k) => k.id === id)?.norm || "";
     [[el, x1, y1, 1], [andere, x2, y2, -1]].forEach(([k, x, y, s]) => {
       k.classList.remove("gewaehlt");
-      k.style.setProperty("--tx", `${mx - x}px`); k.style.setProperty("--ty", `${my - y}px`); k.style.setProperty("--rot", `${s * 12}deg`);
+      k.style.setProperty("--tx", `${mx - x}px`); k.style.setProperty("--ty", `${my - y}px`); k.style.setProperty("--rot", `${s * 8}deg`);
       k.classList.add("treffer");
     });
     p.serie += 1;
-    setTimeout(() => { funken(mx, my); schwebeText(mx, my - 10, p.serie >= 2 ? `Serie ×${p.serie} 🔥` : "+1", p.serie >= 2 ? "serie" : ""); }, 260);
+    const [sx, sy] = [(x1 + x2) / 2, (y1 + y2) / 2];
+    setTimeout(() => schwebeText(sx, sy - 10, p.serie >= 2 ? `Serie ×${p.serie} 🔥` : norm, p.serie >= 2 ? "serie" : "norm"), 120);
+    setTimeout(() => funken(mx, my), 500);
     if (navigator.vibrate) navigator.vibrate(p.serie >= 3 ? [15, 40, 15] : 20);
-    setTimeout(() => { p.weg.push(id); p.wahl = null; p.sperre = false; if (p.weg.length === p.links.length) { p.ende = Date.now(); paareGeschafft(p); } render(); }, 560);
+    setTimeout(() => { p.weg.push(id); p.wahl = null; p.sperre = false; if (p.weg.length === p.links.length) { p.ende = Date.now(); paareGeschafft(p); } render(); }, 640);
   } else {
     // Fehler: Karten wackeln, Bildschirm bebt kurz, ein Herz zerbricht
     [el, andere].forEach((x) => { x?.classList.remove("gewaehlt"); x?.classList.add("falsch"); });

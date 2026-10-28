@@ -4,6 +4,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-paare-gesetzbuch",
+    datum: "2026-10-28",
+    titel: "Paare finden im neuen Look",
+    punkte: [
+      ["karten", "Normen mit Buchrücken", "Jede Norm trägt die Farbe ihres Gesetzes – HGB, EStG, AO, UStG, GG … So prägt sich nebenbei ein, wo sie steht."],
+      ["stern", "Dein Regal füllt sich", "Jedes gefundene Paar wandert als Buchrücken ins Regal. Am Ende siehst du deine ganze Sammlung."],
+    ],
+  },
+  {
     id: "2026-10-inhalte-geprueft",
     datum: "2026-10-28",
     titel: "Inhalte geprüft",

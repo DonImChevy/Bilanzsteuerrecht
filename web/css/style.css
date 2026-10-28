@@ -370,23 +370,61 @@ button.zeile:active, button.karte-btn:active { background: var(--card2); }
 .sync-eingabe { width: 100%; font: 700 19px ui-monospace, SFMono-Regular, Menlo, monospace; text-transform: uppercase; letter-spacing: 1px; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--card2); background: var(--card2); color: var(--text); }
 .qr-box { display: flex; justify-content: center; } .qr { width: 220px; height: 220px; border-radius: 10px; }
 .vollbild.paar-spiel.anim { animation: none; } /* sofort deckend – die Karten werden stattdessen ausgeteilt */
-.paar-feld { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-bottom: 12px; }
-.paar-spalte { display: flex; flex-direction: column; gap: 8px; }
-.paar-karte { position: relative; min-height: 54px; padding: 8px 10px; border-radius: 12px; background: var(--card); box-shadow: var(--shadow); border: 2px solid transparent; color: var(--text); font: 600 13.5px/1.25 inherit; text-align: center; cursor: pointer; transition: transform 0.15s, border-color 0.15s, background 0.15s; -webkit-tap-highlight-color: transparent; }
+/* ---- Paare finden: Gesetzessammlung. Norm = Register-Reiter mit Buchrücken, Bedeutung = Karteikarte, Fortschritt = Regal ---- */
+:root { --gz-hgb: #2b4f8c; --gz-estg: #1f7a4d; --gz-ao: #8a5524; --gz-ustg: #b45309; --gz-gg: #a61e2b; --gz-bgb: #6d3f9c; --gz-gobt: #0f766e; --gz-vo: #5b6b76; --gz-auf: #fff; --kk-linie: rgba(28, 36, 64, 0.07); --kk-rand: #e8798a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --gz-hgb: #8fb2f0; --gz-estg: #6fd6a2; --gz-ao: #e3a96d; --gz-ustg: #f7b955; --gz-gg: #f4808b; --gz-bgb: #c39af0; --gz-gobt: #5fd8cb; --gz-vo: #b2c0ca; --gz-auf: #12151d; --kk-linie: rgba(255, 255, 255, 0.06); --kk-rand: #f08a9a; } }
+:root[data-theme="dark"] { --gz-hgb: #8fb2f0; --gz-estg: #6fd6a2; --gz-ao: #e3a96d; --gz-ustg: #f7b955; --gz-gg: #f4808b; --gz-bgb: #c39af0; --gz-gobt: #5fd8cb; --gz-vo: #b2c0ca; --gz-auf: #12151d; --kk-linie: rgba(255, 255, 255, 0.06); --kk-rand: #f08a9a; }
+.gz-hgb { --g: var(--gz-hgb); } .gz-estg { --g: var(--gz-estg); } .gz-ao { --g: var(--gz-ao); } .gz-ustg { --g: var(--gz-ustg); } .gz-gg { --g: var(--gz-gg); } .gz-bgb { --g: var(--gz-bgb); } .gz-gobt { --g: var(--gz-gobt); } .gz-vo { --g: var(--gz-vo); }
+.paar-anleitung { text-align: center; color: var(--text2); font-size: 14px; margin: 2px 0 12px; }
+.paar-feld { display: grid; grid-template-columns: 1fr 1.15fr; gap: 10px; padding-bottom: 12px; }
+.paar-spalte { display: flex; flex-direction: column; gap: 9px; }
+.paar-karte { position: relative; min-height: 58px; border-radius: 10px; background: var(--card); box-shadow: var(--shadow); border: 0; color: var(--text); font: inherit; text-align: left; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: transform 0.15s, box-shadow 0.15s; }
 .paar-karte:active { transform: scale(0.97); }
-.paar-karte.l { color: var(--accent); font-weight: 800; font-size: 14px; }
+.paar-karte:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+/* Norm: Buchrücken links, Fundstelle in Buchschrift */
+.paar-karte.l { display: flex; align-items: stretch; padding: 0; overflow: hidden; border-radius: 6px 12px 12px 6px; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--g) 22%, transparent), var(--shadow); }
+.pk-ruecken { flex: 0 0 24px; display: flex; align-items: center; justify-content: center; background: var(--g); color: var(--gz-auf); writing-mode: vertical-rl; transform: rotate(180deg); font-size: 10.5px; font-weight: 800; letter-spacing: 0.06em;
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.18), transparent 35%, rgba(0, 0, 0, 0.12)); }
+.pk-zitat { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 1px; padding: 8px 10px 8px 11px; min-width: 0; }
+.pk-nr { font-family: ui-serif, "Iowan Old Style", "Palatino Linotype", Georgia, serif; font-weight: 700; font-size: 21px; line-height: 1.05; color: var(--g); font-variant-numeric: lining-nums tabular-nums; white-space: nowrap; }
+.pk-rest { font-size: 12.5px; font-weight: 600; color: var(--text2); line-height: 1.25; }
+/* Bedeutung: Karteikarte mit Linien und rotem Kopfrand */
+.paar-karte.r { padding: 9px 11px 9px 12px; display: flex; align-items: center; font-size: 13.5px; font-weight: 600; line-height: 22px;
+  background: repeating-linear-gradient(to bottom, transparent 0 21px, var(--kk-linie) 21px 22px) 0 9px / 100% calc(100% - 9px) no-repeat, var(--card);
+  box-shadow: inset 0 3px 0 var(--kk-rand), var(--shadow); }
+.paar-feld.mit-wahl .paar-karte.r:not(.weg) { box-shadow: inset 0 3px 0 var(--g), 0 0 0 1.5px color-mix(in srgb, var(--g) 30%, transparent), var(--shadow); }
 .paar-karte.neu { animation: austeilen 0.5s cubic-bezier(0.2, 1.3, 0.4, 1) both; animation-delay: calc(var(--i) * 28ms); }
-.paar-karte.r.neu { --r: 5deg; }
-.paar-karte.gewaehlt { border-color: var(--accent); background: var(--accent-weak); transform: translateY(-2px) scale(1.04); animation: waehlen 1.1s ease-in-out infinite; }
-.paar-karte.treffer { z-index: 2; border-color: var(--ok); background: var(--ok-weak); color: var(--ok); animation: verschmelzen 0.56s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
-.paar-karte.falsch { border-color: var(--err); background: var(--err-weak); animation: paarFalsch 0.45s; }
-.paar-karte.weg { visibility: hidden; }
+.paar-karte.r.neu { --r: 4deg; }
+.paar-karte.l.gewaehlt { transform: translateX(6px) scale(1.03); box-shadow: inset 0 0 0 2.5px var(--g), 0 10px 26px color-mix(in srgb, var(--g) 35%, transparent); animation: none; }
+.paar-karte.r.gewaehlt { transform: translateY(-2px) scale(1.03); box-shadow: inset 0 3px 0 var(--accent), 0 0 0 2.5px var(--accent), var(--shadow); }
+.paar-karte.treffer { z-index: 5; animation: einsortieren 0.62s cubic-bezier(0.55, 0, 0.6, 1) forwards; }
+.paar-karte.falsch { box-shadow: inset 0 0 0 2.5px var(--err), var(--shadow); background-color: var(--err-weak); animation: paarFalsch 0.45s; }
+.paar-karte.weg { background: transparent; box-shadow: none; border: 1.5px dashed color-mix(in srgb, var(--text) 16%, transparent); cursor: default; animation: none; }
+.paar-karte.weg > * { visibility: hidden; }
+@keyframes einsortieren {
+  30% { transform: translate(calc(var(--tx) * 0.12), calc(var(--ty) * 0.12)) scale(1.06); }
+  to { transform: translate(var(--tx), var(--ty)) scale(0.12, 0.2) rotate(var(--rot)); opacity: 0.2; }
+}
+/* Regal oben: zehn Fächer, gefundene Paare als Buchrücken */
+.paar-regal { flex: 1; display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; align-items: end; height: 36px; padding: 0 4px 3px; margin: 0 8px; border-bottom: 3px solid color-mix(in srgb, var(--text) 30%, transparent); }
+.regal-fach { height: 26px; border-radius: 3px 3px 1px 1px; background: color-mix(in srgb, var(--text) 7%, transparent); }
+.regal-fach.voll { height: 34px; background: var(--g); background-image: linear-gradient(90deg, rgba(255, 255, 255, 0.22), transparent 45%, rgba(0, 0, 0, 0.14)); display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18); }
+.regal-fach i { font-style: normal; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 8.5px; font-weight: 800; color: var(--gz-auf); letter-spacing: 0.04em; white-space: nowrap; }
+.regal-fach.frisch { animation: buchRein 0.45s cubic-bezier(0.2, 1.4, 0.4, 1) both; transform-origin: bottom; }
+@keyframes buchRein { from { transform: translateY(-14px) scaleY(0.6); opacity: 0; } }
+.paar-regal.gross { height: auto; max-width: 340px; margin: 14px auto 8px; padding: 0 6px 4px; gap: 4px; border-bottom-width: 4px; }
+.paar-regal.gross .regal-fach { height: 96px; }
+.paar-regal.gross .regal-fach.voll { height: 118px; flex-direction: column; gap: 6px; padding: 8px 0; justify-content: flex-start; }
+.paar-regal.gross .regal-fach b, .paar-regal.gross .regal-fach i { writing-mode: vertical-rl; transform: rotate(180deg); color: var(--gz-auf); white-space: nowrap; }
+.paar-regal.gross .regal-fach b { font-family: ui-serif, "Iowan Old Style", Georgia, serif; font-size: 13px; order: 2; }
+.paar-regal.gross .regal-fach i { font-size: 9.5px; order: 1; }
+.paar-rest { text-align: left; margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+.paar-rest-karte { display: flex; flex-direction: column; gap: 2px; padding: 10px 12px 10px 14px; border-radius: 6px 12px 12px 6px; background: var(--card); box-shadow: inset 5px 0 0 var(--g), var(--shadow); }
+.paar-rest-karte b { font-family: ui-serif, "Iowan Old Style", Georgia, serif; color: var(--g); font-size: 16px; }
+.paar-rest-karte span { font-size: 14px; color: var(--text2); }
+.schwebe-text.norm { font-family: ui-serif, "Iowan Old Style", Georgia, serif; font-size: 20px; }
 @keyframes austeilen { from { opacity: 0; transform: translateY(28px) scale(0.8) rotate(var(--r, -5deg)); } }
 @keyframes waehlen { 50% { box-shadow: 0 0 0 5px var(--accent-weak), var(--shadow); } }
-@keyframes verschmelzen {
-  35% { transform: translate(calc(var(--tx) * 0.35), calc(var(--ty) * 0.35)) scale(1.08); box-shadow: 0 0 0 4px var(--ok-weak), 0 0 26px var(--ok); }
-  to { transform: translate(var(--tx), var(--ty)) scale(0.25) rotate(var(--rot)); opacity: 0; }
-}
 @keyframes paarFalsch { 15%, 55% { transform: translateX(-7px) rotate(-1.5deg); } 35%, 75% { transform: translateX(7px) rotate(1.5deg); } }
 .paar-spiel.beben .vb-inhalt { animation: beben 0.35s; }
 @keyframes beben { 25% { transform: translate(-3px, 1px); } 50% { transform: translate(3px, -1px); } 75% { transform: translate(-2px, 0); } }
@@ -405,7 +443,7 @@ button.zeile:active, button.karte-btn:active { background: var(--card2); }
 .stern { font-size: 52px; color: var(--card2); animation: sternPop 0.55s cubic-bezier(0.2, 1.6, 0.4, 1) both; animation-delay: calc(0.25s + var(--i) * 0.22s); }
 .stern.an { color: #fbbf24; text-shadow: 0 2px 12px rgba(251, 191, 36, 0.55); }
 @keyframes sternPop { from { transform: scale(0) rotate(-60deg); opacity: 0; } }
-:root[data-bewegung="aus"] .paar-karte, :root[data-bewegung="aus"] .funken span, :root[data-bewegung="aus"] .schwebe-text, :root[data-bewegung="aus"] .herz.verloren, :root[data-bewegung="aus"] .stern, :root[data-bewegung="aus"] .paar-spiel.beben .vb-inhalt { animation-duration: 0.01ms !important; animation-delay: 0s !important; }
+:root[data-bewegung="aus"] .paar-karte, :root[data-bewegung="aus"] .regal-fach, :root[data-bewegung="aus"] .funken span, :root[data-bewegung="aus"] .schwebe-text, :root[data-bewegung="aus"] .herz.verloren, :root[data-bewegung="aus"] .stern, :root[data-bewegung="aus"] .paar-spiel.beben .vb-inhalt { animation-duration: 0.01ms !important; animation-delay: 0s !important; }
 .punkte-karte { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 12px; border-left: 4px solid var(--accent); }
 .punkte-titel { font-weight: 800; margin-bottom: 8px; }
 .punkte-satz { font-size: 16.5px; line-height: 1.55; }
