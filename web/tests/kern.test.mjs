@@ -684,3 +684,72 @@ test("BilBf (Ausbildung FTA I): Themen, ausgeblendete Aufgaben, Übung und Klaus
     }
   }
 });
+
+test("Levelsystem: Kurve, Level aus XP, Erfolge", async () => {
+  const L = await import("../js/level.js");
+  // jedes Level braucht mehr XP als das vorige; Level 5 nach ca. einer Woche, Level 100 nach 2–3 Jahren
+  for (let n = 1; n < 99; n++) assert.ok(L.bedarf(n + 1) > L.bedarf(n));
+  assert.equal(L.xpFuerLevel(1), 0);
+  assert.equal(L.xpFuerLevel(2), 250);
+  assert.equal(L.xpFuerLevel(5), 1300);
+  assert.equal(L.xpFuerLevel(100), 267300);
+  let summe = 0; for (let n = 1; n < 100; n++) summe += L.bedarf(n);
+  assert.equal(summe, L.xpFuerLevel(100));
+  const woche = 4 * (30 * 9.5 + L.tagesBonus(30)); // 4 Lerntage à 30 Aufgaben, 75 % richtig
+  assert.ok(L.xpFuerLevel(5) / woche <= 1.2, "Level 5 nach etwa einer Woche");
+  const jahre = L.xpFuerLevel(100) / woche / 52;
+  assert.ok(jahre >= 2 && jahre <= 4, `Level 100 nach ${jahre.toFixed(1)} Jahren`);
+  assert.equal(L.levelAus(0).level, 1);
+  assert.equal(L.levelAus(249).level, 1);
+  assert.equal(L.levelAus(250).level, 2);
+  assert.equal(L.levelAus(1e9).level, 100);
+  assert.ok(L.levelAus(1e9).max);
+  assert.equal(L.levelAus(1300).rang.id, "kupfer");
+  assert.equal(L.levelAus(L.xpFuerLevel(10)).rang.id, "bronze");
+  // Bonus: Buchungssatz und Serie (ab der 3. richtigen in Folge, max. +10)
+  assert.equal(L.bonusFuerAntwort({ korrekt: true, typ: "auswahl", serie: 2 }), 0);
+  assert.equal(L.bonusFuerAntwort({ korrekt: true, typ: "auswahl", serie: 3 }), 2);
+  assert.equal(L.bonusFuerAntwort({ korrekt: true, typ: "buchung", serie: 20 }), 15);
+  assert.equal(L.bonusFuerAntwort({ korrekt: false, typ: "buchung", serie: 0 }), 0);
+  assert.equal(L.tagesBonus(9), 0); assert.equal(L.tagesBonus(25), 60); assert.equal(L.tagesBonus(80), 120);
+  assert.equal(L.laengsteSerie({ "2026-02-27": 1, "2026-02-28": 3, "2026-03-01": 2, "2026-03-03": 5, "2026-03-04": 0 }), 3);
+  // Erfolgs-Ids eindeutig, Level-Erfolge ohne XP
+  const ids = L.ERFOLGE.map((e) => e.id);
+  assert.equal(new Set(ids).size, ids.length);
+  assert.ok(L.ERFOLGE.filter((e) => e.reihe === "level").every((e) => e.lohn === 0));
+  // Rückwirkend: 120 richtige, 30 falsche an einem Tag → XP und Erfolge
+  const stat = { proThema: { a: { b: 150, r: 120 } }, tage: { "2026-10-20": 150 }, klausuren: [], lern: {}, pfad: {}, rekorde: { serie: 12, bs: 4 }, xpBonus: 0 };
+  const neu = L.erfolgePruefen(stat, ["nachteule"], 5);
+  const frei = new Set(neu.map((e) => e.id));
+  for (const id of ["richtig-10", "richtig-100", "serie-10", "buchung-3", "starkeTage-1", "nachteule", "level-5"]) assert.ok(frei.has(id), id);
+  assert.ok(!frei.has("richtig-250") && !frei.has("serie-25") && !frei.has("fruehaufsteher"));
+  assert.equal(L.erfolgePruefen(stat).length, 0, "nichts doppelt");
+  const x = L.xpGesamt(stat);
+  assert.equal(x.basis, 120 * 10 + 30 * 2 + 120);
+  assert.ok(x.erfolge > 0 && x.gesamt === x.basis + x.erfolge);
+  // Vereinen: frühester Zeitpunkt, Rekorde als Maximum
+  assert.deepEqual(L.erfolgeVereinen({ a: 5, b: 9 }, { b: 3, c: 7 }), { a: 5, b: 3, c: 7 });
+  assert.deepEqual(L.rekordeVereinen({ serie: 4, bs: 9 }, { serie: 7 }), { serie: 7, bs: 9 });
+});
+
+test("Synchronisierung: Bonus-XP, Erfolge und Rekorde ohne Doppelzählung", async () => {
+  const S = await import("../js/sync.js");
+  const db = {};
+  const server = {
+    holen: async (c) => (db[c] ? JSON.parse(JSON.stringify(db[c])) : null),
+    speichern: async (c, daten, v) => { if ((db[c]?.version || 0) !== v) return null; db[c] = { daten, version: v + 1 }; return v + 1; },
+  };
+  const code = S.neuerCode();
+  const sync = async (st, lok) => { const { ergebnis, lokal } = await S.abgleichen(st, lok, server, 1000); return [ergebnis(st), lokal]; };
+  let a = { proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, xpBonus: 40, erfolge: { "richtig-10": 50 }, rekorde: { serie: 6 } }, la = { code, geraet: "A" };
+  let b = { proThema: {}, klausuren: [], karten: [], lern: {}, tage: {}, xpBonus: 25, erfolge: { "richtig-10": 20, nachteule: 30 }, rekorde: { serie: 3, bs: 5 } }, lb = { code, geraet: "B" };
+  [a, la] = await sync(a, la); [b, lb] = await sync(b, lb); [a, la] = await sync(a, la);
+  for (const st of [a, b]) {
+    assert.equal(st.xpBonus, 65);
+    assert.deepEqual(st.erfolge, { "richtig-10": 20, nachteule: 30 });
+    assert.deepEqual(st.rekorde, { serie: 6, bs: 5 });
+  }
+  a.xpBonus += 10;
+  [a, la] = await sync(a, la); [a, la] = await sync(a, la); [b, lb] = await sync(b, lb);
+  assert.equal(a.xpBonus, 75); assert.equal(b.xpBonus, 75);
+});

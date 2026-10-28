@@ -8,8 +8,11 @@
 // • Lernpfade (pfad): je Block gewinnt die beste Sternzahl. Einstellungen und „Weiterlernen“ (zuletzt): der neueste Stand.
 // • Gelesene Zusammenfassungen (kompakt): Vereinigung, je Thema der neueste Zeitpunkt.
 // • Eigene Karteikarten (meineKarten): je Karte der neuere Inhalt (auch Löschen) und der neuere Lernkartei-Stand.
+// • Levelsystem: Bonus-XP (xpBonus) zählen wie die Aufgabenzähler pro Gerät; Erfolge: Vereinigung (frühester Zeitpunkt);
+//   Rekorde (längste Serien): Maximum.
 import { SYNC_SERVER } from "./sync-config.js";
 import { meineVereinen } from "./meinekarten.js";
+import { erfolgeVereinen, rekordeVereinen } from "./level.js";
 
 export const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // ohne 0/O und 1/I
 export const syncVerfuegbar = () => !!(SYNC_SERVER.url && SYNC_SERVER.key);
@@ -24,11 +27,11 @@ export const codeAnzeige = (c) => (c.match(/.{1,4}/g) || []).join("-");
 // ---------------------------------------------------------------- Zusammenführen (rein, testbar)
 
 const kopie = (x) => JSON.parse(JSON.stringify(x));
-const LEER = () => ({ proThema: {}, tage: {}, klausuren: [] });
+const LEER = () => ({ proThema: {}, tage: {}, klausuren: [], xpBonus: 0 });
 const kKey = (k) => `${k.datum}|${k.fach || "bsr"}`;
 
 /** Der zählende Teil eines Lernstands. */
-export const beitrag = (stat) => kopie({ proThema: stat.proThema || {}, tage: stat.tage || {}, klausuren: stat.klausuren || [] });
+export const beitrag = (stat) => kopie({ proThema: stat.proThema || {}, tage: stat.tage || {}, klausuren: stat.klausuren || [], xpBonus: stat.xpBonus || 0 });
 
 /** Was in `stat` seit `basis` dazugekommen ist (Zähler als Differenz, Klausuren neu oder geändert). */
 export function differenz(stat, basis) {
@@ -40,6 +43,7 @@ export function differenz(stat, basis) {
   for (const [tag, n] of Object.entries(stat.tage || {})) if (n !== (b.tage[tag] || 0)) d.tage[tag] = n - (b.tage[tag] || 0);
   const alt = new Map(b.klausuren.map((k) => [kKey(k), JSON.stringify(k)]));
   d.klausuren = (stat.klausuren || []).filter((k) => alt.get(kKey(k)) !== JSON.stringify(k));
+  d.xpBonus = (stat.xpBonus || 0) - (b.xpBonus || 0);
   return d;
 }
 
@@ -56,6 +60,7 @@ export function addiere(ziel, d) {
     const i = z.klausuren.findIndex((x) => kKey(x) === kKey(k));
     if (i >= 0) z.klausuren[i] = k; else z.klausuren.push(k);
   }
+  z.xpBonus = (z.xpBonus || 0) + (d.xpBonus || 0);
   return z;
 }
 
@@ -98,10 +103,11 @@ export function kartenAenderungen(karten = [], basisKarten = null, jetzt = Date.
 /** Gesamtstand aus den Serverdaten: Summe aller Geräte, Lernkartei und Karten wie gespeichert. */
 export function gesamt(daten) {
   let s = LEER();
-  for (const g of Object.values(daten.geraete || {})) s = addiere(s, { proThema: g.proThema || {}, tage: g.tage || {}, klausuren: g.klausuren || [] });
+  for (const g of Object.values(daten.geraete || {})) s = addiere(s, { proThema: g.proThema || {}, tage: g.tage || {}, klausuren: g.klausuren || [], xpBonus: g.xpBonus || 0 });
   s.klausuren.sort((a, b) => a.datum - b.datum);
   return { ...s, lern: daten.lern || {}, karten: Object.entries(daten.karten || {}).filter(([, e]) => e.g).map(([id]) => id),
-    pfad: daten.pfad || {}, kompakt: daten.kompakt || {}, meineKarten: daten.meineKarten || {}, einstellungen: daten.einstellungen || null, zuletzt: daten.zuletzt || null };
+    pfad: daten.pfad || {}, kompakt: daten.kompakt || {}, meineKarten: daten.meineKarten || {}, einstellungen: daten.einstellungen || null, zuletzt: daten.zuletzt || null,
+    erfolge: daten.erfolge || {}, rekorde: daten.rekorde || {} };
 }
 
 /**
@@ -127,6 +133,8 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       meineKarten: meineVereinen(d.meineKarten, vorher.meineKarten),
       einstellungen: neuerer(d.einstellungen, vorher.einstellungen),
       zuletzt: neuerer(d.zuletzt, vorher.zuletzt),
+      erfolge: erfolgeVereinen(d.erfolge, vorher.erfolge),
+      rekorde: rekordeVereinen(d.rekorde, vorher.rekorde),
     };
     const version = await server.speichern(lokal.code, daten, alt?.version || 0);
     if (version == null) continue; // ein anderes Gerät war schneller – neu holen und erneut zusammenführen
@@ -142,6 +150,8 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       s.meineKarten = meineVereinen(g.meineKarten, statJetzt.meineKarten);
       s.einstellungen = neuerer(g.einstellungen, statJetzt.einstellungen);
       s.zuletzt = neuerer(g.zuletzt, statJetzt.zuletzt);
+      s.erfolge = erfolgeVereinen(g.erfolge, statJetzt.erfolge);
+      s.rekorde = rekordeVereinen(g.rekorde, statJetzt.rekorde);
       const kNeu = kartenAenderungen(statJetzt.karten, vorher.karten, jetzt);
       const kSet = new Set(g.karten);
       for (const [id, e] of Object.entries(kNeu)) if (e.g) kSet.add(id); else kSet.delete(id);
