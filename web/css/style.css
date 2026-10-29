@@ -1344,6 +1344,22 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
    0–12 % Anlauf (ducken) · 12–42 % Wurf mit Doppelsalto zur Bildschirmmitte · 42–68 % Schweben: Strahlen, Schockwelle, Funken, Glanz ·
    68–88 % Rückflug in die Leiste · Rest: Landung mit Nachfedern. */
 .taler .t-glanz { opacity: 0; transform-box: view-box; }
+/* Pink Diamond: Brillantschliff, wandernder Regenbogenschimmer, funkelnde Facetten, rosa Leuchten */
+.taler.m-pinkdiamond { filter: drop-shadow(0 0 3px rgb(255 120 190 / 0.65)) drop-shadow(0 3px 9px rgb(224 69 154 / 0.35)); animation: pdLeuchten 3.2s ease-in-out infinite alternate; }
+.taler.m-pinkdiamond .t-edelschimmer { transform-box: view-box; animation: pdSchimmer 4.2s cubic-bezier(0.45, 0, 0.25, 1) infinite; }
+.taler.m-pinkdiamond .t-edelfunke { transform-box: fill-box; transform-origin: center; opacity: 0; animation: pdFunke 3.6s ease-in-out calc(var(--i) * 0.72s) infinite; }
+.taler.m-pinkdiamond .t-edelfunke.aussen { fill: #ffe0f0; animation-duration: 4.4s; }
+.taler.m-pinkdiamond .t-facette { opacity: 0; animation: pdFacette 4.8s ease-in-out calc(var(--i) * 0.4s) infinite; }
+.taler.m-pinkdiamond .t-feuer { animation: pdFeuer 2.6s ease-in-out calc(var(--i) * 0.5s) infinite alternate; }
+@keyframes pdFacette { 0%, 70%, 100% { opacity: 0; } 78% { opacity: 0.75; } 88% { opacity: 0.1; } }
+@keyframes pdFeuer { from { opacity: 0.25; } to { opacity: 1; } }
+@keyframes pdSchimmer { 0% { transform: translateX(-120px) skewX(-12deg); } 55%, 100% { transform: translateX(120px) skewX(-12deg); } }
+@keyframes pdFunke { 0%, 62%, 100% { opacity: 0; transform: scale(0.2) rotate(0deg); } 72% { opacity: 1; transform: scale(1.15) rotate(45deg); } 84% { opacity: 0.2; transform: scale(0.5) rotate(90deg); } }
+@keyframes pdLeuchten { from { filter: drop-shadow(0 0 3px rgb(255 120 190 / 0.55)) drop-shadow(0 3px 9px rgb(224 69 154 / 0.3)); } to { filter: drop-shadow(0 0 6px rgb(255 160 215 / 0.85)) drop-shadow(0 4px 14px rgb(224 69 154 / 0.45)); } }
+:root[data-bewegung="aus"] .taler.m-pinkdiamond { animation: none; }
+:root[data-bewegung="aus"] .taler.m-pinkdiamond .t-edelfunke:nth-of-type(odd) { opacity: 0.85; transform: none; }
+.gar-karte.pd { background: linear-gradient(150deg, color-mix(in srgb, #ff8fc8 22%, var(--card)), var(--card) 55%, color-mix(in srgb, #d8c4ff 20%, var(--card))); border-color: color-mix(in srgb, #ff8fc8 55%, transparent); }
+.gar-karte.pd .gk-name { background: linear-gradient(90deg, #e0459a, #a855f7, #e0459a); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800; }
 .taler .t-tropfen { opacity: 0; transform-box: view-box; }
 .vb-fuss { position: relative; z-index: 3; }
 .taler-buehne { --tx: min(calc(50vw - 46px), 330px); --ty: -150px; position: relative; flex: none; width: 58px; height: 58px; margin: -26px -4px -4px -6px; perspective: 700px; }
