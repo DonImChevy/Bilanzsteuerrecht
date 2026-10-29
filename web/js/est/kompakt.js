@@ -160,7 +160,7 @@ export const KOMPAKT_EST = {
       "**Gemischte Aufwendungen (BFH, Großer Senat):** Lassen sich berufliche und private Veranlassung nach **objektiven Kriterien** trennen (Zeit, Fläche, Kilometer), wird **aufgeteilt**. Ist der private oder berufliche Anteil **untergeordnet (unter 10 %)**, gilt alles als beruflich bzw. privat (BMF vom 06.07.2010; vgl. § 12 Nr. 1 S. 2 EStG).",
       "**Nicht trennbar** (z. B. bürgerliche Kleidung, Brille, Tageszeitung) → insgesamt nicht abziehbar (§ 12 Nr. 1 S. 2 EStG).",
       "**Typische Berufskleidung** (Uniform, Robe, Schutzkleidung) ist dagegen Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 6 EStG).",
-      "**§ 12 Nr. 2 EStG:** freiwillige Zuwendungen und Zuwendungen an gesetzlich unterhaltsberechtigte Personen. **Nr. 3:** Steuern vom Einkommen (ESt, Soli) und die USt auf Entnahmen. **Nr. 4:** Geldstrafen.",
+      "**§ 12 Nr. 2 EStG:** freiwillige Zuwendungen (Spenden, Geschenke), Zuwendungen auf Grund einer freiwillig begründeten Rechtspflicht und an gesetzlich unterhaltsberechtigte Personen. **Nr. 3:** Steuern vom Einkommen (festgesetzte ESt, Vorauszahlungen, Lohnsteuer, Kapitalertragsteuer, Soli und Kirchensteuer als Zuschlagsteuern), sonstige Personensteuern (Erbschaft- und Schenkungsteuer), die USt auf Entnahmen und die Nebenleistungen zu diesen Steuern. **Nr. 4:** Geldstrafen aus Strafverfahren.",
       "**Vorrang:** Was als Sonderausgabe oder außergewöhnliche Belastung ausdrücklich zugelassen ist, bleibt abziehbar („soweit … nichts anderes bestimmt“) (Einleitungssatz des § 12 EStG).",
     ],
     fallen: [
