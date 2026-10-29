@@ -37,12 +37,54 @@ export const fachVon = (vorlage) => THEMA[vorlage.thema].fach;
 
 const istBuchung = (v) => v.erzeugen(new Zufall(1)).typ === "buchung";
 const BUCHUNGS_IDS = new Set(ALLE.filter(istBuchung).map((v) => v.id));
+
+/**
+ * Lernfilter für Buchungssätze: nach der Form (Anzahl der Soll- und Haben-Konten) und nach dem Anlass.
+ * klausur = Anteil an allen Buchungssätzen der Lösungen der Semesterklausuren 01/2024–01/2026 (64 Buchungssätze).
+ */
+export const BUCHUNGS_ARTEN = [
+  { id: "einfach", gruppe: "form", titel: "Einfacher Buchungssatz", text: "Ein Konto im Soll an ein Konto im Haben", soll: 1, haben: 1, klausur: 38 },
+  { id: "mehrsoll", gruppe: "form", titel: "Mehrere Soll an ein Haben", text: "Typisch: Einkauf mit Vorsteuer, Anschaffung mit Nebenkosten", soll: 3, haben: 1, klausur: 47 },
+  { id: "mehrhaben", gruppe: "form", titel: "Ein Soll an mehrere Haben", text: "Typisch: Verkauf mit Umsatzsteuer, Zahlung mit Skonto", soll: 1, haben: 3, klausur: 12 },
+  { id: "viele", gruppe: "form", titel: "Mehrere an mehrere", text: "Selten, aber schwer: z. B. Gutschrift mit Gegenkauf", soll: 2, haben: 3, klausur: 3 },
+  { id: "berichtigung", gruppe: "anlass", titel: "Berichtigungsbuchungen", text: "Falsch Gebuchtes direkt umbuchen – kein Storno", icon: "stift" },
+  { id: "skonto", gruppe: "anlass", titel: "Skonto", text: "Erhaltene und gewährte Skonti mit Steuerkorrektur", icon: "prozent" },
+  { id: "privat", gruppe: "anlass", titel: "Entnahmen und Einlagen", text: "Privatkonten, Zahlungen vom Privatkonto", icon: "person" },
+  { id: "abschluss", gruppe: "anlass", titel: "Eröffnung und Abschluss", text: "EBK, SBK, GuV, vorbereitende Abschlussbuchungen", icon: "haken" },
+];
+const ARTEN_VON = new Map();
+/** Arten eines Buchungssatz-Generators (Form und Anlass hängen nicht von den gewürfelten Beträgen ab). */
+export function buchungsArtenVon(v) {
+  if (!ARTEN_VON.has(v.id)) {
+    const f = v.erzeugen(new Zufall(1)), l = f.loesungen?.[0], a = new Set();
+    if (l) {
+      const s = l.soll.length, h = l.haben.length, k = [...l.soll, ...l.haben].map(([x]) => x);
+      a.add(s === 1 && h === 1 ? "einfach" : h === 1 ? "mehrsoll" : s === 1 ? "mehrhaben" : "viele");
+      if (/Korrektur|Berichtigungsbuchung|voll als .* gebucht/i.test(f.text)) a.add("berichtigung");
+      if (k.some((x) => /Skonti$/.test(x))) a.add("skonto");
+      if (k.some((x) => x === "privatentnahmen" || x === "privateinlagen")) a.add("privat");
+      if (k.some((x) => ["guv", "sbk", "ebk"].includes(x)) || /abschließ|Abschluss/i.test(f.text)) a.add("abschluss");
+    }
+    ARTEN_VON.set(v.id, a);
+  }
+  return ARTEN_VON.get(v.id);
+}
+/** Zahl der Buchungssatz-Typen je Art in den gewählten Themen (ohne im Modul ausgeblendete). */
+export function buchungsAnzahl(themen, fach = null) {
+  const ohne = NICHT_IN[fach], n = { alle: 0 };
+  for (const v of ALLE) {
+    if (!themen.includes(v.thema) || !BUCHUNGS_IDS.has(v.id) || ohne?.has(v.id)) continue;
+    n.alle++;
+    for (const a of buchungsArtenVon(v)) n[a] = (n[a] || 0) + 1;
+  }
+  return n;
+}
 /** Klausurfälle (lange Sachverhalte) – im Multiple-Choice-Modus ausgelassen. */
 export const FALL_IDS = new Set(ALLE.filter((v) => v.erzeugen(new Zufall(1)).fall).map((v) => v.id));
 
 /**
  * Zieht `anzahl` Aufgaben; jede Vorlage kommt erst wieder dran, wenn alle anderen einmal dran waren.
- * filter: "buchung" (nur Buchungssätze), "uebertragung" (ÖR-Übertragungsaufgaben), "qa" (ÖR Frage-Antwort) oder null
+ * filter: "buchung" (nur Buchungssätze), "buchung:<art>" (Lernfilter, siehe BUCHUNGS_ARTEN), "uebertragung" (ÖR-Übertragungsaufgaben), "qa" (ÖR Frage-Antwort) oder null
  * ohneFaelle: Klausurfälle auslassen (Multiple-Choice-Modus)
  */
 /**
@@ -56,6 +98,7 @@ const textSchluessel = (f) => String(f.text).replace(/\s+/g, " ").trim().toLower
 export function fragen(themen, anzahl, r, filter = null, ohneFaelle = false, z = neueZiehung()) {
   let pool = ALLE.filter((v) => themen.includes(v.thema) && !(ohneFaelle && FALL_IDS.has(v.id)) && !z.ohne?.has(v.id));
   if (filter === true || filter === "buchung") pool = pool.filter((v) => BUCHUNGS_IDS.has(v.id));
+  if (typeof filter === "string" && filter.startsWith("buchung:")) pool = pool.filter((v) => BUCHUNGS_IDS.has(v.id) && buchungsArtenVon(v).has(filter.slice(8)));
   if (filter === "uebertragung") pool = pool.filter((v) => v.kategorie === "uebertragung");
   if (filter === "qa") pool = pool.filter((v) => v.kategorie !== "uebertragung" && v.kategorie !== "rechnen" && v.kategorie !== "fall");
   if (filter === "rechnen") pool = pool.filter((v) => v.kategorie === "rechnen");
