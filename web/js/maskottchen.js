@@ -74,9 +74,9 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
     <ellipse cx="47.5" cy="105" rx="9" ry="5.2" fill="var(--taler-tief)" class="t-umriss" stroke-width="2.6"/>
     <ellipse cx="72.5" cy="105" rx="9" ry="5.2" fill="var(--taler-tief)" class="t-umriss" stroke-width="2.6"/>
     ${p.links}${handDing}${p.rechts}
-    ${o.edelHinten}<circle cx="60" cy="62" r="40" fill="var(--taler-tief)" class="t-umriss" stroke-width="3"/>
+    ${o.koerper ? o.koerper(id) : `<circle cx="60" cy="62" r="40" fill="var(--taler-tief)" class="t-umriss" stroke-width="3"/>
     <circle cx="60" cy="62" r="37.4" fill="none" stroke="var(--taler-dunkel)" stroke-width="3.4" stroke-dasharray="1.5 2.3" opacity="0.55"/>
-    <circle cx="60" cy="62" r="34" fill="url(#${id})"/>${o.edel ? o.edel(id) : ""}
+    <circle cx="60" cy="62" r="34" fill="url(#${id})"/>`}${o.edel ? o.edel(id) : ""}
     <circle cx="60" cy="62" r="30.2" fill="none" stroke="var(--taler-hell)" stroke-width="1.4" opacity="0.75"/>
     <clipPath id="${id}c"><circle cx="60" cy="62" r="34"/></clipPath>
     <g clip-path="url(#${id}c)"><g transform="rotate(24 60 62)"><rect class="t-glanz" x="53" y="12" width="13" height="100" rx="6" fill="#fff"/></g></g>

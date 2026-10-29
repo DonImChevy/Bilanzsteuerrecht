@@ -1346,6 +1346,7 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .taler .t-glanz { opacity: 0; transform-box: view-box; }
 /* Pink Diamond: Brillantschliff, wandernder Regenbogenschimmer, funkelnde Facetten, rosa Leuchten */
 .taler.m-pinkdiamond { filter: drop-shadow(0 0 3px rgb(255 120 190 / 0.65)) drop-shadow(0 3px 9px rgb(224 69 154 / 0.35)); animation: pdLeuchten 3.2s ease-in-out infinite alternate; }
+.taler.m-pinkdiamond .t-ganz > .t-umriss, .taler.m-pinkdiamond .t-winkarm .t-umriss { stroke: #7a124b; }
 .taler.m-pinkdiamond .t-edelschimmer { transform-box: view-box; animation: pdSchimmer 4.2s cubic-bezier(0.45, 0, 0.25, 1) infinite; }
 .taler.m-pinkdiamond .t-edelfunke { transform-box: fill-box; transform-origin: center; opacity: 0; animation: pdFunke 3.6s ease-in-out calc(var(--i) * 0.72s) infinite; }
 .taler.m-pinkdiamond .t-edelfunke.aussen { fill: #ffe0f0; animation-duration: 4.4s; }

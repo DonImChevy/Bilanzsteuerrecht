@@ -9,7 +9,7 @@ export const NEUIGKEITEN = [
     datum: "2026-10-29",
     titel: "Pink Diamond",
     punkte: [
-      ["muenze", "Die neue Endstufe für Taler", "Im Brillantschliff mit Pavé-Rand: Facetten blitzen nacheinander auf, ein Regenbogenschimmer zieht über den Stein, Funken tanzen um die Münze. 1.500 Taler, in der Garderobe unter Metall.", "garderobe"],
+      ["muenze", "Die neue Endstufe für Taler", "Taler wird selbst zum Edelstein: geschliffener, unebener Rand statt Münzkreis, Brillantschliff, Facetten blitzen nacheinander auf, ein Regenbogenschimmer zieht über den Stein. 1.500 Taler, in der Garderobe unter Metall.", "garderobe"],
     ],
   },
   {

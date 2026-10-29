@@ -77,7 +77,7 @@ const K = [
   ["rubin", "metall", "Rubin", 1000, 0, "Feurig rot"],
   ["platin", "metall", "Platin", 1500, 30, "Ab Level 30"],
   ["holo", "metall", "Holo", 2500, 40, "Ab Level 40 – schillert in allen Farben"],
-  ["pinkdiamond", "metall", "Pink Diamond", 1500, 0, "Die Krönung: im Brillantschliff, funkelnd, mit Pavé-Rand"],
+  ["pinkdiamond", "metall", "Pink Diamond", 1500, 0, "Die Krönung: geschliffener Stein statt Münzrand, funkelnd im Brillantschliff"],
   // Aura
   ["funkeln", "aura", "Funkeln", 300, 0, "Kleine Glitzersterne"],
   ["herzen", "aura", "Herzen", 400, 0, "Schwebende Herzen"],
@@ -196,15 +196,38 @@ const PD = (() => {
   }).join("");
   const tafel = poly(Array.from({ length: 8 }, (_, k) => T(k)));
   const kanten = Array.from({ length: 8 }, (_, k) => `M${poly([S(k), T(k), S(k + 1), G(2 * k + 1), S(k)]).replace(/ /g, " L")} M${poly([S(k), G(2 * k)]).replace(" ", " L")}`).join(" ");
-  // Pavé-Rand: kleine Steine in der Fassung (Ring zwischen Münzfeld und Rand)
-  const pave = Array.from({ length: 30 }, (_, i) => { const [x, y] = pt(i * 12, 37.3); return `<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="1.55" fill="var(--taler-hell)" stroke="var(--taler-dunkel)" stroke-width="0.5"/><circle cx="${(x - 0.45).toFixed(2)}" cy="${(y - 0.5).toFixed(2)}" r="0.5" fill="#fff"/>`; }).join("");
   const stern = (x, y, r, i, aussen = false) => `<path class="t-edelfunke${aussen ? " aussen" : ""}" style="--i:${i}" d="M${x} ${y - r} Q${x + r * 0.14} ${y - r * 0.14} ${x + r} ${y} Q${x + r * 0.14} ${y + r * 0.14} ${x} ${y + r} Q${x - r * 0.14} ${y + r * 0.14} ${x - r} ${y} Q${x - r * 0.14} ${y - r * 0.14} ${x} ${y - r}Z" fill="#fff"/>`;
   const funken = [stern(...T(7), 4.2, 0), stern(...S(3), 3.4, 1), stern(...G(11), 3.8, 2), stern(...T(2), 2.8, 3), stern(...G(5), 3, 4)].join("");
   const aussen = [stern(16, 30, 5.2, 0.5, true), stern(104, 22, 4.4, 1.7, true), stern(108, 92, 3.6, 2.9, true), stern(13, 88, 3.2, 3.6, true)].join("");
-  // Münzkante: versetzte dunkle Scheibe hinter der Münze lässt sie dick wirken, mit Lichtkante unten rechts
-  const kante = `<circle cx="62.6" cy="65.2" r="40" fill="var(--taler-dunkel)" class="t-umriss" stroke-width="3"/>
-    <path d="M97 84 A40 40 0 0 1 70 102" stroke="var(--taler-gold)" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.8"/>`;
-  return { f: f.join(""), blitz: blitz.join(""), pfeile, feuer, tafel, kanten, pave, funken, aussen, kante };
+  // Umriss: kein glatter Kreis, sondern ein unregelmäßig geschliffener Rand – 26 Ecken mit leicht
+  // wechselndem Radius und Winkel (fest vorgegeben, damit der Stein immer gleich aussieht).
+  const ZACKEN = [0.6, -0.9, 1.1, -0.3, 0.8, -1.2, 0.2, 1.0, -0.7, 0.5, -1.0, 0.9, -0.2, 1.2, -0.8, 0.3, -1.1, 0.7, -0.4, 1.0, -0.6, 0.4, -1.3, 0.9, -0.1, 0.6];
+  const N = ZACKEN.length, ecke = (i) => { const j = ((i % N) + N) % N; return { gr: j * (360 / N) + ZACKEN[(j + 7) % N] * 2.6, r: 40.6 + ZACKEN[j] * 1.15 }; };
+  const V = (i) => pt(ecke(i).gr, ecke(i).r);
+  const mitte = (i) => (ecke(i).gr + (ecke(i + 1).gr < ecke(i).gr ? ecke(i + 1).gr + 360 : ecke(i + 1).gr)) / 2;
+  const C = (i) => pt(mitte(i), 33.6);
+  const umriss = Array.from({ length: N }, (_, i) => V(i));
+  const versetzt = umriss.map(([x, y]) => [x + 2.4, y + 3.1]);
+  // Kranz: je Kante ein Dreieck nach innen und je Ecke ein Dreieck zwischen zwei Kantenmitten – Helligkeit nach Lichteinfall
+  const kranz = [];
+  for (let i = 0; i < N; i++) {
+    const a = mitte(i), b = ecke(i).gr;
+    const l1 = licht(a), l2 = licht(b) - 0.25;
+    const ton = (l) => (l > 0.45 ? ["#fff", 0.55 + l * 0.25] : l > 0 ? ["#ffd6ec", 0.5] : l > -0.5 ? ["var(--taler-tief)", 0.55] : ["var(--taler-dunkel)", 0.7]);
+    const [f1, o1] = ton(l1), [f2, o2] = ton(l2);
+    kranz.push(`<polygon points="${poly([V(i), V(i + 1), C(i)])}" fill="${f1}" fill-opacity="${o1.toFixed(2)}"/>`);
+    kranz.push(`<polygon points="${poly([V(i), C(i - 1), C(i)])}" fill="${f2}" fill-opacity="${o2.toFixed(2)}"/>`);
+  }
+  const kranzKanten = Array.from({ length: N }, (_, i) => `M${poly([C(i - 1), V(i), C(i)]).replace(/ /g, " L")}`).join(" ");
+  // Glanzkanten oben links, wo das Licht die Schliffkanten trifft
+  const glanzKanten = Array.from({ length: N }, (_, i) => i).filter((i) => licht(mitte(i)) > 0.6).map((i) => `M${poly([V(i), V(i + 1)]).replace(" ", " L")}`).join(" ");
+  const koerper = (id) => `<polygon points="${poly(versetzt)}" fill="var(--taler-dunkel)" stroke="#5e0d3a" stroke-width="1.4" stroke-linejoin="round"/>
+    <polygon points="${poly(umriss)}" fill="var(--taler-tief)" stroke="#7a124b" stroke-width="1.5" stroke-linejoin="round"/>
+    ${kranz.join("")}
+    <path d="${kranzKanten}" fill="none" stroke="#fff" stroke-opacity="0.5" stroke-width="0.5" stroke-linejoin="round"/>
+    <path d="${glanzKanten}" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-opacity="0.9"/>
+    <circle cx="60" cy="62" r="34" fill="url(#${id})"/>`;
+  return { f: f.join(""), blitz: blitz.join(""), pfeile, feuer, tafel, kanten, funken, aussen, koerper };
 })();
 
 /** Zusatzschichten eines Edelstein-Metalls (id = eindeutige Kennung der Grafik für Verläufe und Masken). */
@@ -231,11 +254,11 @@ const EDEL = {
       <path d="M33 52 Q38 34 56 29 Q44 38 40 54 Z" fill="#fff" opacity="0.55"/>
       <ellipse cx="78" cy="84" rx="7" ry="2.2" transform="rotate(-38 78 84)" fill="#fff" opacity="0.28"/>
       ${PD.funken}
-    </g>
-    ${PD.pave}`,
+    </g>`,
 };
 const EDEL_AUSSEN = { pinkdiamond: PD.aussen };
-const EDEL_HINTEN = { pinkdiamond: PD.kante };
+/** Eigener Münzkörper statt des runden Rands (Umriss, Randfacetten, Münzfeld). */
+const EDEL_KOERPER = { pinkdiamond: PD.koerper };
 
 /** Kopfbedeckungen (über dem Gesicht gezeichnet). */
 const KOPF = {
@@ -424,7 +447,7 @@ export function outfitTeile(o = STANDARD) {
   const m = METALL[o.metall];
   return {
     farben: m ? `--taler-hell:${m[0]};--taler-gold:${m[1]};--taler-tief:${m[2]};--taler-dunkel:${m[3]};` : "",
-    edel: EDEL[o.metall] || null, edelAussen: EDEL_AUSSEN[o.metall] || "", edelHinten: EDEL_HINTEN[o.metall] || "", klasse: EDEL[o.metall] ? `m-${o.metall}` : "",
+    edel: EDEL[o.metall] || null, edelAussen: EDEL_AUSSEN[o.metall] || "", koerper: EDEL_KOERPER[o.metall] || null, klasse: EDEL[o.metall] ? `m-${o.metall}` : "",
     hinten: AURA[o.aura] || "",
     kopf: KOPF[o.kopf] || "",
     augen: o.augen in AUGEN ? AUGEN[o.augen] : null,
