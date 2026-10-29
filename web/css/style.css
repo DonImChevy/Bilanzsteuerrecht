@@ -683,7 +683,7 @@ mark.norm-hl { background: color-mix(in srgb, var(--gold) 32%, transparent); col
 .pfad .pf-fakten b { color: #fff; font-size: 15px; }
 .pfad .pf-normen { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 4px 0 14px; }
 .pfad .pf-norm { padding: 6px 11px; border-radius: 99px; font-size: 12.5px; font-weight: 700; color: #fde68a; background: rgba(251, 191, 36, 0.12); border: 1px solid rgba(251, 191, 36, 0.35); }
-.pfad .pf-lernkarte, .pfad .pf-frage { margin: auto 0 !important; padding: 22px 20px; border-radius: 26px; background: linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.04)); border: 1px solid var(--pf-rand); backdrop-filter: blur(16px); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.8); animation: pfKarte 0.45s cubic-bezier(0.2, 1.2, 0.4, 1) both; }
+.pfad .pf-lernkarte, .pfad .pf-frage { margin: auto !important; width: 100%; padding: 22px 20px; border-radius: 26px; background: linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.04)); border: 1px solid var(--pf-rand); backdrop-filter: blur(16px); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.8); animation: pfKarte 0.45s cubic-bezier(0.2, 1.2, 0.4, 1) both; }
 @keyframes pfKarte { from { opacity: 0; transform: translateX(40px) rotate(2deg) scale(0.96); } }
 .pfad .pf-lernkarte h2, .pfad .pf-frage h2 { margin: 12px 0 10px; font-size: 22px; line-height: 1.25; letter-spacing: -0.3px; }
 .pfad .pf-tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border-radius: 99px; font-size: 12.5px; font-weight: 800; letter-spacing: 0.4px; text-transform: uppercase; background: rgba(255,255,255,.1); }

@@ -5,6 +5,13 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-lernpfad-tablet",
+    datum: "2026-10-29",
+    klein: true,
+    titel: "Lernpfad auf dem Tablet",
+    punkte: [["lernen", "Karten mittig", "Lernkarten und Fragen im Lernpfad stehen auf breiten Bildschirmen wieder in der Mitte statt am linken Rand."]],
+  },
+  {
     id: "2026-10-buchungsfilter",
     datum: "2026-10-29",
     titel: "Buchungssätze gezielt üben",
