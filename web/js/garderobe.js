@@ -77,6 +77,7 @@ const K = [
   ["rubin", "metall", "Rubin", 1000, 0, "Feurig rot"],
   ["platin", "metall", "Platin", 1500, 30, "Ab Level 30"],
   ["holo", "metall", "Holo", 2500, 40, "Ab Level 40 – schillert in allen Farben"],
+  ["pinkdiamond", "metall", "Pink Diamond", 1500, 0, "Die Krönung: geschliffener Stein statt Münzrand, funkelnd im Brillantschliff"],
   // Aura
   ["funkeln", "aura", "Funkeln", 300, 0, "Kleine Glitzersterne"],
   ["herzen", "aura", "Herzen", 400, 0, "Schwebende Herzen"],
@@ -158,7 +159,104 @@ export const METALL = {
   rubin: ["#ffcad3", "#e85e78", "#b02f4a", "#71162b"],
   platin: ["#ffffff", "#e3eaee", "#aebdc4", "#71838c"],
   holo: ["#fff6b8", "#ff9fd6", "#83a9ff", "#5b42c0"],
+  pinkdiamond: ["#fff0f8", "#ff8fc8", "#e0459a", "#8f1659"],
 };
+
+// ---------------------------------------------------------------- Pink Diamond: Brillantschliff auf der Münze
+// Draufsicht eines Brillanten im Münzfeld (Mitte 60/62, Radius 34): Tafel (Achteck), 8 Sternfacetten,
+// 8 Hauptfacetten (Drachen), 16 Rondistfacetten. Helle und dunkle Facetten wechseln sich ab – so wirkt der Stein plastisch.
+const PD = (() => {
+  const pt = (gr, r) => { const w = (gr - 90) * Math.PI / 180; return [60 + Math.cos(w) * r, 62 + Math.sin(w) * r]; };
+  const poly = (ps) => ps.map(([x, y]) => `${x.toFixed(2)},${y.toFixed(2)}`).join(" ");
+  const T = (k) => pt(k * 45 + 22.5, 14.5), S = (k) => pt(k * 45, 24.5), G = (j) => pt(j * 22.5, 35);
+  const f = [], blitz = [];
+  // Licht von oben links (−45°): je näher eine Facette dieser Richtung, desto heller; gegenüber liegt der Schatten.
+  const licht = (gr) => Math.cos(((gr + 45) * Math.PI) / 180);
+  const facette = (ps, gr, basis, i) => {
+    const l = licht(gr) + basis;
+    const fill = l > 0.35 ? "#fff" : l > -0.2 ? "#ffd0e8" : "var(--taler-dunkel)";
+    const op = l > 0.35 ? 0.3 + l * 0.35 : l > -0.2 ? 0.28 : 0.22 - l * 0.22;
+    const poly1 = `<polygon points="${poly(ps)}" fill="${fill}" fill-opacity="${op.toFixed(2)}"/>`;
+    f.push(poly1);
+    // jede dritte Facette blitzt nacheinander auf – wie ein Stein, der im Licht gedreht wird
+    if (i % 3 === 0) blitz.push(`<polygon class="t-facette" style="--i:${(i / 3) % 12}" points="${poly(ps)}" fill="#fff"/>`);
+  };
+  let i = 0;
+  for (let k = 0; k < 8; k++) {
+    facette([S(k), T(k), S(k + 1), G(2 * k + 1)], k * 45 + 22.5, 0, i++);          // Hauptfacette (Drachen)
+    facette([T(k), T(k + 1), S(k + 1)], k * 45 + 45, 0.15, i++);                       // Sternfacette
+    facette([S(k), G(2 * k), G(2 * k + 1)], k * 45 + 11, -0.1, i++);                    // obere Rondistfacetten
+    facette([S(k), G(2 * k - 1), G(2 * k)], k * 45 - 11, 0.05, i++);
+  }
+  // Pfeile im Kern (Spiegelung der Unterteil-Facetten durch die Tafel) und Farbfeuer (Dispersion)
+  const pfeile = Array.from({ length: 8 }, (_, k) => `<polygon points="${poly([[60, 62], pt(k * 45 - 7, 13.5), pt(k * 45, 9.5), pt(k * 45 + 7, 13.5)])}" fill="var(--taler-dunkel)" fill-opacity="0.32"/>`).join("");
+  const feuer = [["#7ff3ff", 3, 0.55], ["#fff27a", 6, 0.5], ["#c9a2ff", 9, 0.55], ["#8bffc6", 13, 0.4], ["#ffb38a", 0, 0.45]].map(([farbe, k, op], n) => {
+    const a = pt(k * 22.5 + 6, 27), b = pt(k * 22.5 + 14, 31.5), c = pt(k * 22.5 + 9, 23);
+    return `<polygon class="t-feuer" style="--i:${n}" points="${poly([a, b, c])}" fill="${farbe}" fill-opacity="${op}"/>`;
+  }).join("");
+  const tafel = poly(Array.from({ length: 8 }, (_, k) => T(k)));
+  const kanten = Array.from({ length: 8 }, (_, k) => `M${poly([S(k), T(k), S(k + 1), G(2 * k + 1), S(k)]).replace(/ /g, " L")} M${poly([S(k), G(2 * k)]).replace(" ", " L")}`).join(" ");
+  const stern = (x, y, r, i, aussen = false) => `<path class="t-edelfunke${aussen ? " aussen" : ""}" style="--i:${i}" d="M${x} ${y - r} Q${x + r * 0.14} ${y - r * 0.14} ${x + r} ${y} Q${x + r * 0.14} ${y + r * 0.14} ${x} ${y + r} Q${x - r * 0.14} ${y + r * 0.14} ${x - r} ${y} Q${x - r * 0.14} ${y - r * 0.14} ${x} ${y - r}Z" fill="#fff"/>`;
+  const funken = [stern(...T(7), 4.2, 0), stern(...S(3), 3.4, 1), stern(...G(11), 3.8, 2), stern(...T(2), 2.8, 3), stern(...G(5), 3, 4)].join("");
+  const aussen = [stern(16, 30, 5.2, 0.5, true), stern(104, 22, 4.4, 1.7, true), stern(108, 92, 3.6, 2.9, true), stern(13, 88, 3.2, 3.6, true)].join("");
+  // Umriss: kein glatter Kreis, sondern ein unregelmäßig geschliffener Rand – 26 Ecken mit leicht
+  // wechselndem Radius und Winkel (fest vorgegeben, damit der Stein immer gleich aussieht).
+  const ZACKEN = [0.6, -0.9, 1.1, -0.3, 0.8, -1.2, 0.2, 1.0, -0.7, 0.5, -1.0, 0.9, -0.2, 1.2, -0.8, 0.3, -1.1, 0.7, -0.4, 1.0, -0.6, 0.4, -1.3, 0.9, -0.1, 0.6];
+  const N = ZACKEN.length, ecke = (i) => { const j = ((i % N) + N) % N; return { gr: j * (360 / N) + ZACKEN[(j + 7) % N] * 2.6, r: 40.6 + ZACKEN[j] * 1.15 }; };
+  const V = (i) => pt(ecke(i).gr, ecke(i).r);
+  const mitte = (i) => (ecke(i).gr + (ecke(i + 1).gr < ecke(i).gr ? ecke(i + 1).gr + 360 : ecke(i + 1).gr)) / 2;
+  const C = (i) => pt(mitte(i), 33.6);
+  const umriss = Array.from({ length: N }, (_, i) => V(i));
+  // Kranz: je Kante ein Dreieck nach innen und je Ecke ein Dreieck zwischen zwei Kantenmitten – Helligkeit nach Lichteinfall
+  const kranz = [];
+  for (let i = 0; i < N; i++) {
+    const a = mitte(i), b = ecke(i).gr;
+    const l1 = licht(a), l2 = licht(b) - 0.25;
+    const ton = (l) => (l > 0.45 ? ["#fff", 0.55 + l * 0.25] : l > 0 ? ["#ffd6ec", 0.5] : l > -0.5 ? ["var(--taler-tief)", 0.55] : ["var(--taler-dunkel)", 0.7]);
+    const [f1, o1] = ton(l1), [f2, o2] = ton(l2);
+    kranz.push(`<polygon points="${poly([V(i), V(i + 1), C(i)])}" fill="${f1}" fill-opacity="${o1.toFixed(2)}"/>`);
+    kranz.push(`<polygon points="${poly([V(i), C(i - 1), C(i)])}" fill="${f2}" fill-opacity="${o2.toFixed(2)}"/>`);
+  }
+  const kranzKanten = Array.from({ length: N }, (_, i) => `M${poly([C(i - 1), V(i), C(i)]).replace(/ /g, " L")}`).join(" ");
+  // Glanzkanten oben links, wo das Licht die Schliffkanten trifft
+  const glanzKanten = Array.from({ length: N }, (_, i) => i).filter((i) => licht(mitte(i)) > 0.6).map((i) => `M${poly([V(i), V(i + 1)]).replace(" ", " L")}`).join(" ");
+  const koerper = (id) => `<polygon points="${poly(umriss)}" fill="var(--taler-tief)" stroke="#7a124b" stroke-width="1.5" stroke-linejoin="round"/>
+    ${kranz.join("")}
+    <path d="${kranzKanten}" fill="none" stroke="#fff" stroke-opacity="0.5" stroke-width="0.5" stroke-linejoin="round"/>
+    <path d="${glanzKanten}" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-opacity="0.9"/>
+    <circle cx="60" cy="62" r="34" fill="url(#${id})"/>`;
+  return { f: f.join(""), blitz: blitz.join(""), pfeile, feuer, tafel, kanten, funken, aussen, koerper };
+})();
+
+/** Zusatzschichten eines Edelstein-Metalls (id = eindeutige Kennung der Grafik für Verläufe und Masken). */
+const EDEL = {
+  pinkdiamond: (id) => `<defs>
+      <linearGradient id="${id}ir" x1="0" y1="0" x2="1" y2="0.35">
+        <stop offset="0.25" stop-color="#ff5fae" stop-opacity="0"/><stop offset="0.38" stop-color="#ffc2e4" stop-opacity="0.3"/>
+        <stop offset="0.45" stop-color="#d8c4ff" stop-opacity="0.45"/><stop offset="0.5" stop-color="#ffffff" stop-opacity="0.6"/>
+        <stop offset="0.55" stop-color="#ffd4b8" stop-opacity="0.45"/><stop offset="0.62" stop-color="#9ff3ff" stop-opacity="0.3"/><stop offset="0.75" stop-color="#ff5fae" stop-opacity="0"/>
+      </linearGradient>
+      <radialGradient id="${id}tiefe" cx="0.5" cy="0.55" r="0.55"><stop offset="0" stop-color="var(--taler-dunkel)" stop-opacity="0.35"/><stop offset="0.55" stop-color="var(--taler-tief)" stop-opacity="0.12"/><stop offset="1" stop-color="#fff" stop-opacity="0.15"/></radialGradient>
+      <radialGradient id="${id}tf" cx="0.4" cy="0.35" r="0.8"><stop offset="0" stop-color="#fff" stop-opacity="0.75"/><stop offset="0.6" stop-color="#ffd1e8" stop-opacity="0.3"/><stop offset="1" stop-color="var(--taler-gold)" stop-opacity="0.1"/></radialGradient>
+      <clipPath id="${id}e"><circle cx="60" cy="62" r="34"/></clipPath>
+    </defs>
+    <g clip-path="url(#${id}e)">
+      <circle cx="60" cy="62" r="34" fill="url(#${id}tiefe)"/>
+      ${PD.f}
+      <polygon points="${PD.tafel}" fill="url(#${id}tf)" stroke="#fff" stroke-opacity="0.8" stroke-width="0.7"/>
+      ${PD.pfeile}
+      ${PD.feuer}
+      <path d="${PD.kanten}" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="0.6" stroke-linejoin="round"/>
+      ${PD.blitz}
+      <g class="t-edelschimmer"><rect x="-10" y="20" width="140" height="84" fill="url(#${id}ir)" style="mix-blend-mode:screen"/></g>
+      <path d="M33 52 Q38 34 56 29 Q44 38 40 54 Z" fill="#fff" opacity="0.55"/>
+      <ellipse cx="78" cy="84" rx="7" ry="2.2" transform="rotate(-38 78 84)" fill="#fff" opacity="0.28"/>
+      ${PD.funken}
+    </g>`,
+};
+const EDEL_AUSSEN = { pinkdiamond: PD.aussen };
+/** Eigener Münzkörper statt des runden Rands (Umriss, Randfacetten, Münzfeld). */
+const EDEL_KOERPER = { pinkdiamond: PD.koerper };
 
 /** Kopfbedeckungen (über dem Gesicht gezeichnet). */
 const KOPF = {
@@ -347,6 +445,7 @@ export function outfitTeile(o = STANDARD) {
   const m = METALL[o.metall];
   return {
     farben: m ? `--taler-hell:${m[0]};--taler-gold:${m[1]};--taler-tief:${m[2]};--taler-dunkel:${m[3]};` : "",
+    edel: EDEL[o.metall] || null, edelAussen: EDEL_AUSSEN[o.metall] || "", koerper: EDEL_KOERPER[o.metall] || null, klasse: EDEL[o.metall] ? `m-${o.metall}` : "",
     hinten: AURA[o.aura] || "",
     kopf: KOPF[o.kopf] || "",
     augen: o.augen in AUGEN ? AUGEN[o.augen] : null,

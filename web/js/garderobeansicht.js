@@ -48,7 +48,7 @@ export function garderobeView(z, { outfit, gekauft, guthaben, level, farbwelt = 
     const gesperrt = !hat && level < a.level;
     const marke = an ? `<span class="gk-marke an">${ic("haken", "klein")} Getragen</span>` : hat ? `<span class="gk-marke">Im Schrank</span>`
       : gesperrt ? `<span class="gk-marke zu">${ic("schloss", "klein")} Level ${a.level}</span>` : talerBetrag(a.preis, a.preis > guthaben ? "zu-teuer" : "");
-    return `<button class="gar-karte${z.probe === a.id ? " gewaehlt" : ""}${gesperrt ? " gesperrt" : ""}${hat ? " hat" : ""}" data-a="garProbe" data-v="${a.id}" aria-pressed="${z.probe === a.id}" aria-label="${esc(a.name)}${hat ? ", im Schrank" : `, ${a.preis} Taler`}">
+    return `<button class="gar-karte${a.id === "pinkdiamond" ? " pd" : ""}${z.probe === a.id ? " gewaehlt" : ""}${gesperrt ? " gesperrt" : ""}${hat ? " hat" : ""}" data-a="garProbe" data-v="${a.id}" aria-pressed="${z.probe === a.id}" aria-label="${esc(a.name)}${hat ? ", im Schrank" : `, ${a.preis} Taler`}">
       <span class="gk-bild">${vorschau(a)}</span><span class="gk-name">${esc(a.name)}</span>${marke}</button>`;
   }).join("");
   const anzahl = ARTIKEL.filter((a) => a.preis > 0 && gekauft[a.id]).length, kaufbarGesamt = ARTIKEL.filter((a) => a.preis > 0).length;

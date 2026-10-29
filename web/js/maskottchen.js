@@ -64,7 +64,7 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
     ? `<path d="${p.mund}" class="t-strich" stroke-width="3"/>`
     : `<path d="M50.5 70.5 Q60 86 69.5 70.5 Z" class="t-tinte" stroke-linejoin="round"/><path d="M55 78.6 Q60 74.8 65 78.6 Q60 81.6 55 78.6Z" fill="var(--taler-wange)"/>`;
   const extra = stimmung === "jubeln" ? funkeln(12, 16, 6, 0) + funkeln(107, 14, 5, 1) + funkeln(113, 52, 4, 2) : "";
-  return `<svg class="taler ${stimmung} ${klasse}" width="${groesse}" height="${groesse}" viewBox="0 0 120 120" ${o.farben ? `style="${o.farben}"` : ""} ${label ? `role="img" aria-label="${label}"` : `aria-hidden="true"`} focusable="false">
+  return `<svg class="taler ${stimmung} ${klasse} ${o.klasse}" width="${groesse}" height="${groesse}" viewBox="0 0 120 120" ${o.farben ? `style="${o.farben}"` : ""} ${label ? `role="img" aria-label="${label}"` : `aria-hidden="true"`} focusable="false">
   <defs>
     <radialGradient id="${id}" cx="0.38" cy="0.32" r="0.75"><stop offset="0" stop-color="var(--taler-hell)"/><stop offset="0.55" stop-color="var(--taler-gold)"/><stop offset="1" stop-color="var(--taler-tief)"/></radialGradient>
   </defs>
@@ -74,9 +74,9 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
     <ellipse cx="47.5" cy="105" rx="9" ry="5.2" fill="var(--taler-tief)" class="t-umriss" stroke-width="2.6"/>
     <ellipse cx="72.5" cy="105" rx="9" ry="5.2" fill="var(--taler-tief)" class="t-umriss" stroke-width="2.6"/>
     ${p.links}${handDing}${p.rechts}
-    <circle cx="60" cy="62" r="40" fill="var(--taler-tief)" class="t-umriss" stroke-width="3"/>
+    ${o.koerper ? o.koerper(id) : `<circle cx="60" cy="62" r="40" fill="var(--taler-tief)" class="t-umriss" stroke-width="3"/>
     <circle cx="60" cy="62" r="37.4" fill="none" stroke="var(--taler-dunkel)" stroke-width="3.4" stroke-dasharray="1.5 2.3" opacity="0.55"/>
-    <circle cx="60" cy="62" r="34" fill="url(#${id})"/>
+    <circle cx="60" cy="62" r="34" fill="url(#${id})"/>`}${o.edel ? o.edel(id) : ""}
     <circle cx="60" cy="62" r="30.2" fill="none" stroke="var(--taler-hell)" stroke-width="1.4" opacity="0.75"/>
     <clipPath id="${id}c"><circle cx="60" cy="62" r="34"/></clipPath>
     <g clip-path="url(#${id}c)"><g transform="rotate(24 60 62)"><rect class="t-glanz" x="53" y="12" width="13" height="100" rx="6" fill="#fff"/></g></g>
@@ -95,7 +95,7 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
     <path class="t-tropfen t-umriss" d="M93 33 Q98.5 41.5 96.5 45 Q93 48.5 89.5 45 Q87.5 41.5 93 33Z" fill="#bfe6ff" stroke-width="1.8"/>
     ${o.kopf}
   </g>
-  ${extra}
+  ${o.edelAussen}${extra}
 </svg>`;
 }
 

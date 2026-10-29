@@ -5,6 +5,14 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-pink-diamond",
+    datum: "2026-10-29",
+    titel: "Pink Diamond",
+    punkte: [
+      ["muenze", "Die neue Endstufe für Taler", "Taler wird selbst zum Edelstein: geschliffener, unebener Rand statt Münzkreis, Brillantschliff, Facetten blitzen nacheinander auf, ein Regenbogenschimmer zieht über den Stein. 1.500 Taler, in der Garderobe unter Metall.", "garderobe"],
+    ],
+  },
+  {
     id: "2026-10-est-gewinnermittlung",
     datum: "2026-10-28",
     titel: "ESt: was in jeder Klausur drankommt",
