@@ -1033,20 +1033,19 @@ const terminModul = (fach) => MODUL[fach] || ANDERES_FACH;
 const terminFaecher = () => [...moduleDerRolle(state.rolle || "studium"), ANDERES_FACH];
 const termineDerRolle = () => kommende(stat.termine, terminFaecher().map((m) => m.id));
 const datumLang = (d) => new Date(d + "T12:00").toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-/** Karte eines Klausurtermins: Abreißkalender mit den Tagen bis zur Klausur, darunter der Lernplan. */
+/** Karte eines Klausurtermins: kleiner Abreißkalender mit den Tagen, daneben Fach, Datum und Tagesziel – waagerecht wischbar. */
 function countdownKarte(e) {
   const m = terminModul(e.fach), ohne = !!m.bald, ids = ohne ? [] : idsVon(e.fach), offen = ids.filter((id) => !(stat.lern[id]?.fach >= 3)).length, n = proTag(offen, e.tage);
-  const plan = ohne ? "Für dieses Fach gibt es in der App noch keine Aufgaben." : !offen ? "Alle Aufgabentypen gefestigt – jetzt nur noch wiederholen." : e.tage <= 1 ? "Ruhig bleiben: Kompaktwissen und Fallen durchgehen."
-    : `Noch ${offen} Aufgabentypen festigen – etwa <b>${n} pro Tag</b>.`;
-  return `<button class="countdown-karte" style="--mc:${m.farbe}" data-a="${ohne ? "termine" : "modul"}" data-v="${ohne ? "" : e.fach}" aria-label="${esc(m.kurz)}: ${esc(e.titel || "Klausur")} ${countdownText(e.tage)}">
+  const plan = ohne ? "Noch ohne Aufgaben" : !offen ? "Alles gefestigt" : e.tage <= 1 ? "Kompaktwissen durchgehen" : `<b>${n} pro Tag</b> · ${offen} offen`;
+  const datum = new Date(e.datum + "T12:00").toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit", year: "numeric" });
+  return `<button class="countdown-karte" style="--mc:${m.farbe}" data-a="${ohne ? "termine" : "modul"}" data-v="${ohne ? "" : e.fach}" aria-label="${esc(m.kurz)}: ${esc(e.titel || "Klausur")} ${countdownText(e.tage)}, ${datum}">
     <span class="cd-blatt${e.tage <= 7 ? " bald" : ""}"><span class="cd-ring" aria-hidden="true"></span><b>${e.tage === 0 ? "!" : e.tage}</b><small>${e.tage === 0 ? "heute" : e.tage === 1 ? "Tag" : "Tage"}</small></span>
-    <span class="cd-text"><span class="cd-modul">${esc(m.kurz)} · ${esc(e.titel || "Klausur")}</span><b>${countdownText(e.tage)[0].toUpperCase() + countdownText(e.tage).slice(1)}</b>
-      <span class="cd-datum">${datumLang(e.datum)}</span><span class="cd-plan">${plan}</span></span></button>`;
+    <span class="cd-text"><span class="cd-modul">${esc(m.kurz)}</span><b>${esc(e.titel || "Klausur")}</b><span class="cd-datum">${datum}</span><span class="cd-plan">${plan}</span></span></button>`;
 }
 function countdownBereich() {
-  const t = termineDerRolle().slice(0, 3);
+  const t = termineDerRolle();
   return `<div class="gruppe"><div class="gruppe-titel">Klausuren <button class="titel-link" data-a="termine">${t.length ? "Bearbeiten" : "Eintragen"}</button></div>
-    ${t.length ? `<div class="countdown-liste">${t.map(countdownKarte).join("")}</div>`
+    ${t.length ? `<div class="countdown-liste">${t.map(countdownKarte).join("")}<button class="countdown-neu" data-a="termine" aria-label="Klausurtermin eintragen">${ic("plus")}<span>Termin</span></button></div>`
       : `<button class="countdown-leer" data-a="termine">${ic("kalender")}<span><b>Klausurtermin eintragen</b><span class="sub">Dann zählt die Startseite die Tage herunter und zeigt, wie viel du pro Tag schaffen solltest.</span></span></button>`}</div>`;
 }
 // ======================= Buchungssätze: Lernfilter =======================
