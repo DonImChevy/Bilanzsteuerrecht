@@ -1,7 +1,7 @@
 import * as G from "./geld.js";
 import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
 import { THEMEN, THEMA, themenFuer, pruefungsThemen, gleichbleibendErzeugen, imTeil, themaIn, vorlageIn, NICHT_IN, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
-import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer, FALL_IDS, neueZiehung } from "./katalog.js";
+import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer, FALL_IDS, neueZiehung, BUCHUNGS_ARTEN, buchungsAnzahl } from "./katalog.js";
 import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
@@ -515,7 +515,7 @@ function sitzungTitel(x) {
   if (x.duell) return "Duell " + MODUL[x.fach || "bsr"].kurz;
   if (x.wiederholung) return "Wiederholung";
   if (x.einzeln) return "Einzelaufgabe";
-  if (x.nurBuchung) return "Buchungssätze";
+  if (x.nurBuchung) { const a = BUCHUNGS_ARTEN.find((b) => x.filter === "buchung:" + b.id); return a ? a.titel : "Buchungssätze"; }
   if (x.filter === "uebertragung") return "Übertragungsaufgaben";
   if (x.filter === "rechnen") return "Rechenaufgaben";
   if (x.filter === "fall") return "Fälle einordnen";
@@ -1049,6 +1049,28 @@ function countdownBereich() {
     ${t.length ? `<div class="countdown-liste">${t.map(countdownKarte).join("")}</div>`
       : `<button class="countdown-leer" data-a="termine">${ic("kalender")}<span><b>Klausurtermin eintragen</b><span class="sub">Dann zählt die Startseite die Tage herunter und zeigt, wie viel du pro Tag schaffen solltest.</span></span></button>`}</div>`;
 }
+// ======================= Buchungssätze: Lernfilter =======================
+/** Mini-T-Konto: so viele Zeilen im Soll und im Haben, wie der Buchungssatz Konten hat. */
+const bfSchema = (soll, haben) => `<span class="bf-schema" aria-hidden="true"><span class="bf-seite"><small>S</small>${"<i></i>".repeat(soll)}</span><span class="bf-seite"><small>H</small>${"<i></i>".repeat(haben)}</span></span>`;
+function buchungFilterView() {
+  const n = buchungsAnzahl(pruefImTeil(state.fach).map((t) => t.id), state.fach), zuletzt = lies("bsr.buchungsArt", "alle");
+  const karte = (a, i) => {
+    const anz = a.id === "alle" ? n.alle : n[a.id] || 0;
+    const bild = a.gruppe === "form" ? bfSchema(a.soll, a.haben) : `<span class="bf-schema ic">${ic(a.icon)}</span>`;
+    const klausur = a.klausur ? `<span class="bf-anteil" title="Anteil an den Buchungssätzen der Klausurlösungen"><span style="width:${a.klausur * 2}%"></span></span><span class="bf-anteil-text">${a.klausur} % der Klausur-Buchungen</span>` : "";
+    return `<button class="bf-karte${zuletzt === a.id ? " zuletzt" : ""}" style="--i:${i}" data-a="buchungUeben" data-v="${a.id}"${anz ? "" : " disabled"}>
+      ${bild}<span class="bf-text"><b>${esc(a.titel)}</b><span class="sub">${esc(a.text)}</span>${klausur}</span><span class="bf-zahl">${anz}<small>Typen</small></span></button>`;
+  };
+  const form = BUCHUNGS_ARTEN.filter((a) => a.gruppe === "form"), anlass = BUCHUNGS_ARTEN.filter((a) => a.gruppe === "anlass");
+  const teil = state.fach === "bsr" ? ({ 1: " aus Teil I", 2: " aus Teil II", beide: " aus Teil I und II" }[state.bilrTeil] || "") : "";
+  return `<div class="bf-liste">${karte({ id: "alle", gruppe: "anlass", titel: "Alle Buchungssätze", text: `Gemischt${teil} – immer neue Beträge`, icon: "mischen" }, 0)}</div>
+    <div class="gruppe-titel" style="margin-top:18px">Nach Form</div>
+    <div class="bf-liste">${form.map((a, i) => karte(a, i + 1)).join("")}</div>
+    <div class="gruppe-titel" style="margin-top:18px">Nach Anlass</div>
+    <div class="bf-liste">${anlass.map((a, i) => karte(a, i + 5)).join("")}</div>
+    <div class="gruppe-fuss" style="margin:12px 4px 20px">Anteile: alle 64 Buchungssätze aus den Lösungen der Semesterklausuren 01/2024 bis 01/2026. Zusammengesetzte Buchungssätze machen fast zwei Drittel aus.</div>`;
+}
+
 function termineView() {
   const alle = termineDerRolle(), heute = tagSchluessel();
   const id = state.sheet?.bearbeiten, e = id && stat.termine?.[id] && !stat.termine[id].x ? stat.termine[id] : null;
@@ -1202,7 +1224,7 @@ function tabLernen() {
       kachel("fall", "lernen", "Fälle einordnen", "Ort, Befreiung, Steuersatz, VAZ") +
       kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Prüfschema und Klausurfälle") +
       kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") + paareKachel
-    : kachel("buchung", "tkonto", "Buchungssätze", "Immer neue Beträge") +
+    : kachel("buchung", "tkonto", "Buchungssätze", "Einfach, zusammengesetzt, Berichtigung") +
       kachel("alles", "mischen", "Gemischt", "Buchen, Rechnen, Theorie") + paareKachel;
   const breit = (schnell.match(/class="kachel/g) || []).length % 2 === 0 ? " breit" : ""; // letzte Kachel füllt die Reihe auf
   const schwachKachel = schwach && quote(zaehler(schwach.id)) < 0.8
@@ -2189,6 +2211,9 @@ function sheetView() {
   } else if (sh.art === "startAnpassen") {
     titel = "Startseite anpassen";
     inhalt = startAnpassenView();
+  } else if (sh.art === "buchungFilter") {
+    titel = "Buchungssätze üben";
+    inhalt = buchungFilterView();
   } else if (sh.art === "termine") {
     titel = "Klausurtermine";
     inhalt = termineView();
@@ -2409,10 +2434,15 @@ const AKTIONEN = {
     state.tab = "lernen";
     const alle = pruefImTeil(state.fach).map((t) => t.id);
     const basis = { modus: "uebung", fach: state.fach };
-    if (v === "buchung") starte({ ...basis, themen: alle, nurBuchung: true });
+    if (v === "buchung") { state.sheet = { art: "buchungFilter" }; render(); return; }
     else if (["qa", "uebertragung", "rechnen", "fall"].includes(v)) starte({ ...basis, themen: alle, filter: v });
     else if (v === "alles") starte({ ...basis, themen: alle });
     else starte({ ...basis, themen: [el.dataset.t] });
+  },
+  buchungUeben: (v) => {
+    schreib("bsr.buchungsArt", v);
+    state.tab = "lernen";
+    starte({ modus: "uebung", fach: state.fach, themen: pruefImTeil(state.fach).map((t) => t.id), nurBuchung: true, filter: v === "alle" ? "buchung" : "buchung:" + v });
   },
   thema: (v) => { const f = state.fach === "bbf" && themaIn(v, "bbf") ? "bbf" : fachFuerThema(v); fachSetzen(f); if (state.tab === "start") { state.tab = "lernen"; state.suche = ""; } starte({ modus: "uebung", fach: f, themen: [v] }); },
   einzeln: (v) => { const t = ALLE.find((x) => x.id === v).thema, f = fachFuerThema(t); fachSetzen(f); state.tab = "lernen"; state.suche = ""; starte({ modus: "uebung", fach: f, themen: [t], ids: [v], einzeln: true }); },

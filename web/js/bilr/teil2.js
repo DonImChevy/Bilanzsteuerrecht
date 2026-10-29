@@ -666,6 +666,56 @@ const fall = (() => {
     { fall: true });
 })();
 
-export const BSR_TEIL2 = [...gob, ...zurechnung, ...ak, ...grundstueck, fall, ...afa, ...teilwert, ...abgrenzung, ...privat];
+// ---------------------------------------------------------------- Berichtigungsbuchungen (Klausuren 01/2025, 01/2026):
+// Der Kaufmann hat schon gebucht – gesucht ist die Berichtigung direkt vom falschen auf das richtige Konto, kein Storno.
+const KQ = "Semesterklausuren – Berichtigungsbuchungen";
+const BER = "Bilden Sie den Berichtigungsbuchungssatz (keine Stornobuchung, ohne AfA).";
+const korrekturen = [
+  V("t2-korr-anlage", "bsr-ak", (r) => {
+    const [konto, was, nd] = r.wahl([["maschinen", "eine Verpackungsmaschine", 10], ["fuhrpark", "einen Lieferwagen", 6], ["bga", "eine Ladeneinrichtung", 10]]);
+    const n = r.betrag(6000, 48000, 100), u = ust(n), m = MONAT[r.zahl(1, 10)];
+    return buchung("t2-korr-anlage", "bsr-ak",
+      `Im ${m} 01 kaufte der Kaufmann ${was} für ${eur(n)} zzgl. ${eur(u)} USt (betriebsgewöhnliche Nutzungsdauer ${nd} Jahre) und bezahlte per Bank. Gebucht hat er: Sonstige betriebliche Aufwendungen ${eur(n + u)} an Bank ${eur(n + u)}.\n\n${BER}`,
+      satz([[konto, n], ["vorsteuer", u]], [["sonstigeAufwendungen", n + u]]),
+      `Abnutzbares Anlagevermögen ist mit den Anschaffungskosten zu aktivieren (§ 246 Abs. 1, § 253 Abs. 1 S. 1 HGB, § 6 Abs. 1 Nr. 1 EStG); die abziehbare Vorsteuer gehört nicht dazu (§ 9b Abs. 1 EStG). Der Aufwand wird direkt umgebucht: ${eur(n)} auf das Anlagekonto, ${eur(u)} auf Vorsteuer. Gewinnauswirkung: + ${eur(n + u)} (die AfA folgt gesondert).`,
+      { quelle: KQ });
+  }),
+  V("t2-korr-grundstueck", "bsr-grundstueck", (r) => {
+    const kp = r.betrag(300000, 900000, 10000), anteil = r.wahl([20, 25, 30, 40]), gub = kp * anteil / 100, geb = kp - gub;
+    return buchung("t2-korr-grundstueck", "bsr-grundstueck",
+      `Der Kaufmann erwarb ein bebautes Betriebsgrundstück für ${eur(kp)} (umsatzsteuerfrei, § 4 Nr. 9 Buchst. a UStG); ${anteil} % des Kaufpreises entfallen auf den Grund und Boden. Gebucht hat er: Sonstige betriebliche Aufwendungen ${eur(kp)} an Bank ${eur(kp)}.\n\n${BER}`,
+      satz([["grundUndBoden", gub], ["gebaeude", geb]], [["sonstigeAufwendungen", kp]]),
+      `Grund und Boden (nicht abnutzbar) und Gebäude (abnutzbar) sind getrennte Wirtschaftsgüter des Anlagevermögens und mit ihren Anschaffungskosten zu aktivieren (§ 253 Abs. 1 S. 1, § 255 Abs. 1 HGB, § 6 Abs. 1 Nr. 1, 2 EStG). Aufteilung: Grund und Boden ${anteil} % = ${eur(gub)}, Gebäude ${eur(geb)}. Umbuchung direkt aus dem Aufwand; Gewinnauswirkung + ${eur(kp)}.`,
+      { quelle: KQ });
+  }),
+  V("t2-korr-bezugskosten", "bsr-ak", (r) => {
+    const n = r.betrag(80, 600, 10), u = ust(n);
+    return buchung("t2-korr-bezugskosten", "bsr-ak",
+      `Für die Anlieferung von Waren zahlte der Kaufmann dem Spediteur bar ${eur(n)} zzgl. ${eur(u)} USt (ordnungsgemäße Rechnung liegt vor). Gebucht hat er: Sonstige betriebliche Aufwendungen ${eur(n + u)} an Kasse ${eur(n + u)}.\n\nBilden Sie den Berichtigungsbuchungssatz (keine Stornobuchung).`,
+      satz([["warenbezugskosten", n], ["vorsteuer", u]], [["sonstigeAufwendungen", n + u]]),
+      `Frachtkosten beim Wareneinkauf sind Anschaffungsnebenkosten (§ 255 Abs. 1 S. 2 HGB) → Warenbezugskosten (Unterkonto des WEK); die Vorsteuer ist abziehbar (§ 15 Abs. 1 S. 1 Nr. 1 UStG) und gehört nicht zu den Anschaffungskosten (§ 9b Abs. 1 EStG). Gewinnauswirkung: + ${eur(u)} (nur die Vorsteuer war zu Unrecht Aufwand).`,
+      { quelle: KQ });
+  }),
+  V("t2-korr-privat-bezahlt", "bsr-entnahme-einlage", (r) => {
+    const n = r.betrag(2000, 30000, 100), u = ust(n);
+    return buchung("t2-korr-privat-bezahlt", "bsr-entnahme-einlage",
+      `Den Wareneinkauf über ${eur(n)} zzgl. ${eur(u)} USt hat der Kaufmann zutreffend gebucht (WEK und Vorsteuer an Verbindlichkeiten aus L.u.L.). Die Rechnung bezahlte er von seinem privaten Bankkonto, gebucht hat er die Zahlung jedoch mit „Verbindlichkeiten aus L.u.L. an Bank ${eur(n + u)}“.\n\nBilden Sie den Berichtigungsbuchungssatz (keine Stornobuchung).`,
+      einfach("bank", "privateinlagen", n + u),
+      `Die Zahlung vom Privatkonto ist eine Einlage (§ 4 Abs. 1 S. 8 EStG), das betriebliche Bankkonto wurde nicht belastet. Die Verbindlichkeit ist richtig ausgebucht; zu berichtigen ist nur das Gegenkonto: Bank an Privateinlagen ${eur(n + u)}. Keine Gewinnauswirkung.`,
+      { quelle: KQ });
+  }),
+  // Klausur 01/2024: Gutschrift für einen Mangel, der Kunde kauft dafür etwas anderes und lässt sich den Rest auszahlen
+  V("wu-gutschrift-gegenkauf", "warenunterkonten", (r) => {
+    const g = r.betrag(150, 800, 10), wn = r.betrag(40, Math.floor(g / 100 * 0.7 / 10) * 10, 10);
+    const gu = ust(g), wu = ust(wn), rest = g + gu - wn - wu;
+    return buchung("wu-gutschrift-gegenkauf", "warenunterkonten",
+      `Ein Kunde, der im Dezember bar eingekauft hat, beanstandet einen Mangel und erhält eine Gutschrift über ${eur(g + gu)} (inkl. 19 % USt). Er kauft dafür sofort einen anderen Artikel für ${eur(wn + wu)} (inkl. 19 % USt) und lässt sich den Restbetrag bar auszahlen. Buchungssatz (ein zusammengesetzter Buchungssatz)?`,
+      satz([["erloesschmaelerungen", g], ["umsatzsteuer", gu]], [["umsatzerloese", wn], ["umsatzsteuer", wu], ["kasse", rest]]),
+      `Die Gutschrift ist ein Preisnachlass → Erlösschmälerungen ${eur(g)} und Minderung der Umsatzsteuer ${eur(gu)} (§ 17 Abs. 1 S. 1 UStG). Der Gegenkauf ist ein neuer Umsatz: WVK ${eur(wn)} und Umsatzsteuer ${eur(wu)}. Ausgezahlt wird der Rest: ${eur(g + gu)} − ${eur(wn + wu)} = ${eur(rest)}. (Die beiden Umsatzsteuerbeträge dürfen auch saldiert gebucht werden.)`,
+      { alternativen: [satz([["erloesschmaelerungen", g], ["umsatzsteuer", gu - wu]], [["umsatzerloese", wn], ["kasse", rest]])], quelle: KQ.replace("Berichtigungsbuchungen", "Entgeltsminderungen") });
+  }),
+];
+
+export const BSR_TEIL2 = [...gob, ...zurechnung, ...ak, ...grundstueck, fall, ...afa, ...teilwert, ...abgrenzung, ...privat, ...korrekturen];
 export const MC_BSR_TEIL2 = Object.fromEntries(BSR_TEIL2.filter((v) => v.mc).map((v) => [v.id, v.mc]));
 export const SW_BSR_TEIL2 = Object.fromEntries(BSR_TEIL2.filter((v) => v.sw).map((v) => [v.id, v.sw]));

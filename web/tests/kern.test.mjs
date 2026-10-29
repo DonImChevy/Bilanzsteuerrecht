@@ -859,3 +859,18 @@ test("Gesetzesfarben: Standard, Palette, eigene Farbe lesbar in hell und dunkel,
   assert.equal(new Set(F.PALETTE.map((p) => p.id)).size, F.PALETTE.length);
   for (const g of F.GESETZE) assert.ok(F.PALETTE.some((p) => p.id === g.standard), g.id);
 });
+
+test("Buchungssätze: Lernfilter nach Form und Anlass", async () => {
+  const K = await import("../js/katalog.js");
+  const bsr = THEMEN.filter((t) => t.fach === "bsr").map((t) => t.id);
+  const n = K.buchungsAnzahl(bsr, "bsr");
+  for (const a of K.BUCHUNGS_ARTEN) assert.ok(n[a.id] > 0, "keine Aufgaben für " + a.id);
+  assert.equal(K.BUCHUNGS_ARTEN.filter((a) => a.klausur).reduce((s, a) => s + a.klausur, 0), 100);
+  const form = (f) => { const s = f.loesungen[0].soll.length, h = f.loesungen[0].haben.length; return s === 1 && h === 1 ? "einfach" : h === 1 ? "mehrsoll" : s === 1 ? "mehrhaben" : "viele"; };
+  for (const art of ["einfach", "mehrsoll", "mehrhaben", "viele"]) {
+    const fr = K.fragen(bsr, 12, new Zufall(5), "buchung:" + art);
+    assert.ok(fr.length > 0, art);
+    for (const f of fr) assert.equal(form(f), art, f.id);
+  }
+  for (const f of K.fragen(bsr, 8, new Zufall(2), "buchung:berichtigung")) assert.match(f.text, /Korrektur|Berichtigungsbuchung|voll als .* gebucht/i);
+});

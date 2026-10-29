@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-buchungsfilter",
+    datum: "2026-10-29",
+    titel: "Buchungssätze gezielt üben",
+    punkte: [
+      ["tkonto", "Lernfilter für Buchungssätze", "Unter „Buchungssätze“ wählst du jetzt die Form – einfach, mehrere Soll an ein Haben, ein Soll an mehrere Haben, mehrere an mehrere – oder den Anlass: Berichtigung, Skonto, Privat, Abschluss. Dazu siehst du, wie oft jede Form in den Klausuren vorkam."],
+      ["stift", "Neue Berichtigungsbuchungen", "Falsch Gebuchtes direkt umbuchen wie in der Klausur – Anlagegut oder Grundstück als Aufwand gebucht, Fracht ohne Vorsteuer, Zahlung vom Privatkonto. Dazu: Gutschrift mit Gegenkauf."],
+    ],
+  },
+  {
     id: "2026-10-pink-diamond",
     datum: "2026-10-29",
     titel: "Pink Diamond",
