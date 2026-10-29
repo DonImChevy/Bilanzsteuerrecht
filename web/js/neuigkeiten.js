@@ -5,6 +5,14 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-lernpfad-tablet",
+    datum: "2026-10-29",
+    klein: true,
+    titel: "Lernpfad: Tablet und § 12 EStG",
+    punkte: [["lernen", "Karten mittig", "Lernkarten und Fragen im Lernpfad stehen auf breiten Bildschirmen wieder in der Mitte statt am linken Rand."],
+      ["haken", "ESt § 12 vollständig", "Lernpfad und Kompaktwissen nennen jetzt alle Abzugsverbote: Zuwendungen (Nr. 2) und sämtliche Personensteuern (Nr. 3) – gemischte Aufwendungen haben eine eigene Karte."]],
+  },
+  {
     id: "2026-10-buchungsfilter",
     datum: "2026-10-29",
     titel: "Buchungssätze gezielt üben",
