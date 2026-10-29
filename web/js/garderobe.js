@@ -207,7 +207,6 @@ const PD = (() => {
   const mitte = (i) => (ecke(i).gr + (ecke(i + 1).gr < ecke(i).gr ? ecke(i + 1).gr + 360 : ecke(i + 1).gr)) / 2;
   const C = (i) => pt(mitte(i), 33.6);
   const umriss = Array.from({ length: N }, (_, i) => V(i));
-  const versetzt = umriss.map(([x, y]) => [x + 2.4, y + 3.1]);
   // Kranz: je Kante ein Dreieck nach innen und je Ecke ein Dreieck zwischen zwei Kantenmitten – Helligkeit nach Lichteinfall
   const kranz = [];
   for (let i = 0; i < N; i++) {
@@ -221,8 +220,7 @@ const PD = (() => {
   const kranzKanten = Array.from({ length: N }, (_, i) => `M${poly([C(i - 1), V(i), C(i)]).replace(/ /g, " L")}`).join(" ");
   // Glanzkanten oben links, wo das Licht die Schliffkanten trifft
   const glanzKanten = Array.from({ length: N }, (_, i) => i).filter((i) => licht(mitte(i)) > 0.6).map((i) => `M${poly([V(i), V(i + 1)]).replace(" ", " L")}`).join(" ");
-  const koerper = (id) => `<polygon points="${poly(versetzt)}" fill="var(--taler-dunkel)" stroke="#5e0d3a" stroke-width="1.4" stroke-linejoin="round"/>
-    <polygon points="${poly(umriss)}" fill="var(--taler-tief)" stroke="#7a124b" stroke-width="1.5" stroke-linejoin="round"/>
+  const koerper = (id) => `<polygon points="${poly(umriss)}" fill="var(--taler-tief)" stroke="#7a124b" stroke-width="1.5" stroke-linejoin="round"/>
     ${kranz.join("")}
     <path d="${kranzKanten}" fill="none" stroke="#fff" stroke-opacity="0.5" stroke-width="0.5" stroke-linejoin="round"/>
     <path d="${glanzKanten}" fill="none" stroke="#fff" stroke-width="1.3" stroke-linecap="round" stroke-opacity="0.9"/>
