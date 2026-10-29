@@ -5,6 +5,13 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-countdown-leiste",
+    datum: "2026-10-29",
+    klein: true,
+    titel: "Klausuren kompakter",
+    punkte: [["kalender", "Klausur-Countdown zum Wischen", "Die Klausurtermine auf der Startseite stehen jetzt als kleine Karten nebeneinander – seitlich wischen, alle Termine statt nur drei."]],
+  },
+  {
     id: "2026-10-lernpfad-tablet",
     datum: "2026-10-29",
     klein: true,
