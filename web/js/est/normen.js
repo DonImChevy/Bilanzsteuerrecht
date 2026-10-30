@@ -1,5 +1,5 @@
 // Automatisch erzeugt aus den Gesetzestexten (tools/bilr_normen.py) – nicht von Hand ändern.
-// Quelle: www.gesetze-im-internet.de. EStG: zuletzt geändert durch Artikel 1 des Gesetzes vom 15. Oktober 2026 (BGBl. 2026 I Nr. 307) · AO: zuletzt geändert durch Artikel 15 Absatz 6 des Gesetzes vom 3. Juli 2026 (BGBl. 2026 I Nr. 199)
+// Quelle: www.gesetze-im-internet.de. EStG: zuletzt geändert durch Artikel 1 des Gesetzes vom 15. Oktober 2026 (BGBl. 2026 I Nr. 307) · AO: zuletzt geändert durch Artikel 15 Absatz 6 des Gesetzes vom 3. Juli 2026 (BGBl. 2026 I Nr. 199) · LStDV: zuletzt geändert durch Artikel 3 der Verordnung vom 19. Dezember 2025 (BGBl. 2025 I Nr. 372)
 export const NORMEN_EST = [
 {
 "g": "EStG",
@@ -614,5 +614,39 @@ export const NORMEN_EST = [
 }
 ],
 "auszug": true
+},
+{
+"g": "LStDV",
+"nr": "1",
+"titel": "Arbeitnehmer, Arbeitgeber",
+"abs": [
+{
+"abs": "1",
+"text": "Arbeitnehmer sind Personen, die in öffentlichem oder privatem Dienst angestellt oder beschäftigt sind oder waren und die aus diesem Dienstverhältnis oder einem früheren Dienstverhältnis Arbeitslohn beziehen. Arbeitnehmer sind auch die Rechtsnachfolger dieser Personen, soweit sie Arbeitslohn aus dem früheren Dienstverhältnis ihres Rechtsvorgängers beziehen."
+},
+{
+"abs": "2",
+"text": "Ein Dienstverhältnis (Absatz 1) liegt vor, wenn der Angestellte (Beschäftigte) dem Arbeitgeber (öffentliche Körperschaft, Unternehmer, Haushaltsvorstand) seine Arbeitskraft schuldet. Dies ist der Fall, wenn die tätige Person in der Betätigung ihres geschäftlichen Willens unter der Leitung des Arbeitgebers steht oder im geschäftlichen Organismus des Arbeitgebers dessen Weisungen zu folgen verpflichtet ist."
+},
+{
+"abs": "3",
+"text": "Arbeitnehmer ist nicht, wer Lieferungen und sonstige Leistungen innerhalb der von ihm selbständig ausgeübten gewerblichen oder beruflichen Tätigkeit im Inland gegen Entgelt ausführt, soweit es sich um die Entgelte für diese Lieferungen und sonstigen Leistungen handelt."
+}
+]
+},
+{
+"g": "LStDV",
+"nr": "2",
+"titel": "Arbeitslohn",
+"abs": [
+{
+"abs": "1",
+"text": "Arbeitslohn sind alle Einnahmen, die dem Arbeitnehmer aus dem Dienstverhältnis zufließen. Es ist unerheblich, unter welcher Bezeichnung oder in welcher Form die Einnahmen gewährt werden."
+},
+{
+"abs": "2",
+"text": "Zum Arbeitslohn gehören auch\n1. Einnahmen im Hinblick auf ein künftiges Dienstverhältnis;\n2. Einnahmen aus einem früheren Dienstverhältnis, unabhängig davon, ob sie dem zunächst Bezugsberechtigten oder seinem Rechtsnachfolger zufließen. Bezüge, die ganz oder teilweise auf früheren Beitragsleistungen des Bezugsberechtigten oder seines Rechtsvorgängers beruhen, gehören nicht zum Arbeitslohn, es sei denn, daß die Beitragsleistungen Werbungskosten gewesen sind;\n3. Ausgaben, die ein Arbeitgeber leistet, um einen Arbeitnehmer oder diesem nahestehende Personen für den Fall der Krankheit, des Unfalls, der Invalidität, des Alters oder des Todes abzusichern (Zukunftssicherung). Voraussetzung ist, daß der Arbeitnehmer der Zukunftssicherung ausdrücklich oder stillschweigend zustimmt. Ist bei einer Zukunftssicherung für mehrere Arbeitnehmer oder diesen nahestehende Personen in Form einer Gruppenversicherung oder Pauschalversicherung der für den einzelnen Arbeitnehmer geleistete Teil der Ausgaben nicht in anderer Weise zu ermitteln, so sind die Ausgaben nach der Zahl der gesicherten Arbeitnehmer auf diese aufzuteilen. Nicht zum Arbeitslohn gehören Ausgaben, die nur dazu dienen, dem Arbeitgeber die Mittel zur Leistung einer dem Arbeitnehmer zugesagten Versorgung zu verschaffen;\n4. Entschädigungen, die dem Arbeitnehmer oder seinem Rechtsnachfolger als Ersatz für entgangenen oder entgehenden Arbeitslohn oder für die Aufgabe oder Nichtausübung einer Tätigkeit gewährt werden;\n5. besondere Zuwendungen, die auf Grund des Dienstverhältnisses oder eines früheren Dienstverhältnisses gewährt werden, zum Beispiel Zuschüsse im Krankheitsfall;\n6. besondere Entlohnungen für Dienste, die über die regelmäßige Arbeitszeit hinaus geleistet werden, wie Entlohnung für Überstunden, Überschichten, Sonntagsarbeit;\n7. Lohnzuschläge, die wegen der Besonderheit der Arbeit gewährt werden;\n8. Entschädigungen für Nebenämter und Nebenbeschäftigungen im Rahmen eines Dienstverhältnisses."
+}
+]
 }
 ];

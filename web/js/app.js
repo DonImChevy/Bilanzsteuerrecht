@@ -1555,7 +1555,7 @@ function kontenInhalt() {
 const GESETZE = {
   oer: [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"]],
   bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["EStDV", "Einkommensteuer-Durchführungsverordnung (EStDV)"], ["UStG", "Umsatzsteuergesetz (UStG)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
-  est: [["EStG", "Einkommensteuergesetz (EStG)"], ["EStR", "Einkommensteuer-Richtlinien (EStR)"], ["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
+  est: [["EStG", "Einkommensteuergesetz (EStG)"], ["EStR", "Einkommensteuer-Richtlinien (EStR)"], ["LStDV", "Lohnsteuer-Durchführungsverordnung (LStDV)"], ["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
   ust: [["UStG", "Umsatzsteuergesetz (UStG)"]],
 };
 /** Paragrafen in Gesetzesreihenfolge (§ 3 vor § 3a vor § 4); Präambel und Nummern ohne Ziffer zuerst. */

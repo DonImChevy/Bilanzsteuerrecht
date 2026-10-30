@@ -60,7 +60,7 @@ export function normenAusText(text) {
     const ref = m[2] && norm(`GG ${nr} ${m[2]}`) ? `GG ${nr} ${m[2]}` : `GG ${nr}`;
     if (!refs.includes(ref) && !refs.includes(`GG ${nr}`)) refs.push(ref);
   }
-  for (const m of String(text).matchAll(/§§?[\s\u00a0]*([^§]*?)[\s\u00a0](HGB|AO|EStG|UStG|BWahlG|PartG)\b/g)) {
+  for (const m of String(text).matchAll(/§§?[\s\u00a0]*([^§]*?)[\s\u00a0](HGB|AO|EStG|UStG|BWahlG|PartG|LStDV)\b/g)) {
     const g = m[2];
     let vorher = null;
     for (const teil of m[1].split(/,|\bi\.\s?V\.\s?m\.|\bund\b/)) {
