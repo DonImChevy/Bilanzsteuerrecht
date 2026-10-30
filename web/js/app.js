@@ -20,7 +20,7 @@ import { ic } from "./icons.js";
 import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, codeAnzeige, abgleichen, SERVER } from "./sync.js";
 import qrcode from "./lib/qrcode.js";
 import { taler, talerBuehne, TALER_SPRUECHE, talerOutfitSetzen } from "./maskottchen.js";
-import { kasse, kaufbar, outfitVon, artikel, STANDARD, FARBWELTEN } from "./garderobe.js";
+import { kasse, kaufbar, outfitVon, artikel, preisFuer, STANDARD, FARBWELTEN } from "./garderobe.js";
 import { bildLaden, bildSpeichern, bildVerkleinern } from "./bildspeicher.js";
 import { garderobeView, talerBetrag } from "./garderobeansicht.js";
 import { kommende, countdownText, proTag } from "./termine.js";
@@ -2742,18 +2742,19 @@ const AKTIONEN = {
   },
   farbwelt: (v) => { if (!FARBWELTEN.some((f) => f.id === v)) return; state.farbwelt = v; einstellungMerken("farbwelt", v); render(); },
   hintergrundWaehlen: () => { state.garderobe = { slot: "hintergrund", probe: null }; state.sheet = { art: "garderobe" }; render(); },
-  garderobe: () => { state.garderobe.probe = null; state.sheet = { art: "garderobe" }; render(); },
+  garderobe: (v) => { state.garderobe.probe = null; if (v) state.garderobe.slot = v; state.sheet = { art: "garderobe" }; render(); },
   garSlot: (v) => { state.garderobe = { slot: v, probe: null }; render(); },
   garProbe: (v) => { state.garderobe.probe = state.garderobe.probe === v ? null : v; render(); document.querySelector(".sheet .vb-inhalt")?.scrollTo({ top: 0, behavior: state.bewegungAus ? "auto" : "smooth" }); },
   garKaufen: (v) => {
     const a = artikel(v), k = kaufbar(v, { gekauft: stat.gekauft || {}, guthaben: meineKasse().guthaben, level: levelJetzt().level });
     if (!a || !k.ok) return;
+    const preis = preisFuer(v, stat.gekauft || {});
     stat.gekauft = { ...(stat.gekauft || {}), [v]: Date.now() };
     stat.outfit = { ...meinOutfit(), [a.slot]: v, t: Date.now() };
     speichern();
     render();
     const fig = document.querySelector(".gar-figur");
-    if (fig) { const [x, y] = mitte(fig); funken(x, y); schwebeText(x, y - 40, `−${a.preis} Taler`); fig.classList.add("gekauft"); }
+    if (fig) { const [x, y] = mitte(fig); funken(x, y); schwebeText(x, y - 40, `−${preis} Taler`); fig.classList.add("gekauft"); }
     if (navigator.vibrate) navigator.vibrate([15, 40, 25]);
   },
   garAnziehen: (v) => { const a = artikel(v); if (!a) return; stat.outfit = { ...meinOutfit(), [a.slot]: v, t: Date.now() }; speichern(); render(); },

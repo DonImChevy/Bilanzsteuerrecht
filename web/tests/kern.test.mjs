@@ -874,3 +874,14 @@ test("Buchungssätze: Lernfilter nach Form und Anlass", async () => {
   }
   for (const f of K.fragen(bsr, 8, new Zufall(2), "buchung:berichtigung")) assert.match(f.text, /Korrektur|Berichtigungsbuchung|voll als .* gebucht/i);
 });
+
+test("Garderobe: Set Make-up & Wimpern rechnet gekaufte Einzelteile an", async () => {
+  const G = await import("../js/garderobe.js");
+  assert.equal(G.preisFuer("glamour", {}), 300);
+  assert.equal(G.preisFuer("glamour", { makeup: 1 }), 50);
+  assert.equal(G.kasse(10000, { makeup: 1, glamour: 2 }).ausgegeben, 300);
+  assert.equal(G.kasse(10000, { glamour: 1 }).ausgegeben, 300);
+  assert.ok(G.besitzt("wimpern", { glamour: 1 }) && G.besitzt("glamour", { makeup: 1, wimpern: 1 }));
+  assert.ok(!G.artikel("perlenkette"), "Perlenkette ist aus dem Katalog");
+  for (const s of G.SLOTS) assert.ok(s.id in G.STANDARD, `Bereich ${s.id} fehlt in STANDARD`);
+});

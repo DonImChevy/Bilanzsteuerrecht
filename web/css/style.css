@@ -2180,3 +2180,9 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .tg-pfad .gruppe-titel { padding-left: 0; }
 .tg-pfad .tg-chip { color: var(--tg-pf-text); background: linear-gradient(90deg, color-mix(in srgb, #fbbf24 22%, transparent), color-mix(in srgb, #f472b6 22%, transparent), color-mix(in srgb, #a78bfa 22%, transparent)); }
 .tg-pfad .zeile { box-shadow: inset 4px 0 0 #f472b6; }
+
+/* Garderobe: Set-Hinweis (Ersparnis gegenüber den Einzelteilen) */
+.gk-set { display: inline-block; margin: -2px 0 4px; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 800; letter-spacing: 0.2px;
+  color: #be185d; background: color-mix(in srgb, #f472b6 18%, transparent); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .gk-set { color: #f9a8d4; } }
+:root[data-theme="dark"] .gk-set { color: #f9a8d4; }
