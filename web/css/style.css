@@ -2228,3 +2228,21 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .mk-vorne .hs-svg, .mk-hinten .hs-svg { max-height: 110px; }
 .mk-mini-seite .hs-svg { border-radius: 10px; background: var(--hs-papier); }
 .karte .seite .hs-gross { width: min(76vw, 600px); max-width: 100%; border-radius: 14px; background: var(--hs-papier); margin: 6px auto 10px; box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--text) 10%, transparent); }
+
+/* ---------------- Sparmodus für ältere Geräte (data-leistung="spar") ----------------
+   Teuer sind vor allem: Glas-Unschärfe (backdrop-filter) auf vielen Flächen – sie muss bei jeder Bewegung dahinter neu
+   gerechnet werden –, der langsam treibende Hintergrund, große Weichzeichner im Lernpfad und Dauer-Animationen. */
+:root[data-leistung="spar"] *, :root[data-leistung="spar"] *::before, :root[data-leistung="spar"] *::after { -webkit-backdrop-filter: none !important; backdrop-filter: none !important; }
+:root[data-leistung="spar"] { --glas: color-mix(in srgb, var(--card) 96%, transparent); --glas-stark: var(--card);
+  --schatten: 0 1px 2px rgba(17, 19, 31, 0.06), 0 4px 10px -4px rgba(30, 27, 75, 0.14); }
+:root[data-leistung="spar"] body::before { animation: none; }
+:root[data-leistung="spar"] .sheet-hg { background: rgba(8, 10, 22, 0.55); }
+:root[data-leistung="spar"] .vb-fuss, :root[data-leistung="spar"] .tabbar { background: var(--card); }
+:root[data-leistung="spar"] .pfad .pf-himmel i { filter: none; animation: none; opacity: 0.18; }
+:root[data-leistung="spar"] .taler .t-augen, :root[data-leistung="spar"] .taler .t-aura *, :root[data-leistung="spar"] .taler [class*="t-edel"],
+:root[data-leistung="spar"] .taler .t-facette, :root[data-leistung="spar"] .taler .t-feuer, :root[data-leistung="spar"] .cd-blatt.bald b,
+:root[data-leistung="spar"] .lv-strahlen, :root[data-leistung="spar"] .pfad-kachel .pk-glanz { animation: none !important; }
+:root[data-leistung="spar"] .taler.m-pinkdiamond { animation: none; filter: drop-shadow(0 0 3px rgb(255 120 190 / 0.5)); }
+:root[data-leistung="spar"] body::after { animation: none !important; }
+/* Immer: kleine Taler in Listen (Garderobe, Rangliste) blinzeln nicht – sonst laufen dort Dutzende Animationen gleichzeitig */
+.gar-raster .taler .t-augen, .gar-raster .taler .t-aura *, .rang-liste .taler .t-augen, .treppchen .taler .t-augen, .gm-top .taler .t-augen { animation: none !important; }

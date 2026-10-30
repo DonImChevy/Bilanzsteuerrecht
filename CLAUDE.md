@@ -47,6 +47,7 @@ Deploy über GitHub Pages (`.github/workflows/pages.yml`). Antworten an den Nutz
 ## Design
 - `web/css/style.css`: Basis oben, darunter „Design 2.0“ (Glas, Leuchten, 3D-Knöpfe) und Komponenten wie `.themen-karte`.
 - Animationen: Schalter „Animationen“ (`state.bewegungAus`, Einstellung `bewegungAus`, synchronisiert) setzt `data-bewegung="an|aus"` auf `<html>`; Startwert = Systemeinstellung. Reduzierte Bewegung in CSS über `:root[data-bewegung="aus"] …`, nicht über `prefers-reduced-motion`.
+- Sparmodus („Grafik & Tempo“: Automatisch/Schön/Schnell, localStorage `bsr.leistung`, nur je Gerät): `data-leistung="spar|voll"` auf `<html>`; „Automatisch“ misst nach dem Start 2 s die Bildrate (`leistungMessen`, Ergebnis `bsr.leistungMessung`, alle 14 Tage neu). Teure Effekte (backdrop-filter, große blur-Filter, Dauer-Animationen) immer unter `:root[data-leistung="spar"]` abschalten. Der Suchindex baut sich im Leerlauf auf (`suchIndexVorbereiten`), nicht beim ersten Tippen.
 - Farben nur über Variablen: `--m` (Modulfarbe, Indigo auf der Startseite), `--m-licht`, `--m-tief`, `--glas*`, `--schatten*`. Hell **und** dunkel prüfen (`prefers-color-scheme` und `data-theme`).
 - Lernpfad hat bewusst eigene Farben (Amber/Pink/Violett) – App-Styles dürfen `.pfad`/`.pf-*` nicht treffen.
 - Neue Listen als einzelne Glaskarten gestalten, nicht als schlichte Tabelle (Vorbilder: `.themen-karte`, `.t-konto` mit T-Konto-Seite, `.stapel`).
