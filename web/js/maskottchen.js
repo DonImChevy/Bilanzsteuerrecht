@@ -86,13 +86,13 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
     <text x="60" y="40.5" text-anchor="middle" font-size="10.5" font-weight="800" font-family="Georgia, 'Times New Roman', serif" fill="var(--taler-tief)" opacity="0.8">§</text>
     <ellipse cx="37.5" cy="71.5" rx="5.2" ry="3.1" fill="var(--taler-wange)" opacity="0.6"/>
     <ellipse cx="82.5" cy="71.5" rx="5.2" ry="3.1" fill="var(--taler-wange)" opacity="0.6"/>
-    ${ge ? `<g transform="${blick}">${ge.unter}</g>` : ""}${augen}${ge?.wimpern ? `<g transform="${blick}">${ge.wimpern}</g>` : ""}${brauen}
+    ${o.kappe ? o.kappe(id, p.augen) : `${ge ? `<g transform="${blick}">${ge.unter}</g>` : ""}${augen}${ge?.wimpern ? `<g transform="${blick}">${ge.wimpern}</g>` : ""}${brauen}
     ${o.augen !== null ? o.augen : `<g class="t-brille" fill="none">
       <circle cx="47" cy="58.5" r="10.6" fill="#fff" fill-opacity="0.16" class="t-umriss" stroke-width="2.5"/>
       <circle cx="73" cy="58.5" r="10.6" fill="#fff" fill-opacity="0.16" class="t-umriss" stroke-width="2.5"/>
       <path d="M57.4 57.2 Q60 54.6 62.6 57.2" class="t-umriss" stroke-width="2.5" stroke-linecap="round"/>
       <path d="M36.5 56 L29.5 53.5 M83.5 56 L90.5 53.5" class="t-umriss" stroke-width="2.5" stroke-linecap="round"/>
-    </g>`}
+    </g>`}`}
     ${mund}${ge ? ge.ueber : ""}${o.hals}${o.ohr}
     <path class="t-tropfen t-umriss" d="M93 33 Q98.5 41.5 96.5 45 Q93 48.5 89.5 45 Q87.5 41.5 93 33Z" fill="#bfe6ff" stroke-width="1.8"/>
     ${o.kopf}
