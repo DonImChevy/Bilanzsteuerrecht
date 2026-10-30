@@ -53,7 +53,7 @@ export const KOMPAKT_EST = {
       "**Dualismus der Einkunftsermittlung:** Bei Gewinneinkünften werden Wertänderungen des Betriebsvermögens erfasst, bei Überschusseinkünften grundsätzlich nur die laufenden Einnahmen (Veräußerung des Vermögens nur in Sonderfällen, §§ 17, 20 Abs. 2, 23).",
       "**Gewerbebetrieb (§ 15 Abs. 2 EStG):** selbständig, nachhaltig, mit **Gewinnerzielungsabsicht**, Beteiligung am allgemeinen wirtschaftlichen Verkehr – und keine LuF, keine freiberufliche Tätigkeit, keine private Vermögensverwaltung.",
       "**Freiberufler (§ 18 Abs. 1 Nr. 1 EStG):** Katalogberufe (Ärzte, Rechtsanwälte, Steuerberater, Architekten, Journalisten …), wissenschaftliche, künstlerische, schriftstellerische, **unterrichtende** und erzieherische Tätigkeit.",
-      "**Arbeitnehmer (§ 1 LStDV):** schuldet seine Arbeitskraft, ist weisungsgebunden und in den Betrieb eingegliedert.",
+      "**Arbeitnehmer (§ 1 LStDV):** schuldet seine Arbeitskraft, ist weisungsgebunden und in den Betrieb eingegliedert – auch Pensionäre (früheres Dienstverhältnis), Rechtsnachfolger wie die Witwe mit Witwengeld und der angestellte GmbH-Geschäftsführer. **Arbeitslohn (§ 2 LStDV):** alle Einnahmen aus dem Dienstverhältnis, gleich in welcher Form (auch Sachbezüge).",
       "**Nicht steuerbar:** Liebhaberei (keine Einkünfteerzielungsabsicht), Erbschaften, Schenkungen, Lottogewinne, private Vermögensumschichtungen außerhalb der §§ 17, 20, 23.",
     ],
     fallen: [
@@ -178,7 +178,7 @@ export const KOMPAKT_EST = {
       "**Regelmäßig wiederkehrende Einnahmen/Ausgaben (§ 11 Abs. 1 S. 2, Abs. 2 S. 2 EStG):** Werden sie **kurze Zeit (10 Tage)** vor Beginn oder nach Ende des Kalenderjahres gezahlt, zu dem sie wirtschaftlich gehören, gelten sie in diesem Jahr als zu- bzw. abgeflossen. Auch die **Fälligkeit** muss in diesem Zeitraum liegen.",
       "**Typische Fälle:** Miete, Zinsen, **USt-Vorauszahlungen** (fällig am 10.01.), Versicherungsbeiträge (§ 11 Abs. 1 S. 2, Abs. 2 S. 2 EStG; Fälligkeit der USt-Vorauszahlung § 18 Abs. 1 S. 4 UStG).",
       "**Vorauszahlungen für eine Nutzungsüberlassung von mehr als 5 Jahren** können gleichmäßig verteilt werden (Einnahmen: Wahlrecht, § 11 Abs. 1 S. 3; Ausgaben: Pflicht, § 11 Abs. 2 S. 3 EStG).",
-      "**Arbeitslohn:** laufender Arbeitslohn gilt im Kalenderjahr als bezogen, in dem der Lohnzahlungszeitraum endet (§ 11 Abs. 1 S. 4 i. V. m. § 38a Abs. 1 EStG).",
+      "**Arbeitslohn (§ 11 Abs. 1 S. 4 i. V. m. § 38a Abs. 1 EStG):** **laufender Arbeitslohn** (Monatsgehalt, laufende Pension) gilt im Kalenderjahr als bezogen, in dem der **Lohnzahlungszeitraum endet** – Dezembergehalt im Januar gezahlt → altes Jahr. **Sonstige Bezüge** (Weihnachtsgeld, Urlaubsgeld, Jubiläumszuwendung, Tantieme) zählen im Jahr des **Zuflusses** (§ 38a Abs. 1 S. 3 EStG) – keine 10-Tage-Regel.",
       "**Nicht nach § 11:** AfA auf abnutzbare Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 7 i. V. m. § 7 EStG) – sie wird über die Nutzungsdauer verteilt, egal wann bezahlt wurde – und die Gewinnermittlung durch Bestandsvergleich.",
     ],
     fallen: [
@@ -293,6 +293,7 @@ export const KOMPAKT_EST = {
     punkte: [
       "**Auswärtstätigkeit (§ 9 Abs. 4a S. 2 EStG):** beruflich tätig außerhalb der Wohnung und der **ersten Tätigkeitsstätte** (§ 9 Abs. 4 EStG) – z. B. Kundenbesuch, Messe, Schulung, Baustelle.",
       "**Fahrtkosten (§ 9 Abs. 1 S. 3 Nr. 4a S. 1, 2 EStG):** tatsächliche Kosten oder pauschal **0,30 € je gefahrenem km** mit dem Pkw (höchste Wegstreckenentschädigung nach BRKG) – **Hin- und Rückfahrt**, nicht die Entfernungspauschale.",
+      "**Fortbildung im Auftrag des Arbeitgebers:** ist eine Auswärtstätigkeit. Trägt der Arbeitgeber die Teilnahmegebühr, hat der Arbeitnehmer insoweit keinen Aufwand; ein darin enthaltenes Mittagessen ist eine vom Arbeitgeber veranlasste Mahlzeit → Pauschale um 11,20 € kürzen (§ 9 Abs. 4a S. 8 EStG). Steuerfreie Fahrtkostenerstattungen (§ 3 Nr. 16 EStG) mindern die Werbungskosten (§ 3c Abs. 1 EStG).",
       "**Verpflegung (§ 9 Abs. 4a S. 3 EStG):** nur Pauschalen – **28 €** je Kalendertag mit 24 Stunden Abwesenheit (Nr. 1), **14 €** für An- und Abreisetag bei Übernachtung (Nr. 2) und **14 €** bei eintägiger Abwesenheit von **mehr als 8 Stunden** (Nr. 3).",
       "**Dreimonatsfrist (§ 9 Abs. 4a S. 6, 7 EStG):** an derselben Tätigkeitsstätte nur die ersten drei Monate; eine Unterbrechung von mindestens **vier Wochen** lässt die Frist neu beginnen.",
       "**Mahlzeiten vom Arbeitgeber (§ 9 Abs. 4a S. 8 EStG):** Kürzung um **20 %** (Frühstück, 5,60 €) bzw. **40 %** (Mittag- und Abendessen, je 11,20 €) der 28 € – höchstens bis auf 0 €; ein Entgelt des Arbeitnehmers mindert die Kürzung (S. 10).",
