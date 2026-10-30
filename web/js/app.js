@@ -1110,20 +1110,26 @@ function installHinweis() {
 
 // ---------- Suche ----------
 let INDEX = null;
-const norma = (t) => String(t).toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[.,;:!?()„“"'§]/g, " ").replace(/\s+/g, " ");
+const norma = (t) => String(t).toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/(\w)-(\w)/g, "$1$2").replace(/[.,;:!?()„“"'§]/g, " ").replace(/\s+/g, " ");
 function suchIndex() {
   if (INDEX) return INDEX;
   const r = new Zufall(1);
   INDEX = {
     themen: THEMEN.map((t) => ({ t, kopf: norma(t.titel), such: norma(`${t.titel} ${t.unter} ${MODUL[t.fach].titel}`) })),
     kompakt: Object.entries(KOMPAKT).map(([id, k]) => ({ t: THEMA[id], k, kopf: norma(THEMA[id].titel), such: norma(`${THEMA[id].titel} ${kompaktText(k)}`) })),
-    aufgaben: ALLE.map((v) => { const f = v.erzeugen(r); return { v, f, such: norma(`${f.text} ${f.antwort || ""} ${(f.optionen || []).join(" ")} ${f.erklaerung || ""} ${THEMA[v.thema].titel}`) }; }),
+    // Je Vorlage mehrere Ziehungen: Fallgeneratoren ziehen reihum, so wird jeder Fall auffindbar (Varianten, die sich nur in Zahlen unterscheiden, einmal)
+    aufgaben: ALLE.map((v) => {
+      const fs = [], gesehen = new Set();
+      for (let i = 0; i < 12; i++) { const f = v.erzeugen(r), k = f.text.replace(/[\d.,]+/g, "#"); if (!gesehen.has(k)) { gesehen.add(k); fs.push(f); } }
+      const texte = fs.map((f) => norma(`${f.text} ${f.antwort || ""} ${(f.optionen || []).join(" ")} ${f.erklaerung || ""}`));
+      return { v, f: fs[0], fs, texte, such: `${texte.join(" ")} ${norma(THEMA[v.thema].titel)}` };
+    }),
     // Lernpfad-Blöcke (Bilanzrecht getrennt nach Teil I und II)
     pfad: Object.entries(PFADE).flatMap(([key, p]) => p.bloecke.map((b) => ({ key, b, fach: key.startsWith("bsr") ? "bsr" : key, kopf: norma(b.titel),
       such: norma(`${b.titel} ${b.kurz} ${b.karten.map((k) => `${k.titel} ${k.text}`).join(" ")} ${b.fragen.map((f) => `${f.frage} ${f.erkl}`).join(" ")}`) }))),
     normen: NORMEN.map((n) => ({ n, label: n.g === "GG" ? (n.nr === "Präambel" ? "Präambel GG" : `Art. ${n.nr} GG`) : `§ ${n.nr} ${n.g}`,
       such: norma(`${n.g === "GG" ? "art" : "§"} ${n.nr} ${n.g} ${n.titel} ${n.abs.map((a) => a.text).join(" ")}`) })),
-    konten: Object.values(KONTEN).map((k) => ({ k, kopf: norma(k.name), such: norma(`${k.name} ${k.kurz} ${k.artName}`) })),
+    konten: Object.values(KONTEN).map((k) => ({ k, kopf: norma(k.name), such: norma(`${k.name} ${k.kurz} ${k.artName} ${k.hinweis || ""}`) })),
     module: MODULE.map((m) => ({ m, such: norma(`${m.titel} ${m.kurz} ${m.unter}`) })),
   };
   return INDEX;
@@ -1151,13 +1157,14 @@ const SYNONYME = [
   ["absetzung fuer abnutzung", "afa", "abschreibung"], ["geringwertige wirtschaftsgueter", "gwg"], ["werbungskosten", "wk"],
   ["einnahmen ueberschuss", "euer", "4 abs 3"], ["zu versteuernde einkommen", "zve"], ["gesamtbetrag der einkuenfte", "gde"],
   ["rechnungsabgrenzung", "rap", "arap", "prap"], ["entfernungspauschale", "pendlerpauschale", "kilometerpauschale"],
-  ["home office", "homeoffice", "tagespauschale"], ["steuerschuldnerschaft", "reverse charge", "13b"], ["kleinunternehmer", "19 ustg"],
+  ["tagespauschale", "home office pauschale"], ["steuerschuldnerschaft", "reverse charge", "13b"], ["kleinunternehmer", "19 ustg"],
   ["unentgeltliche wertabgabe", "eigenverbrauch"], ["1 %", "1 prozent", "ein prozent", "listenpreis", "firmenwagen", "dienstwagen"],
   ["gewinn und verlust", "guv"], ["schlussbilanzkonto", "sbk"], ["eroeffnungsbilanzkonto", "ebk"], ["wareneingang", "wek"],
   ["warenverkauf", "wvk", "umsatzerloese"], ["warenbestand", "wbk"], ["bestandsveraenderung", "bvk"], ["betriebsvermoegensvergleich", "bvv"],
   ["anschaffungskosten", "ak"], ["herstellungskosten", "hk"], ["bundesverfassungsgericht", "bverfg"], ["grundgesetz", "gg"],
   ["bundesregierung", "kanzler", "kanzlerin"], ["gehalt", "arbeitslohn", "loehne"], ["pension", "ruhegehalt", "versorgungsbezuege"],
-  ["skonto", "skonti"], ["buchungssatz", "buchungssaetze"],
+  ["skonto", "skonti"], ["buchungssatz", "buchungssaetze"], ["jobticket", "job ticket", "deutschlandticket", "fahrkarte", "3 nr 15"],
+  ["home office", "homeoffice", "heimarbeit"], ["arbeitszimmer", "buero zuhause"], ["kfz", "pkw", "auto", "fahrzeug"],
 ];
 const STOPP = new Set(["der", "die", "das", "den", "dem", "des", "ein", "eine", "einer", "und", "oder", "von", "zu", "zum", "zur", "im", "in", "mit", "bei", "fuer", "wie", "was", "ist", "to"]);
 const SYN = SYNONYME.map((g) => g.map((x) => norma(x).replace(/\s+/g, " ").trim()));
@@ -1219,7 +1226,13 @@ function suchErgebnisse(q) {
   // Nur Inhalte der gewählten Rolle (Studium bzw. Ausbildung); gemeinsame Buchführungsthemen zählen bei Azubis zu BilBf
   const rolle = state.rolle || "studium";
   const inRolle = (themaId) => rolleVon(MODUL[fachFuerThema(themaId)]) === rolle;
-  const themen = beste(I.themen.filter((x) => inRolle(x.t.id)), 6);
+  // Themen: Treffer im Titel, dazu die Themen, in deren Aufgaben und Zusammenfassungen der Begriff vorkommt (meiste Fundstellen zuerst)
+  const fundstellen = new Map();
+  for (const x of I.aufgaben) if (inRolle(x.v.thema) && passt(x)) fundstellen.set(x.v.thema, (fundstellen.get(x.v.thema) || 0) + 1);
+  for (const x of I.kompakt) if (inRolle(x.t.id) && passt(x)) fundstellen.set(x.t.id, (fundstellen.get(x.t.id) || 0) + 2);
+  const direkt = beste(I.themen.filter((x) => inRolle(x.t.id)), 6);
+  const themen = [...direkt, ...[...fundstellen].sort((a, b) => b[1] - a[1]).map(([id]) => I.themen.find((x) => x.t.id === id))
+    .filter((x) => x && !MODUL[x.t.fach].bald && !direkt.includes(x))].slice(0, 6);
   const aufgaben = beste(I.aufgaben.filter((x) => !MODUL[THEMA[x.v.thema].fach].bald && inRolle(x.v.thema) && !NICHT_IN[fachFuerThema(x.v.thema)]?.has(x.v.id)), 8);
   // Normzitat wie „Art. 63“ oder „§ 12 BWahlG“: passende Vorschrift zuerst, Normen-Gruppe nach oben
   const zitat = /^\s*(art\.?|§)\s*(\d+[a-z]?)\s*([a-z]*)/i.exec(q);
@@ -1247,7 +1260,9 @@ function suchErgebnisse(q) {
   const normHtml = normen.length ? gruppe("Gesetzestexte", normen.map(({ n, label }) => `<button class="zeile" data-a="normDetail" data-v="${n.g} ${n.nr}">
     <span class="symbol">§</span><span class="grow"><div><b>${esc(label)}</b></div><div class="sub">${esc(n.titel || n.abs[0]?.text.slice(0, 80) + " …")}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join("")) : "";
   if (zitat) html += normHtml;
-  if (aufgaben.length) html += gruppe("Aufgaben", aufgaben.map(({ v, f }) => `<button class="zeile" data-a="einzeln" data-v="${v.id}">
+  // Angezeigt wird die Variante, in der der Suchbegriff vorkommt
+  const variante = (x) => x.fs[Math.max(0, x.texte.findIndex((t) => begriffe.every((alt) => alt.some((a) => trifft(t, a)))))];
+  if (aufgaben.length) html += gruppe("Aufgaben", aufgaben.map((x) => [x.v, variante(x)]).map(([v, f]) => `<button class="zeile" data-a="einzeln" data-v="${v.id}">
     <span class="grow"><div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px">${markiere(f.text, hl, true)}</div>
     <div class="sub">${MODUL[fachFuerThema(v.thema)].kurz} · ${esc(THEMA[v.thema].titel)} · ${typBezeichnung(f)}</div></span><span class="chev">${ic("play", "klein fill")}</span></button>`).join(""));
   if (!zitat) html += normHtml;
