@@ -3,6 +3,7 @@
 Aufruf (beliebige Teilmenge der Gesetze):
   pdftotext UStG.pdf UStG.raw
   python3 -I tools/bilr_normen.py web/js/bilr/normen.js UStG=UStG.raw HGB=HGB.raw AO=AO.raw EStG=EStG.raw
+  python3 -I tools/bilr_normen.py --est web/js/est/normen.js EStG=EStG.raw AO=AO.raw LStDV=LStDV.raw
 
 Lange Paragrafen werden als Auszug übernommen: nur die Absätze bzw. Nummern, die in den Aufgaben vorkommen.
 """
@@ -33,6 +34,7 @@ AUSWAHL_EST = {
              "24b": ["1", "2"], "31": None, "33": ["1", "2"], "37": ["1"], "38": ["1"], "38a": ["1"], "43": ["5"], "49": ["1|4"],
              "10": ["1|2,3,4"], "10c": None, "32b": ["1"], "33b": ["1"], "43a": ["1"]},
     "AO": {"8": None, "9": None, "149": ["2"], "169": ["2"]},
+    "LStDV": {"1": None, "2": None},
 }
 # Umsatzsteuer (Aufruf mit --ust → web/js/ust/normen.js, Export NORMEN_UST)
 AUSWAHL_UST = {
@@ -56,7 +58,7 @@ TEXT_KORREKTUR = {("UStG", "3a"): [(r"\n1\. 2\. Eine sonstige", "\n1. Eine sonst
                                   (r"Kürzungsbetrag nach Satz\n8\. ", "Kürzungsbetrag nach Satz 8. ")],
                   ("EStG", "3"): [(r"Trennungsgelder\. Die als Reisekostenvergütungen .*?abziehbaren Aufwendungen nicht übersteigen; ", "")]}
 START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
-         "UStG": "§ 1 Steuerbare Umsätze"}
+         "UStG": "§ 1 Steuerbare Umsätze", "LStDV": "§ 1 Arbeitnehmer, Arbeitgeber"}
 STAND = {}
 
 
@@ -67,7 +69,7 @@ def schluessel(nr):
 
 def gesetz(datei, start):
     roh = open(datei, encoding="utf-8").read()
-    m = re.search(r"zuletzt\s+durch\s+(.*?)\s+geändert worden ist", roh, re.S)
+    m = re.search(r"zuletzt\s+durch\s+(.*?)\s+geändert\s+worden\s+ist", roh, re.S)
     STAND[datei] = re.sub(r"\s+", " ", m.group(1)) if m else ""
     # Erste Fundstelle, auf die Normtext folgt (überspringt die Inhaltsübersicht)
     pos = [m.start() for m in re.finditer(re.escape(start), roh) if re.match(r"[^\n]*\n\s*[\(\wÄÖÜ]", roh[m.start():])

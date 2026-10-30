@@ -149,6 +149,26 @@ const einkunftsartFall = F("est-einkunftsart-fall", "est-einkuenfte", "Zu welche
   { text: "Ein pensionierter Beamter erhält sein Ruhegehalt.", richtig: 3, erkl: "Bezüge aus einem früheren Dienstverhältnis (Versorgungsbezüge) gehören zu den Einkünften aus nichtselbständiger Arbeit (§ 19 Abs. 1 S. 1 Nr. 2 EStG).", normen: ["EStG 2 1"] },
 ]);
 
+// Arbeitnehmer und Arbeitslohn (§§ 1, 2 LStDV) – Einstieg jeder Klausurlösung zu § 19 EStG
+const arbeitnehmer = A("est-arbeitnehmer", "est-einkuenfte",
+  "Wann ist jemand Arbeitnehmer im Sinne des Einkommensteuerrechts, und was gehört zum Arbeitslohn?",
+  "• Arbeitnehmer sind Personen, die im öffentlichen oder privaten Dienst angestellt oder beschäftigt sind oder waren und aus diesem oder einem früheren Dienstverhältnis Arbeitslohn beziehen (§ 1 Abs. 1 S. 1 LStDV); auch ihre Rechtsnachfolger, soweit sie Arbeitslohn aus dem früheren Dienstverhältnis des Rechtsvorgängers beziehen, z. B. die Witwe mit Witwengeld (§ 1 Abs. 1 S. 2 LStDV).\n• Ein Dienstverhältnis liegt vor, wenn der Beschäftigte dem Arbeitgeber seine Arbeitskraft schuldet: Er steht unter dessen Leitung oder ist in dessen geschäftlichen Organismus eingegliedert und weisungsgebunden (§ 1 Abs. 2 LStDV).\n• Abgrenzung zur Selbständigkeit nach dem Gesamtbild (vgl. H 19.0 LStH): feste Arbeitszeit, Urlaubsanspruch, Lohnfortzahlung im Krankheitsfall, Bezahlung nach Zeit statt nach Erfolg, kein Unternehmerrisiko und keine eigene Unternehmerinitiative.\n• Arbeitslohn sind alle Einnahmen, die dem Arbeitnehmer aus dem Dienstverhältnis oder einem früheren Dienstverhältnis zufließen – gleich unter welcher Bezeichnung und in welcher Form, also auch Sachbezüge (§ 2 Abs. 1 LStDV, § 19 Abs. 1 EStG); ausdrücklich auch Einnahmen aus einem früheren Dienstverhältnis wie Pensionen, Überstundenvergütungen und Lohnzuschläge (§ 2 Abs. 2 Nr. 2, 6, 7 LStDV).\n• Folge: Einkünfte aus nichtselbständiger Arbeit (§ 2 Abs. 1 S. 1 Nr. 4 i. V. m. § 19 EStG), ermittelt als Überschuss der Einnahmen über die Werbungskosten (§ 2 Abs. 2 S. 1 Nr. 2 EStG); die ESt wird durch Lohnsteuerabzug erhoben (§ 38 Abs. 1 EStG).\n• Kein Arbeitnehmer ist, wer im Rahmen seiner selbständigen gewerblichen oder beruflichen Tätigkeit Leistungen gegen Entgelt erbringt (§ 1 Abs. 3 LStDV).\n• Auch der angestellte Geschäftsführer einer GmbH ist Arbeitnehmer.",
+  ["LStDV 1", "LStDV 2", "EStG 19 1", "EStG 2 1", "EStG 38 1"],
+  M(["Arbeitnehmer ist, wer dem Arbeitgeber seine Arbeitskraft schuldet und weisungsgebunden eingegliedert ist.", "Die Witwe, die Witwengeld bezieht, ist als Rechtsnachfolgerin Arbeitnehmerin.", "Zum Arbeitslohn gehören auch Sachbezüge.", "Der angestellte Geschäftsführer einer GmbH ist Arbeitnehmer."],
+    ["Arbeitnehmer ist nur, wer einen schriftlichen Arbeitsvertrag hat.", "Pensionen gehören nicht zum Arbeitslohn, weil kein Dienstverhältnis mehr besteht.", "Wer ein Unternehmerrisiko trägt, ist typischerweise Arbeitnehmer.", "Arbeitslohn sind nur Geldzahlungen mit der Bezeichnung „Gehalt“."],
+    "Welche Aussagen zum Arbeitnehmerbegriff und zum Arbeitslohn sind richtig?"));
+const AN_OPT = ["Arbeitnehmer – § 19 EStG", "Selbständige Arbeit – § 18 EStG", "Gewerbebetrieb – § 15 EStG"];
+const arbeitnehmerFall = F("est-arbeitnehmer-fall", "est-einkuenfte", "Ist die Person Arbeitnehmer?", AN_OPT, [
+  { text: "Donna ist angestellte Steuerberaterin in einer Kanzlei: feste Arbeitszeit, 30 Tage Urlaub, Gehalt monatlich.", richtig: 0, erkl: "Weisungsgebunden und in die Kanzlei eingegliedert → Dienstverhältnis (§ 1 Abs. 2 LStDV) → Arbeitnehmerin, Einkünfte aus § 19 Abs. 1 S. 1 Nr. 1 EStG.", normen: ["LStDV 1 2", "EStG 19 1"] },
+  { text: "Arne ist angestellter Geschäftsführer einer IT-GmbH und erhält ein festes Gehalt.", richtig: 0, erkl: "Der angestellte GmbH-Geschäftsführer ist in das Unternehmen eingegliedert und weisungsgebunden → Arbeitnehmer (§ 1 Abs. 1, 2 LStDV), § 19 EStG.", normen: ["LStDV 1 2", "EStG 19 1"] },
+  { text: "Birgit ist pensionierte Beamtin und erhält monatlich ihr Ruhegehalt.", richtig: 0, erkl: "Bezüge aus einem früheren Dienstverhältnis (§ 1 Abs. 1 S. 1, § 2 Abs. 2 Nr. 2 LStDV) → Arbeitnehmerin, § 19 Abs. 1 S. 1 Nr. 2 EStG (Versorgungsbezüge, § 19 Abs. 2 EStG).", normen: ["LStDV 2 2", "EStG 19 1", "EStG 19 2"] },
+  { text: "Nach dem Tod ihres Mannes, eines Beamten, erhält Gerda Witwengeld.", richtig: 0, erkl: "Rechtsnachfolgerin, die Arbeitslohn aus dem früheren Dienstverhältnis des Verstorbenen bezieht → Arbeitnehmerin (§ 1 Abs. 1 S. 2 LStDV), § 19 Abs. 1 S. 1 Nr. 2 EStG.", normen: ["LStDV 1 1", "EStG 19 1"] },
+  { text: "Donna unterrichtet nebenberuflich als freie Dozentin an einer Hochschule; Honorar je Vorlesungsstunde, keine Eingliederung.", richtig: 1, erkl: "Keine Eingliederung, keine Weisungsbindung → kein Arbeitnehmer (§ 1 Abs. 3 LStDV); selbständige unterrichtende Tätigkeit → § 18 Abs. 1 Nr. 1 EStG (ggf. steuerfrei nach § 3 Nr. 26 EStG).", normen: ["LStDV 1 3", "EStG 3"] },
+  { text: "Birgit leitet als selbständige Chorleiterin einen Kirchenchor gegen Honorar.", richtig: 1, erkl: "Künstlerische Tätigkeit auf eigene Rechnung → § 18 Abs. 1 Nr. 1 EStG.", normen: ["EStG 2 1"] },
+  { text: "Malte arbeitet als selbständiger Handelsvertreter und erhält nur Provisionen für vermittelte Verträge; Arbeitszeit und Kundenbesuche bestimmt er selbst.", richtig: 2, erkl: "Eigenes Unternehmerrisiko, Bezahlung nach Erfolg, keine Weisungsbindung → kein Arbeitnehmer (§ 1 Abs. 3 LStDV), sondern Gewerbetreibender (§ 15 Abs. 2 EStG).", normen: ["LStDV 1 3", "EStG 15 2"] },
+  { text: "Lisa ist Werkstudentin bei einer Bank: 15 Stunden pro Woche nach Dienstplan, Stundenlohn.", richtig: 0, erkl: "Auch Aushilfen und Werkstudenten schulden ihre Arbeitskraft nach Weisung → Arbeitnehmerin (§ 1 Abs. 1, 2 LStDV), § 19 EStG.", normen: ["LStDV 1 2", "EStG 19 1"] },
+]);
+
 const einkuenfteRechnen = R("est-einkuenfte-19", "est-einkuenfte", (r) => {
   const lohn = r.betrag(28000, 70000, 500) / 100;
   const sonst = r.zahl(2, 30) * 50; // andere Werbungskosten
@@ -507,6 +527,24 @@ const zufluss = [
 ];
 
 const JAHR_OPT = ["Kalenderjahr 01", "Kalenderjahr 02"];
+// Zufluss von Arbeitslohn: laufender Arbeitslohn und sonstige Bezüge (§ 11 Abs. 1 S. 4 i. V. m. § 38a Abs. 1 EStG)
+const lohnZufluss = A("est-sonstige-bezuege", "est-zufluss",
+  "In welchem Kalenderjahr ist Arbeitslohn bezogen? Unterscheiden Sie laufenden Arbeitslohn und sonstige Bezüge.",
+  "• Für Arbeitslohn gilt § 11 Abs. 1 S. 4 EStG: Maßgeblich ist § 38a Abs. 1 S. 2 und 3 EStG – nicht die 10-Tage-Regel.\n• Laufender Arbeitslohn (regelmäßig gezahlt: Monatsgehalt, Stundenlohn, laufende Pension) gilt in dem Kalenderjahr als bezogen, in dem der Lohnzahlungszeitraum endet (§ 38a Abs. 1 S. 2 EStG). Das Dezembergehalt gehört auch bei Zahlung im Januar ins alte Jahr; ein im Dezember vorab gezahltes Januargehalt ins neue Jahr.\n• Sonstige Bezüge (nicht laufend gezahlt: Weihnachtsgeld, Urlaubsgeld, Jubiläumszuwendung, Tantieme, Abfindung) sind in dem Kalenderjahr bezogen, in dem sie dem Arbeitnehmer zufließen (§ 38a Abs. 1 S. 3 EStG) – reines Zuflussprinzip, z. B. mit der Gutschrift auf dem Konto.\n• Beispiel: Jubiläumszuwendung für Dezember 01, gutgeschrieben am 08.01.02 → Arbeitslohn 02.",
+  ["EStG 11 1", "EStG 38a 1"],
+  M(["Laufender Arbeitslohn gilt im Kalenderjahr als bezogen, in dem der Lohnzahlungszeitraum endet.", "Sonstige Bezüge sind im Kalenderjahr des Zuflusses bezogen.", "Ein Weihnachtsgeld, das erst im Januar ausgezahlt wird, ist Arbeitslohn des neuen Jahres.", "Für Arbeitslohn verweist § 11 Abs. 1 S. 4 EStG auf § 38a Abs. 1 EStG."],
+    ["Das im Januar gezahlte Dezembergehalt ist Arbeitslohn des neuen Jahres.", "Für sonstige Bezüge gilt die 10-Tage-Regel des § 11 Abs. 1 S. 2 EStG.", "Sonstige Bezüge gehören immer in das Jahr, für das sie wirtschaftlich gezahlt werden.", "Eine Jubiläumszuwendung ist laufender Arbeitslohn."],
+    "Welche Aussagen zum Zufluss von Arbeitslohn sind richtig?"));
+const lohnZuflussFall = F("est-lohn-zufluss-fall", "est-zufluss", "In welchem Kalenderjahr ist der Arbeitslohn bezogen?", JAHR_OPT, [
+  { text: "Das Gehalt einer Arbeitnehmerin für Dezember 01 wird am 03.01.02 überwiesen.", richtig: 0, erkl: "Laufender Arbeitslohn: Der Lohnzahlungszeitraum (Dezember) endet in 01 → bezogen in 01 (§ 11 Abs. 1 S. 4 i. V. m. § 38a Abs. 1 S. 2 EStG).", normen: ["EStG 38a 1"] },
+  { text: "Zum 20-jährigen Dienstjubiläum im Dezember 01 erhält ein Arbeitnehmer eine Jubiläumszuwendung von 5.000 €; sie wird am 08.01.02 gutgeschrieben.", richtig: 1, erkl: "Sonstiger Bezug: bezogen im Jahr des Zuflusses, also mit der Gutschrift am 08.01.02 → 02 (§ 38a Abs. 1 S. 3 EStG).", normen: ["EStG 38a 1"] },
+  { text: "Das Weihnachtsgeld für 01 wird wegen eines Abrechnungsfehlers erst am 15.01.02 ausgezahlt.", richtig: 1, erkl: "Weihnachtsgeld ist ein sonstiger Bezug → Zufluss am 15.01.02 → 02 (§ 38a Abs. 1 S. 3 EStG).", normen: ["EStG 38a 1"] },
+  { text: "Der Arbeitgeber überweist das Januargehalt 02 bereits am 28.12.01.", richtig: 1, erkl: "Laufender Arbeitslohn: maßgeblich ist das Ende des Lohnzahlungszeitraums (Januar 02), nicht die Zahlung → 02 (§ 38a Abs. 1 S. 2 EStG).", normen: ["EStG 38a 1"] },
+  { text: "Eine Tantieme für das Geschäftsjahr 01 wird nach Feststellung des Jahresabschlusses am 20.03.02 ausgezahlt.", richtig: 1, erkl: "Tantieme = sonstiger Bezug → Zufluss in 02 (§ 38a Abs. 1 S. 3 EStG).", normen: ["EStG 38a 1"] },
+  { text: "Das Urlaubsgeld für den Sommerurlaub 02 zahlt der Arbeitgeber schon am 30.12.01 aus.", richtig: 0, erkl: "Urlaubsgeld = sonstiger Bezug → maßgeblich ist der Zufluss am 30.12.01 → 01 (§ 38a Abs. 1 S. 3 EStG).", normen: ["EStG 38a 1"] },
+  { text: "Das Ruhegehalt eines Pensionärs für Dezember 01 wird am 02.01.02 überwiesen.", richtig: 0, erkl: "Laufende Versorgungsbezüge sind laufender Arbeitslohn → Lohnzahlungszeitraum Dezember 01 → 01 (§ 38a Abs. 1 S. 2 EStG).", normen: ["EStG 38a 1"] },
+]);
+
 const elfFall = F("est-11-fall", "est-zufluss", "In welchem Kalenderjahr ist die Zahlung beim Steuerpflichtigen (Überschussrechner bzw. § 4 Abs. 3 EStG) zu berücksichtigen?", JAHR_OPT, [
   { text: "Die Vermieterin V bezahlt eine Handwerkerrechnung für ihre vermietete Wohnung am 27.12.01 mit einem Scheck, den der Handwerker erst am 06.01.02 einlöst.", richtig: 0,
     erkl: "Bei Scheckzahlung erfolgt der Abfluss mit Hingabe des Schecks (H 11 „Scheck“ EStH) → Werbungskosten 01 (§ 11 Abs. 2 S. 1 EStG).", normen: ["EStG 11 2"] },
@@ -727,6 +765,19 @@ const verpflegungRechnen = R("est-verpflegung-rechnen", "est-reisekosten", (r) =
 });
 
 const ZIELE = [["Hannover", 150], ["Kassel", 230], ["Erfurt", 290], ["Bremen", 120], ["Münster", 180], ["Nürnberg", 210]];
+// Fortbildung als Auswärtstätigkeit: Teilnahmegebühr mit Mittagessen trägt der Arbeitgeber, Fahrtkosten teils erstattet (Klausur 10/23)
+const fortbildungRechnen = R("est-fortbildung-erstattung", "est-reisekosten", (r) => {
+  const tage = r.zahl(2, 5), km = r.zahl(30, 110), essen = r.zahl(0, 3) > 0, gebuehr = r.zahl(4, 15) * 100;
+  const fahrt = tage * 2 * km * 0.3, erst = r.wahl([0, Math.floor(fahrt * r.wahl([0.5, 0.75]) / 50) * 50, fahrt]);
+  const vma = essen ? 14 - 11.2 : 14, wk = fahrt - erst + tage * vma;
+  return {
+    text: `Arbeitnehmerin Anja besucht im Auftrag ihres Arbeitgebers an ${tage} aufeinanderfolgenden Tagen eine Fortbildung in einer anderen Stadt (einfache Entfernung ${km} km). Sie fährt jeden Tag mit ihrem eigenen Pkw hin und zurück und ist täglich von 7:00 bis 17:00 Uhr unterwegs. Die Teilnahmegebühr von ${eur(gebuehr)}${essen ? " (einschließlich eines gemeinsamen Mittagessens an jedem Tag)" : ""} zahlt der Arbeitgeber direkt an den Veranstalter. ${erst ? `Für die Fahrtkosten erstattet er Anja steuerfrei ${eur(erst)}.` : "Weitere Kosten erstattet er nicht."}\n\nWie hoch sind Anjas Werbungskosten aus der Fortbildung (in €)?`,
+    euro: wk,
+    erklaerung: `Die Fortbildung ist eine Auswärtstätigkeit (§ 9 Abs. 4a S. 2 EStG).\n• Fahrtkosten: ${tage} Tage × 2 × ${km} km × 0,30 € = ${eur(fahrt)} (§ 9 Abs. 1 S. 3 Nr. 4a S. 2 EStG)${erst ? `; die steuerfreie Erstattung (§ 3 Nr. 16 EStG) mindert die Werbungskosten (§ 3c Abs. 1 EStG): − ${eur(erst)} → ${eur(fahrt - erst)}` : ""}\n• Teilnahmegebühr: vom Arbeitgeber getragen → kein eigener Aufwand, keine Werbungskosten\n• Verpflegung: mehr als 8 Stunden abwesend → 14 € je Tag (§ 9 Abs. 4a S. 3 Nr. 3 EStG)${essen ? `; das Mittagessen stellt der Arbeitgeber über den Veranstalter → Kürzung um 40 % von 28 € = 11,20 € (§ 9 Abs. 4a S. 8 Nr. 2 EStG) → 2,80 € × ${tage} = ${eur(tage * vma)}` : ` × ${tage} = ${eur(tage * vma)}`}\n= Werbungskosten ${eur(wk)}`,
+    normen: ["EStG 9 1", "EStG 9 4a", "EStG 3"],
+  };
+});
+
 const reiseRechnen = R("est-reise-gesamt", "est-reisekosten", (r) => {
   const [ziel, einfach] = r.wahl(ZIELE), naechte = r.zahl(1, 3), preis = r.zahl(80, 140), frueh = r.zahl(12, 19), park = r.zahl(2, 6) * 5;
   const fahrt = einfach * 2 * KM_PKW, hotel = naechte * (preis - frueh), vma = 2 * VP_TEIL + (naechte - 1) * VP_VOLL;
@@ -966,12 +1017,12 @@ const fall3 = (() => {
 })();
 
 export const EST_AUFGABEN = [
-  ...grundlagen, ...stpfl, stpflFall, ...einkuenfte, einkunftsartFall, einkuenfteRechnen, ...zve, zveRechnen,
+  ...grundlagen, ...stpfl, stpflFall, ...einkuenfte, einkunftsartFall, arbeitnehmer, arbeitnehmerFall, einkuenfteRechnen, ...zve, zveRechnen,
   ...veranlagung, veranlagungFall, ...tarif, tarifGrund, tarifSplit, abschluss, fall1,
   ...einnahmen, versorgung, versorgungRechnen, zuflussFall, uebungsleiterRechnen, ...ausgaben, aufwandFall, gemischtRechnen,
-  ...zufluss, elfFall, vorauszahlungRechnen, fall2, ...wk, wkSumme,
+  ...zufluss, elfFall, lohnZufluss, lohnZuflussFall, vorauszahlungRechnen, fall2, ...wk, wkSumme,
   ...arbeitsmittel, arbeitsmittelFall, afaRechnen, gemischtAfa, ...homeoffice, homeofficeFall, homeofficeRechnen, arbeitszimmerRechnen,
-  ...entfernung, epPkw, epOepnv, epGemischt, epJobticket, epWechsel, ...reisekosten, reiseFall, verpflegungRechnen, reiseRechnen,
+  ...entfernung, epPkw, epOepnv, epGemischt, epJobticket, epWechsel, ...reisekosten, reiseFall, verpflegungRechnen, reiseRechnen, fortbildungRechnen,
   ...gewinn, korrekturFall, pkwEinProzent, pkwWohnung, fall3,
 ];
 

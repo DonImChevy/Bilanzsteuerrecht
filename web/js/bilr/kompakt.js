@@ -106,6 +106,7 @@ export const KOMPAKT_BSR = {
       "**Aufwandskonten** (Mietaufwand, Löhne, AfA, Zinsaufwand): Buchung im **Soll** – Aufwand mindert das Eigenkapital.",
       "**Ertragskonten** (Umsatzerlöse, Zinserträge, Mieterträge): Buchung im **Haben** – Ertrag mehrt das Eigenkapital.",
       "**Abschluss:** Aufwandskonten: **GuV an Aufwandskonto**; Ertragskonten: **Ertragskonto an GuV** (§ 242 Abs. 2 HGB).",
+      "**Gehaltsbuchung (Bruttolohnverfahren):** Löhne und Gehälter (brutto) und Gesetzliche soziale Aufwendungen (Arbeitgeberanteil) im Soll – an Bank (netto), Verbindlichkeiten aus Steuern und Abgaben (einbehaltene Lohn- und Kirchensteuer), Verbindlichkeiten im Rahmen der sozialen Sicherheit (Arbeitnehmer- **und** Arbeitgeberanteil) und ggf. Forderungen gegen Mitarbeiter (verrechneter Vorschuss). Aufwand = Brutto + Arbeitgeberanteil.",
       "**GuV-Saldo:** Gewinn → **GuV an Eigenkapital**; Verlust → Eigenkapital an GuV.",
       "**Erfolgswirksam** sind Vorfälle, die das Eigenkapital ändern; **erfolgsneutral** sind reine Vermögensumschichtungen.",
       "**Betriebliche Steuern** (Kfz-Steuer, Grundsteuer, Gewerbesteuer) sind Aufwand – **private** Steuern (Einkommensteuer) sind Privatentnahmen (Betriebsausgaben nach § 4 Abs. 4 EStG; private Steuern § 12 Nr. 3 EStG). Die Gewerbesteuer ist in der Buchführung Aufwand, mindert den steuerlichen Gewinn aber nicht (§ 4 Abs. 5b EStG).",

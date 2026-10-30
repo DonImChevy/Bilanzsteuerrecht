@@ -168,6 +168,28 @@ const erfolgskonten = [
     (n) => `Auf einer Geschäftsreise zahlt der Unternehmer die Hotelübernachtung (ohne Frühstück) bar: ${eur(n)} zzgl. 7 % USt.`,
     "reisekosten", "kasse", r.betrag(80, 600, 10), 7,
     (n, u) => `Übernachtungsleistungen unterliegen dem ermäßigten Steuersatz von 7 % (§ 12 II Nr. 11 UStG). Vorsteuer = ${eur(u)}.`)),
+  // Gehaltsabrechnung (Bruttolohnverfahren) – Klausur 10/23; Beträge der Lohnabrechnung sind vorgegeben
+  V("ek-gehalt", "erfolgskonten", (r) => {
+    const b = r.betrag(2400, 6000, 50), lst = G.prozent(b, r.zahl(9, 17)), kist = r.zahl(0, 2) ? G.prozent(lst, 9) : 0;
+    const an = G.prozent(b, 21), ag = Math.round(b * 0.205), v = r.zahl(0, 1) ? r.betrag(200, 800, 50) : 0;
+    const netto = b - lst - kist - an - v;
+    return buchung("ek-gehalt", "erfolgskonten",
+      `Lohnabrechnung einer Angestellten für Dezember: Bruttogehalt ${eur(b)}, Lohnsteuer ${eur(lst)}${kist ? `, Kirchensteuer ${eur(kist)}` : " (keine Kirchensteuer, kein Solidaritätszuschlag)"}, Sozialversicherung Arbeitnehmeranteil ${eur(an)}, Arbeitgeberanteil ${eur(ag)}.${v ? ` Im November hatte sie einen Gehaltsvorschuss von ${eur(v)} erhalten (gebucht als Forderung), der jetzt einbehalten wird.` : ""} Das Nettogehalt wird überwiesen; Steuern und Sozialversicherungsbeiträge sind noch nicht abgeführt.\n\nBilden Sie einen zusammengesetzten Buchungssatz einschließlich des Arbeitgeberanteils.`,
+      satz([["loehne", b], ["sozialeAbgaben", ag]], [["bank", netto], ["verbindlichkeitenSteuern", lst + kist], ["verbindlichkeitenSV", an + ag], ...(v ? [["forderungenMitarbeiter", v]] : [])]),
+      `Bruttolohnverfahren: Das Bruttogehalt ist Aufwand (Löhne und Gehälter ${eur(b)}), der Arbeitgeberanteil zusätzlicher Aufwand (Gesetzliche soziale Aufwendungen ${eur(ag)}). Die Lohnsteuer${kist ? " und die Kirchensteuer" : ""} behält der Arbeitgeber für Rechnung der Arbeitnehmerin ein (§ 38 Abs. 3 S. 1 EStG) und schuldet sie dem Finanzamt → Verbindlichkeiten aus Steuern und Abgaben ${eur(lst + kist)}. Arbeitnehmer- und Arbeitgeberanteil schuldet er der Krankenkasse → Verbindlichkeiten im Rahmen der sozialen Sicherheit ${eur(an + ag)}.${v ? ` Der Vorschuss wird verrechnet → Forderung im Haben ${eur(v)}.` : ""} Überwiesen wird nur das Netto: ${eur(b)} − ${eur(lst + kist)} − ${eur(an)}${v ? ` − ${eur(v)}` : ""} = ${eur(netto)}. Keine Umsatzsteuer. Gewinnminderung ${eur(b + ag)}.`);
+  }),
+  V("ek-gehalt-folge", "erfolgskonten", (r) => {
+    const fall = r.zahl(0, 2), b = r.betrag(200, 3000, 50);
+    const F = [
+      [`Eine Angestellte erhält am 15.11. einen Gehaltsvorschuss von ${eur(b)} in bar; er wird mit dem Dezembergehalt verrechnet.`, einfach("forderungenMitarbeiter", "kasse", b),
+        "Der Vorschuss ist noch kein Aufwand, sondern eine Forderung gegen die Mitarbeiterin (Aktivkonto → Soll). Aufwand entsteht erst mit der Gehaltsabrechnung, bei der die Forderung im Haben ausgebucht wird."],
+      [`Die im Dezember einbehaltene Lohn- und Kirchensteuer von ${eur(b)} wird am 10.01. an das Finanzamt überwiesen.`, einfach("verbindlichkeitenSteuern", "bank", b),
+        "Die Verbindlichkeit gegenüber dem Finanzamt erlischt (Passivkonto → Soll), Bank im Haben. Kein Aufwand – der ist schon mit dem Bruttogehalt gebucht. Fällig ist die Lohnsteuer spätestens am zehnten Tag nach Ablauf des Anmeldungszeitraums (§ 41a Abs. 1 S. 1 EStG)."],
+      [`Die Sozialversicherungsbeiträge (Arbeitnehmer- und Arbeitgeberanteil) von ${eur(b)} werden von der Krankenkasse abgebucht.`, einfach("verbindlichkeitenSV", "bank", b),
+        "Die Verbindlichkeit im Rahmen der sozialen Sicherheit erlischt (Soll), Bank im Haben. Erfolgsneutral – der Aufwand wurde bei der Gehaltsbuchung erfasst."],
+    ][fall];
+    return buchung("ek-gehalt-folge", "erfolgskonten", F[0], F[1], F[2]);
+  }),
   V("ek-mietertrag", "erfolgskonten", (r) => {
     const b = r.betrag(300, 2500, 50);
     return buchung("ek-mietertrag", "erfolgskonten",

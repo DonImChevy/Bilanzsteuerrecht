@@ -5,6 +5,17 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-est-lohn",
+    datum: "2026-10-30",
+    titel: "Lohnsteuer und Gehaltsbuchung",
+    punkte: [
+      ["kalender", "Sonstige Bezüge", "Dezembergehalt im Januar, Weihnachtsgeld, Tantieme: In welchem Jahr ist der Arbeitslohn bezogen? Laufender Arbeitslohn und sonstige Bezüge nach § 38a Abs. 1 EStG.", "thema", "est-zufluss"],
+      ["rechner", "Fortbildung mit Erstattung", "Neue Rechenaufgabe wie in der Klausur: Fahrtkosten, steuerfreie Erstattung des Arbeitgebers und Kürzung der Pauschale für das Mittagessen.", "thema", "est-reisekosten"],
+      ["haken", "Wer ist Arbeitnehmer?", "Arbeitnehmerbegriff und Arbeitslohn nach §§ 1, 2 LStDV – mit Fällen von Geschäftsführer bis Witwengeld. Die LStDV kannst du jetzt auch unter Nachschlagen lesen.", "thema", "est-einkuenfte"],
+      ["tkonto", "Gehaltsbuchung", "Im Bilanzrecht: Gehaltsabrechnung als zusammengesetzter Buchungssatz mit Lohnsteuer, Sozialversicherung, Arbeitgeberanteil und Vorschuss – dazu Vorschuss und Abführung. Im Buchungssatz-Filter unter „Löhne und Gehälter“.", "thema", "erfolgskonten"],
+    ],
+  },
+  {
     id: "2026-10-countdown-leiste",
     datum: "2026-10-29",
     klein: true,

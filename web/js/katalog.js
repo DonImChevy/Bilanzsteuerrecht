@@ -49,6 +49,7 @@ export const BUCHUNGS_ARTEN = [
   { id: "viele", gruppe: "form", titel: "Mehrere an mehrere", text: "Selten, aber schwer: z. B. Gutschrift mit Gegenkauf", soll: 2, haben: 3, klausur: 3 },
   { id: "berichtigung", gruppe: "anlass", titel: "Berichtigungsbuchungen", text: "Falsch Gebuchtes direkt umbuchen – kein Storno", icon: "stift" },
   { id: "skonto", gruppe: "anlass", titel: "Skonto", text: "Erhaltene und gewährte Skonti mit Steuerkorrektur", icon: "prozent" },
+  { id: "lohn", gruppe: "anlass", titel: "Löhne und Gehälter", text: "Gehaltsabrechnung, Vorschuss, Abführung von Steuern und Beiträgen", icon: "person" },
   { id: "privat", gruppe: "anlass", titel: "Entnahmen und Einlagen", text: "Privatkonten, Zahlungen vom Privatkonto", icon: "person" },
   { id: "abschluss", gruppe: "anlass", titel: "Eröffnung und Abschluss", text: "EBK, SBK, GuV, vorbereitende Abschlussbuchungen", icon: "haken" },
 ];
@@ -63,6 +64,7 @@ export function buchungsArtenVon(v) {
       if (/Korrektur|Berichtigungsbuchung|voll als .* gebucht/i.test(f.text)) a.add("berichtigung");
       if (k.some((x) => /Skonti$/.test(x))) a.add("skonto");
       if (k.some((x) => x === "privatentnahmen" || x === "privateinlagen")) a.add("privat");
+      if (k.some((x) => ["loehne", "sozialeAbgaben", "verbindlichkeitenSV", "forderungenMitarbeiter"].includes(x))) a.add("lohn");
       if (k.some((x) => ["guv", "sbk", "ebk"].includes(x)) || /abschließ|Abschluss/i.test(f.text)) a.add("abschluss");
     }
     ARTEN_VON.set(v.id, a);
