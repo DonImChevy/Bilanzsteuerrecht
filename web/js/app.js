@@ -317,6 +317,8 @@ const state = {
   bildEinst: { x: Number(lies("bsr.hgBildX", "50")), y: Number(lies("bsr.hgBildY", "50")), s: Number(lies("bsr.hgBildStaerke", "0.35")), z: Number(lies("bsr.hgBildZoom", "1")) || 1 },
   bildMasse: null, // Pixelmaße des Bilds (für den Zoom)
   // Animationen aus („Bewegung reduzieren“): eigener Schalter, Startwert = Systemeinstellung des Geräts
+  // Grafik: "auto" (Sparmodus, wenn das Gerät beim Start ruckelt), "spar" (immer schnell) oder "voll" (immer alle Effekte). Nur auf diesem Gerät.
+  leistung: lies("bsr.leistung", "auto"),
   bewegungAus: (() => { const v = lies("bsr.bewegungAus", ""); return v ? v === "1" : !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches; })(),
   hinweisWeg: lies("bsr.hinweisWeg", "") === "1",
   tab: "start",
@@ -416,6 +418,7 @@ function designAnwenden() {
   if (state.design === "light" || state.design === "dark") root.dataset.theme = state.design;
   else delete root.dataset.theme;
   root.dataset.bewegung = state.bewegungAus ? "aus" : "an";
+  root.dataset.leistung = leistungSpar() ? "spar" : "voll";
   gesetzFarbenAnwenden();
   const o = meinOutfit();
   talerOutfitSetzen(o);
@@ -471,6 +474,35 @@ function bildAnpassenView() {
 const meinOutfit = () => outfitVon(stat.outfit, stat.gekauft);
 const meineKasse = () => kasse(xpGesamt(stat).gesamt, stat.gekauft);
 
+// ---------- Sparmodus für ältere Geräte ----------
+/** Sparmodus aktiv? Bei „auto“ zählt die Messung beim Start (gespeichert) oder der Systemwunsch nach weniger Transparenz. */
+function leistungSpar() {
+  if (state.leistung !== "auto") return state.leistung === "spar";
+  return lies("bsr.leistungMessung", "") === "spar" || !!window.matchMedia?.("(prefers-reduced-transparency: reduce)").matches;
+}
+/**
+ * Beim Start einmalig messen, ob das Gerät die Effekte flüssig schafft: 2 Sekunden Bildwechsel zählen.
+ * Ist mehr als jedes fünfte Bild zu spät (> 32 ms) oder der Schnitt über 24 ms, schaltet „Automatisch“ auf „Schnell“.
+ * Wiederholt wird nach 14 Tagen oder wenn „Automatisch“ neu gewählt wird.
+ */
+function leistungMessen() {
+  if (state.leistung !== "auto" || document.hidden || !window.requestAnimationFrame) return;
+  const alt = lies("bsr.leistungMessung", ""), wann = Number(lies("bsr.leistungZeit", "0"));
+  if (alt && Date.now() - wann < 14 * 864e5) return;
+  const frames = []; let letzte = 0, start = 0;
+  const schritt = (t) => {
+    if (document.hidden) return; // im Hintergrund nicht messen
+    if (!start) { start = letzte = t; requestAnimationFrame(schritt); return; }
+    frames.push(t - letzte); letzte = t;
+    if (t - start < 2000) { requestAnimationFrame(schritt); return; }
+    const zuSpaet = frames.filter((f) => f > 32).length / frames.length, schnitt = (t - start) / frames.length;
+    const ergebnis = zuSpaet > 0.2 || schnitt > 24 ? "spar" : "voll";
+    schreib("bsr.leistungMessung", ergebnis); schreib("bsr.leistungZeit", String(Date.now()));
+    if (ergebnis !== alt) render();
+  };
+  // Erst messen, wenn die Startseite steht – nicht während des ersten Aufbaus
+  setTimeout(() => requestAnimationFrame(schritt), 1500);
+}
 /** Schalter „Animationen“ (an = Animationen laufen, aus = Bewegung reduziert). Klein für Kopfzeilen, sonst als Zeile. pf = Lernpfad-Design. */
 function bewegungSchalter(klein = false, pf = false) {
   const an = !state.bewegungAus;
@@ -986,9 +1018,9 @@ function ranglisteView() {
         <button class="knopf" data-a="gruppeErstellen" style="margin-top:10px">${ic("plus")} Gruppe erstellen</button></div>
       <div class="gruppe"><div class="gruppe-titel">Gruppe beitreten</div><div class="liste"><label class="zeile"><span class="grow">Gruppen-Code</span><input type="text" id="gruppeCode" class="feld-klein mono" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocapitalize="characters"></label></div>
         <button class="knopf zweit" data-a="gruppeBeitreten" style="margin-top:10px">Beitreten</button></div>
-      <div class="gruppe-fuss" style="margin:8px 4px 20px">Geteilt werden nur dein Name, deine XP, dein Level und Talers Outfit – nicht dein Lernstand.</div>`;
+      <div class="gruppe-fuss" style="margin:8px 4px 20px">Geteilt werden nur dein Name, deine XP, dein Level und Talers Outfit – nicht dein Lernstand. Jeder Name steht nur einmal in der Gruppe, nimm also einen eindeutigen.</div>`;
   }
-  const d = gruppe.daten, liste = d ? rangliste(d, gruppe.art, zeitraum("woche", 0).von) : [];
+  const d = gruppe.daten, liste = d ? rangliste(d, gruppe.art, zeitraum("woche", 0).von, stat.profil?.id) : [];
   const ich = liste.find((e) => e.id === stat.profil?.id);
   return `<section class="gruppen-kopf"><div><b>${esc(d?.name || g.name || "Lerngruppe")}</b><span>${liste.length} ${liste.length === 1 ? "Mitglied" : "Mitglieder"} · Code ${codeAnzeige(g.code)}</span></div>
       <button class="knopf zweit klein-knopf" data-a="gruppeEinladen">${ic("export", "klein")} Einladen</button></section>
@@ -1004,7 +1036,7 @@ function ranglisteView() {
     <button class="link gefahr" data-a="gruppeVerlassen" style="display:block;margin:18px auto 24px">Gruppe verlassen</button>`;
 }
 function gemeinsamStart() {
-  const g = stat.gruppe, d = gruppe.daten, liste = g?.code && d ? rangliste(d, "woche", zeitraum("woche", 0).von) : [];
+  const g = stat.gruppe, d = gruppe.daten, liste = g?.code && d ? rangliste(d, "woche", zeitraum("woche", 0).von, stat.profil?.id) : [];
   const ich = liste.find((e) => e.id === stat.profil?.id);
   const mini = liste.length ? `<button class="gm-rangliste" data-a="rangliste"><span class="gm-kopf"><b>${esc(d.name)}</b><span class="sub">Rangliste dieser Woche${ich ? ` · du bist auf Platz ${ich.platz}` : ""}</span></span>
       <span class="gm-top">${liste.slice(0, 3).map((e) => `<span class="gm-person${e.id === stat.profil?.id ? " ich" : ""}">${taler(e.platz === 1 ? "jubeln" : "hallo", { groesse: 40, klasse: "ruhig", outfit: { ...STANDARD, ...(e.outfit || {}) } })}<b>${e.platz}. ${esc(e.name)}</b><small>${zahlText(e.wert)} XP</small></span>`).join("")}</span></button>` : "";
@@ -1129,19 +1161,35 @@ function installHinweis() {
 // ---------- Suche ----------
 let INDEX = null;
 const norma = (t) => String(t).toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/(\w)-(\w)/g, "$1$2").replace(/[.,;:!?()„“"'§]/g, " ").replace(/\s+/g, " ");
+// Aufgaben-Teil des Suchverzeichnisses: wird nach dem Start in kleinen Häppchen im Leerlauf aufgebaut,
+// damit die erste Suche nicht stockt (auf älteren Geräten über eine Sekunde)
+const SUCH_R = new Zufall(1), SUCH_AUFGABEN = [];
+function aufgabeIndexieren(v) {
+  const fs = [], gesehen = new Set();
+  for (let i = 0; i < 12; i++) { const f = v.erzeugen(SUCH_R), k = f.text.replace(/[\d.,]+/g, "#"); if (!gesehen.has(k)) { gesehen.add(k); fs.push(f); } }
+  const texte = fs.map((f) => norma(`${f.text} ${f.antwort || ""} ${(f.optionen || []).join(" ")} ${f.erklaerung || ""}`));
+  return { v, f: fs[0], fs, texte, such: `${texte.join(" ")} ${norma(THEMA[v.thema].titel)}` };
+}
+function suchIndexVorbereiten() {
+  const leerlauf = window.requestIdleCallback || ((f) => setTimeout(() => f({ timeRemaining: () => 8 }), 60));
+  let aktiv = 0; // nur bauen, wenn gerade nicht gescrollt/getippt wird – sonst ruckelt es auf alten Geräten
+  for (const e of ["scroll", "pointerdown", "pointermove", "keydown"]) addEventListener(e, () => { aktiv = performance.now(); }, { passive: true, capture: true });
+  const schritt = (frist) => {
+    if (performance.now() - aktiv < 1000) return void setTimeout(() => leerlauf(schritt), 1000);
+    while (!INDEX && SUCH_AUFGABEN.length < ALLE.length && frist.timeRemaining() > 4) SUCH_AUFGABEN.push(aufgabeIndexieren(ALLE[SUCH_AUFGABEN.length]));
+    if (!INDEX && SUCH_AUFGABEN.length < ALLE.length) leerlauf(schritt);
+    else if (!INDEX) leerlauf(() => suchIndex()); // Rest (Normen, Kompaktwissen, Lernpfad) ist schnell
+  };
+  setTimeout(() => leerlauf(schritt), 2500);
+}
 function suchIndex() {
   if (INDEX) return INDEX;
-  const r = new Zufall(1);
+  while (SUCH_AUFGABEN.length < ALLE.length) SUCH_AUFGABEN.push(aufgabeIndexieren(ALLE[SUCH_AUFGABEN.length]));
   INDEX = {
     themen: THEMEN.map((t) => ({ t, kopf: norma(t.titel), such: norma(`${t.titel} ${t.unter} ${MODUL[t.fach].titel}`) })),
     kompakt: Object.entries(KOMPAKT).map(([id, k]) => ({ t: THEMA[id], k, kopf: norma(THEMA[id].titel), such: norma(`${THEMA[id].titel} ${kompaktText(k)}`) })),
     // Je Vorlage mehrere Ziehungen: Fallgeneratoren ziehen reihum, so wird jeder Fall auffindbar (Varianten, die sich nur in Zahlen unterscheiden, einmal)
-    aufgaben: ALLE.map((v) => {
-      const fs = [], gesehen = new Set();
-      for (let i = 0; i < 12; i++) { const f = v.erzeugen(r), k = f.text.replace(/[\d.,]+/g, "#"); if (!gesehen.has(k)) { gesehen.add(k); fs.push(f); } }
-      const texte = fs.map((f) => norma(`${f.text} ${f.antwort || ""} ${(f.optionen || []).join(" ")} ${f.erklaerung || ""}`));
-      return { v, f: fs[0], fs, texte, such: `${texte.join(" ")} ${norma(THEMA[v.thema].titel)}` };
-    }),
+    aufgaben: SUCH_AUFGABEN,
     // Lernpfad-Blöcke (Bilanzrecht getrennt nach Teil I und II)
     pfad: Object.entries(PFADE).flatMap(([key, p]) => p.bloecke.map((b) => ({ key, b, fach: key.startsWith("bsr") ? "bsr" : key, kopf: norma(b.titel),
       such: norma(`${b.titel} ${b.kurz} ${b.karten.map((k) => `${k.titel} ${k.text}`).join(" ")} ${b.fragen.map((f) => `${f.frage} ${f.erkl}`).join(" ")}`) }))),
@@ -2388,6 +2436,9 @@ function sheetView() {
       <div class="gruppe"><div class="gruppe-titel">Studium oder Ausbildung</div>${rollenSchalter()}<div class="gruppe-fuss">Bestimmt, welche Module auf der Startseite stehen. Der Lernstand bleibt erhalten.</div></div>
       <div class="gruppe"><div class="gruppe-titel">Animationen</div><div class="liste"><div class="zeile">
         <span class="grow"><b>Animationen</b><div class="sub">Aus = Bewegung reduzieren: Taler, Konfetti und Übergänge bleiben still. Auch während der Aufgaben oben rechts umschaltbar.</div></span>${bewegungSchalter()}</div></div></div>
+      <div class="gruppe"><div class="gruppe-titel">Grafik & Tempo</div>
+        <div class="segment">${[["auto", "Automatisch"], ["voll", "Schön"], ["spar", "Schnell"]].map(([id, t]) => `<button data-a="leistung" data-v="${id}" class="${state.leistung === id ? "aktiv" : ""}" aria-pressed="${state.leistung === id}">${t}</button>`).join("")}</div>
+        <div class="gruppe-fuss" style="margin:8px 4px 0">„Schnell“ verzichtet auf Glas-Unschärfe, bewegten Hintergrund und Dauer-Animationen – die App läuft dann auch auf älteren Geräten flüssig. „Automatisch“ misst beim Start, ob das Gerät ins Stocken kommt${state.leistung === "auto" ? ` (dieses Gerät: <b>${leistungSpar() ? "Schnell" : "Schön"}</b>)` : ""}. Gilt nur für dieses Gerät.</div></div>
       ${syncVerfuegbar() ? `<div class="gruppe"><div class="gruppe-titel">Mehrere Geräte</div><div class="liste"><button class="zeile" data-a="syncOeffnen"><span class="symbol">${ic("wechsel")}</span>
         <span class="grow"><b>Geräte synchronisieren</b><div class="sub">${esc(syncStatusText())}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
       <div class="gruppe"><div class="gruppe-titel">Was ist neu?</div><div class="liste"><button class="zeile" data-a="neuigkeiten"><span class="symbol">${ic("sterne")}</span>
@@ -2527,6 +2578,7 @@ const AKTIONEN = {
   },
   willkommenRolle: (v) => { AKTIONEN.rolle(v); state.sheet = { art: "willkommen" }; render(); },
   // Ohne Neuzeichnen umschalten – eine laufende Aufgabe bleibt, wie sie ist
+  leistung: (v) => { if (!["auto", "voll", "spar"].includes(v)) return; state.leistung = v; schreib("bsr.leistung", v); if (v === "auto") schreib("bsr.leistungMessung", ""); render(); if (v === "auto") leistungMessen(); },
   bewegung: () => {
     state.bewegungAus = !state.bewegungAus;
     einstellungMerken("bewegungAus", state.bewegungAus ? "1" : "0");
@@ -3238,6 +3290,8 @@ bildLaden().then((d) => { if (d) { eigenesBildSetzen(d); designAnwenden(); if (s
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") gruppeAktualisieren(); });
 zaehleStart();
 syncBeimStart();
+leistungMessen();
+suchIndexVorbereiten();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {

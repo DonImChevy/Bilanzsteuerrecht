@@ -5,6 +5,22 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-rangliste-namen",
+    datum: "2026-10-30",
+    klein: true,
+    titel: "Rangliste: jeder Name nur einmal",
+    punkte: [["pokal", "Keine doppelten Einträge mehr", "Einträge mit gleichem Namen gelten als dieselbe Person – die Rangliste zeigt jeden nur einmal und räumt alte Kopien beim Öffnen auf, auch die von Geräten mit älterer App-Version.", "rangliste"]],
+  },
+  {
+    id: "2026-10-leistung",
+    datum: "2026-10-30",
+    titel: "Flüssiger auf älteren Geräten",
+    punkte: [
+      ["blitz", "Grafik & Tempo", "Neu in den Einstellungen: „Schnell“ verzichtet auf Glas-Unschärfe, bewegten Hintergrund und Dauer-Animationen. „Automatisch“ misst beim Start, ob das Gerät ins Stocken kommt, und schaltet selbst um.", "einstellungen"],
+      ["suche", "Schnellere Suche", "Die Suche bereitet sich im Hintergrund vor – die erste Suche hängt nicht mehr."],
+    ],
+  },
+  {
     id: "2026-10-rangliste-doppelt",
     datum: "2026-10-30",
     klein: true,
