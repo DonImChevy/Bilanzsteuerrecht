@@ -5,6 +5,13 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-lippen-dezent",
+    datum: "2026-10-30",
+    klein: true,
+    titel: "Make-up: dezentere Lippen",
+    punkte: [["auge", "Lippenstift in Rosé", "Der Lippenstift beim Make-up ist jetzt ein zartes Rosé statt Knallpink – schmaler und leicht durchscheinend.", "garderobe", "gesicht"]],
+  },
+  {
     id: "2026-10-beauty",
     datum: "2026-10-30",
     titel: "Neu in der Garderobe: Make-up & Wimpern",
