@@ -11,6 +11,19 @@ export function eintragen(daten, id, eintrag) {
   d.mitglieder[id] = e;
   return d;
 }
+/**
+ * Doppelte Einträge derselben Person entfernen: frühere IDs (aus dem Geräte-Abgleich) und alte Kopien mit gleichem
+ * Namen und gleichem Taler-Outfit, die nicht mehr XP haben als der eigene Eintrag (entstanden durch verlorene IDs).
+ */
+export function doppelteEntfernen(daten, id, eintrag, frueher = []) {
+  if (!daten?.mitglieder) return daten;
+  const m = { ...daten.mitglieder }, outfit = JSON.stringify(eintrag.outfit || {});
+  for (const [andere, e] of Object.entries(m)) {
+    if (andere === id) continue;
+    if (frueher.includes(andere) || (e.name === eintrag.name && JSON.stringify(e.outfit || {}) === outfit && (e.xp || 0) <= (eintrag.xp || 0))) delete m[andere];
+  }
+  return { ...daten, mitglieder: m };
+}
 /** Eigenen Eintrag entfernen (Gruppe verlassen). */
 export function austragen(daten, id) {
   const m = { ...(daten?.mitglieder || {}) };

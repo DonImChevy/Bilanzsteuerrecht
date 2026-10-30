@@ -5,6 +5,13 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-rangliste-doppelt",
+    datum: "2026-10-30",
+    klein: true,
+    titel: "Rangliste repariert",
+    punkte: [["pokal", "Jede Person nur einmal", "Wer mehrere Geräte synchronisiert, stand in der Rangliste teils mehrfach. Die ID bleibt jetzt beim Abgleich erhalten, doppelte Einträge verschwinden beim nächsten Öffnen.", "rangliste"]],
+  },
+  {
     id: "2026-10-handschrift",
     datum: "2026-10-30",
     titel: "Karteikarten mit der Hand schreiben",
