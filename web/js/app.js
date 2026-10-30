@@ -27,7 +27,7 @@ import { garderobeView, talerBetrag } from "./garderobeansicht.js";
 import { kommende, countdownText, proTag } from "./termine.js";
 import { rueckblickView, statistikView, statistikStart } from "./statistikansicht.js";
 import { DUELL_ANZAHL, neuerSeed, duellLesen, duellLink, duellSieger, zeitText } from "./duell.js";
-import { eintragen, austragen, rangliste, gruppeSchreiben } from "./gruppe.js";
+import { eintragen, austragen, rangliste, gruppeSchreiben, doppelteEntfernen } from "./gruppe.js";
 import { NEUIGKEITEN, NEUESTE, ungesehen } from "./neuigkeiten.js";
 import { hinweisAktiv, hinweisSenden, offeneHinweiseSenden } from "./hinweis.js";
 import { GESETZE as GESETZBUECHER, PALETTE, farbeVon, farbenCss, farbenText, farbenAusText, farbeGueltig } from "./gesetzfarben.js";
@@ -943,12 +943,18 @@ function duellAusAdresse() {
 // ======================= Lerngruppe und Rangliste =======================
 const gruppe = { daten: null, laedt: false, fehler: null, art: "woche", zuletzt: 0 };
 function profilId() {
-  if (!stat.profil?.id) { stat.profil = { ...(stat.profil || {}), id: neueGeraeteId(), t: stat.profil?.t || 0 }; speichernLokal(); }
+  // Neue ID mit aktuellem Zeitstempel und gleich synchronisieren – sonst überschreibt der Abgleich sie wieder
+  if (!stat.profil?.id) { stat.profil = { ...(stat.profil || {}), id: neueGeraeteId(), t: Date.now() }; speichern(); }
   return stat.profil.id;
 }
 function meinEintrag() {
   const lv = levelJetzt(), w = zeitraum("woche", 0), { hintergrund, ...outfit } = meinOutfit();
   return { name: meinName() || "Anonym", xp: lv.xp, level: lv.level, xpWoche: zeitraumAuswerten(stat, w).xp, wocheVon: w.von, outfit, t: Date.now() };
+}
+/** Eigenen Eintrag setzen und eigene Doppelungen (alte IDs) entfernen. */
+function meinenEintragSetzen(d, extra = {}) {
+  const id = profilId(), e = meinEintrag();
+  return doppelteEntfernen(eintragen(d, id, { ...e, ...extra }), id, e, stat.profil?.frueher || []);
 }
 /** Eigenen Stand in die Lerngruppe schreiben und die Rangliste holen. */
 async function gruppeAktualisieren(erzwingen = false) {
@@ -957,7 +963,7 @@ async function gruppeAktualisieren(erzwingen = false) {
   if (!erzwingen && Date.now() - gruppe.zuletzt < 60 * 1000) return;
   gruppe.laedt = true;
   try {
-    gruppe.daten = await gruppeSchreiben(SERVER, code, (d) => eintragen(d, profilId(), meinEintrag()));
+    gruppe.daten = await gruppeSchreiben(SERVER, code, (d) => meinenEintragSetzen(d));
     gruppe.fehler = null; gruppe.zuletzt = Date.now();
   } catch (e) { gruppe.fehler = e.message || "Server nicht erreichbar"; }
   gruppe.laedt = false;
@@ -2683,7 +2689,7 @@ const AKTIONEN = {
     if (!navigator.onLine) { toast("Zum Erstellen wird Internet benötigt."); return; }
     const code = neuerCode();
     try {
-      gruppe.daten = await gruppeSchreiben(SERVER, code, (d) => eintragen(d, profilId(), { ...meinEintrag(), gruppenName: name.slice(0, 30) }));
+      gruppe.daten = await gruppeSchreiben(SERVER, code, (d) => meinenEintragSetzen(d, { gruppenName: name.slice(0, 30) }));
       stat.gruppe = { code, name, t: Date.now() }; speichern(); gruppe.zuletzt = Date.now(); render(); toast("Gruppe erstellt – jetzt einladen!");
     } catch (e) { toast(e.message || "Die Gruppe konnte nicht erstellt werden."); }
   },
@@ -2695,8 +2701,8 @@ const AKTIONEN = {
     try {
       const alt = await SERVER.holen(code);
       if (alt?.daten?.typ !== "gruppe") { toast("Diese Gruppe gibt es nicht."); return; }
-      if (stat.gruppe?.code && stat.gruppe.code !== code) await gruppeSchreiben(SERVER, stat.gruppe.code, (d) => austragen(d, profilId())).catch(() => {});
-      gruppe.daten = await gruppeSchreiben(SERVER, code, (d) => eintragen(d, profilId(), meinEintrag()));
+      if (stat.gruppe?.code && stat.gruppe.code !== code) await gruppeSchreiben(SERVER, stat.gruppe.code, (d) => [profilId(), ...(stat.profil?.frueher || [])].reduce((x, id) => austragen(x, id), d)).catch(() => {});
+      gruppe.daten = await gruppeSchreiben(SERVER, code, (d) => meinenEintragSetzen(d));
       stat.gruppe = { code, name: gruppe.daten.name, t: Date.now() }; speichern(); gruppe.zuletzt = Date.now();
       state.sheet = { art: "rangliste" }; render(); toast(`Willkommen in „${gruppe.daten.name}“!`);
     } catch (e) { toast(e.message || "Beitreten hat nicht geklappt."); }
@@ -2707,7 +2713,7 @@ const AKTIONEN = {
   },
   gruppeVerlassen: async () => {
     const g = stat.gruppe; if (!g?.code || !confirm("Lerngruppe verlassen? Dein Eintrag in der Rangliste wird gelöscht.")) return;
-    try { await gruppeSchreiben(SERVER, g.code, (d) => austragen(d, profilId())); } catch (_) { /* offline: Eintrag bleibt, Gruppe trotzdem verlassen */ }
+    try { await gruppeSchreiben(SERVER, g.code, (d) => [profilId(), ...(stat.profil?.frueher || [])].reduce((x, id) => austragen(x, id), d)); } catch (_) { /* offline: Eintrag bleibt, Gruppe trotzdem verlassen */ }
     stat.gruppe = { code: "", name: "", t: Date.now() }; gruppe.daten = null; speichern(); render();
   },
   duellStart: (v) => {

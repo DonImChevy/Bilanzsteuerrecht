@@ -105,6 +105,19 @@ export function gelesenVereinen(a = {}, b = {}) {
 }
 /** Von zwei Ständen mit Zeitstempel t den neueren (Einstellungen, zuletzt). */
 export const neuerer = (a, b) => (!a || (b?.t || 0) > (a?.t || 0) ? b : a) ?? null;
+/**
+ * Profil zusammenführen: Name usw. vom neueren Stand, die Ranglisten-ID aber nie verlieren. Gibt es zwei IDs
+ * (zwei Geräte), gewinnt auf allen Geräten dieselbe (die kleinere); die andere wandert nach „frueher“, damit die
+ * Lerngruppe den alten Eintrag entfernen kann.
+ */
+export function profilVereinen(a, b) {
+  const n = neuerer(a, b);
+  if (!n) return null;
+  const ids = [...new Set([a?.id, b?.id].filter(Boolean))].sort();
+  if (!ids.length) return n;
+  const frueher = [...new Set([...(a?.frueher || []), ...(b?.frueher || []), ...ids.slice(1)])].filter((x) => x !== ids[0]).slice(-20);
+  return { ...n, id: ids[0], ...(frueher.length ? { frueher } : {}) };
+}
 
 /** Änderungen an den gewussten Lernkarten seit `basisKarten` als Einträge {g, t}. */
 export function kartenAenderungen(karten = [], basisKarten = null, jetzt = Date.now()) {
@@ -154,7 +167,7 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       gekauft: erfolgeVereinen(d.gekauft, vorher.gekauft),
       duelle: neuester(d.duelle, vorher.duelle),
       outfit: neuerer(d.outfit, vorher.outfit),
-      profil: neuerer(d.profil, vorher.profil),
+      profil: profilVereinen(d.profil, vorher.profil),
       gruppe: neuerer(d.gruppe, vorher.gruppe),
     };
     const version = await server.speichern(lokal.code, daten, alt?.version || 0);
@@ -176,7 +189,8 @@ export async function abgleichen(stat, lokal, server, jetzt = Date.now()) {
       s.termine = neuester(g.termine, statJetzt.termine);
       s.gekauft = erfolgeVereinen(g.gekauft, statJetzt.gekauft);
       s.duelle = neuester(g.duelle, statJetzt.duelle);
-      for (const k of ["outfit", "profil", "gruppe"]) s[k] = neuerer(g[k], statJetzt[k]);
+      for (const k of ["outfit", "gruppe"]) s[k] = neuerer(g[k], statJetzt[k]);
+      s.profil = profilVereinen(g.profil, statJetzt.profil);
       const kNeu = kartenAenderungen(statJetzt.karten, vorher.karten, jetzt);
       const kSet = new Set(g.karten);
       for (const [id, e] of Object.entries(kNeu)) if (e.g) kSet.add(id); else kSet.delete(id);

@@ -920,3 +920,20 @@ test("Handschrift: Striche kompakt kodieren, Karten mit Handschrift speichern, e
   assert.equal(imp.neu, 1); assert.equal(Object.values(imp.meine)[0].zv, t);
   assert.ok(MK.exportText(m).includes("(Handschrift – nur in der App)"));
 });
+
+test("Rangliste: Profil-ID geht beim Abgleich nicht verloren, Doppelungen werden entfernt", async () => {
+  const { profilVereinen } = await import("../js/sync.js");
+  const { doppelteEntfernen, eintragen } = await import("../js/gruppe.js");
+  // Server kennt nur den Namen, das Gerät hat zusätzlich eine ID mit gleichem Zeitstempel → ID bleibt
+  assert.equal(profilVereinen({ name: "Ben", t: 5 }, { name: "Ben", id: "g-b", t: 5 }).id, "g-b");
+  assert.equal(profilVereinen({ name: "Ben", id: "g-b", t: 5 }, { name: "Ben", t: 9 }).id, "g-b");
+  // Zwei Geräte mit verschiedenen IDs: beide landen bei derselben, die andere wird „frueher“
+  const p1 = profilVereinen({ name: "Ben", id: "g-z", t: 5 }, { name: "Ben", id: "g-a", t: 6 });
+  const p2 = profilVereinen({ name: "Ben", id: "g-a", t: 6 }, { name: "Ben", id: "g-z", t: 5 });
+  assert.equal(p1.id, "g-a"); assert.equal(p2.id, "g-a"); assert.deepEqual(p1.frueher, ["g-z"]);
+  // Gruppe mit vier Kopien von Ben (verlorene IDs) und einer anderen Person
+  const ben = { name: "Ben", xp: 1360, level: 9, outfit: { metall: "gold" } };
+  let d = { typ: "gruppe", name: "G", mitglieder: { x1: { ...ben }, x2: { ...ben }, x3: { ...ben, xp: 1200 }, mia: { name: "Mia", xp: 900, outfit: { metall: "gold" } }, ben2: { name: "Ben", xp: 5000, outfit: { metall: "gold" } } } };
+  d = doppelteEntfernen(eintragen(d, "neu", ben), "neu", ben, ["alt"]);
+  assert.deepEqual(Object.keys(d.mitglieder).sort(), ["ben2", "mia", "neu"]);
+});
