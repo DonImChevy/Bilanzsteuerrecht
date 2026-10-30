@@ -11,6 +11,7 @@ import { gliederungView } from "./bilr/gliederung.js";
 import { r2View } from "./est/r2.js";
 import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, lesezeit, kompaktInline, zuletztText } from "./kompakt.js";
 import * as MK from "./meinekarten.js";
+import * as HS from "./handschrift.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
@@ -327,6 +328,7 @@ const state = {
   sitzung: null,
   talerSpruch: -1, // angetippter Spruch des Maskottchens auf der Startseite (-1 = keiner)
   garderobe: { slot: "kopf", probe: null }, // Garderobe: Kategorie und angeprobter Artikel
+  hs: { art: "s", farbe: 0, mfarbe: 0 }, // Handschrift: Werkzeug (Stift, Textmarker, Radierer) und Farben
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
   kompakt: null, // Kompaktwissen: {id: Thema | null (Übersicht), fach, liste: aus der Übersicht geöffnet, ausSitzung}
@@ -698,6 +700,7 @@ function render() {
   });
   if (scrollVoll.some(Boolean)) app.querySelectorAll(".vollbild .vb-inhalt").forEach((el, i) => { if (scrollVoll[i]) el.scrollTop = scrollVoll[i]; });
   if (scrollSheet) { const el = app.querySelector(".sheet .vb-inhalt"); if (el) el.scrollTop = scrollSheet; }
+  handschriftAnbinden();
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
@@ -1481,6 +1484,8 @@ function tabKlausur() {
 const meine = () => (stat.meineKarten ||= {});
 /** Kartentext: **fett** als Textmarker, Normzitate antippbar, Zeilenumbrüche bleiben. */
 const kartenText = (t) => kompaktInline(t).replace(/\n/g, "<br>");
+/** Eine Kartenseite: Handschrift (falls vorhanden) und Text. s = "v" | "h". */
+const seiteHtml = (k, s) => `${HS.hatStriche(k["z" + s]) ? HS.svg(k["z" + s]) : ""}${k[s] ? kartenText(k[s]) : ""}`;
 /** In Listen, die selbst angetippt werden: Normzitate nur hervorheben, nicht verlinken. */
 const ohneLinks = (html) => html.replace(/<span class="km-norm"[^>]*>(.*?)<\/span>/g, "<b>$1</b>");
 /** Knopf „+ Als Karte“ – quelle bestimmt, woraus der Entwurf entsteht (siehe AKTIONEN.alsKarte). */
@@ -1507,8 +1512,45 @@ function fehlerKarten(fach) {
 function karteOeffnen(entwurf) {
   // Aus einem anderen Blatt (Gesetzestext, Stapel) geöffnet: Schließen führt dorthin zurück
   const zurueck = state.sheet && state.sheet.art !== "karteEdit" ? state.sheet : null;
-  state.sheet = { art: "karteEdit", e: { f: state.fach, st: lies("bsr.stapel", MK.STANDARD_STAPEL), ...entwurf }, um: false, zurueck };
+  const e = { f: state.fach, st: lies("bsr.stapel", MK.STANDARD_STAPEL), ...entwurf };
+  for (const s of ["v", "h"]) {
+    if (typeof e["z" + s] === "string") e["z" + s] = HS.dekodieren(e["z" + s]);
+    e["m" + s] ||= HS.hatStriche(e["z" + s]) && !e[s] ? "hand" : "text";
+  }
+  state.sheet = { art: "karteEdit", e, um: false, zurueck };
   render();
+}
+/** Werkzeugleiste und Papier einer Kartenseite im Handschrift-Modus. */
+function handschriftFeld(e, s) {
+  const z = (e["z" + s] ||= { g: "l", s: [] }), w = state.hs, m = w.art === "m";
+  const farben = m ? HS.MARKER : HS.FARBEN, aktivFarbe = m ? w.mfarbe : w.farbe;
+  return `<div class="hs-leiste" role="toolbar" aria-label="Schreibwerkzeuge">
+      <button class="hs-wz${w.art === "s" ? " an" : ""}" data-a="hsWerkzeug" data-v="s" aria-pressed="${w.art === "s"}" aria-label="Stift">${ic("stift", "klein")}</button>
+      <button class="hs-wz${w.art === "m" ? " an" : ""}" data-a="hsWerkzeug" data-v="m" aria-pressed="${w.art === "m"}" aria-label="Textmarker"><svg class="ic klein" viewBox="0 0 24 24"><path d="M5 19h6M9.5 15.5l-3-3L15 4l3 3z"/><path d="M6.5 12.5 4 17l3.5 1.5 2-3"/></svg></button>
+      <button class="hs-wz${w.art === "r" ? " an" : ""}" data-a="hsWerkzeug" data-v="r" aria-pressed="${w.art === "r"}" aria-label="Radierer"><svg class="ic klein" viewBox="0 0 24 24"><path d="M8 20h12M5.5 14.5 14 6l5 5-8.5 8.5H7.5L4.5 16.5z"/><path d="m9.5 10.5 5 5"/></svg></button>
+      <span class="hs-trenn"></span>
+      ${w.art === "r" ? `<span class="hs-hinweis">Strich antippen oder darüberwischen</span>` : farben.map((f, i) => `<button class="hs-farbe${aktivFarbe === i ? " an" : ""}" data-a="hsFarbe" data-v="${i}" style="--f:var(--hs-${m ? "m-" : ""}${f})" aria-label="Farbe ${f}" aria-pressed="${aktivFarbe === i}"></button>`).join("")}
+      <span class="hs-platz"></span>
+      <button class="hs-wz" data-a="hsRueck" data-v="${s}" aria-label="Rückgängig" ${z.s.length || z._rueck?.length ? "" : "disabled"}>${ic("zurueck", "klein")}</button>
+      <button class="hs-wz" data-a="hsPapier" data-v="${s}" aria-label="Papier: ${z.g === "k" ? "kariert" : z.g ? "liniert" : "leer"}" title="Papier wechseln"><svg class="ic klein" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/>${z.g === "k" ? `<path d="M4 10h16M4 15h16M10 4v16M15 4v16"/>` : z.g ? `<path d="M4 10h16M4 15h16"/>` : ""}</svg></button>
+      <button class="hs-wz" data-a="hsLeeren" data-v="${s}" aria-label="Seite leeren" ${z.s.length ? "" : "disabled"}>${ic("muell", "klein")}</button>
+    </div>
+    <div class="hs-papier">${HS.papier(z.g)}<canvas class="hs-canvas" data-seite="${s}" aria-label="Schreibfläche ${s === "v" ? "Vorderseite" : "Rückseite"}"></canvas></div>`;
+}
+/** Nach jedem Neuzeichnen: Schreibflächen des Karteneditors an die Entwürfe binden. */
+function handschriftAnbinden() {
+  const e = state.sheet?.art === "karteEdit" && state.sheet.e;
+  if (!e) return;
+  document.querySelectorAll(".hs-canvas").forEach((c) => {
+    const s = c.dataset.seite, z = (e["z" + s] ||= { g: "l", s: [] });
+    HS.anbinden(c, z, () => ({ art: state.hs.art, farbe: state.hs.art === "m" ? state.hs.mfarbe : state.hs.farbe }), () => {
+      const v = document.getElementById("kVorschau");
+      if (v) v.innerHTML = kartenVorschau(e, state.sheet.um);
+      const k = document.getElementById("kSpeichern");
+      if (k) k.disabled = !MK.entwurfOk(e);
+      c.closest(".mk-feld")?.querySelectorAll('[data-a="hsRueck"], [data-a="hsLeeren"]').forEach((b) => { b.disabled = b.dataset.a === "hsLeeren" ? !z.s.length : !(z.s.length || z._rueck?.length); });
+    });
+  });
 }
 /** Karteneditor: Vorder- und Rückseite, Stapel (vorhandene als Chips), Vorschau zum Umdrehen. */
 function karteEditView(sh) {
@@ -1516,11 +1558,12 @@ function karteEditView(sh) {
   if (!stapel.includes(MK.STANDARD_STAPEL)) stapel.unshift(MK.STANDARD_STAPEL);
   return `<div class="mk-editor">
     ${e.q ? `<div class="mk-quelle">${ic("akte", "klein")} Aus: ${esc(e.q)}</div>` : ""}
-    <label class="mk-feld"><span>Vorderseite <small>Frage oder Stichwort</small></span>
-      <textarea class="offen-eingabe mk-text" id="kVorne" data-fokus="kVorne" rows="3" maxlength="2000" placeholder="z. B. Wann gilt das Witwensplitting?">${esc(e.v || "")}</textarea></label>
-    <label class="mk-feld"><span>Rückseite <small>Antwort mit Norm</small></span>
-      <textarea class="offen-eingabe mk-text" id="kHinten" data-fokus="kHinten" rows="5" maxlength="2000" placeholder="z. B. Im Jahr nach dem Tod des Ehegatten (§ 32a Abs. 6 S. 1 Nr. 1 EStG).">${esc(e.h || "")}</textarea></label>
-    <div class="mk-tipp">**Wort** wird zum Textmarker · Paragrafen wie „§ 26 EStG“ werden antippbar.</div>
+    ${["v", "h"].map((s) => `<div class="mk-feld"><span class="mk-feld-kopf">${s === "v" ? "Vorderseite <small>Frage oder Stichwort</small>" : "Rückseite <small>Antwort mit Norm</small>"}
+        <span class="segment mk-modus">${[["text", "Tippen"], ["hand", "Schreiben"]].map(([m, t]) => `<button data-a="hsModus" data-v="${s}:${m}" class="${e["m" + s] === m ? "aktiv" : ""}" aria-pressed="${e["m" + s] === m}">${m === "hand" ? ic("stift", "klein") : ""}${t}</button>`).join("")}</span></span>
+      ${e["m" + s] === "hand" ? handschriftFeld(e, s)
+        : s === "v" ? `<textarea class="offen-eingabe mk-text" id="kVorne" data-fokus="kVorne" rows="3" maxlength="2000" placeholder="z. B. Wann gilt das Witwensplitting?" aria-label="Vorderseite">${esc(e.v || "")}</textarea>`
+        : `<textarea class="offen-eingabe mk-text" id="kHinten" data-fokus="kHinten" rows="5" maxlength="2000" placeholder="z. B. Im Jahr nach dem Tod des Ehegatten (§ 32a Abs. 6 S. 1 Nr. 1 EStG)." aria-label="Rückseite">${esc(e.h || "")}</textarea>`}</div>`).join("")}
+    <div class="mk-tipp">${e.mv === "hand" || e.mh === "hand" ? "Mit Apple Pencil oder Stift schreiben – sobald ein Stift schreibt, stört die aufgelegte Hand nicht mehr. Der Finger geht auch." : "**Wort** wird zum Textmarker · Paragrafen wie „§ 26 EStG“ werden antippbar · auf dem iPad schreibt „Kritzeln“ direkt ins Feld."}</div>
     <div class="mk-feld"><span>Stapel</span>
       <div class="chip-reihe mk-stapel-chips">${stapel.map((s) => `<button class="chip ${e.st === s ? "aktiv" : ""}" data-a="karteStapel" data-v="${esc(s)}">${esc(s)}</button>`).join("")}</div>
       <input class="offen-eingabe mk-stapel-input" id="kStapel" data-fokus="kStapel" maxlength="40" placeholder="Neuer Stapel, z. B. Fristen" value="${stapel.includes(e.st) ? "" : esc(e.st)}" autocomplete="off"></div>
@@ -1532,8 +1575,8 @@ function karteEditView(sh) {
     </div></div>`;
 }
 const kartenVorschau = (e, um) => `<div class="mk-mini ${um ? "um" : ""}" data-a="karteVorschauDrehen" role="button" tabindex="0" aria-label="Vorschau umdrehen">
-    <div class="mk-mini-seite"><em>Vorne</em><div>${e.v ? kartenText(e.v) : `<span class="sub">Vorderseite …</span>`}</div></div>
-    <div class="mk-mini-seite rueck"><em>Hinten</em><div>${e.h ? kartenText(e.h) : `<span class="sub">Rückseite …</span>`}</div></div></div>`;
+    <div class="mk-mini-seite"><em>Vorne</em><div>${seiteHtml(e, "v") || `<span class="sub">Vorderseite …</span>`}</div></div>
+    <div class="mk-mini-seite rueck"><em>Hinten</em><div>${seiteHtml(e, "h") || `<span class="sub">Rückseite …</span>`}</div></div></div>`;
 
 /** Stapel ansehen: alle Karten als kleine Doppelkarten (vorne | hinten), antippen zum Bearbeiten. */
 function stapelView(name) {
@@ -1544,7 +1587,7 @@ function stapelView(name) {
       <button class="kachel" data-a="meineLernen" data-v="${esc("st:" + name)}"><span class="k-icon">${ic("play", "fill")}</span><span class="k-text"><b>Alle lernen</b><span class="sub">${ks.length} Karten</span></span></button>
       <button class="kachel" data-a="meineLernen" data-v="${esc("sf:" + name)}" ${faellig ? "" : "disabled"}><span class="k-icon" style="background:var(--warn-weak);color:var(--warn)">${ic("wiederholen")}</span><span class="k-text"><b>Fällige</b><span class="sub">${faellig} Karten</span></span></button></div>
     <div class="mk-liste">${ks.map((k) => `<button class="mk-karte" data-a="karteBearbeiten" data-v="${k.id}" aria-label="Karte bearbeiten">
-      <span class="mk-vorne">${ohneLinks(kartenText(k.v))}</span><span class="mk-hinten">${ohneLinks(kartenText(k.h))}</span>
+      <span class="mk-vorne">${ohneLinks(seiteHtml(k, "v"))}</span><span class="mk-hinten">${ohneLinks(seiteHtml(k, "h"))}</span>
       <span class="mk-fach" title="Lernkartei-Fach">${leitnerPunkte(k.l?.fach || 0)}</span></button>`).join("")}</div>`;
 }
 const leitnerPunkte = (n) => Array.from({ length: FAECHER_MAX }, (_, i) => `<i class="${i < n ? "an" : ""}"></i>`).join("");
@@ -2040,7 +2083,8 @@ function deckView() {
   const reich = !!k.art;
   const kopf = k.art === "eigen" ? k.kopf : k.art === "fehler" ? "Meine Fehler · " + THEMA[k.thema].titel : THEMA[k.thema].titel;
   // Vorderseite: Normen nur hervorgehoben (Antippen dreht die Karte um), auf der Rückseite antippbar
-  const vorne = reich ? ohneLinks(kartenText(k.vorne)) : esc(k.vorne), hinten = reich ? kartenText(k.hinten) : esc(k.hinten);
+  const hand = (z) => (HS.hatStriche(z) ? HS.svg(z, { klasse: "hs-gross" }) : "");
+  const vorne = reich ? hand(k.zv) + ohneLinks(kartenText(k.vorne)) : esc(k.vorne), hinten = reich ? hand(k.zh) + kartenText(k.hinten) : esc(k.hinten);
   const lang = k.vorne.length > 90;
   return `<div class="vollbild">
     <div class="vb-kopf"><button class="rund" data-a="deckZu" aria-label="Beenden">${ic("kreuz")}</button><div class="sitzung-fortschritt"><span style="width:${(d.index / d.karten.length) * 100}%"></span></div>
@@ -2815,9 +2859,16 @@ const AKTIONEN = {
   karteBearbeiten: (v) => {
     const k = meine()[v];
     if (!k || k.x) return;
-    karteOeffnen({ id: v, v: k.v, h: k.h, f: k.f, st: k.st, q: k.q });
+    karteOeffnen({ id: v, v: k.v, h: k.h, zv: k.zv, zh: k.zh, f: k.f, st: k.st, q: k.q });
   },
   karteStapel: (v) => { state.sheet.e.st = v; render(); },
+  // ---------- Handschrift im Karteneditor ----------
+  hsModus: (v) => { const [s, m] = v.split(":"), e = state.sheet.e; e["m" + s] = m; if (m === "hand") e["z" + s] ||= { g: "l", s: [] }; render(); },
+  hsWerkzeug: (v) => { state.hs.art = v; render(); },
+  hsFarbe: (v) => { if (state.hs.art === "m") state.hs.mfarbe = Number(v); else state.hs.farbe = Number(v); render(); },
+  hsRueck: (v) => { const z = state.sheet.e["z" + v]; if (z) HS.rueckgaengig(z); render(); },
+  hsPapier: (v) => { const z = state.sheet.e["z" + v]; if (z) z.g = z.g === "l" ? "k" : z.g === "k" ? "" : "l"; render(); },
+  hsLeeren: (v) => { const z = state.sheet.e["z" + v]; if (!z?.s.length || !confirm("Alles auf dieser Seite löschen?")) return; (z._rueck ||= []).push(z.s); z.s = []; render(); },
   karteVorschauDrehen: () => {
     state.sheet.um = !state.sheet.um;
     document.querySelector(".mk-mini")?.classList.toggle("um", state.sheet.um);
@@ -2825,12 +2876,14 @@ const AKTIONEN = {
   karteSpeichern: () => {
     const sh = state.sheet, e = sh.e;
     if (!MK.entwurfOk(e)) return;
-    stat.meineKarten = MK.speichernKarte(meine(), e);
+    const zv = HS.kodieren(e.zv), zh = HS.kodieren(e.zh);
+    if (zv.length > HS.MAX_ZEICHEN || zh.length > HS.MAX_ZEICHEN) { toast("Die Handschrift ist zu umfangreich – bitte auf zwei Karten aufteilen."); return; }
+    stat.meineKarten = MK.speichernKarte(meine(), { ...e, zv, zh });
     schreib("bsr.stapel", e.st || MK.STANDARD_STAPEL);
     speichern();
     // Wird gerade gelernt: geänderten Text sofort auf der Karte zeigen
     const dk = state.deck?.karten.find((k) => k.art === "eigen" && k.id === e.id);
-    if (dk) { const k = meine()[e.id]; Object.assign(dk, { vorne: k.v, hinten: k.h, kopf: k.st }); }
+    if (dk) { const k = meine()[e.id]; Object.assign(dk, { vorne: k.v, hinten: k.h, zv: k.zv, zh: k.zh, kopf: k.st }); }
     state.sheet = sh.zurueck || null;
     toast(e.id ? "Karte gespeichert." : `Karte gespeichert – Stapel „${e.st || MK.STANDARD_STAPEL}“ im Reiter Karten.`);
     render();
@@ -2858,7 +2911,7 @@ const AKTIONEN = {
     else if (v.startsWith("sf:")) ks = MK.faelligeKarten(m, state.fach).filter((k) => k.st === v.slice(3));
     if (!ks?.length) return;
     state.sheet = null;
-    state.deck = { karten: ks.map((k) => ({ id: k.id, art: "eigen", kopf: k.st, vorne: k.v, hinten: k.h })), index: 0, um: false, gewusst: 0 };
+    state.deck = { karten: ks.map((k) => ({ id: k.id, art: "eigen", kopf: k.st, vorne: k.v, hinten: k.h, zv: k.zv, zh: k.zh })), index: 0, um: false, gewusst: 0 };
     render();
   },
   fehlerLernen: () => {

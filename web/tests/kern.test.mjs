@@ -896,3 +896,27 @@ test("Garderobe: Nachtschwinge ist eine Maske – alte Metall-Auswahl wird über
   assert.ok(svg.includes("#ff5fb0") && svg.includes("#fdf2ff"), "rosa Augen und Wimpern");
   assert.ok(!G.outfitTeile({ ...G.STANDARD, maske: "nachtschwinge" }).kappe("x", "offen").includes("#ff5fb0"));
 });
+
+test("Handschrift: Striche kompakt kodieren, Karten mit Handschrift speichern, exportieren und importieren", async () => {
+  const HS = await import("../js/handschrift.js");
+  const MK = await import("../js/meinekarten.js");
+  // Ein Strich mit 200 Punkten auf einer Geraden wird stark vereinfacht, Druck und Farbe bleiben
+  const z = { g: "k", s: [{ w: "s", c: 2, p: Array.from({ length: 200 }, (_, i) => [10 + i * 2, 50 + i, 8]) }, { w: "m", c: 1, p: [[5, 300, 7], [500, 302, 7]] }] };
+  const t = HS.kodieren(z), back = HS.dekodieren(t);
+  assert.ok(t.length < 60, "kompakt: " + t.length);
+  assert.equal(back.g, "k"); assert.equal(back.s.length, 2); assert.equal(back.s[0].c, 2); assert.equal(back.s[1].w, "m");
+  assert.deepEqual(back.s[0].p[0], [10, 50, 8]); assert.deepEqual(back.s[0].p.at(-1), [408, 249, 8]);
+  assert.equal(HS.kodieren({ g: "l", s: [] }), "");
+  assert.ok(HS.svg(t).includes("<path"));
+  // Karte: Vorderseite nur Handschrift, Rückseite Text
+  assert.ok(MK.entwurfOk({ v: "", zv: t, h: "Antwort" }) && MK.entwurfOk({ v: "", zv: z, h: "x" }));
+  assert.ok(!MK.entwurfOk({ v: "", zv: "", h: "Antwort" }));
+  const m = MK.speichernKarte({}, { v: "", zv: t, h: "Antwort", f: "est" });
+  const k = Object.values(m)[0];
+  assert.equal(k.zv, t); assert.ok(!("zh" in k));
+  const json = MK.exportJson(m);
+  assert.ok(json.includes("handschriftVorne"));
+  const imp = MK.importieren({}, json, { fach: "est" });
+  assert.equal(imp.neu, 1); assert.equal(Object.values(imp.meine)[0].zv, t);
+  assert.ok(MK.exportText(m).includes("(Handschrift – nur in der App)"));
+});

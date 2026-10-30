@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-handschrift",
+    datum: "2026-10-30",
+    titel: "Karteikarten mit der Hand schreiben",
+    punkte: [
+      ["stift", "Mit Apple Pencil, Stift oder Finger", "Bei „Neue Karte“ je Seite auf „Schreiben“ tippen: Stift mit Druckstärke, Textmarker, Radierer, vier Farben, Rückgängig und liniertes oder kariertes Papier.", "tab", "karten"],
+      ["karten", "Lernen wie gewohnt", "Handschrift und Text lassen sich mischen – etwa Frage getippt, Lösung von Hand. Die Karten laufen in der Lernkartei und werden mit dem Sync-Code übertragen."],
+    ],
+  },
+  {
     id: "2026-10-rangliste-taler",
     datum: "2026-10-30",
     klein: true,
