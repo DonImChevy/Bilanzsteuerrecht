@@ -2742,7 +2742,7 @@ const AKTIONEN = {
   },
   farbwelt: (v) => { if (!FARBWELTEN.some((f) => f.id === v)) return; state.farbwelt = v; einstellungMerken("farbwelt", v); render(); },
   hintergrundWaehlen: () => { state.garderobe = { slot: "hintergrund", probe: null }; state.sheet = { art: "garderobe" }; render(); },
-  garderobe: () => { state.garderobe.probe = null; state.sheet = { art: "garderobe" }; render(); },
+  garderobe: (v) => { state.garderobe.probe = null; if (v) state.garderobe.slot = v; state.sheet = { art: "garderobe" }; render(); },
   garSlot: (v) => { state.garderobe = { slot: v, probe: null }; render(); },
   garProbe: (v) => { state.garderobe.probe = state.garderobe.probe === v ? null : v; render(); document.querySelector(".sheet .vb-inhalt")?.scrollTo({ top: 0, behavior: state.bewegungAus ? "auto" : "smooth" }); },
   garKaufen: (v) => {

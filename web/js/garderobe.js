@@ -10,6 +10,7 @@ export const SLOTS = [
   { id: "hintergrund", name: "Hintergrund & Farben", icon: "bild" },
   { id: "augen", name: "Brille", icon: "suche" },
   { id: "hals", name: "Hals", icon: "herz" },
+  { id: "ohr", name: "Ohrringe", icon: "ohrring" },
   { id: "hand", name: "Hand", icon: "akte" },
   { id: "metall", name: "Metall", icon: "muenze" },
   { id: "aura", name: "Aura", icon: "sterne" },
@@ -23,7 +24,7 @@ export const FARBWELTEN = [
 ];
 
 // Standard (kostenlos, immer im Besitz): Brille „Lernbrille“, Metall „Gold“, Hintergrund „Leuchten“
-export const STANDARD = { kopf: "", augen: "brille", hals: "", hand: "", metall: "gold", aura: "", hintergrund: "leuchten" };
+export const STANDARD = { kopf: "", augen: "brille", hals: "", ohr: "", hand: "", metall: "gold", aura: "", hintergrund: "leuchten" };
 
 /** Katalog: [id, slot, name, preis, mindestlevel, kurzbeschreibung] */
 const K = [
@@ -57,6 +58,8 @@ const K = [
   ["perlenkette", "hals", "Perlenkette", 300, 0, "Eine Perle für jede Norm"],
   ["medaille", "hals", "Medaille", 400, 10, "Ab Level 10"],
   ["goldkette", "hals", "Goldkette", 700, 20, "Ab Level 20 – mit §-Anhänger"],
+  // Ohrringe (hängen am Münzrand, auf Höhe der Brillenbügel)
+  ["perlenohrringe", "ohr", "Perlenohrringe", 250, 0, "Passend zur Perlenkette"],
   // Hand
   ["faehnchen", "hand", "Fähnchen", 50, 0, "Feuert dich an"],
   ["kaffee", "hand", "Kaffeebecher", 70, 0, "Treibstoff fürs Lernen"],
@@ -387,6 +390,14 @@ const HALS = {
   })(),
 };
 
+/** Ohrringe: hängen links und rechts am Münzrand (bei x ≈ 20,5 bzw. 99,5), wo die Brillenbügel enden. */
+const perle = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#f8fafc" ${U} ${sw(1.1)}/><circle cx="${(x - r * 0.32).toFixed(1)}" cy="${(y - r * 0.32).toFixed(1)}" r="${(r * 0.32).toFixed(1)}" fill="#fff"/>`;
+const OHR = {
+  // Dieselben Perlen wie bei der Perlenkette (Farbe, Umriss, Glanzpunkt): kleine Perle als Stecker, darunter eine größere am Goldhaken
+  perlenohrringe: [[20.6, -1], [99.4, 1]].map(([x, s]) => `<path d="M${x} 62.5 q${s * -1.6} 2.6 0 5.2" fill="none" stroke="#d4a017" stroke-width="1.3" stroke-linecap="round"/>
+    ${perle(x, 61, 2.2)}${perle(x, 71.2, 3.6)}`).join(""),
+};
+
 /** Gegenstände in Talers linker Hand (Mittelpunkt = Hand). */
 const HAND = {
   faehnchen: (x, y) => `<path d="M${x} ${y + 6} V${y - 26}" stroke="#78350f" stroke-width="2.4" stroke-linecap="round"/>
@@ -440,7 +451,7 @@ const AURA = {
     <path d="M34 104 Q24 86 32 68 Q36 80 42 82 Q40 66 50 52 Q52 70 58 72 Q58 56 64 46 Q70 60 68 74 Q76 70 78 58 Q90 76 86 104Z" fill="#facc15" opacity="0.9"/></g>`,
 };
 
-/** Grafik-Bausteine eines Outfits für maskottchen.js: {farben, hinten, kopf, augen (null = Standardbrille), hals, hand(x, y)} */
+/** Grafik-Bausteine eines Outfits für maskottchen.js: {farben, hinten, kopf, augen (null = Standardbrille), hals, ohr, hand(x, y)} */
 export function outfitTeile(o = STANDARD) {
   const m = METALL[o.metall];
   return {
@@ -450,6 +461,7 @@ export function outfitTeile(o = STANDARD) {
     kopf: KOPF[o.kopf] || "",
     augen: o.augen in AUGEN ? AUGEN[o.augen] : null,
     hals: HALS[o.hals] || "",
+    ohr: OHR[o.ohr] || "",
     hand: HAND[o.hand] || null,
   };
 }

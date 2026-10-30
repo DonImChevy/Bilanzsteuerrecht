@@ -49,7 +49,7 @@ const funkeln = (x, y, s, i) =>
 /**
  * SVG-Markup des Maskottchens.
  * stimmung: "hallo" | "jubeln" | "mut"; groesse in px; label = Text für Screenreader (sonst dekorativ).
- * outfit = Garderobe {kopf, augen, hals, hand, metall, aura} (Standard: das getragene Outfit).
+ * outfit = Garderobe {kopf, augen, hals, ohr, hand, metall, aura} (Standard: das getragene Outfit).
  */
 export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "", outfit = aktuellesOutfit } = {}) {
   const p = POSE[stimmung] || POSE.hallo, id = `tg${++nr}`, o = outfitTeile(outfit);
@@ -91,7 +91,7 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
       <path d="M57.4 57.2 Q60 54.6 62.6 57.2" class="t-umriss" stroke-width="2.5" stroke-linecap="round"/>
       <path d="M36.5 56 L29.5 53.5 M83.5 56 L90.5 53.5" class="t-umriss" stroke-width="2.5" stroke-linecap="round"/>
     </g>`}
-    ${mund}${o.hals}
+    ${mund}${o.hals}${o.ohr}
     <path class="t-tropfen t-umriss" d="M93 33 Q98.5 41.5 96.5 45 Q93 48.5 89.5 45 Q87.5 41.5 93 33Z" fill="#bfe6ff" stroke-width="1.8"/>
     ${o.kopf}
   </g>

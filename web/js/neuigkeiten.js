@@ -5,6 +5,13 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-perlenohrringe",
+    datum: "2026-10-30",
+    klein: true,
+    titel: "Perlenohrringe",
+    punkte: [["ohrring", "Neu in der Garderobe: Ohrringe", "Perlenohrringe passend zur Perlenkette – beides lässt sich zusammen tragen (250 Taler).", "garderobe", "ohr"]],
+  },
+  {
     id: "2026-10-ueberblick-suche",
     datum: "2026-10-30",
     klein: true,
