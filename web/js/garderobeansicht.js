@@ -61,7 +61,7 @@ export function garderobeView(z, { outfit, gekauft, guthaben, level, farbwelt = 
       <div class="gar-podest" aria-hidden="true"></div>
       ${aktion || `<div class="gar-info leer"><span>Tippe einen Artikel an, um ihn anzuprobieren.</span></div>`}
     </section>
-    <div class="gar-tabs" role="tablist">${SLOTS.map((s) => `<button role="tab" aria-selected="${slot === s.id}" class="${slot === s.id ? "aktiv" : ""}" data-a="garSlot" data-v="${s.id}">${ic(s.icon, "klein")}${s.name}</button>`).join("")}</div>
+    <div class="gar-tabs" role="tablist" data-quer="garTabs">${SLOTS.map((s) => `<button role="tab" aria-selected="${slot === s.id}" class="${slot === s.id ? "aktiv" : ""}" data-a="garSlot" data-v="${s.id}">${ic(s.icon, "klein")}${s.name}</button>`).join("")}</div>
     ${slot === "hintergrund" ? `<div class="gruppe-titel" style="margin:4px 0 8px">Farbwelt der App <span class="sub" style="text-transform:none;letter-spacing:0">kostenlos</span></div>
       <div class="farbwelten">${FARBWELTEN.map((f) => `<button class="farbwelt-karte${farbwelt === f.id ? " aktiv" : ""}" data-a="farbwelt" data-v="${f.id}" aria-pressed="${farbwelt === f.id}" style="--fw:${f.hell};--fw-d:${f.dunkel}">
         <span class="fw-muster fw-${f.id}" aria-hidden="true"><i></i><i></i><i></i></span><b>${esc(f.name)}</b><small>${esc(f.text)}</small></button>`).join("")}</div>

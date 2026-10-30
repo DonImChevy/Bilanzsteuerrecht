@@ -1067,7 +1067,8 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .km-eintrag-text > span { font-size: 13px; line-height: 1.4; color: var(--text2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .km-eintrag-text mark.km { background: none; font-weight: 600; padding: 0; }
 .km-eintrag-meta { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; font-size: 12px; font-weight: 700; color: var(--text3); }
-.km-eintrag.gelesen .km-eintrag-meta { color: var(--ok); }
+.km-zuletzt { display: inline-flex; align-items: center; gap: 3px; font-weight: 600; color: var(--text3); white-space: nowrap; }
+.km-zuletzt .ic { width: 12px; height: 12px; }
 .km-top { font-style: normal; font-size: 10.5px; font-weight: 800; color: var(--accent); padding: 3px 7px; border-radius: 99px; background: color-mix(in srgb, var(--m) 14%, transparent); }
 
 /* Modulseite: Kachel „Kompaktwissen“ – Karteikarten-Stapel in der Modulfarbe */
@@ -1105,10 +1106,11 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .tk-haupt:focus-visible { outline: none; }
 .tk-haupt:focus-visible::after { outline: 2.5px solid var(--m); outline-offset: 2px; }
 .tk-rechts { flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-.tk-lesen { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 5px; padding: 6px 9px; border-radius: 10px; font-size: 12px; font-weight: 750; color: var(--accent);
-  background: var(--glas-stark); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--m) 28%, transparent); }
-.tk-lesen .ic { width: 15px; height: 15px; }
-.tk-lesen.gelesen { color: var(--ok); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ok) 30%, transparent); }
+/* Überblick-Knopf: deutlich sichtbar als gefüllte Pille in der Modulfarbe – kein Abhak-Zustand */
+.tk-lesen { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 7px 12px; border-radius: 12px; font-size: 13px; font-weight: 800; color: #fff;
+  background: linear-gradient(135deg, var(--m), var(--m-tief)); box-shadow: 0 4px 12px -4px color-mix(in srgb, var(--m) 70%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
+.tk-lesen .ic { width: 16px; height: 16px; }
+.tk-lesen:active { transform: translateY(1px); box-shadow: 0 2px 6px -3px color-mix(in srgb, var(--m) 70%, transparent); }
 .themen-karte .tk-text { position: static; }
 
 /* § 266 HGB – Bilanzgliederung als Grafik in Kontoform: Aktiva | Passiva, Gliederungsebenen nach Gewicht und Farbe */
@@ -1640,7 +1642,7 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .gar-info b { font-size: 18px; letter-spacing: -0.2px; }
 .gar-info > div > span, .gar-info.leer > span { font-size: 13.5px; color: var(--text2); }
 .gar-info.leer { min-height: 40px; place-items: center; }
-.gar-tabs { display: flex; gap: 6px; overflow-x: auto; margin: 14px -2px 10px; padding: 2px; scrollbar-width: none; }
+.gar-tabs { position: relative; display: flex; gap: 6px; overflow-x: auto; margin: 14px -2px 10px; padding: 2px; scrollbar-width: none; }
 .gar-tabs::-webkit-scrollbar { display: none; }
 .gar-tabs button { flex: none; display: inline-flex; align-items: center; gap: 5px; padding: 8px 13px; border-radius: 99px; font-weight: 700; font-size: 14px; color: var(--text2);
   background: var(--glas); border: 1px solid var(--glas-rand); }
@@ -2164,3 +2166,17 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .bf-anteil-text { font-size: 11.5px; color: var(--text2); margin-top: 2px; }
 .bf-zahl { flex: none; display: grid; justify-items: center; font-size: 18px; font-weight: 800; color: var(--m); line-height: 1; }
 .bf-zahl small { font-size: 10px; font-weight: 650; color: var(--text2); margin-top: 3px; }
+
+/* Suchtreffer: Gruppen „Zusammenfassungen“ (Textmarker-Gelb) und „Lernpfad“ (Amber → Pink → Violett wie der Lernpfad) farblich abgesetzt */
+:root { --tg-km: #b45309; --tg-km-grund: color-mix(in srgb, #fbbf24 30%, transparent); --tg-pf-text: #a21caf; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --tg-km: #fcd34d; --tg-km-grund: color-mix(in srgb, #fbbf24 22%, transparent); --tg-pf-text: #f0abfc; } }
+:root[data-theme="dark"] { --tg-km: #fcd34d; --tg-km-grund: color-mix(in srgb, #fbbf24 22%, transparent); --tg-pf-text: #f0abfc; }
+.tg-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 8px; border-radius: 8px; letter-spacing: 0.8px; }
+.tg-chip .ic { width: 14px; height: 14px; }
+.tg-kompakt .gruppe-titel::before, .tg-pfad .gruppe-titel::before { display: none; }
+.tg-kompakt .gruppe-titel { padding-left: 0; }
+.tg-kompakt .tg-chip { color: var(--tg-km); background: var(--tg-km-grund); box-shadow: inset 0 -2px 0 color-mix(in srgb, #f59e0b 45%, transparent); }
+.tg-kompakt .zeile { box-shadow: inset 4px 0 0 #fbbf24; }
+.tg-pfad .gruppe-titel { padding-left: 0; }
+.tg-pfad .tg-chip { color: var(--tg-pf-text); background: linear-gradient(90deg, color-mix(in srgb, #fbbf24 22%, transparent), color-mix(in srgb, #f472b6 22%, transparent), color-mix(in srgb, #a78bfa 22%, transparent)); }
+.tg-pfad .zeile { box-shadow: inset 4px 0 0 #f472b6; }

@@ -5,6 +5,17 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-ueberblick-suche",
+    datum: "2026-10-30",
+    klein: true,
+    titel: "Überblick und Suche aufgeräumt",
+    punkte: [
+      ["akte", "Überblick deutlicher", "Der Knopf „Überblick“ an jedem Thema ist jetzt gut sichtbar – und hakt nichts mehr ab. In der Liste siehst du stattdessen, wann du eine Zusammenfassung zuletzt geöffnet hast; vorgeschlagen wird, was du am längsten nicht wiederholt hast."],
+      ["suche", "Suche sortiert", "Zusammenfassungen stehen oben (gelb wie ein Textmarker), danach der Lernpfad, dann der Rest."],
+      ["muenze", "Garderobe", "Beim Wechsel der Reiter springt die Leiste nicht mehr an den Anfang."],
+    ],
+  },
+  {
     id: "2026-10-suche-stichworte",
     datum: "2026-10-30",
     klein: true,
