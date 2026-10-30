@@ -7,10 +7,9 @@ export const NEUIGKEITEN = [
   {
     id: "2026-10-beauty",
     datum: "2026-10-30",
-    titel: "Neu in der Garderobe: Make-up, Wimpern, Haare",
+    titel: "Neu in der Garderobe: Make-up & Wimpern",
     punkte: [
       ["auge", "Make-up & Wimpern", "Schimmernder Lidschatten, Lidstrich mit Schwung, Rouge mit Highlighter und glänzende Lippen (250 Taler), geschwungene Wimpern (150 Taler) – oder beides im Set für 300 Taler.", "garderobe", "gesicht"],
-      ["person", "Lange Wellen", "Haare mit Seitenscheitel und Glanz in Schoko, Honig und Rosé.", "garderobe", "haare"],
       ["ohrring", "Ohrringe", "Herzchen, Goldcreolen, §-Ohrringe, Perlen und Diamantstecker.", "garderobe", "ohr"],
     ],
   },

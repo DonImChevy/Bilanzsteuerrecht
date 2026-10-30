@@ -7,7 +7,6 @@ export const TALER_JE_XP = 0.1;
 
 export const SLOTS = [
   { id: "kopf", name: "Kopf", icon: "hut" },
-  { id: "haare", name: "Haare", icon: "person" },
   { id: "hintergrund", name: "Hintergrund & Farben", icon: "bild" },
   { id: "augen", name: "Brille", icon: "suche" },
   { id: "gesicht", name: "Make-up", icon: "auge" },
@@ -26,7 +25,7 @@ export const FARBWELTEN = [
 ];
 
 // Standard (kostenlos, immer im Besitz): Brille „Lernbrille“, Metall „Gold“, Hintergrund „Leuchten“
-export const STANDARD = { kopf: "", haare: "", augen: "brille", gesicht: "", hals: "", ohr: "", hand: "", metall: "gold", aura: "", hintergrund: "leuchten" };
+export const STANDARD = { kopf: "", augen: "brille", gesicht: "", hals: "", ohr: "", hand: "", metall: "gold", aura: "", hintergrund: "leuchten" };
 
 /** Katalog: [id, slot, name, preis, mindestlevel, kurzbeschreibung] */
 const K = [
@@ -69,10 +68,6 @@ const K = [
   ["wimpern", "gesicht", "Wimpern", 150, 0, "Geschwungen und voll – für den großen Augenaufschlag"],
   ["makeup", "gesicht", "Make-up", 250, 0, "Schimmernder Lidschatten, Lidstrich mit Schwung, Rouge mit Highlighter und glänzende Lippen"],
   ["glamour", "gesicht", "Make-up & Wimpern", 300, 0, "Das Set: beides zusammen – 100 Taler gespart"],
-  // Haare – lange Wellen hinter der Münze, Pony über dem oberen Rand
-  ["wellen-schoko", "haare", "Wellen Schoko", 450, 0, "Glänzende lange Wellen mit Seitenscheitel"],
-  ["wellen-honig", "haare", "Wellen Honig", 450, 0, "Honigblond mit Lichtreflexen"],
-  ["wellen-rosa", "haare", "Wellen Rosé", 500, 0, "Pastellrosa – passt zu Pink Diamond"],
   // Hand
   ["faehnchen", "hand", "Fähnchen", 50, 0, "Feuert dich an"],
   ["kaffee", "hand", "Kaffeebecher", 70, 0, "Treibstoff fürs Lernen"],
@@ -488,33 +483,6 @@ const GESICHT = {
   glamour: (h) => ({ ...makeup(h.id, h.augen, h.mund), wimpern: wimpern(h.augen) }),
 };
 
-// ---------------------------------------------------------------- Haare: lange Wellen hinter der Münze, Pony über dem oberen Rand
-// Farben je Ton: [hell, mittel, tief, glanz]
-const HAARFARBEN = { schoko: ["#9a5b33", "#6b3a1d", "#3b1f0e", "#e8b98d"], honig: ["#ffd98a", "#e2a93e", "#a8701c", "#fff3cf"], rosa: ["#ffc6df", "#f38ab7", "#b9467f", "#fff0f7"] };
-function haare(ton) {
-  const [hell, mittel, tief, glanz] = HAARFARBEN[ton];
-  return (id) => {
-    const g = `${id}h${ton}`;
-    const strich = (d, farbe, w, op) => `<path d="${d}" fill="none" stroke="${farbe}" stroke-width="${w}" stroke-linecap="round" opacity="${op}"/>`;
-    // Hinterkopf: Volumen über der Münze, fällt rechts und links in Locken bis unter die Münze (Innenkante liegt hinter der Münze)
-    const hinten = `<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${hell}"/><stop offset="0.5" stop-color="${mittel}"/><stop offset="1" stop-color="${tief}"/></linearGradient>
-      <linearGradient id="${g}p" x1="0" y1="0" x2="1" y2="0.6"><stop offset="0" stop-color="${mittel}"/><stop offset="0.45" stop-color="${hell}"/><stop offset="1" stop-color="${mittel}"/></linearGradient></defs>
-      <path d="M60 9 C82 8 101 20 106 40 C110 54 105 62 108 72 C111 82 106 90 109 99 C111 106 107 112 101 111 C103 106 99 104 97 108 C94 112 88 110 89 104 C90 98 92 92 88 86
-        L32 86 C28 92 30 98 31 104 C32 110 26 112 23 108 C21 104 17 106 19 111 C13 112 9 106 11 99 C14 90 9 82 12 72 C15 62 10 54 14 40 C19 20 38 10 60 9Z" fill="url(#${g})" ${U} ${sw(2.4)} stroke-linejoin="round"/>
-      ${strich("M103 44 C106 56 101 64 104 74 C107 84 102 92 105 102", tief, 1.4, 0.5)}${strich("M17 44 C14 56 19 64 16 74 C13 84 18 92 15 102", tief, 1.4, 0.5)}
-      ${strich("M98 60 C100 70 96 80 99 92", tief, 1.1, 0.4)}${strich("M22 60 C20 70 24 80 21 92", tief, 1.1, 0.4)}
-      ${strich("M28 22 C42 11 78 11 92 22", glanz, 4.2, 0.4)}${strich("M34 18 C46 12 60 11 70 12", glanz, 1.6, 0.85)}
-      ${strich("M100 30 C104 38 105 46 104 54", glanz, 2.4, 0.8)}${strich("M20 30 C16 38 15 46 16 54", glanz, 2.4, 0.8)}
-      ${strich("M106 78 C107 84 106 88 105 92", glanz, 1.6, 0.6)}${strich("M14 78 C13 84 14 88 15 92", glanz, 1.6, 0.6)}`;
-    // Pony mit Seitenscheitel links: großer Schwung über die Stirn nach rechts, Strähnen laufen spitz aus; § und Brille bleiben frei
-    const vorne = `<path d="M44 17.5 C58 13 84 16 96 30 C101 36 103 44 101 52 C98 46 95 42 90 39.5 C91 43 90.5 46 88.5 48 C86 42 82 37.5 76 34.5 C76.5 37.5 75.5 40 73.5 41.5 C71 35.5 66 31 58 29.5 C52 28.6 47 29.2 43 31 C45 26 45.5 21 44 17.5Z" fill="url(#${g}p)" ${U} ${sw(2)} stroke-linejoin="round"/>
-      <path d="M44 17.5 C36 19 28 25 24 34 C21 40 20.5 46 21.6 51 C24 45 27.5 40.5 31.5 38 C31 41 31.5 43.5 33 45 C34.5 38.5 38 33.5 43 31 C45 26 45.5 21 44 17.5Z" fill="url(#${g}p)" ${U} ${sw(2)} stroke-linejoin="round"/>
-      ${strich("M48 21 C62 17.5 80 20 90 30", glanz, 2.4, 0.85)}${strich("M60 24 C70 25 80 29 87 36", glanz, 1.3, 0.6)}
-      ${strich("M50 27 C60 26 69 29 75 34 M80 31 C86 34 90 38 92 43 M56 20 C68 20 80 25 88 33 M31 30 C29 34 27.5 38 27 42", tief, 1, 0.45)}${strich("M40 22 C33 26 28 32 26 40", glanz, 1.6, 0.7)}`;
-    return { hinten, vorne };
-  };
-}
-const HAARE = { "wellen-schoko": haare("schoko"), "wellen-honig": haare("honig"), "wellen-rosa": haare("rosa") };
 
 /** Gegenstände in Talers linker Hand (Mittelpunkt = Hand). */
 const HAND = {
@@ -581,7 +549,6 @@ export function outfitTeile(o = STANDARD) {
     hals: HALS[o.hals] || "",
     ohr: OHR[o.ohr] || "",
     gesicht: GESICHT[o.gesicht] || null,
-    haare: HAARE[o.haare] || null,
     hand: HAND[o.hand] || null,
   };
 }
