@@ -5,10 +5,10 @@
 
 export const NEUIGKEITEN = [
   {
-    id: "2026-10-nachtschwinge",
+    id: "2026-10-nachtschwinge-maske",
     datum: "2026-10-30",
-    titel: "Sonderprägung: Nachtschwinge",
-    punkte: [["muenze", "Nachtschwinge", "Taler mit Fledermaus-Kopfmaske: spitze Ohren, leuchtende Augenschlitze, Nasenspitze und § mit Schwingen auf der Stirn – für die Nachtschichten vor der Klausur (1.500 Taler).", "garderobe", "metall"]],
+    titel: "Masken: Nachtschwinge",
+    punkte: [["muenze", "Nachtschwinge", "Fledermaus-Kopfmaske in der neuen Kategorie Masken – zu jedem Metall kombinierbar. Mit Make-up leuchten die Augen rosa, Wimpern bleiben sichtbar.", "garderobe", "maske"]],
   },
   {
     id: "2026-10-beauty",

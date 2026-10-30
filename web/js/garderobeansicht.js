@@ -22,6 +22,8 @@ function vorschau(a) {
 export function garderobeView(z, { outfit, gekauft, guthaben, level, farbwelt = "standard", hatBild = false }) {
   const probe = z.probe ? artikel(z.probe) : null;
   const zeige = probe && probe.slot !== "hintergrund" ? { ...outfit, [probe.slot]: probe.id } : outfit;
+  // Maske anprobieren: gekauftes Make-up und Wimpern gleich mitzeigen (rosa Augen, Wimpern), auch wenn gerade nichts davon getragen wird
+  if (probe?.slot === "maske" && !outfit.gesicht) zeige.gesicht = ["glamour", "makeup", "wimpern"].find((id) => besitzt(id, gekauft)) || "";
   let aktion = "";
   if (probe) {
     const k = kaufbar(probe.id, { gekauft, guthaben, level }), an = outfit[probe.slot] === probe.id;

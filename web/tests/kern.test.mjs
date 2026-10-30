@@ -885,3 +885,14 @@ test("Garderobe: Set Make-up & Wimpern rechnet gekaufte Einzelteile an", async (
   assert.ok(!G.artikel("perlenkette"), "Perlenkette ist aus dem Katalog");
   for (const s of G.SLOTS) assert.ok(s.id in G.STANDARD, `Bereich ${s.id} fehlt in STANDARD`);
 });
+
+test("Garderobe: Nachtschwinge ist eine Maske – alte Metall-Auswahl wird übernommen", async () => {
+  const G = await import("../js/garderobe.js");
+  assert.equal(G.artikel("nachtschwinge").slot, "maske");
+  const o = G.outfitVon({ metall: "nachtschwinge" }, { nachtschwinge: 1 });
+  assert.equal(o.maske, "nachtschwinge"); assert.equal(o.metall, "gold");
+  const t = G.outfitTeile({ ...G.STANDARD, maske: "nachtschwinge", gesicht: "glamour" });
+  const svg = t.kappe("x", "offen");
+  assert.ok(svg.includes("#ff5fb0") && svg.includes("#fdf2ff"), "rosa Augen und Wimpern");
+  assert.ok(!G.outfitTeile({ ...G.STANDARD, maske: "nachtschwinge" }).kappe("x", "offen").includes("#ff5fb0"));
+});
