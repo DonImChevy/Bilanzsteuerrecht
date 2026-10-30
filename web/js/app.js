@@ -797,7 +797,7 @@ function tabStart() {
       ${levelZeile(stat)}
       ${knopf}
     </section>
-    <div class="suchfeld">${ic("suche")}<input type="search" id="homeSuche" data-fokus="homeSuche" placeholder="Themen, Aufgaben, Normen, Konten …" autocomplete="off" enterkeyhint="search" value="${esc(state.suche)}">
+    <div class="suchfeld">${ic("suche")}<input type="search" id="homeSuche" data-fokus="homeSuche" placeholder="Stichwort, Abkürzung oder §, z. B. B2B, AfA" autocomplete="off" enterkeyhint="search" value="${esc(state.suche)}">
       <button class="leeren ${state.suche ? "" : "versteckt"}" data-a="sucheLeeren" aria-label="Suche leeren">${ic("kreuz", "klein")}</button></div>
     <div id="sucheErgebnis">${state.suche.trim() ? suchErgebnisse(state.suche) : ""}</div>
     <div id="startRest" class="${state.suche.trim() ? "versteckt" : ""}">
@@ -1110,17 +1110,26 @@ function installHinweis() {
 
 // ---------- Suche ----------
 let INDEX = null;
-const norma = (t) => String(t).toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/[.,;:!?()„“"'§]/g, " ");
+const norma = (t) => String(t).toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/(\w)-(\w)/g, "$1$2").replace(/[.,;:!?()„“"'§]/g, " ").replace(/\s+/g, " ");
 function suchIndex() {
   if (INDEX) return INDEX;
   const r = new Zufall(1);
   INDEX = {
-    themen: THEMEN.map((t) => ({ t, such: norma(`${t.titel} ${t.unter} ${MODUL[t.fach].titel}`) })),
-    kompakt: Object.entries(KOMPAKT).map(([id, k]) => ({ t: THEMA[id], k, such: norma(`${THEMA[id].titel} ${kompaktText(k)}`) })),
-    aufgaben: ALLE.map((v) => { const f = v.erzeugen(r); return { v, f, such: norma(`${f.text} ${f.antwort || ""} ${(f.optionen || []).join(" ")} ${THEMA[v.thema].titel}`) }; }),
+    themen: THEMEN.map((t) => ({ t, kopf: norma(t.titel), such: norma(`${t.titel} ${t.unter} ${MODUL[t.fach].titel}`) })),
+    kompakt: Object.entries(KOMPAKT).map(([id, k]) => ({ t: THEMA[id], k, kopf: norma(THEMA[id].titel), such: norma(`${THEMA[id].titel} ${kompaktText(k)}`) })),
+    // Je Vorlage mehrere Ziehungen: Fallgeneratoren ziehen reihum, so wird jeder Fall auffindbar (Varianten, die sich nur in Zahlen unterscheiden, einmal)
+    aufgaben: ALLE.map((v) => {
+      const fs = [], gesehen = new Set();
+      for (let i = 0; i < 12; i++) { const f = v.erzeugen(r), k = f.text.replace(/[\d.,]+/g, "#"); if (!gesehen.has(k)) { gesehen.add(k); fs.push(f); } }
+      const texte = fs.map((f) => norma(`${f.text} ${f.antwort || ""} ${(f.optionen || []).join(" ")} ${f.erklaerung || ""}`));
+      return { v, f: fs[0], fs, texte, such: `${texte.join(" ")} ${norma(THEMA[v.thema].titel)}` };
+    }),
+    // Lernpfad-Blöcke (Bilanzrecht getrennt nach Teil I und II)
+    pfad: Object.entries(PFADE).flatMap(([key, p]) => p.bloecke.map((b) => ({ key, b, fach: key.startsWith("bsr") ? "bsr" : key, kopf: norma(b.titel),
+      such: norma(`${b.titel} ${b.kurz} ${b.karten.map((k) => `${k.titel} ${k.text}`).join(" ")} ${b.fragen.map((f) => `${f.frage} ${f.erkl}`).join(" ")}`) }))),
     normen: NORMEN.map((n) => ({ n, label: n.g === "GG" ? (n.nr === "Präambel" ? "Präambel GG" : `Art. ${n.nr} GG`) : `§ ${n.nr} ${n.g}`,
       such: norma(`${n.g === "GG" ? "art" : "§"} ${n.nr} ${n.g} ${n.titel} ${n.abs.map((a) => a.text).join(" ")}`) })),
-    konten: Object.values(KONTEN).map((k) => ({ k, such: norma(`${k.name} ${k.kurz} ${k.artName}`) })),
+    konten: Object.values(KONTEN).map((k) => ({ k, kopf: norma(k.name), such: norma(`${k.name} ${k.kurz} ${k.artName} ${k.hinweis || ""}`) })),
     module: MODULE.map((m) => ({ m, such: norma(`${m.titel} ${m.kurz} ${m.unter}`) })),
   };
   return INDEX;
@@ -1139,20 +1148,91 @@ function markiere(text, woerter, ausschnitt = false) {
   }
   return esc(t);
 }
-/** Treffergüte: Wortanfänge zählen doppelt. */
-function guete(such, woerter) {
-  return woerter.reduce((a, w) => a + (new RegExp(`(^|[^a-z0-9])${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(such) ? 2 : 1), 0);
+// Abkürzungen und Synonyme (normalisiert wie norma): Eine Gruppe gilt als gleichwertig – „B to B“ findet auch „B2B“
+// und „an einen Unternehmer“. Kurze Formen (≤ 3 Zeichen) treffen nur ganze Wörter.
+const SYNONYME = [
+  ["b2b", "b to b", "b-to-b", "business to business", "an einen unternehmer", "an unternehmer", "3a abs 2"],
+  ["b2c", "b to c", "b-to-c", "business to consumer", "nichtunternehmer", "privatperson", "privatkunde", "endverbraucher", "3a abs 1"],
+  ["vorsteuer", "vst"], ["umsatzsteuer", "ust", "mehrwertsteuer", "mwst"], ["einkommensteuer", "est"], ["lohnsteuer", "lst"],
+  ["absetzung fuer abnutzung", "afa", "abschreibung"], ["geringwertige wirtschaftsgueter", "gwg"], ["werbungskosten", "wk"],
+  ["einnahmen ueberschuss", "euer", "4 abs 3"], ["zu versteuernde einkommen", "zve"], ["gesamtbetrag der einkuenfte", "gde"],
+  ["rechnungsabgrenzung", "rap", "arap", "prap"], ["entfernungspauschale", "pendlerpauschale", "kilometerpauschale"],
+  ["tagespauschale", "home office pauschale"], ["steuerschuldnerschaft", "reverse charge", "13b"], ["kleinunternehmer", "19 ustg"],
+  ["unentgeltliche wertabgabe", "eigenverbrauch"], ["1 %", "1 prozent", "ein prozent", "listenpreis", "firmenwagen", "dienstwagen"],
+  ["gewinn und verlust", "guv"], ["schlussbilanzkonto", "sbk"], ["eroeffnungsbilanzkonto", "ebk"], ["wareneingang", "wek"],
+  ["warenverkauf", "wvk", "umsatzerloese"], ["warenbestand", "wbk"], ["bestandsveraenderung", "bvk"], ["betriebsvermoegensvergleich", "bvv"],
+  ["anschaffungskosten", "ak"], ["herstellungskosten", "hk"], ["bundesverfassungsgericht", "bverfg"], ["grundgesetz", "gg"],
+  ["bundesregierung", "kanzler", "kanzlerin"], ["gehalt", "arbeitslohn", "loehne"], ["pension", "ruhegehalt", "versorgungsbezuege"],
+  ["skonto", "skonti"], ["buchungssatz", "buchungssaetze"], ["jobticket", "job ticket", "deutschlandticket", "fahrkarte", "3 nr 15"],
+  ["home office", "homeoffice", "heimarbeit"], ["arbeitszimmer", "buero zuhause"], ["kfz", "pkw", "auto", "fahrzeug"],
+];
+const STOPP = new Set(["der", "die", "das", "den", "dem", "des", "ein", "eine", "einer", "und", "oder", "von", "zu", "zum", "zur", "im", "in", "mit", "bei", "fuer", "wie", "was", "ist", "to"]);
+const SYN = SYNONYME.map((g) => g.map((x) => norma(x).replace(/\s+/g, " ").trim()));
+/** Suchbegriffe: Phrasen aus SYNONYME zuerst (längste zuerst), dann einzelne Wörter – jeder Begriff mit seinen Alternativen. */
+function suchBegriffe(q) {
+  let rest = ` ${norma(q).replace(/\s+/g, " ").trim()} `;
+  const begriffe = [];
+  const phrasen = SYN.flatMap((g) => g.filter((x) => x.includes(" ")).map((x) => [x, g])).sort((a, b) => b[0].length - a[0].length);
+  for (const [ph, g] of phrasen) if (rest.includes(` ${ph} `)) { begriffe.push(g); rest = rest.replace(` ${ph} `, " "); }
+  const woerter = rest.trim().split(/\s+/).filter(Boolean), inhalt = woerter.filter((w) => !STOPP.has(w));
+  for (const w of inhalt.length || begriffe.length ? inhalt : woerter) begriffe.push(SYN.find((g) => g.includes(w)) || [w]);
+  return begriffe;
+}
+const TESTS = new Map();
+/** Regex für „steht am Wortanfang“; kurze Formen (≤ 3 Zeichen) zusätzlich nur als ganzes Wort. */
+function testVon(a) {
+  if (!TESTS.has(a)) TESTS.set(a, new RegExp(`(^|[^a-z0-9])${a.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}${a.length <= 3 ? "($|[^a-z0-9])" : ""}`));
+  return TESTS.get(a);
+}
+const trifft = (such, a) => (a.length <= 3 ? testVon(a).test(such) : such.includes(a));
+/** Treffergüte: je Begriff 2 Punkte, wenn er am Wortanfang steht, sonst 1; steht er im Titel, 3 Punkte mehr. */
+const guete = (x, begriffe) => begriffe.reduce((s, alt) => s + (alt.some((a) => testVon(a).test(x.such)) ? 2 : 1) + (x.kopf && alt.some((a) => trifft(x.kopf, a)) ? 3 : 0), 0);
+/** Tippfehler: Wörter aus dem Index mit Abstand 1 (ab 5 Zeichen) bzw. 2 (ab 9 Zeichen). */
+let WORTSCHATZ = null;
+function abstand(a, b, max) {
+  if (Math.abs(a.length - b.length) > max) return max + 1;
+  let v = Array.from({ length: b.length + 1 }, (_, i) => i);
+  for (let i = 1; i <= a.length; i++) {
+    const n = [i];
+    for (let j = 1; j <= b.length; j++) n[j] = Math.min(v[j] + 1, n[j - 1] + 1, v[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    if (Math.min(...n) > max) return max + 1;
+    v = n;
+  }
+  return v[b.length];
+}
+function aehnlich(w) {
+  if (w.length < 5 || w.includes(" ")) return [];
+  if (!WORTSCHATZ) {
+    const I = suchIndex(), menge = new Set();
+    for (const liste of [I.themen, I.kompakt, I.aufgaben, I.normen, I.konten, I.pfad]) for (const x of liste) for (const t of x.such.split(/[^a-z0-9]+/)) if (t.length >= 4) menge.add(t);
+    WORTSCHATZ = [...menge];
+  }
+  const max = w.length >= 9 ? 2 : 1;
+  return WORTSCHATZ.filter((t) => t !== w && abstand(w, t, max) <= max).slice(0, 8);
 }
 function suchErgebnisse(q) {
-  const woerter = norma(q).trim().split(/\s+/).filter(Boolean);
-  const hl = q.toLowerCase().trim().split(/\s+/).filter(Boolean);
-  const passt = (x) => woerter.every((w) => x.such.includes(w));
-  const beste = (liste, n) => liste.filter(passt).map((x) => [guete(x.such, woerter), x]).sort((a, b) => b[0] - a[0]).slice(0, n).map((e) => e[1]);
+  let begriffe = suchBegriffe(q);
+  const I0 = suchIndex(), alle = [...I0.themen, ...I0.kompakt, ...I0.aufgaben, ...I0.normen, ...I0.konten, ...I0.pfad];
+  // Kein Treffer: Tippfehler tolerieren („Vorstuer“ → „vorsteuer“)
+  let korrigiert = false;
+  if (!alle.some((x) => begriffe.every((alt) => alt.some((a) => trifft(x.such, a))))) {
+    begriffe = begriffe.map((alt) => (alle.some((x) => alt.some((a) => trifft(x.such, a))) ? alt : [...alt, ...alt.flatMap(aehnlich)]));
+    korrigiert = true;
+  }
+  const hl = [...new Set([...q.toLowerCase().trim().split(/\s+/), ...begriffe.flat()])].filter((w) => w.length > 1 && !STOPP.has(w)).sort((a, b) => b.length - a.length);
+  const passt = (x) => begriffe.every((alt) => alt.some((a) => trifft(x.such, a)));
+  const beste = (liste, n) => liste.filter(passt).map((x) => [guete(x, begriffe), x]).sort((a, b) => b[0] - a[0]).slice(0, n).map((e) => e[1]);
   const I = suchIndex();
   // Nur Inhalte der gewählten Rolle (Studium bzw. Ausbildung); gemeinsame Buchführungsthemen zählen bei Azubis zu BilBf
   const rolle = state.rolle || "studium";
   const inRolle = (themaId) => rolleVon(MODUL[fachFuerThema(themaId)]) === rolle;
-  const themen = beste(I.themen.filter((x) => inRolle(x.t.id)), 6);
+  // Themen: Treffer im Titel, dazu die Themen, in deren Aufgaben und Zusammenfassungen der Begriff vorkommt (meiste Fundstellen zuerst)
+  const fundstellen = new Map();
+  for (const x of I.aufgaben) if (inRolle(x.v.thema) && passt(x)) fundstellen.set(x.v.thema, (fundstellen.get(x.v.thema) || 0) + 1);
+  for (const x of I.kompakt) if (inRolle(x.t.id) && passt(x)) fundstellen.set(x.t.id, (fundstellen.get(x.t.id) || 0) + 2);
+  const direkt = beste(I.themen.filter((x) => inRolle(x.t.id)), 6);
+  const themen = [...direkt, ...[...fundstellen].sort((a, b) => b[1] - a[1]).map(([id]) => I.themen.find((x) => x.t.id === id))
+    .filter((x) => x && !MODUL[x.t.fach].bald && !direkt.includes(x))].slice(0, 6);
   const aufgaben = beste(I.aufgaben.filter((x) => !MODUL[THEMA[x.v.thema].fach].bald && inRolle(x.v.thema) && !NICHT_IN[fachFuerThema(x.v.thema)]?.has(x.v.id)), 8);
   // Normzitat wie „Art. 63“ oder „§ 12 BWahlG“: passende Vorschrift zuerst, Normen-Gruppe nach oben
   const zitat = /^\s*(art\.?|§)\s*(\d+[a-z]?)\s*([a-z]*)/i.exec(q);
@@ -1166,6 +1246,7 @@ function suchErgebnisse(q) {
   const konten = beste(I.konten, 6);
   const kompakt = beste(I.kompakt.filter((x) => !MODUL[x.t.fach].bald && inRolle(x.t.id)), 4);
   const module = I.module.filter((x) => passt(x) && rolleVon(x.m) === rolle);
+  const pfad = beste(I.pfad.filter((x) => MODUL[x.fach] && !MODUL[x.fach].bald && rolleVon(MODUL[x.fach]) === rolle), 4);
   const gruppe = (titel, inhalt) => `<div class="treffer-gruppe treffer"><div class="gruppe-titel">${titel}</div><div class="liste">${inhalt}</div></div>`;
   let html = "";
   if (module.length) html += gruppe("Module", module.map(({ m }) => `<button class="zeile" data-a="${m.bald ? "bald" : "modul"}" data-v="${m.id}">
@@ -1174,16 +1255,21 @@ function suchErgebnisse(q) {
     <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub">${MODUL[fachFuerThema(t.id)].kurz} · ${esc(t.unter)}</div></span><span class="chev">${ic("play", "klein fill")}</span></button>`).join(""));
   if (kompakt.length) html += gruppe("Zusammenfassungen", kompakt.map(({ t, k }) => `<button class="zeile" data-a="kompakt" data-v="${t.id}">
     <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${markiere(kompaktText(k), hl, true)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
+  if (pfad.length) html += gruppe("Lernpfad", pfad.map(({ key, b }) => `<button class="zeile" data-a="pfadDirekt" data-v="${key}|${b.id}">
+    <span class="thema-icon">${b.icon}</span><span class="grow"><div>${markiere(b.titel, hl)}</div><div class="sub">${MODUL[key.startsWith("bsr") ? "bsr" : key].kurz}${key === "bsr1" ? " Teil I" : key === "bsr2" ? " Teil II" : ""} · ${esc(b.kurz)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
   const normHtml = normen.length ? gruppe("Gesetzestexte", normen.map(({ n, label }) => `<button class="zeile" data-a="normDetail" data-v="${n.g} ${n.nr}">
     <span class="symbol">§</span><span class="grow"><div><b>${esc(label)}</b></div><div class="sub">${esc(n.titel || n.abs[0]?.text.slice(0, 80) + " …")}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join("")) : "";
   if (zitat) html += normHtml;
-  if (aufgaben.length) html += gruppe("Aufgaben", aufgaben.map(({ v, f }) => `<button class="zeile" data-a="einzeln" data-v="${v.id}">
+  // Angezeigt wird die Variante, in der der Suchbegriff vorkommt
+  const variante = (x) => x.fs[Math.max(0, x.texte.findIndex((t) => begriffe.every((alt) => alt.some((a) => trifft(t, a)))))];
+  if (aufgaben.length) html += gruppe("Aufgaben", aufgaben.map((x) => [x.v, variante(x)]).map(([v, f]) => `<button class="zeile" data-a="einzeln" data-v="${v.id}">
     <span class="grow"><div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px">${markiere(f.text, hl, true)}</div>
     <div class="sub">${MODUL[fachFuerThema(v.thema)].kurz} · ${esc(THEMA[v.thema].titel)} · ${typBezeichnung(f)}</div></span><span class="chev">${ic("play", "klein fill")}</span></button>`).join(""));
   if (!zitat) html += normHtml;
   if (konten.length) html += gruppe("Konten", konten.map(({ k }) => `<button class="zeile" data-a="kontoDetail" data-v="${k.id}">
     <span class="grow">${markiere(k.name, hl)}</span><span class="badge art-${k.art}">${k.artKurz}</span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
-  return html || `<div class="leer-zustand">${ic("suche")}<div><b>Nichts gefunden</b></div><div class="sub">Versuch es mit einem anderen Begriff, z. B. „Skonto“, „Bundesrat“ oder „Art. 63“.</div></div>`;
+  if (html && korrigiert) html = `<div class="sub" style="margin:0 4px 8px">Keine genauen Treffer – ähnliche Schreibweisen:</div>` + html;
+  return html || `<div class="leer-zustand">${ic("suche")}<div><b>Nichts gefunden</b></div><div class="sub">Versuch es mit einem anderen Begriff, z. B. „Skonto“, „B2B“, „AfA“ oder „Art. 63“.</div></div>`;
 }
 
 // ======================= Tab: Lernen (Modulseite) =======================
@@ -2251,7 +2337,7 @@ function sheetView() {
       <div class="gruppe"><div class="gruppe-titel">So funktioniert's</div><div class="liste">
         ${[
           ["🧠", "Lernkartei: Jede Aufgabe kommt nach 1, 3, 7, 16 und 35 Tagen wieder. Fehler kommen am nächsten Tag zurück."],
-          ["🔍", "Suche auf der Startseite findet Themen, Aufgaben, Gesetzestexte und Konten über alle Module."],
+          ["🔍", "Suche auf der Startseite findet Themen, Zusammenfassungen, Lernpfad-Blöcke, Aufgaben samt Lösungen, Gesetzestexte und Konten – auch mit Abkürzungen (B2B, AfA, VSt) und kleinen Tippfehlern."],
           ["✍️", "Buchungssätze: Konten über „Konto wählen“ suchen, Betrag eintippen. Die Reihenfolge der Positionen ist egal."],
           ["🎲", `Generierte Aufgaben haben bei jedem Durchlauf neue Zahlen – insgesamt ${ALLE.length} Aufgabentypen.`],
           ["⌨️", "Am Computer: Zifferntasten wählen Antworten, Enter prüft bzw. geht weiter."],
@@ -2835,6 +2921,11 @@ const AKTIONEN = {
   kompaktListe: () => { state.kompakt = { id: null, fach: state.fach, liste: true }; render(); },
   kompaktZu: () => { state.kompakt = state.kompakt?.id && state.kompakt.liste ? { id: null, fach: state.kompakt.fach, liste: true } : null; render(); },
   kompaktUeben: (v) => { state.kompakt = null; AKTIONEN.thema(v); },
+  pfadDirekt: (v) => {
+    const [key, id] = v.split("|");
+    fachSetzen(key.startsWith("bsr") ? "bsr" : key); state.suche = ""; state.tab = "lernen";
+    state.pfad = { fach: key, block: blockStarten(key, id, new Zufall()) }; render();
+  },
   pfadOeffnen: () => { state.pfad = { fach: pfadSchluessel(state.fach, teilVon(state.fach)), block: null }; render(); },
   pfadZu: () => { state.pfad = null; render(); },
   pfadKarte: () => { if (state.pfad) state.pfad.block = null; render(); },
