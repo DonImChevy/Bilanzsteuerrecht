@@ -964,8 +964,8 @@ async function gruppeAktualisieren(erzwingen = false) {
 function treppchen(liste) {
   const top = [liste[1], liste[0], liste[2]];
   return `<div class="treppchen">${top.map((e, i) => e ? `<div class="tp-platz p${e.platz}${e.id === stat.profil?.id ? " ich" : ""}">
-      ${taler(e.platz === 1 ? "jubeln" : "hallo", { groesse: e.platz === 1 ? 76 : 62, klasse: "ruhig", outfit: { ...STANDARD, ...(e.outfit || {}) } })}
-      <b>${esc(e.name)}</b><span>${zahlText(e.wert)} XP</span><div class="tp-stufe">${e.platz}</div></div>` : `<div class="tp-platz leer"></div>`).join("")}</div>`;
+      ${taler(e.platz === 1 ? "jubeln" : "hallo", { groesse: e.platz === 1 ? 96 : 78, klasse: "ruhig", outfit: { ...STANDARD, ...(e.outfit || {}) }, label: `Taler von ${e.name}` })}
+      <b>${esc(e.name)}</b><span class="tp-level">Level ${e.level || 1}</span><span>${zahlText(e.wert)} XP</span><div class="tp-stufe">${e.platz}</div></div>` : `<div class="tp-platz leer"></div>`).join("")}</div>`;
 }
 function ranglisteView() {
   if (!syncVerfuegbar()) return `<div class="gruppe-fuss">Ranglisten brauchen den Sync-Server – in dieser Version nicht verfügbar.</div>`;
@@ -986,8 +986,10 @@ function ranglisteView() {
     <div class="segment" style="margin-top:12px">${[["woche", "Diese Woche"], ["gesamt", "Gesamt"]].map(([id, t]) => `<button data-a="gruppeArt" data-v="${id}" class="${gruppe.art === id ? "aktiv" : ""}">${t}</button>`).join("")}</div>
     ${!d ? `<div class="gruppe-fuss" style="margin:20px 4px">${gruppe.laedt ? "Rangliste wird geladen …" : gruppe.fehler ? esc(gruppe.fehler) : "Noch nicht geladen."}</div>`
       : `${treppchen(liste)}
-    <ol class="rang-liste">${liste.slice(3).map((e) => `<li class="${e.id === stat.profil?.id ? "ich" : ""}"><span class="rl-platz">${e.platz}</span>${taler("hallo", { groesse: 36, klasse: "ruhig", outfit: { ...STANDARD, ...(e.outfit || {}) } })}
-      <span class="grow"><b>${esc(e.name)}</b><span class="sub">Level ${e.level || 1}</span></span><b class="rl-xp">${zahlText(e.wert)} XP</b></li>`).join("")}</ol>
+    <ol class="rang-liste">${liste.slice(3).map((e) => `<li class="${e.id === stat.profil?.id ? "ich" : ""}"><span class="rl-platz">${e.platz}</span>
+      <span class="rl-taler">${taler("hallo", { groesse: 58, klasse: "ruhig", outfit: { ...STANDARD, ...(e.outfit || {}) }, label: `Taler von ${e.name}` })}</span>
+      <span class="grow"><b>${esc(e.name)}</b><span class="tp-level">Level ${e.level || 1}</span></span>
+      <span class="rl-xp"><b>${zahlText(e.wert)}</b><small>XP${gruppe.art === "woche" ? " diese Woche" : ""}</small></span></li>`).join("")}</ol>
     ${ich ? `<div class="gruppe-fuss" style="margin:10px 4px">Du bist auf Platz <b>${ich.platz}</b>${gruppe.art === "woche" ? " dieser Woche. Montags beginnt eine neue Runde." : "."}</div>` : ""}`}
     <button class="knopf zweit" data-a="gruppeNeuLaden" style="margin-top:14px">${ic("wiederholen")} Aktualisieren</button>
     <button class="link gefahr" data-a="gruppeVerlassen" style="display:block;margin:18px auto 24px">Gruppe verlassen</button>`;
