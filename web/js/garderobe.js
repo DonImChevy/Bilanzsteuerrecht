@@ -288,12 +288,6 @@ const EDEL = {
 // weißen Augenschlitzen; Mund und Kinn bleiben frei. Ersetzt Augen und Brille (maskottchen.js: o.kappe).
 const KAPPE_FARBE = "#151821";
 const NS = {
-  // Spitze Ohren hinter dem Münzrand (gehen nahtlos in die Kappe über)
-  ohren: [[-1], [1]].map(([s]) => {
-    const x = (v) => (60 + s * v).toFixed(1);
-    return `<path d="M${x(13)} 27 L${x(25)} 2.5 L${x(32)} 31 Z" fill="${KAPPE_FARBE}" class="t-umriss" stroke-width="2.6" stroke-linejoin="round"/>
-      <path d="M${x(17)} 25 L${x(24.6)} 9.5 L${x(28.6)} 26" fill="none" stroke="#4d5875" stroke-width="1.1" stroke-linejoin="round" opacity="0.8"/>`;
-  }).join(""),
   // Emblem auf der Stirn: § mit zwei gezackten Schwingen (eigene Form, keine Ellipse)
   schwingen: [[-1], [1]].map(([s]) => {
     const x = (v) => (60 + s * v).toFixed(1);
@@ -308,7 +302,8 @@ function kappe(id, art) {
     : `<path d="M38 54.6 L52.6 57.4 Q52 61.6 47 61.8 Q40.6 61.6 38 54.6Z M82 54.6 L67.4 57.4 Q68 61.6 73 61.8 Q79.4 61.6 82 54.6Z" fill="#9fc0ff" opacity="0.35" transform="translate(0 0.2) scale(1)" stroke="#9fc0ff" stroke-width="2.4" stroke-linejoin="round"/>
        <path d="M38 54.6 L52.6 57.4 Q52 61.6 47 61.8 Q40.6 61.6 38 54.6Z M82 54.6 L67.4 57.4 Q68 61.6 73 61.8 Q79.4 61.6 82 54.6Z" fill="#fff"/>`;
   return `<defs><linearGradient id="${id}kp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c3243"/><stop offset="0.6" stop-color="${KAPPE_FARBE}"/><stop offset="1" stop-color="#0a0b0f"/></linearGradient></defs>
-    <path d="M22.4 75.7 A40 40 0 1 1 97.6 75.7 C92 70 86 66.6 79 66.2 C72.5 65.9 67 64.6 63.6 62.8 L60 68.4 L56.4 62.8 C53 64.6 47.5 65.9 41 66.2 C34 66.6 28 70 22.4 75.7Z" fill="url(#${id}kp)" class="t-umriss" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M22.4 75.7 A40 40 0 0 1 29.4 36.3 L35 2.5 L45 24.9 A40 40 0 0 1 75 24.9 L85 2.5 L90.6 36.3 A40 40 0 0 1 97.6 75.7 C92 70 86 66.6 79 66.2 C72.5 65.9 67 64.6 63.6 62.8 L60 68.4 L56.4 62.8 C53 64.6 47.5 65.9 41 66.2 C34 66.6 28 70 22.4 75.7Z" fill="url(#${id}kp)" class="t-umriss" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M33.6 31 L35.8 10 L41.6 25.6 M86.4 31 L84.2 10 L78.4 25.6" fill="none" stroke="#4d5875" stroke-width="1.1" stroke-linejoin="round" opacity="0.8"/>
     <path d="M27 50 A34 34 0 0 1 48 27.5" fill="none" stroke="#6b7896" stroke-width="2.4" stroke-linecap="round" opacity="0.6"/>
     <path d="M60 46 L60 61" stroke="#000" stroke-width="1" opacity="0.35"/>
     ${NS.schwingen}<text x="60" y="40.5" text-anchor="middle" font-size="10.5" font-weight="800" font-family="Georgia, 'Times New Roman', serif" fill="#c9d5ff">§</text>
@@ -323,8 +318,8 @@ const EDEL_AUSSEN = { pinkdiamond: PD.aussen };
 /** Eigener Münzkörper statt des runden Rands (Umriss, Randfacetten, Münzfeld). */
 const EDEL_KOERPER = {
   pinkdiamond: PD.koerper,
-  // Ohren hinter dem Rand, darüber der normale geriffelte Münzkörper in Graphit
-  nachtschwinge: (id) => `${NS.ohren}<circle cx="60" cy="62" r="40" fill="var(--taler-tief)" class="t-umriss" stroke-width="3"/>
+  // Normaler geriffelter Münzkörper; Ohren und Maske zeichnet die Kappe als ein Stück darüber
+  nachtschwinge: (id) => `<circle cx="60" cy="62" r="40" fill="var(--taler-tief)" class="t-umriss" stroke-width="3"/>
     <circle cx="60" cy="62" r="37.4" fill="none" stroke="var(--taler-dunkel)" stroke-width="3.4" stroke-dasharray="1.5 2.3" opacity="0.55"/>
     <circle cx="60" cy="62" r="34" fill="url(#${id})"/>`,
 };
