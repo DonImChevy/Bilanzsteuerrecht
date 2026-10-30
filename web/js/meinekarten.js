@@ -1,11 +1,12 @@
 // Eigene Karteikarten: selbst geschrieben oder mit „+ Als Karte“ aus Aufgaben, Kompaktwissen, Normen und Lernpfad
 // übernommen. Gespeichert im Lernstand unter stat.meineKarten = { id: Karte } und mit dem Sync-Code abgeglichen.
 //
-// Karte: { v: Vorderseite, h: Rückseite, f: Fach, st: Stapel, q: Quelle (Text, optional), e: erstellt,
+// Karte: { v: Vorderseite, h: Rückseite, zv/zh: Handschrift vorne/hinten (kodiert, handschrift.js), f: Fach, st: Stapel, q: Quelle (Text, optional), e: erstellt,
 //          t: zuletzt bearbeitet, x: gelöscht (bleibt als Grabstein, damit der Abgleich das Löschen kennt),
 //          l: Lernkartei {fach, faellig, t} – fehlt bei neuen Karten (= sofort fällig) }
 // **fett** wird wie im Kompaktwissen zum Textmarker, Normzitate werden antippbar.
 import { planen } from "./wiederholung.js";
+import { hatStriche, MAX_ZEICHEN } from "./handschrift.js";
 
 export const STANDARD_STAPEL = "Meine Karten";
 const MAX_TEXT = 2000; // Zeichen je Seite – der gesamte Lernstand darf auf dem Server höchstens 1 MB groß sein
@@ -16,8 +17,9 @@ export const neueId = () => "m-" + Date.now().toString(36) + zufall();
 const sauber = (t) => String(t ?? "").replace(/\r\n?/g, "\n").trim().slice(0, MAX_TEXT);
 const stapelName = (s) => String(s ?? "").replace(/\s+/g, " ").trim().slice(0, 40) || STANDARD_STAPEL;
 
-/** Gültiger Entwurf: beide Seiten haben Text. */
-export const entwurfOk = (e) => !!(sauber(e?.v) && sauber(e?.h));
+/** Gültiger Entwurf: jede Seite hat Text oder Handschrift. */
+export const entwurfOk = (e) => !!((sauber(e?.v) || hatStriche(e?.zv)) && (sauber(e?.h) || hatStriche(e?.zh)));
+const zeichnung = (z) => (typeof z === "string" && z.length > 3 ? z.slice(0, MAX_ZEICHEN) : "");
 
 /** Neue Karte aus einem Entwurf {v, h, f, st, q} anlegen bzw. eine vorhandene (id) überschreiben. Gibt die neue Sammlung zurück. */
 export function speichernKarte(meine = {}, entwurf, jetzt = Date.now()) {
@@ -26,6 +28,7 @@ export function speichernKarte(meine = {}, entwurf, jetzt = Date.now()) {
   const karte = { v: sauber(entwurf.v), h: sauber(entwurf.h), f: entwurf.f || alt?.f || "bsr", st: stapelName(entwurf.st),
     e: alt?.e || jetzt, t: jetzt };
   if (entwurf.q || alt?.q) karte.q = String(entwurf.q || alt.q).slice(0, 120);
+  for (const s of ["zv", "zh"]) if (zeichnung(entwurf[s])) karte[s] = zeichnung(entwurf[s]);
   if (alt?.l) karte.l = alt.l;
   return { ...meine, [id]: karte };
 }
@@ -86,13 +89,15 @@ export function meineVereinen(a = {}, b = {}) {
 
 /** Export als JSON (zum Sichern oder Weitergeben – ohne Lernstand). */
 export function exportJson(meine, fach = null) {
-  const karten = kartenVon(meine, fach).reverse().map(({ v, h, f, st, q }) => ({ vorne: v, hinten: h, fach: f, stapel: st, ...(q ? { quelle: q } : {}) }));
+  const karten = kartenVon(meine, fach).reverse().map(({ v, h, zv, zh, f, st, q }) => ({ vorne: v, hinten: h, fach: f, stapel: st, ...(q ? { quelle: q } : {}),
+    ...(zv ? { handschriftVorne: zv } : {}), ...(zh ? { handschriftHinten: zh } : {}) }));
   return JSON.stringify({ app: "finanzwirt-trainer", art: "karteikarten", version: 1, karten }, null, 2);
 }
 /** Export als Textdatei für Anki & Co.: je Zeile Vorderseite TAB Rückseite (Zeilenumbrüche als <br>). */
 export function exportText(meine, fach = null) {
-  const zelle = (t) => t.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\t/g, " ").replace(/\n/g, "<br>");
-  return "#separator:tab\n#html:true\n" + kartenVon(meine, fach).reverse().map((k) => `${zelle(k.v)}\t${zelle(k.h)}`).join("\n") + "\n";
+  // Anki & Co. kennen keine Handschrift – dort steht ein Hinweis
+  const zelle = (t, z) => (t || (z ? "(Handschrift – nur in der App)" : "")).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\t/g, " ").replace(/\n/g, "<br>");
+  return "#separator:tab\n#html:true\n" + kartenVon(meine, fach).reverse().map((k) => `${zelle(k.v, k.zv)}\t${zelle(k.h, k.zh)}`).join("\n") + "\n";
 }
 
 /**
@@ -105,7 +110,7 @@ export function importieren(meine, text, { fach, stapel } = {}, jetzt = Date.now
   try {
     const j = JSON.parse(roh);
     const liste = Array.isArray(j) ? j : j?.karten;
-    if (Array.isArray(liste)) eintraege = liste.map((k) => ({ v: k.vorne ?? k.v, h: k.hinten ?? k.h, f: k.fach ?? k.f, st: k.stapel ?? k.st, q: k.quelle ?? k.q }));
+    if (Array.isArray(liste)) eintraege = liste.map((k) => ({ v: k.vorne ?? k.v, h: k.hinten ?? k.h, f: k.fach ?? k.f, st: k.stapel ?? k.st, q: k.quelle ?? k.q, zv: k.handschriftVorne ?? k.zv, zh: k.handschriftHinten ?? k.zh }));
   } catch (_) {
     const zellen = (z) => (z.includes("\t") ? z.split("\t") : z.split(";"));
     const ohneHtml = (t) => t.replace(/<br\s*\/?>/gi, "\n").replace(/<\/?b>/gi, "**").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">");
@@ -113,12 +118,12 @@ export function importieren(meine, text, { fach, stapel } = {}, jetzt = Date.now
     eintraege = roh.split("\n").filter((z) => z.trim() && !z.startsWith("#"))
       .map(zellen).filter((z) => z.length >= 2).map(([v, h]) => ({ v: ohneHtml(ent(v.trim())), h: ohneHtml(ent(h.trim())) }));
   }
-  const vorhanden = new Set(kartenVon(meine).map((k) => k.v + "\u0000" + k.h));
+  const vorhanden = new Set(kartenVon(meine).map((k) => k.v + "\u0000" + k.h + "\u0000" + (k.zv || "") + (k.zh || "")));
   let out = meine, neu = 0, doppelt = 0, i = 0;
   for (const e of eintraege) {
-    const ent = { v: sauber(e.v), h: sauber(e.h), f: ["bsr", "oer", "est", "ust"].includes(e.f) ? e.f : fach, st: stapel || e.st, q: e.q || "Importiert" };
+    const ent = { v: sauber(e.v), h: sauber(e.h), zv: zeichnung(e.zv), zh: zeichnung(e.zh), f: ["bsr", "oer", "est", "ust"].includes(e.f) ? e.f : fach, st: stapel || e.st, q: e.q || "Importiert" };
     if (!entwurfOk(ent)) continue;
-    const schluessel = ent.v + "\u0000" + ent.h;
+    const schluessel = ent.v + "\u0000" + ent.h + "\u0000" + ent.zv + ent.zh;
     if (vorhanden.has(schluessel)) { doppelt += 1; continue; }
     vorhanden.add(schluessel);
     out = speichernKarte(out, ent, jetzt + i++); // eigene Zeitstempel → Reihenfolge bleibt erhalten
