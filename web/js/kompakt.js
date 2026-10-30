@@ -66,6 +66,12 @@ function beispielView(b, i, karte = "") {
 
 /** Gelesen-Status: {thema: Zeitpunkt}. */
 export const gelesenAnteil = (themen, gelesen = {}) => themen.filter((t) => KOMPAKT[t.id] && gelesen[t.id]).length;
+/** „heute“, „gestern“, „vor 5 Tagen“ – wann eine Zusammenfassung zuletzt geöffnet wurde (Info, kein Abhaken). */
+export function zuletztText(ts, jetzt = Date.now()) {
+  if (!ts) return "";
+  const tag = (x) => Math.floor((x - new Date(x).getTimezoneOffset() * 60000) / 86400000), d = tag(jetzt) - tag(ts);
+  return d <= 0 ? "heute" : d === 1 ? "gestern" : d < 60 ? `vor ${d} Tagen` : `vor ${Math.round(d / 30)} Monaten`;
+}
 
 /**
  * Lese-Ansicht eines Themas. h = { ic, thema, nachbarn: [vorher, nachher], gelesen, ausSitzung, alsKarte(quelle, wert, klasse) }.
@@ -102,28 +108,27 @@ export function kompaktView(id, h) {
     </div></div>`;
 }
 
-/** Bibliothek eines Moduls: Klausur-Fahrplan oben, darunter alle Zusammenfassungen mit Gelesen-Status. */
+/** Bibliothek eines Moduls: Klausur-Fahrplan oben, darunter alle Zusammenfassungen (mit „zuletzt geöffnet“ als Wiederholungshilfe). */
 export function bibliothekView(fach, themen, h) {
   const plan = KLAUSURPLAN[fach];
   const mit = themen.filter((t) => KOMPAKT[t.id]);
-  const n = gelesenAnteil(mit, h.gelesen);
   const top = new Set(plan?.top || []);
   return `<div class="vollbild kompakt" role="dialog" aria-label="Kompaktwissen">
     <div class="vb-kopf"><button class="rund" data-a="kompaktZu" aria-label="Schließen">${h.ic("kreuz")}</button>
-      <div class="mitte">Kompaktwissen</div><span class="km-zeit">${n}/${mit.length}</span></div>
+      <div class="mitte">Kompaktwissen</div><span class="km-zeit">${mit.length} Themen</span></div>
     <div class="vb-inhalt km-inhalt">
       <header class="km-bib-kopf"><h2>Das Wichtigste für die Klausur</h2>
         <p class="sub">${mit.length} Zusammenfassungen mit Klausurbeispielen und Musterlösungen – jede Aussage mit ihrer Norm. Ideal zum Wiederholen vor dem Üben und in den Tagen vor der Klausur.</p>
-        <div class="km-fortschritt" role="progressbar" aria-valuemin="0" aria-valuemax="${mit.length}" aria-valuenow="${n}"><span style="width:${mit.length ? (n / mit.length) * 100 : 0}%"></span></div></header>
+</header>
       ${plan ? `<section class="km-plan"><h3>${esc(plan.titel)}</h3>
         <ul class="km-liste">${plan.aufbau.map((p) => `<li>${kompaktInline(p)}</li>`).join("")}</ul>
         <div class="km-tipps">${plan.tipps.map((p) => `<p>${kompaktInline(p)}</p>`).join("")}</div></section>` : ""}
       <div class="km-bib">${mit.map((t) => {
-        const g = !!h.gelesen[t.id];
-        return `<button class="km-eintrag${g ? " gelesen" : ""}" data-a="kompakt" data-v="${t.id}">
+        const zuletzt = zuletztText(h.gelesen[t.id]);
+        return `<button class="km-eintrag" data-a="kompakt" data-v="${t.id}">
           <span class="km-eintrag-icon">${t.icon}</span>
           <span class="km-eintrag-text"><b>${esc(t.titel)}</b><span>${kompaktInline(KOMPAKT[t.id].satz).replace(/<span class="km-norm"[^>]*>(.*?)<\/span>/g, "$1")}</span></span>
-          <span class="km-eintrag-meta">${top.has(t.id) ? `<i class="km-top" title="Klausurschwerpunkt">Schwerpunkt</i>` : ""}${g ? h.ic("haken", "klein") : `${lesezeit(KOMPAKT[t.id])} Min.`}${KOMPAKT[t.id].beispiele.length ? `<span class="km-bsp-zahl">${KOMPAKT[t.id].beispiele.length} ${KOMPAKT[t.id].beispiele.length === 1 ? "Beispiel" : "Beispiele"}</span>` : ""}</span></button>`;
+          <span class="km-eintrag-meta">${top.has(t.id) ? `<i class="km-top" title="Klausurschwerpunkt">Schwerpunkt</i>` : ""}${lesezeit(KOMPAKT[t.id])} Min.${zuletzt ? `<span class="km-zuletzt" title="Zuletzt geöffnet">${h.ic("wiederholen", "klein")}${zuletzt}</span>` : ""}${KOMPAKT[t.id].beispiele.length ? `<span class="km-bsp-zahl">${KOMPAKT[t.id].beispiele.length} ${KOMPAKT[t.id].beispiele.length === 1 ? "Beispiel" : "Beispiele"}</span>` : ""}</span></button>`;
       }).join("")}</div>
     </div></div>`;
 }

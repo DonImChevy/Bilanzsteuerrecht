@@ -9,7 +9,7 @@ import { PUNKTESAMMLER } from "./est/punkte.js";
 import { PAARE } from "./paare.js";
 import { gliederungView } from "./bilr/gliederung.js";
 import { r2View } from "./est/r2.js";
-import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, gelesenAnteil, lesezeit, kompaktInline } from "./kompakt.js";
+import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, lesezeit, kompaktInline, zuletztText } from "./kompakt.js";
 import * as MK from "./meinekarten.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
@@ -688,7 +688,14 @@ function render() {
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
   const scrollVoll = animVoll ? [] : [...app.querySelectorAll(".vollbild .vb-inhalt")].map((el) => el.scrollTop);
   const scrollSheet = animSheet ? 0 : app.querySelector(".sheet .vb-inhalt")?.scrollTop || 0;
+  // Waagerechte Leisten (z. B. Garderobe-Reiter) behalten ihre Position, statt an den Anfang zu springen
+  const quer = Object.fromEntries([...app.querySelectorAll("[data-quer]")].map((el) => [el.dataset.quer, el.scrollLeft]));
   app.innerHTML = html;
+  app.querySelectorAll("[data-quer]").forEach((el) => {
+    if (quer[el.dataset.quer]) el.scrollLeft = quer[el.dataset.quer];
+    const aktiv = el.querySelector(".aktiv");
+    if (aktiv && (aktiv.offsetLeft < el.scrollLeft || aktiv.offsetLeft + aktiv.offsetWidth > el.scrollLeft + el.clientWidth)) el.scrollLeft = aktiv.offsetLeft - 16;
+  });
   if (scrollVoll.some(Boolean)) app.querySelectorAll(".vollbild .vb-inhalt").forEach((el, i) => { if (scrollVoll[i]) el.scrollTop = scrollVoll[i]; });
   if (scrollSheet) { const el = app.querySelector(".sheet .vb-inhalt"); if (el) el.scrollTop = scrollSheet; }
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
@@ -1247,16 +1254,18 @@ function suchErgebnisse(q) {
   const kompakt = beste(I.kompakt.filter((x) => !MODUL[x.t.fach].bald && inRolle(x.t.id)), 4);
   const module = I.module.filter((x) => passt(x) && rolleVon(x.m) === rolle);
   const pfad = beste(I.pfad.filter((x) => MODUL[x.fach] && !MODUL[x.fach].bald && rolleVon(MODUL[x.fach]) === rolle), 4);
-  const gruppe = (titel, inhalt) => `<div class="treffer-gruppe treffer"><div class="gruppe-titel">${titel}</div><div class="liste">${inhalt}</div></div>`;
+  // art färbt die Überschrift: Zusammenfassungen als Textmarker, Lernpfad in seinen eigenen Farben
+  const gruppe = (titel, inhalt, art = "") => `<div class="treffer-gruppe treffer${art ? " tg-" + art : ""}"><div class="gruppe-titel">${art ? `<span class="tg-chip">${ic(art === "kompakt" ? "akte" : "lernen", "klein")}${titel}</span>` : titel}</div><div class="liste">${inhalt}</div></div>`;
   let html = "";
+  // Reihenfolge: Zusammenfassungen, Lernpfad, dann der Rest
+  if (kompakt.length) html += gruppe("Zusammenfassungen", kompakt.map(({ t, k }) => `<button class="zeile" data-a="kompakt" data-v="${t.id}">
+    <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${markiere(kompaktText(k), hl, true)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""), "kompakt");
+  if (pfad.length) html += gruppe("Lernpfad", pfad.map(({ key, b }) => `<button class="zeile" data-a="pfadDirekt" data-v="${key}|${b.id}">
+    <span class="thema-icon">${b.icon}</span><span class="grow"><div>${markiere(b.titel, hl)}</div><div class="sub">${MODUL[key.startsWith("bsr") ? "bsr" : key].kurz}${key === "bsr1" ? " Teil I" : key === "bsr2" ? " Teil II" : ""} · ${esc(b.kurz)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""), "pfad");
   if (module.length) html += gruppe("Module", module.map(({ m }) => `<button class="zeile" data-a="${m.bald ? "bald" : "modul"}" data-v="${m.id}">
     <span class="symbol" style="background:${m.farbe};color:#fff">${ic(m.icon)}</span><span class="grow"><div>${markiere(m.titel, hl)}</div><div class="sub">${m.bald ? "Bald verfügbar" : m.unter}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
   if (themen.length) html += gruppe("Themen – direkt üben", themen.map(({ t }) => `<button class="zeile" data-a="thema" data-v="${t.id}">
     <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub">${MODUL[fachFuerThema(t.id)].kurz} · ${esc(t.unter)}</div></span><span class="chev">${ic("play", "klein fill")}</span></button>`).join(""));
-  if (kompakt.length) html += gruppe("Zusammenfassungen", kompakt.map(({ t, k }) => `<button class="zeile" data-a="kompakt" data-v="${t.id}">
-    <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${markiere(kompaktText(k), hl, true)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
-  if (pfad.length) html += gruppe("Lernpfad", pfad.map(({ key, b }) => `<button class="zeile" data-a="pfadDirekt" data-v="${key}|${b.id}">
-    <span class="thema-icon">${b.icon}</span><span class="grow"><div>${markiere(b.titel, hl)}</div><div class="sub">${MODUL[key.startsWith("bsr") ? "bsr" : key].kurz}${key === "bsr1" ? " Teil I" : key === "bsr2" ? " Teil II" : ""} · ${esc(b.kurz)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
   const normHtml = normen.length ? gruppe("Gesetzestexte", normen.map(({ n, label }) => `<button class="zeile" data-a="normDetail" data-v="${n.g} ${n.nr}">
     <span class="symbol">§</span><span class="grow"><div><b>${esc(label)}</b></div><div class="sub">${esc(n.titel || n.abs[0]?.text.slice(0, 80) + " …")}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join("")) : "";
   if (zitat) html += normHtml;
@@ -1346,7 +1355,7 @@ function themenListe() {
   return `<div class="themen-karten">${liste.map((t, i) => {
     const z = zaehler(t.id), q2 = quote(z), n = vorlagenFuer(t.id).length, p = Math.round(q2 * 100);
     const status = z.b ? `<span class="tk-status" style="--farbe:${farbe(q2)}">${p} %</span>` : `<span class="tk-status neu">neu</span>`;
-    const lesen = KOMPAKT[t.id] ? `<button class="tk-lesen${stat.kompakt[t.id] ? " gelesen" : ""}" data-a="kompakt" data-v="${t.id}" aria-label="Zusammenfassung ${esc(t.titel)}">${stat.kompakt[t.id] ? ic("haken", "klein") : ic("akte", "klein")}Überblick</button>` : "";
+    const lesen = KOMPAKT[t.id] ? `<button class="tk-lesen" data-a="kompakt" data-v="${t.id}" aria-label="Zusammenfassung ${esc(t.titel)} lesen">${ic("akte", "klein")}Überblick</button>` : "";
     return `<div class="themen-karte${z.b ? "" : " frisch"}" style="--farbe:${z.b ? farbe(q2) : "var(--m)"};--i:${Math.min(i, 12)}">
       <span class="tk-icon">${t.icon}<i>${i + 1}</i></span>
       <span class="tk-text"><button class="tk-haupt" data-a="thema" data-v="${t.id}"><b>${esc(t.titel)}</b></button><span class="sub">${esc(t.unter)}</span>
@@ -1383,14 +1392,16 @@ function kompaktEbene() {
 function kompaktKachel() {
   const themen = kompaktThemen(state.fach);
   if (!themen.length) return "";
-  const n = gelesenAnteil(themen, stat.kompakt);
-  const naechstes = themen.find((t) => !stat.kompakt[t.id]);
+  // Vorschlag: zuerst Ungelesenes, sonst das am längsten nicht geöffnete Thema – zum Wiederholen
+  const mit = themen.filter((t) => KOMPAKT[t.id]);
+  const naechstes = mit.find((t) => !stat.kompakt[t.id]) || [...mit].sort((a, b) => stat.kompakt[a.id] - stat.kompakt[b.id])[0];
+  const neu = naechstes && !stat.kompakt[naechstes.id];
   return `<div class="kompakt-kachel">
     <button class="kk-haupt" data-a="kompaktListe">
       <span class="kk-blatt" aria-hidden="true"><i></i><i></i><i></i></span>
-      <span class="kk-text"><b>Kompaktwissen</b><span>${themen.length} Zusammenfassungen mit Klausurschwerpunkten${n ? ` · ${n} gelesen` : ""}</span></span>
+      <span class="kk-text"><b>Kompaktwissen</b><span>${themen.length} Zusammenfassungen mit Klausurschwerpunkten</span></span>
       <span class="kk-pfeil">${ic("pfeil")}</span></button>
-    ${naechstes ? `<button class="kk-weiter" data-a="kompakt" data-v="${naechstes.id}">${n ? "Weiterlesen" : "Erstes Thema lesen"}: ${esc(naechstes.titel)} · ${lesezeit(KOMPAKT[naechstes.id])} Min.</button>` : ""}
+    ${naechstes ? `<button class="kk-weiter" data-a="kompakt" data-v="${naechstes.id}">${neu ? "Noch nicht gelesen" : `Wiederholen (zuletzt ${zuletztText(stat.kompakt[naechstes.id])})`}: ${esc(naechstes.titel)} · ${lesezeit(KOMPAKT[naechstes.id])} Min.</button>` : ""}
   </div>`;
 }
 
@@ -1628,7 +1639,7 @@ function kompaktZeile() {
   const themen = kompaktThemen(state.fach);
   if (!themen.length) return "";
   return `<button class="km-vorher" data-a="kompaktListe" style="margin-bottom:12px"><span class="km-vorher-icon">${ic("akte")}</span>
-    <span class="grow"><b>Kompaktwissen</b><span class="sub">${themen.length} Zusammenfassungen · ${gelesenAnteil(themen, stat.kompakt)} gelesen</span></span>${ic("pfeil", "klein")}</button>`;
+    <span class="grow"><b>Kompaktwissen</b><span class="sub">${themen.length} Zusammenfassungen mit Klausurbeispielen</span></span>${ic("pfeil", "klein")}</button>`;
 }
 
 function kontenInhalt() {
@@ -2909,13 +2920,13 @@ const AKTIONEN = {
     if (!KOMPAKT[v]) return;
     const vorher = state.kompakt;
     state.kompakt = { id: v, fach: state.fach === "bbf" && themaIn(v, "bbf") ? "bbf" : fachFuerThema(v), liste: !!vorher?.liste || (vorher && !vorher.id), ausSitzung: false };
-    if (!stat.kompakt[v]) { stat.kompakt[v] = Date.now(); speichern(); }
+    stat.kompakt[v] = Date.now(); speichern(); // zuletzt geöffnet (Wiederholungshilfe, kein Abhaken)
     render();
   },
   kompaktSitzung: (v) => {
     if (!KOMPAKT[v]) return;
     state.kompakt = { id: v, fach: state.fach === "bbf" && themaIn(v, "bbf") ? "bbf" : fachFuerThema(v), liste: false, ausSitzung: true };
-    if (!stat.kompakt[v]) { stat.kompakt[v] = Date.now(); speichern(); }
+    stat.kompakt[v] = Date.now(); speichern(); // zuletzt geöffnet (Wiederholungshilfe, kein Abhaken)
     render();
   },
   kompaktListe: () => { state.kompakt = { id: null, fach: state.fach, liste: true }; render(); },
