@@ -31,15 +31,20 @@ const ZITAT = /(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:HGB|AO|
 
 /** Fließtext: **fett** wird zum Textmarker, Normzitate werden antippbar (öffnen den Gesetzestext). */
 export function kompaktInline(text) {
-  let h = esc(text).replace(ZITAT, (m) => {
+  const h = normenVerlinken(esc(text));
+  // Zahl und Einheit nicht trennen („3 %“, „1.500 €“)
+  return h.replace(/(\d) (%|€)/g, "$1&nbsp;$2").replace(/\*\*(.+?)\*\*/g, '<mark class="km">$1</mark>');
+}
+
+/** Normzitate in bereits maskiertem HTML antippbar machen (nur Normen, deren Text in der App steht). */
+export function normenVerlinken(h) {
+  return h.replace(ZITAT, (m) => {
     // BGB und EStDV erkennt normenAusText nicht – einfache Zitate („§ 449 BGB“, „§ 9a EStDV“) direkt auflösen
     const einfach = /^§\s?(\d+[a-z]?)(?:\s+Abs\.\s?(\d+))?.*\b(BGB|EStDV)$/.exec(m);
     const ref = einfach ? [`${einfach[3]} ${einfach[1]}${einfach[2] ? " " + einfach[2] : ""}`, `${einfach[3]} ${einfach[1]}`].find((r) => norm(r))
       : normenAusText(m.replace(/&amp;/g, "&"))[0];
     return ref ? `<span class="km-norm" role="button" tabindex="0" data-a="normDetail" data-v="${esc(ref)}">${m}</span>` : m;
   });
-  // Zahl und Einheit nicht trennen („3 %“, „1.500 €“)
-  return h.replace(/(\d) (%|€)/g, "$1&nbsp;$2").replace(/\*\*(.+?)\*\*/g, '<mark class="km">$1</mark>');
 }
 
 /** Eine Zeile der Musterlösung: „BS: …“ wird als Buchungssatz dargestellt, „→ GuV … · BVV …“ als Gewinnauswirkung. */

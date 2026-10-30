@@ -6,6 +6,7 @@ import { PFAD_OER } from "./oer/pfad.js";
 import { PFAD_BSR1, PFAD_BSR2 } from "./bilr/pfad.js";
 import { PFAD_BBF } from "./bilr/bbf_pfad.js";
 import * as G from "./geld.js";
+import { normenVerlinken } from "./kompakt.js";
 import { taler, talerBuehne } from "./maskottchen.js";
 
 // Schlüssel = Modul; Bilanzrecht je nach Auswahl Teil I (bsr1), Teil II (bsr2) oder beide (bsr).
@@ -54,7 +55,8 @@ export function auswerten(q, eingabe) {
 }
 
 // ------------------------------------------------------------------ Ansichten
-const fett = (t, esc) => esc(t).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+// Normzitate, deren Text in der App steht, öffnen beim Antippen den Gesetzestext
+const fett = (t, esc) => normenVerlinken(esc(t)).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
 function textHtml(t, esc) {
   const zeilen = t.split("\n"), out = [];
   let liste = [];
@@ -172,7 +174,7 @@ export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken =
     const show = a && z.talerShow !== qi;
     if (a) z.talerShow = qi;
     inhalt = `<div class="pf-frage"><div class="pf-tag frage"><span>?</span>Frage ${qi + 1} von ${b.fragen.length}</div><h2>${esc(q.frage)}</h2>${feld}
-      ${a ? `<div class="pf-erkl ${a.ok ? "ok" : "err"}${show ? " nach-show" : ""}"><b>${a.ok ? "Richtig!" : "Nicht ganz."}</b> ${esc(q.erkl)}</div>` : ""}</div>`;
+      ${a ? `<div class="pf-erkl ${a.ok ? "ok" : "err"}${show ? " nach-show" : ""}"><b>${a.ok ? "Richtig!" : "Nicht ganz."}</b> ${fett(q.erkl, esc)}</div>` : ""}</div>`;
     const warte = `<span class="fb-warte">${taler("warte", { groesse: 52 })}</span>`;
     fuss = a ? `<div class="pf-reihe pf-taler-reihe">${talerBuehne(a.ok, { ruhig: !show })}<button class="pf-los ${a.ok ? "ok" : "err"}" data-a="pfadWeiter">${qi + 1 === b.fragen.length ? "Abschließen" : "Nächste Frage"} ${ic("pfeil")}</button></div>`
       : q.art === "zahl" ? `<div class="pf-reihe pf-taler-reihe">${warte}<button class="pf-los" data-a="pfadPruefen">Prüfen</button></div>`
