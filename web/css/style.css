@@ -1366,6 +1366,15 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 @keyframes pdLeuchten { from { filter: drop-shadow(0 0 3px rgb(255 120 190 / 0.55)) drop-shadow(0 3px 9px rgb(224 69 154 / 0.3)); } to { filter: drop-shadow(0 0 6px rgb(255 160 215 / 0.85)) drop-shadow(0 4px 14px rgb(224 69 154 / 0.45)); } }
 :root[data-bewegung="aus"] .taler.m-pinkdiamond { animation: none; }
 :root[data-bewegung="aus"] .taler.m-pinkdiamond .t-edelfunke:nth-of-type(odd) { opacity: 0.85; transform: none; }
+/* Nachtschwinge: dunkles Graphit, Gesicht und Brille hell, kühles blaues Leuchten, wandernder Lichtstreif */
+.taler.m-nachtschwinge { --taler-tinte: #e8eeff; --taler-wange: #6b7fb8; filter: drop-shadow(0 0 3px rgb(110 140 255 / 0.5)) drop-shadow(0 3px 9px rgb(20 26 48 / 0.45)); }
+.taler.m-nachtschwinge .t-ganz > .t-umriss, .taler.m-nachtschwinge .t-winkarm .t-umriss { stroke: #050609; }
+.taler.m-nachtschwinge .t-edelschimmer { transform-box: view-box; animation: pdSchimmer 5.6s cubic-bezier(0.45, 0, 0.25, 1) infinite; }
+.taler.m-nachtschwinge text { fill: #c9d5ff; opacity: 1; }
+.taler.m-nachtschwinge .t-brille .t-umriss { stroke: #aebdf0; }
+:root[data-bewegung="aus"] .taler.m-nachtschwinge .t-edelschimmer { animation: none; opacity: 0; }
+.gar-karte.ns { background: linear-gradient(150deg, color-mix(in srgb, #3b4a78 30%, var(--card)), var(--card) 55%, color-mix(in srgb, #1b1e27 22%, var(--card))); border-color: color-mix(in srgb, #6c7da8 60%, transparent); }
+.gar-karte.ns .gk-name { background: linear-gradient(90deg, #3b4a78, #8ea3d6, #3b4a78); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800; }
 .gar-karte.pd { background: linear-gradient(150deg, color-mix(in srgb, #ff8fc8 22%, var(--card)), var(--card) 55%, color-mix(in srgb, #d8c4ff 20%, var(--card))); border-color: color-mix(in srgb, #ff8fc8 55%, transparent); }
 .gar-karte.pd .gk-name { background: linear-gradient(90deg, #e0459a, #a855f7, #e0459a); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 800; }
 .taler .t-tropfen { opacity: 0; transform-box: view-box; }

@@ -89,6 +89,7 @@ const K = [
   ["platin", "metall", "Platin", 1500, 30, "Ab Level 30"],
   ["holo", "metall", "Holo", 2500, 40, "Ab Level 40 – schillert in allen Farben"],
   ["pinkdiamond", "metall", "Pink Diamond", 1500, 0, "Die Krönung: geschliffener Stein statt Münzrand, funkelnd im Brillantschliff"],
+  ["nachtschwinge", "metall", "Nachtschwinge", 1500, 0, "Sonderprägung für Nachtschichten vor der Klausur: Graphit, Maske, Fledermausohren und Paragrafen-Schwingen"],
   // Aura
   ["funkeln", "aura", "Funkeln", 300, 0, "Kleine Glitzersterne"],
   ["herzen", "aura", "Herzen", 400, 0, "Schwebende Herzen"],
@@ -187,6 +188,7 @@ export const METALL = {
   platin: ["#ffffff", "#e3eaee", "#aebdc4", "#71838c"],
   holo: ["#fff6b8", "#ff9fd6", "#83a9ff", "#5b42c0"],
   pinkdiamond: ["#fff0f8", "#ff8fc8", "#e0459a", "#8f1659"],
+  nachtschwinge: ["#8d97ab", "#3b414f", "#1b1e27", "#090a0e"],
 };
 
 // ---------------------------------------------------------------- Pink Diamond: Brillantschliff auf der Münze
@@ -281,9 +283,45 @@ const EDEL = {
       ${PD.funken}
     </g>`,
 };
+// ---------------------------------------------------------------- Nachtschwinge: Graphit-Sonderprägung mit Maske und Fledermausohren
+// Eigene Gestaltung (kein Markenlogo): Ohren hinter dem Rand, Augenmaske unter Augen und Brille, § mit kleinen Schwingen als Emblem.
+// Die Gesichtszeichnung wird über CSS hell (--taler-tinte), damit Augen und Brille auf dem dunklen Metall leuchten.
+const NS = {
+  // Fledermausohren: spitz, leicht nach außen geneigt, mit hellem Innenrand
+  ohren: [[-1], [1]].map(([s]) => {
+    const x = (v) => (60 + s * v).toFixed(1);
+    return `<path d="M${x(14)} 26 L${x(27)} 3.5 L${x(33)} 31 Z" fill="var(--taler-tief)" class="t-umriss" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M${x(18.5)} 25.5 L${x(26.6)} 10.5 L${x(29.6)} 27.5" fill="none" stroke="#6c7da8" stroke-width="1.1" stroke-linejoin="round" opacity="0.8"/>`;
+  }).join(""),
+  // Augenmaske: läuft außen in Spitzen nach oben aus
+  maske: `<path d="M27.5 50.5 Q30 46 37 46.6 Q47 47.6 53 50 Q60 52.6 67 50 Q73 47.6 83 46.6 Q90 46 92.5 50.5 Q93.5 57 89 63.5 Q84 69.5 75 68.5 Q66 67.5 60 62.5 Q54 67.5 45 68.5 Q36 69.5 31 63.5 Q26.5 57 27.5 50.5Z" fill="#06070a"/>
+    <path d="M31 50 Q37 47.6 46 48.6" fill="none" stroke="#8ea3d6" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+    <path d="M74 48.6 Q83 47.6 89 50" fill="none" stroke="#8ea3d6" stroke-width="1" stroke-linecap="round" opacity="0.45"/>`,
+  // Emblem: § mit zwei gezackten Schwingen (eigene Form, keine Ellipse)
+  schwingen: [[-1], [1]].map(([s]) => {
+    const x = (v) => (60 + s * v).toFixed(1);
+    return `<path d="M${x(4.5)} 35.6 Q${x(9)} 31.4 ${x(17)} 32.2 Q${x(15.4)} 34.2 ${x(15.8)} 36.4 Q${x(13.4)} 35.4 ${x(11.8)} 37.6 Q${x(10.2)} 36 ${x(8.4)} 38 Q${x(7)} 36.4 ${x(4.5)} 37Z" fill="#a9b8de" opacity="0.95"/>`;
+  }).join(""),
+};
+EDEL.nachtschwinge = (id) => `<defs>
+    <radialGradient id="${id}ns" cx="0.5" cy="0.32" r="0.7"><stop offset="0" stop-color="#3c4a6e" stop-opacity="0.55"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <linearGradient id="${id}nsl" x1="0" y1="0" x2="1" y2="0.3"><stop offset="0.3" stop-color="#9fb4ff" stop-opacity="0"/><stop offset="0.5" stop-color="#cdd8ff" stop-opacity="0.35"/><stop offset="0.7" stop-color="#9fb4ff" stop-opacity="0"/></linearGradient>
+    <clipPath id="${id}nc"><circle cx="60" cy="62" r="34"/></clipPath></defs>
+  <g clip-path="url(#${id}nc)">
+    <circle cx="60" cy="62" r="34" fill="url(#${id}ns)"/>
+    <g class="t-edelschimmer"><rect x="-10" y="20" width="140" height="84" fill="url(#${id}nsl)"/></g>
+    ${NS.schwingen}
+    ${NS.maske}
+  </g>`;
 const EDEL_AUSSEN = { pinkdiamond: PD.aussen };
 /** Eigener Münzkörper statt des runden Rands (Umriss, Randfacetten, Münzfeld). */
-const EDEL_KOERPER = { pinkdiamond: PD.koerper };
+const EDEL_KOERPER = {
+  pinkdiamond: PD.koerper,
+  // Ohren hinter dem Rand, darüber der normale geriffelte Münzkörper in Graphit
+  nachtschwinge: (id) => `${NS.ohren}<circle cx="60" cy="62" r="40" fill="var(--taler-tief)" class="t-umriss" stroke-width="3"/>
+    <circle cx="60" cy="62" r="37.4" fill="none" stroke="#6c7da8" stroke-width="3.4" stroke-dasharray="1.5 2.3" opacity="0.5"/>
+    <circle cx="60" cy="62" r="34" fill="url(#${id})"/>`,
+};
 
 /** Kopfbedeckungen (über dem Gesicht gezeichnet). */
 const KOPF = {

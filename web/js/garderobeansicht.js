@@ -50,7 +50,7 @@ export function garderobeView(z, { outfit, gekauft, guthaben, level, farbwelt = 
       : gesperrt ? `<span class="gk-marke zu">${ic("schloss", "klein")} Level ${a.level}</span>` : talerBetrag(preisFuer(a.id, gekauft), preisFuer(a.id, gekauft) > guthaben ? "zu-teuer" : "");
     // Sets: Ersparnis gegenüber den Einzelteilen zeigen
     const set = a.paket && !hat ? `<span class="gk-set">Set · statt ${a.paket.reduce((s, t) => s + artikel(t).preis, 0)}</span>` : "";
-    return `<button class="gar-karte${a.id === "pinkdiamond" ? " pd" : ""}${z.probe === a.id ? " gewaehlt" : ""}${gesperrt ? " gesperrt" : ""}${hat ? " hat" : ""}" data-a="garProbe" data-v="${a.id}" aria-pressed="${z.probe === a.id}" aria-label="${esc(a.name)}${hat ? ", im Schrank" : `, ${preisFuer(a.id, gekauft)} Taler`}">
+    return `<button class="gar-karte${a.id === "pinkdiamond" ? " pd" : a.id === "nachtschwinge" ? " ns" : ""}${z.probe === a.id ? " gewaehlt" : ""}${gesperrt ? " gesperrt" : ""}${hat ? " hat" : ""}" data-a="garProbe" data-v="${a.id}" aria-pressed="${z.probe === a.id}" aria-label="${esc(a.name)}${hat ? ", im Schrank" : `, ${preisFuer(a.id, gekauft)} Taler`}">
       <span class="gk-bild">${vorschau(a)}</span><span class="gk-name">${esc(a.name)}</span>${set}${marke}</button>`;
   }).join("");
   const anzahl = ARTIKEL.filter((a) => a.preis > 0 && gekauft[a.id]).length, kaufbarGesamt = ARTIKEL.filter((a) => a.preis > 0).length;
