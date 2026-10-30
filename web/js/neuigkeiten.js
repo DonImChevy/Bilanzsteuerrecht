@@ -8,7 +8,7 @@ export const NEUIGKEITEN = [
     id: "2026-10-nachtschwinge",
     datum: "2026-10-30",
     titel: "Sonderprägung: Nachtschwinge",
-    punkte: [["muenze", "Nachtschwinge", "Taler in dunklem Graphit mit Augenmaske, Fledermausohren und Paragrafen-Schwingen – für die Nachtschichten vor der Klausur (1.500 Taler).", "garderobe", "metall"]],
+    punkte: [["muenze", "Nachtschwinge", "Taler mit Fledermaus-Kopfmaske: spitze Ohren, leuchtende Augenschlitze, Nasenspitze und § mit Schwingen auf der Stirn – für die Nachtschichten vor der Klausur (1.500 Taler).", "garderobe", "metall"]],
   },
   {
     id: "2026-10-beauty",

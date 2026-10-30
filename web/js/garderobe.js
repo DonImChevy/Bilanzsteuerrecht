@@ -89,7 +89,7 @@ const K = [
   ["platin", "metall", "Platin", 1500, 30, "Ab Level 30"],
   ["holo", "metall", "Holo", 2500, 40, "Ab Level 40 – schillert in allen Farben"],
   ["pinkdiamond", "metall", "Pink Diamond", 1500, 0, "Die Krönung: geschliffener Stein statt Münzrand, funkelnd im Brillantschliff"],
-  ["nachtschwinge", "metall", "Nachtschwinge", 1500, 0, "Sonderprägung für Nachtschichten vor der Klausur: Graphit, Maske, Fledermausohren und Paragrafen-Schwingen"],
+  ["nachtschwinge", "metall", "Nachtschwinge", 1500, 0, "Sonderprägung für Nachtschichten vor der Klausur: Kopfmaske mit spitzen Ohren und leuchtenden Augenschlitzen, § mit Schwingen"],
   // Aura
   ["funkeln", "aura", "Funkeln", 300, 0, "Kleine Glitzersterne"],
   ["herzen", "aura", "Herzen", 400, 0, "Schwebende Herzen"],
@@ -188,7 +188,7 @@ export const METALL = {
   platin: ["#ffffff", "#e3eaee", "#aebdc4", "#71838c"],
   holo: ["#fff6b8", "#ff9fd6", "#83a9ff", "#5b42c0"],
   pinkdiamond: ["#fff0f8", "#ff8fc8", "#e0459a", "#8f1659"],
-  nachtschwinge: ["#8d97ab", "#3b414f", "#1b1e27", "#090a0e"],
+  nachtschwinge: ["#e2e6ee", "#a7afbf", "#6b7386", "#3a404e"],
 };
 
 // ---------------------------------------------------------------- Pink Diamond: Brillantschliff auf der Münze
@@ -283,43 +283,49 @@ const EDEL = {
       ${PD.funken}
     </g>`,
 };
-// ---------------------------------------------------------------- Nachtschwinge: Graphit-Sonderprägung mit Maske und Fledermausohren
-// Eigene Gestaltung (kein Markenlogo): Ohren hinter dem Rand, Augenmaske unter Augen und Brille, § mit kleinen Schwingen als Emblem.
-// Die Gesichtszeichnung wird über CSS hell (--taler-tinte), damit Augen und Brille auf dem dunklen Metall leuchten.
+// ---------------------------------------------------------------- Nachtschwinge: Sonderprägung mit Fledermaus-Kopfmaske
+// Eigene Gestaltung (kein Markenlogo): Kopfmaske über Stirn, Augen und Nase mit spitzen Ohren, Nasenspitze und schmalen
+// weißen Augenschlitzen; Mund und Kinn bleiben frei. Ersetzt Augen und Brille (maskottchen.js: o.kappe).
+const KAPPE_FARBE = "#151821";
 const NS = {
-  // Fledermausohren: spitz, leicht nach außen geneigt, mit hellem Innenrand
+  // Spitze Ohren hinter dem Münzrand (gehen nahtlos in die Kappe über)
   ohren: [[-1], [1]].map(([s]) => {
     const x = (v) => (60 + s * v).toFixed(1);
-    return `<path d="M${x(14)} 26 L${x(27)} 3.5 L${x(33)} 31 Z" fill="var(--taler-tief)" class="t-umriss" stroke-width="2.6" stroke-linejoin="round"/>
-      <path d="M${x(18.5)} 25.5 L${x(26.6)} 10.5 L${x(29.6)} 27.5" fill="none" stroke="#6c7da8" stroke-width="1.1" stroke-linejoin="round" opacity="0.8"/>`;
+    return `<path d="M${x(13)} 27 L${x(25)} 2.5 L${x(32)} 31 Z" fill="${KAPPE_FARBE}" class="t-umriss" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M${x(17)} 25 L${x(24.6)} 9.5 L${x(28.6)} 26" fill="none" stroke="#4d5875" stroke-width="1.1" stroke-linejoin="round" opacity="0.8"/>`;
   }).join(""),
-  // Augenmaske: läuft außen in Spitzen nach oben aus
-  maske: `<path d="M27.5 50.5 Q30 46 37 46.6 Q47 47.6 53 50 Q60 52.6 67 50 Q73 47.6 83 46.6 Q90 46 92.5 50.5 Q93.5 57 89 63.5 Q84 69.5 75 68.5 Q66 67.5 60 62.5 Q54 67.5 45 68.5 Q36 69.5 31 63.5 Q26.5 57 27.5 50.5Z" fill="#06070a"/>
-    <path d="M31 50 Q37 47.6 46 48.6" fill="none" stroke="#8ea3d6" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
-    <path d="M74 48.6 Q83 47.6 89 50" fill="none" stroke="#8ea3d6" stroke-width="1" stroke-linecap="round" opacity="0.45"/>`,
-  // Emblem: § mit zwei gezackten Schwingen (eigene Form, keine Ellipse)
+  // Emblem auf der Stirn: § mit zwei gezackten Schwingen (eigene Form, keine Ellipse)
   schwingen: [[-1], [1]].map(([s]) => {
     const x = (v) => (60 + s * v).toFixed(1);
-    return `<path d="M${x(4.5)} 35.6 Q${x(9)} 31.4 ${x(17)} 32.2 Q${x(15.4)} 34.2 ${x(15.8)} 36.4 Q${x(13.4)} 35.4 ${x(11.8)} 37.6 Q${x(10.2)} 36 ${x(8.4)} 38 Q${x(7)} 36.4 ${x(4.5)} 37Z" fill="#a9b8de" opacity="0.95"/>`;
+    return `<path d="M${x(4.5)} 35.6 Q${x(9)} 31.4 ${x(17)} 32.2 Q${x(15.4)} 34.2 ${x(15.8)} 36.4 Q${x(13.4)} 35.4 ${x(11.8)} 37.6 Q${x(10.2)} 36 ${x(8.4)} 38 Q${x(7)} 36.4 ${x(4.5)} 37Z" fill="#9fb0dc"/>`;
   }).join(""),
 };
+/** Kopfmaske samt Augenschlitzen (art = "offen" | "froh"). */
+function kappe(id, art) {
+  const augen = art === "froh"
+    ? `<path d="M40.5 60 Q46.5 53.6 52.5 58.6 M79.5 60 Q73.5 53.6 67.5 58.6" fill="none" stroke="#9fc0ff" stroke-width="5" stroke-linecap="round" opacity="0.35"/>
+       <path d="M40.5 60 Q46.5 53.6 52.5 58.6 M79.5 60 Q73.5 53.6 67.5 58.6" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"/>`
+    : `<path d="M38 54.6 L52.6 57.4 Q52 61.6 47 61.8 Q40.6 61.6 38 54.6Z M82 54.6 L67.4 57.4 Q68 61.6 73 61.8 Q79.4 61.6 82 54.6Z" fill="#9fc0ff" opacity="0.35" transform="translate(0 0.2) scale(1)" stroke="#9fc0ff" stroke-width="2.4" stroke-linejoin="round"/>
+       <path d="M38 54.6 L52.6 57.4 Q52 61.6 47 61.8 Q40.6 61.6 38 54.6Z M82 54.6 L67.4 57.4 Q68 61.6 73 61.8 Q79.4 61.6 82 54.6Z" fill="#fff"/>`;
+  return `<defs><linearGradient id="${id}kp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2c3243"/><stop offset="0.6" stop-color="${KAPPE_FARBE}"/><stop offset="1" stop-color="#0a0b0f"/></linearGradient></defs>
+    <path d="M22.4 75.7 A40 40 0 1 1 97.6 75.7 C92 70 86 66.6 79 66.2 C72.5 65.9 67 64.6 63.6 62.8 L60 68.4 L56.4 62.8 C53 64.6 47.5 65.9 41 66.2 C34 66.6 28 70 22.4 75.7Z" fill="url(#${id}kp)" class="t-umriss" stroke-width="2.6" stroke-linejoin="round"/>
+    <path d="M27 50 A34 34 0 0 1 48 27.5" fill="none" stroke="#6b7896" stroke-width="2.4" stroke-linecap="round" opacity="0.6"/>
+    <path d="M60 46 L60 61" stroke="#000" stroke-width="1" opacity="0.35"/>
+    ${NS.schwingen}<text x="60" y="40.5" text-anchor="middle" font-size="10.5" font-weight="800" font-family="Georgia, 'Times New Roman', serif" fill="#c9d5ff">§</text>
+    ${augen}`;
+}
 EDEL.nachtschwinge = (id) => `<defs>
-    <radialGradient id="${id}ns" cx="0.5" cy="0.32" r="0.7"><stop offset="0" stop-color="#3c4a6e" stop-opacity="0.55"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
-    <linearGradient id="${id}nsl" x1="0" y1="0" x2="1" y2="0.3"><stop offset="0.3" stop-color="#9fb4ff" stop-opacity="0"/><stop offset="0.5" stop-color="#cdd8ff" stop-opacity="0.35"/><stop offset="0.7" stop-color="#9fb4ff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="${id}nsl" x1="0" y1="0" x2="1" y2="0.3"><stop offset="0.3" stop-color="#ffffff" stop-opacity="0"/><stop offset="0.5" stop-color="#ffffff" stop-opacity="0.3"/><stop offset="0.7" stop-color="#ffffff" stop-opacity="0"/></linearGradient>
     <clipPath id="${id}nc"><circle cx="60" cy="62" r="34"/></clipPath></defs>
-  <g clip-path="url(#${id}nc)">
-    <circle cx="60" cy="62" r="34" fill="url(#${id}ns)"/>
-    <g class="t-edelschimmer"><rect x="-10" y="20" width="140" height="84" fill="url(#${id}nsl)"/></g>
-    ${NS.schwingen}
-    ${NS.maske}
-  </g>`;
+  <g clip-path="url(#${id}nc)"><g class="t-edelschimmer"><rect x="-10" y="20" width="140" height="84" fill="url(#${id}nsl)"/></g></g>`;
+const KAPPE = { nachtschwinge: kappe };
 const EDEL_AUSSEN = { pinkdiamond: PD.aussen };
 /** Eigener Münzkörper statt des runden Rands (Umriss, Randfacetten, Münzfeld). */
 const EDEL_KOERPER = {
   pinkdiamond: PD.koerper,
   // Ohren hinter dem Rand, darüber der normale geriffelte Münzkörper in Graphit
   nachtschwinge: (id) => `${NS.ohren}<circle cx="60" cy="62" r="40" fill="var(--taler-tief)" class="t-umriss" stroke-width="3"/>
-    <circle cx="60" cy="62" r="37.4" fill="none" stroke="#6c7da8" stroke-width="3.4" stroke-dasharray="1.5 2.3" opacity="0.5"/>
+    <circle cx="60" cy="62" r="37.4" fill="none" stroke="var(--taler-dunkel)" stroke-width="3.4" stroke-dasharray="1.5 2.3" opacity="0.55"/>
     <circle cx="60" cy="62" r="34" fill="url(#${id})"/>`,
 };
 
@@ -586,6 +592,7 @@ export function outfitTeile(o = STANDARD) {
     augen: o.augen in AUGEN ? AUGEN[o.augen] : null,
     hals: HALS[o.hals] || "",
     ohr: OHR[o.ohr] || "",
+    kappe: KAPPE[o.metall] || null,
     gesicht: GESICHT[o.gesicht] || null,
     hand: HAND[o.hand] || null,
   };
