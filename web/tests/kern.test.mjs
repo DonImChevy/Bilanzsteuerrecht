@@ -935,5 +935,10 @@ test("Rangliste: Profil-ID geht beim Abgleich nicht verloren, Doppelungen werden
   const ben = { name: "Ben", xp: 1360, level: 9, outfit: { metall: "gold" } };
   let d = { typ: "gruppe", name: "G", mitglieder: { x1: { ...ben }, x2: { ...ben }, x3: { ...ben, xp: 1200 }, mia: { name: "Mia", xp: 900, outfit: { metall: "gold" } }, ben2: { name: "Ben", xp: 5000, outfit: { metall: "gold" } } } };
   d = doppelteEntfernen(eintragen(d, "neu", ben), "neu", ben, ["alt"]);
-  assert.deepEqual(Object.keys(d.mitglieder).sort(), ["ben2", "mia", "neu"]);
+  assert.deepEqual(Object.keys(d.mitglieder).sort(), ["mia", "neu"]);
+  // Rangliste zeigt jeden Namen einmal (auch Kopien anderer, z. B. von alten App-Versionen): die mit den meisten XP
+  const { rangliste, namenVereinen } = await import("../js/gruppe.js");
+  const g = { mitglieder: { a: { name: "Lea", xp: 10 }, b: { name: "lea ", xp: 30 }, c: { name: "Anonym", xp: 1 }, d: { name: "Anonym", xp: 2 }, e: { name: "Tom", xp: 5 } } };
+  assert.deepEqual(rangliste(g, "gesamt").map((e) => e.id), ["b", "e", "d", "c"]);
+  assert.deepEqual(Object.keys(namenVereinen(g.mitglieder, "a")).sort(), ["a", "c", "d", "e"]);
 });

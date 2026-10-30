@@ -1018,9 +1018,9 @@ function ranglisteView() {
         <button class="knopf" data-a="gruppeErstellen" style="margin-top:10px">${ic("plus")} Gruppe erstellen</button></div>
       <div class="gruppe"><div class="gruppe-titel">Gruppe beitreten</div><div class="liste"><label class="zeile"><span class="grow">Gruppen-Code</span><input type="text" id="gruppeCode" class="feld-klein mono" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocapitalize="characters"></label></div>
         <button class="knopf zweit" data-a="gruppeBeitreten" style="margin-top:10px">Beitreten</button></div>
-      <div class="gruppe-fuss" style="margin:8px 4px 20px">Geteilt werden nur dein Name, deine XP, dein Level und Talers Outfit – nicht dein Lernstand.</div>`;
+      <div class="gruppe-fuss" style="margin:8px 4px 20px">Geteilt werden nur dein Name, deine XP, dein Level und Talers Outfit – nicht dein Lernstand. Jeder Name steht nur einmal in der Gruppe, nimm also einen eindeutigen.</div>`;
   }
-  const d = gruppe.daten, liste = d ? rangliste(d, gruppe.art, zeitraum("woche", 0).von) : [];
+  const d = gruppe.daten, liste = d ? rangliste(d, gruppe.art, zeitraum("woche", 0).von, stat.profil?.id) : [];
   const ich = liste.find((e) => e.id === stat.profil?.id);
   return `<section class="gruppen-kopf"><div><b>${esc(d?.name || g.name || "Lerngruppe")}</b><span>${liste.length} ${liste.length === 1 ? "Mitglied" : "Mitglieder"} · Code ${codeAnzeige(g.code)}</span></div>
       <button class="knopf zweit klein-knopf" data-a="gruppeEinladen">${ic("export", "klein")} Einladen</button></section>
@@ -1036,7 +1036,7 @@ function ranglisteView() {
     <button class="link gefahr" data-a="gruppeVerlassen" style="display:block;margin:18px auto 24px">Gruppe verlassen</button>`;
 }
 function gemeinsamStart() {
-  const g = stat.gruppe, d = gruppe.daten, liste = g?.code && d ? rangliste(d, "woche", zeitraum("woche", 0).von) : [];
+  const g = stat.gruppe, d = gruppe.daten, liste = g?.code && d ? rangliste(d, "woche", zeitraum("woche", 0).von, stat.profil?.id) : [];
   const ich = liste.find((e) => e.id === stat.profil?.id);
   const mini = liste.length ? `<button class="gm-rangliste" data-a="rangliste"><span class="gm-kopf"><b>${esc(d.name)}</b><span class="sub">Rangliste dieser Woche${ich ? ` · du bist auf Platz ${ich.platz}` : ""}</span></span>
       <span class="gm-top">${liste.slice(0, 3).map((e) => `<span class="gm-person${e.id === stat.profil?.id ? " ich" : ""}">${taler(e.platz === 1 ? "jubeln" : "hallo", { groesse: 40, klasse: "ruhig", outfit: { ...STANDARD, ...(e.outfit || {}) } })}<b>${e.platz}. ${esc(e.name)}</b><small>${zahlText(e.wert)} XP</small></span>`).join("")}</span></button>` : "";
