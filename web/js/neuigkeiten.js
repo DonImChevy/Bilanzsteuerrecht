@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-lernpfad-normen",
+    datum: "2026-10-30",
+    titel: "Lernpfad: Gesetz zum Antippen",
+    punkte: [
+      ["nachschlagen", "Paragrafen antippen", "Im Lernpfad öffnet jetzt jedes Normzitat auf den Lernkarten und in den Erklärungen den Gesetzestext – wie im Kompaktwissen."],
+      ["lernen", "Neue Blöcke in ESt", "„Wer ist Arbeitnehmer?“ (§§ 1, 2 LStDV) und „Gewinn nach § 4 Abs. 3“ mit 1 %-Regelung. Dazu neue Karten zu Pensionen, Weihnachtsgeld & Co. und Fortbildung – und im Bilanzrecht zur Gehaltsbuchung."],
+    ],
+  },
+  {
     id: "2026-10-est-lohn",
     datum: "2026-10-30",
     titel: "Lohnsteuer und Gehaltsbuchung",
