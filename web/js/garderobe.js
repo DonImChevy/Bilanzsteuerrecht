@@ -7,8 +7,10 @@ export const TALER_JE_XP = 0.1;
 
 export const SLOTS = [
   { id: "kopf", name: "Kopf", icon: "hut" },
+  { id: "haare", name: "Haare", icon: "person" },
   { id: "hintergrund", name: "Hintergrund & Farben", icon: "bild" },
   { id: "augen", name: "Brille", icon: "suche" },
+  { id: "gesicht", name: "Make-up", icon: "auge" },
   { id: "hals", name: "Hals", icon: "herz" },
   { id: "ohr", name: "Ohrringe", icon: "ohrring" },
   { id: "hand", name: "Hand", icon: "akte" },
@@ -24,7 +26,7 @@ export const FARBWELTEN = [
 ];
 
 // Standard (kostenlos, immer im Besitz): Brille „Lernbrille“, Metall „Gold“, Hintergrund „Leuchten“
-export const STANDARD = { kopf: "", augen: "brille", hals: "", ohr: "", hand: "", metall: "gold", aura: "", hintergrund: "leuchten" };
+export const STANDARD = { kopf: "", haare: "", augen: "brille", gesicht: "", hals: "", ohr: "", hand: "", metall: "gold", aura: "", hintergrund: "leuchten" };
 
 /** Katalog: [id, slot, name, preis, mindestlevel, kurzbeschreibung] */
 const K = [
@@ -55,11 +57,22 @@ const K = [
   ["krawatte", "hals", "Krawatte", 90, 0, "Bereit für den Außendienst"],
   ["halstuch", "hals", "Halstuch", 110, 0, "Lässig gebunden"],
   ["schal", "hals", "Schal", 140, 0, "Gestreift und gemütlich"],
-  ["perlenkette", "hals", "Perlenkette", 300, 0, "Am Münzrand entlang – wie ein Perlkreis"],
   ["medaille", "hals", "Medaille", 400, 10, "Ab Level 10"],
   ["goldkette", "hals", "Goldkette", 700, 20, "Ab Level 20 – mit §-Anhänger"],
   // Ohrringe (hängen am Münzrand, auf Höhe der Brillenbügel)
-  ["perlenohrringe", "ohr", "Perlenohrringe", 250, 0, "Passend zur Perlenkette"],
+  ["herzohrringe", "ohr", "Herzchen", 180, 0, "Kleine rote Herzen am Goldhaken"],
+  ["creolen", "ohr", "Goldcreolen", 200, 0, "Große Ringe mit Glanz"],
+  ["paragrafohrringe", "ohr", "§-Ohrringe", 220, 0, "Goldene Plaketten mit Paragraf"],
+  ["perlenohrringe", "ohr", "Perlenohrringe", 250, 0, "Klassisch: Perle am Goldhaken"],
+  ["diamantstecker", "ohr", "Diamantstecker", 400, 0, "Funkelnde Brillanten"],
+  // Gesicht – Make-up und Wimpern einzeln oder als Set (paket: enthält die Einzelteile)
+  ["wimpern", "gesicht", "Wimpern", 150, 0, "Geschwungen und voll – für den großen Augenaufschlag"],
+  ["makeup", "gesicht", "Make-up", 250, 0, "Schimmernder Lidschatten, Lidstrich mit Schwung, Rouge mit Highlighter und glänzende Lippen"],
+  ["glamour", "gesicht", "Make-up & Wimpern", 300, 0, "Das Set: beides zusammen – 100 Taler gespart"],
+  // Haare – lange Wellen hinter der Münze, Pony über dem oberen Rand
+  ["wellen-schoko", "haare", "Wellen Schoko", 450, 0, "Glänzende lange Wellen mit Seitenscheitel"],
+  ["wellen-honig", "haare", "Wellen Honig", 450, 0, "Honigblond mit Lichtreflexen"],
+  ["wellen-rosa", "haare", "Wellen Rosé", 500, 0, "Pastellrosa – passt zu Pink Diamond"],
   // Hand
   ["faehnchen", "hand", "Fähnchen", 50, 0, "Feuert dich an"],
   ["kaffee", "hand", "Kaffeebecher", 70, 0, "Treibstoff fürs Lernen"],
@@ -114,25 +127,41 @@ const K = [
   ["schatzkammer", "hintergrund", "Goldmünzen", 900, 15, "Ab Level 15 – verstreute Goldmünzen"],
   ["eigenesbild", "hintergrund", "Eigenes Bild", 1000, 0, "Ein Foto aus deiner Galerie (nur auf diesem Gerät)"],
 ];
-export const ARTIKEL = K.map(([id, slot, name, preis, level, text]) => ({ id, slot, name, preis, level, text }));
+/** Sets: enthalten mehrere Artikel und kosten weniger als die Einzelteile. */
+const PAKETE = { glamour: ["makeup", "wimpern"] };
+export const ARTIKEL = K.map(([id, slot, name, preis, level, text]) => ({ id, slot, name, preis, level, text, ...(PAKETE[id] ? { paket: PAKETE[id] } : {}) }));
 const ART = Object.fromEntries(ARTIKEL.map((a) => [a.id, a]));
+const IM_PAKET = new Set(Object.values(PAKETE).flat());
 export const artikel = (id) => ART[id];
 
 /** Verdiente Taler (aus den Gesamt-XP), ausgegebene Taler und Guthaben. */
 export function kasse(xpGesamt, gekauft = {}) {
   const verdient = Math.floor(xpGesamt * TALER_JE_XP);
-  const ausgegeben = Object.keys(gekauft || {}).reduce((s, id) => s + (ART[id]?.preis || 0), 0);
+  // Ein Set kostet insgesamt nie mehr als sein Preis – auch wenn vorher schon Einzelteile gekauft wurden
+  const g = gekauft || {};
+  const einzeln = Object.keys(g).filter((id) => !PAKETE[id] && !IM_PAKET.has(id)).reduce((s, id) => s + (ART[id]?.preis || 0), 0);
+  const sets = Object.entries(PAKETE).reduce((s, [p, teile]) => s + (g[p] ? ART[p].preis : teile.reduce((t, id) => t + (g[id] ? ART[id].preis : 0), 0)), 0);
+  const ausgegeben = einzeln + sets;
   return { verdient, ausgegeben, guthaben: verdient - ausgegeben };
 }
 /** Besitzt man den Artikel? (Kostenlose immer.) */
-export const besitzt = (id, gekauft = {}) => !!ART[id] && (ART[id].preis === 0 || !!gekauft?.[id]);
+export const besitzt = (id, gekauft = {}) => !!ART[id] && (ART[id].preis === 0 || !!gekauft?.[id]
+  || (ART[id].paket || []).length > 0 && ART[id].paket.every((t) => gekauft?.[t])
+  || Object.entries(PAKETE).some(([p, teile]) => gekauft?.[p] && teile.includes(id)));
+/** Kaufpreis jetzt: Bei Sets werden schon gekaufte Einzelteile angerechnet. */
+export const preisFuer = (id, gekauft = {}) => {
+  const a = ART[id];
+  if (!a?.paket) return a?.preis || 0;
+  return Math.max(0, a.preis - a.paket.reduce((s, t) => s + (gekauft?.[t] ? ART[t].preis : 0), 0));
+};
 /** Kann man den Artikel jetzt kaufen? Grund, falls nicht: "besitz" | "level" | "geld". */
 export function kaufbar(id, { gekauft, guthaben, level }) {
   const a = ART[id];
   if (!a) return { ok: false, grund: "unbekannt" };
   if (besitzt(id, gekauft)) return { ok: false, grund: "besitz" };
   if (level < a.level) return { ok: false, grund: "level" };
-  if (guthaben < a.preis) return { ok: false, grund: "geld", fehlt: a.preis - guthaben };
+  const preis = preisFuer(id, gekauft);
+  if (guthaben < preis) return { ok: false, grund: "geld", fehlt: preis - guthaben };
   return { ok: true };
 }
 /** Getragenes Outfit (nur Gegenstände im Besitz; sonst Standard). */
@@ -376,11 +405,6 @@ const HALS = {
     <path d="M76 95 L84 118 L72 120 L68 99Z" fill="#dc2626" ${U} ${sw(2.2)} stroke-linejoin="round"/>
     <path d="M73 101 L79 100 M75 108 L81 107 M77 114 L82 113" stroke="#fff" stroke-width="3"/>
     <path d="M72 120 l-1 3 M75 120 l0 3 M78 119.5 l1 3 M81 119 l1.5 2.6" stroke="#dc2626" stroke-width="1.6" stroke-linecap="round"/>`,
-  // Taler hat keinen Hals: Die Perlen liegen am unteren Münzrand entlang – wie der Perlkreis echter Sammlermünzen
-  perlenkette: (() => {
-    let s = ""; for (let i = 0; i <= 16; i++) { const w = ((28 + (124 * i) / 16) * Math.PI) / 180, x = 60 + 41 * Math.cos(w), y = 62 + 41 * Math.sin(w); s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.9" fill="#f8fafc" ${U} ${sw(1.1)}/><circle cx="${(x - 0.9).toFixed(1)}" cy="${(y - 0.9).toFixed(1)}" r="0.95" fill="#fff"/>`; }
-    return s;
-  })(),
   medaille: `<path d="M50 84 L57 101 H63 L70 84 H64 L60 96 L56 84Z" fill="#2563eb" ${U} ${sw(1.8)} stroke-linejoin="round"/>
     <path d="M56 84 L60 96 L64 84" fill="#dc2626"/>
     <circle cx="60" cy="106" r="8" fill="#f6b93b" ${U} ${sw(2.2)}/><circle cx="60" cy="106" r="5.4" fill="none" stroke="#fde68a" stroke-width="1.2"/>
@@ -391,13 +415,106 @@ const HALS = {
   })(),
 };
 
-/** Ohrringe: hängen links und rechts am Münzrand (bei x ≈ 20,5 bzw. 99,5), wo die Brillenbügel enden. */
+/** Ohrringe: hängen links und rechts am Münzrand (bei x ≈ 20,6 bzw. 99,4), wo die Brillenbügel enden. s = Seite (−1 links, 1 rechts). */
+const OHR_X = [[20.6, -1], [99.4, 1]];
 const perle = (x, y, r) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#f8fafc" ${U} ${sw(1.1)}/><circle cx="${(x - r * 0.32).toFixed(1)}" cy="${(y - r * 0.32).toFixed(1)}" r="${(r * 0.32).toFixed(1)}" fill="#fff"/>`;
+const haken = (x, s, bis = 67.5) => `<path d="M${x} 62.5 q${s * -1.6} ${(bis - 62.5) / 2} 0 ${bis - 62.5}" fill="none" stroke="#d4a017" stroke-width="1.3" stroke-linecap="round"/>`;
+const beide = (f) => OHR_X.map(([x, s]) => f(x, s)).join("");
 const OHR = {
-  // Dieselben Perlen wie bei der Perlenkette (Farbe, Umriss, Glanzpunkt): kleine Perle als Stecker, darunter eine größere am Goldhaken
-  perlenohrringe: [[20.6, -1], [99.4, 1]].map(([x, s]) => `<path d="M${x} 62.5 q${s * -1.6} 2.6 0 5.2" fill="none" stroke="#d4a017" stroke-width="1.3" stroke-linecap="round"/>
-    ${perle(x, 61, 2.2)}${perle(x, 71.2, 3.6)}`).join(""),
+  // Kleine Perle als Stecker, darunter eine größere am Goldhaken
+  perlenohrringe: beide((x, s) => `${haken(x, s)}${perle(x, 61, 2.2)}${perle(x, 71.2, 3.6)}`),
+  // Goldcreolen: Ring mit hellem Glanzbogen
+  creolen: beide((x) => `<circle cx="${x}" cy="69" r="6" fill="none" stroke="#7c5300" stroke-width="3.4"/><circle cx="${x}" cy="69" r="6" fill="none" stroke="#f5c542" stroke-width="2"/>
+    <path d="M${x - 4.2} 65.4 A6 6 0 0 1 ${x + 1.5} 63.2" fill="none" stroke="#fff6cf" stroke-width="1" stroke-linecap="round"/>`),
+  // Herz am Goldhaken
+  herzohrringe: beide((x, s) => `${haken(x, s)}<path d="M${x} 75.6 l-4-3.9 a2.35 2.35 0 0 1 4-2.9 a2.35 2.35 0 0 1 4 2.9z" fill="#e11d48" ${U} ${sw(1.1)} stroke-linejoin="round"/>
+    <circle cx="${x - 1.9}" cy="70" r="0.8" fill="#fff" opacity="0.85"/>`),
+  // §-Plakette in Gold – für Steuerrechtler
+  paragrafohrringe: beide((x, s) => `${haken(x, s)}<circle cx="${x}" cy="72" r="4.4" fill="#facc15" ${U} ${sw(1.2)}/><circle cx="${x}" cy="72" r="3.2" fill="none" stroke="#fde68a" stroke-width="0.7"/>
+    <text x="${x}" y="74.4" text-anchor="middle" font-size="6.4" font-weight="900" font-family="Georgia, serif" fill="#854d0e">§</text>`),
+  // Diamantstecker: Brillant mit Facetten und Funkelstern
+  diamantstecker: beide((x) => `<path d="M${x - 3} 61.6 L${x - 1.6} 59.4 H${x + 1.6} L${x + 3} 61.6 L${x} 65.6Z" fill="#e0f2fe" ${U} ${sw(1)} stroke-linejoin="round"/>
+    <path d="M${x - 3} 61.6 H${x + 3} M${x - 1.6} 59.4 L${x - 0.8} 61.6 L${x} 65.6 L${x + 0.8} 61.6 L${x + 1.6} 59.4" fill="none" stroke="#7dd3fc" stroke-width="0.6"/>
+    <path d="M${x + 3.4} 57.2 l.5 1.6 1.6.5 -1.6.5 -.5 1.6 -.5-1.6 -1.6-.5 1.6-.5z" fill="#fff"/>`),
 };
+
+// ---------------------------------------------------------------- Gesicht: Make-up und Wimpern
+// Augen offen: Ellipsen um (47|59) und (73|59), rx 3,7, ry 4,7; „froh“: Bögen von x−4,5 bis x+4,5 mit Scheitel bei y ≈ 57,5.
+// Der Mund ist je Stimmung ein Strich (p.mund) oder der offene Lachmund (null).
+const AUGE_X = [47, 73];
+const MUND_OFFEN = "M50.5 70.5 Q60 86 69.5 70.5 Z";
+/** Wimpern: vier geschwungene Härchen am oberen äußeren Lidrand, außen am längsten. */
+function wimpern(art) {
+  return AUGE_X.map((cx, i) => {
+    const s = i ? 1 : -1; // nach außen
+    const basis = art === "froh"
+      ? [0.04, 0.17, 0.3, 0.43].map((t) => [cx + s * 4.5 * (1 - 2 * t), 60.5 - 12 * t * (1 - t)])
+      : [200, 225, 250, 272].map((w) => { const r = (w * Math.PI) / 180; return [cx - s * 3.7 * Math.cos(r), 59 + 4.7 * Math.sin(r)]; });
+    return basis.map(([bx, by], k) => {
+      const laenge = [5, 4.4, 3.7, 3][k], winkel = ((s > 0 ? -35 - 18 * k : -145 + 18 * k) * Math.PI) / 180;
+      const tx = bx + laenge * Math.cos(winkel), ty = by + laenge * Math.sin(winkel);
+      const cx2 = bx + laenge * 0.6 * Math.cos(winkel + s * 0.35), cy2 = by + laenge * 0.6 * Math.sin(winkel + s * 0.35); // Schwung nach oben
+      return `<path d="M${bx.toFixed(1)} ${by.toFixed(1)} Q${cx2.toFixed(1)} ${cy2.toFixed(1)} ${tx.toFixed(1)} ${ty.toFixed(1)}" class="t-strich" stroke-width="${(1.35 - k * 0.12).toFixed(2)}"/>`;
+    }).join("");
+  }).join("");
+}
+/** Make-up: Lidschatten mit Schimmer, Lidstrich mit Schwung, Rouge mit Highlighter, glänzende Lippen. */
+function makeup(id, art, mund) {
+  const defs = `<defs>
+    <linearGradient id="${id}ls" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7e22ce"/><stop offset="0.4" stop-color="#c026d3" stop-opacity="0.9"/><stop offset="0.75" stop-color="#f472b6" stop-opacity="0.55"/><stop offset="1" stop-color="#fbcfe8" stop-opacity="0.1"/></linearGradient>
+    <radialGradient id="${id}rg" cx="0.5" cy="0.55" r="0.5"><stop offset="0" stop-color="#fb7185" stop-opacity="0.75"/><stop offset="0.6" stop-color="#f472b6" stop-opacity="0.35"/><stop offset="1" stop-color="#f472b6" stop-opacity="0"/></radialGradient>
+    <linearGradient id="${id}lp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f43f5e"/><stop offset="1" stop-color="#9f1239"/></linearGradient></defs>`;
+  const froh = art === "froh";
+  const lid = AUGE_X.map((cx, i) => {
+    const s = i ? 1 : -1, y = froh ? 57.6 : 54.6;
+    const schatten = `<path d="M${cx - 6.8} ${y + 3.2} Q${cx + s * 0.8} ${y - 10.5} ${cx + 6.8} ${y + 3.2} Q${cx + s * 2.4} ${y + 0.4} ${cx} ${y + 0.6} Q${cx - s * 2.4} ${y + 0.4} ${cx - 6.8} ${y + 3.2}Z" fill="url(#${id}ls)"/>`;
+    const glitzer = [[-2.4, -2.6, 0.55], [1.2, -3.6, 0.45], [3.3, -1.4, 0.4]].map(([dx, dy, r]) => `<circle cx="${cx + s * dx}" cy="${y + dy}" r="${r}" fill="#fff" opacity="0.9"/>`).join("");
+    // Lidstrich: folgt dem oberen Lid und läuft außen als spitzer Schwung aus
+    const ax = cx + s * 3.5, ay = froh ? 59.6 : 57.4;
+    const strich = froh ? `<path d="M${cx - s * 1} ${y + 0.9} Q${cx + s * 3.2} ${y + 1.6} ${cx + s * 5.6} ${y + 0.2} Q${cx + s * 3.8} ${y + 2.6} ${cx + s * 3.6} ${y + 3.2}" class="t-tinte"/>`
+      : `<path d="M${cx - s * 2.2} ${ay - 3.4} Q${ax - s * 0.6} ${ay - 3.4} ${ax + s * 4.6} ${ay - 5.6} Q${ax + s * 1.6} ${ay - 1.2} ${ax - s * 0.4} ${ay - 0.2} Q${cx + s * 1.2} ${ay - 1.4} ${cx - s * 2.2} ${ay - 3.4}Z" class="t-tinte"/>`;
+    return schatten + glitzer + strich;
+  }).join("");
+  const wangen = [37.5, 82.5].map((x, i) => `<ellipse cx="${x}" cy="72" rx="7.6" ry="4.8" fill="url(#${id}rg)"/>
+    <path d="M${x + (i ? 1 : -1) * 5.4} 66.4 Q${x} 64.6 ${x - (i ? 1 : -1) * 4} 66" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round" opacity="0.45"/>`).join("");
+  const lippen = mund
+    ? `<path d="${mund}" stroke="url(#${id}lp)" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="${mund}" stroke="#ffe4e6" stroke-width="0.9" fill="none" stroke-linecap="round" stroke-dasharray="2.4 30" stroke-dashoffset="-6.5" opacity="0.9"/>`
+    : `<path d="${MUND_OFFEN}" stroke="url(#${id}lp)" stroke-width="2.6" fill="none" stroke-linejoin="round"/><ellipse cx="62.6" cy="77.6" rx="1.6" ry="0.6" fill="#ffe4e6" opacity="0.9" transform="rotate(-18 62.6 77.6)"/>`;
+  return { unter: defs + wangen + lid, ueber: lippen };
+}
+const GESICHT = {
+  makeup: (h) => ({ ...makeup(h.id, h.augen, h.mund), wimpern: "" }),
+  wimpern: (h) => ({ unter: "", ueber: "", wimpern: wimpern(h.augen) }),
+  glamour: (h) => ({ ...makeup(h.id, h.augen, h.mund), wimpern: wimpern(h.augen) }),
+};
+
+// ---------------------------------------------------------------- Haare: lange Wellen hinter der Münze, Pony über dem oberen Rand
+// Farben je Ton: [hell, mittel, tief, glanz]
+const HAARFARBEN = { schoko: ["#9a5b33", "#6b3a1d", "#3b1f0e", "#e8b98d"], honig: ["#ffd98a", "#e2a93e", "#a8701c", "#fff3cf"], rosa: ["#ffc6df", "#f38ab7", "#b9467f", "#fff0f7"] };
+function haare(ton) {
+  const [hell, mittel, tief, glanz] = HAARFARBEN[ton];
+  return (id) => {
+    const g = `${id}h${ton}`;
+    const strich = (d, farbe, w, op) => `<path d="${d}" fill="none" stroke="${farbe}" stroke-width="${w}" stroke-linecap="round" opacity="${op}"/>`;
+    // Hinterkopf: Volumen über der Münze, fällt rechts und links in Locken bis unter die Münze (Innenkante liegt hinter der Münze)
+    const hinten = `<defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${hell}"/><stop offset="0.5" stop-color="${mittel}"/><stop offset="1" stop-color="${tief}"/></linearGradient>
+      <linearGradient id="${g}p" x1="0" y1="0" x2="1" y2="0.6"><stop offset="0" stop-color="${mittel}"/><stop offset="0.45" stop-color="${hell}"/><stop offset="1" stop-color="${mittel}"/></linearGradient></defs>
+      <path d="M60 9 C82 8 101 20 106 40 C110 54 105 62 108 72 C111 82 106 90 109 99 C111 106 107 112 101 111 C103 106 99 104 97 108 C94 112 88 110 89 104 C90 98 92 92 88 86
+        L32 86 C28 92 30 98 31 104 C32 110 26 112 23 108 C21 104 17 106 19 111 C13 112 9 106 11 99 C14 90 9 82 12 72 C15 62 10 54 14 40 C19 20 38 10 60 9Z" fill="url(#${g})" ${U} ${sw(2.4)} stroke-linejoin="round"/>
+      ${strich("M103 44 C106 56 101 64 104 74 C107 84 102 92 105 102", tief, 1.4, 0.5)}${strich("M17 44 C14 56 19 64 16 74 C13 84 18 92 15 102", tief, 1.4, 0.5)}
+      ${strich("M98 60 C100 70 96 80 99 92", tief, 1.1, 0.4)}${strich("M22 60 C20 70 24 80 21 92", tief, 1.1, 0.4)}
+      ${strich("M28 22 C42 11 78 11 92 22", glanz, 4.2, 0.4)}${strich("M34 18 C46 12 60 11 70 12", glanz, 1.6, 0.85)}
+      ${strich("M100 30 C104 38 105 46 104 54", glanz, 2.4, 0.8)}${strich("M20 30 C16 38 15 46 16 54", glanz, 2.4, 0.8)}
+      ${strich("M106 78 C107 84 106 88 105 92", glanz, 1.6, 0.6)}${strich("M14 78 C13 84 14 88 15 92", glanz, 1.6, 0.6)}`;
+    // Pony mit Seitenscheitel links: großer Schwung über die Stirn nach rechts, Strähnen laufen spitz aus; § und Brille bleiben frei
+    const vorne = `<path d="M44 17.5 C58 13 84 16 96 30 C101 36 103 44 101 52 C98 46 95 42 90 39.5 C91 43 90.5 46 88.5 48 C86 42 82 37.5 76 34.5 C76.5 37.5 75.5 40 73.5 41.5 C71 35.5 66 31 58 29.5 C52 28.6 47 29.2 43 31 C45 26 45.5 21 44 17.5Z" fill="url(#${g}p)" ${U} ${sw(2)} stroke-linejoin="round"/>
+      <path d="M44 17.5 C36 19 28 25 24 34 C21 40 20.5 46 21.6 51 C24 45 27.5 40.5 31.5 38 C31 41 31.5 43.5 33 45 C34.5 38.5 38 33.5 43 31 C45 26 45.5 21 44 17.5Z" fill="url(#${g}p)" ${U} ${sw(2)} stroke-linejoin="round"/>
+      ${strich("M48 21 C62 17.5 80 20 90 30", glanz, 2.4, 0.85)}${strich("M60 24 C70 25 80 29 87 36", glanz, 1.3, 0.6)}
+      ${strich("M50 27 C60 26 69 29 75 34 M80 31 C86 34 90 38 92 43 M56 20 C68 20 80 25 88 33 M31 30 C29 34 27.5 38 27 42", tief, 1, 0.45)}${strich("M40 22 C33 26 28 32 26 40", glanz, 1.6, 0.7)}`;
+    return { hinten, vorne };
+  };
+}
+const HAARE = { "wellen-schoko": haare("schoko"), "wellen-honig": haare("honig"), "wellen-rosa": haare("rosa") };
 
 /** Gegenstände in Talers linker Hand (Mittelpunkt = Hand). */
 const HAND = {
@@ -463,6 +580,8 @@ export function outfitTeile(o = STANDARD) {
     augen: o.augen in AUGEN ? AUGEN[o.augen] : null,
     hals: HALS[o.hals] || "",
     ohr: OHR[o.ohr] || "",
+    gesicht: GESICHT[o.gesicht] || null,
+    haare: HAARE[o.haare] || null,
     hand: HAND[o.hand] || null,
   };
 }

@@ -1,7 +1,7 @@
 // Garderobe: Taler auf der Bühne (mit Anprobe), Guthaben, Kategorien und Artikelkarten.
 import { ic } from "./icons.js";
 import { taler } from "./maskottchen.js";
-import { SLOTS, ARTIKEL, STANDARD, FARBWELTEN, artikel, besitzt, kaufbar } from "./garderobe.js";
+import { SLOTS, ARTIKEL, STANDARD, FARBWELTEN, artikel, besitzt, kaufbar, preisFuer } from "./garderobe.js";
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const zahl = (n) => Math.round(n).toLocaleString("de-DE");
@@ -33,7 +33,7 @@ export function garderobeView(z, { outfit, gekauft, guthaben, level, farbwelt = 
       ? (an ? (["augen", "metall", "hintergrund"].includes(probe.slot) ? `<button class="knopf zweit" disabled>${ic("haken")} ${probe.slot === "hintergrund" ? "Wird verwendet" : "Wird getragen"}</button>`
         : `<button class="knopf zweit" data-a="garAblegen" data-v="${probe.slot}">Ablegen</button>`)
         : `<button class="knopf" data-a="garAnziehen" data-v="${probe.id}">${probe.slot === "hintergrund" ? "Verwenden" : "Anziehen"}</button>`)
-      : k.ok ? `<button class="knopf gold" data-a="garKaufen" data-v="${probe.id}">Kaufen für ${talerBetrag(probe.preis, "im-knopf")}</button>`
+      : k.ok ? `<button class="knopf gold" data-a="garKaufen" data-v="${probe.id}">Kaufen für ${talerBetrag(preisFuer(probe.id, gekauft), "im-knopf")}</button>`
       : k.grund === "level" ? `<button class="knopf zweit" disabled>${ic("schloss")} Ab Level ${probe.level}</button>`
       : `<button class="knopf zweit" disabled>Noch ${talerBetrag(k.fehlt, "im-knopf")} fehlen</button>`;
     // Hintergründe vor dem Kauf auf der ganzen App ausprobieren; beim eigenen Bild zuerst das Foto wählen
@@ -47,9 +47,11 @@ export function garderobeView(z, { outfit, gekauft, guthaben, level, farbwelt = 
     const hat = besitzt(a.id, gekauft), an = outfit[a.slot] === a.id;
     const gesperrt = !hat && level < a.level;
     const marke = an ? `<span class="gk-marke an">${ic("haken", "klein")} Getragen</span>` : hat ? `<span class="gk-marke">Im Schrank</span>`
-      : gesperrt ? `<span class="gk-marke zu">${ic("schloss", "klein")} Level ${a.level}</span>` : talerBetrag(a.preis, a.preis > guthaben ? "zu-teuer" : "");
-    return `<button class="gar-karte${a.id === "pinkdiamond" ? " pd" : ""}${z.probe === a.id ? " gewaehlt" : ""}${gesperrt ? " gesperrt" : ""}${hat ? " hat" : ""}" data-a="garProbe" data-v="${a.id}" aria-pressed="${z.probe === a.id}" aria-label="${esc(a.name)}${hat ? ", im Schrank" : `, ${a.preis} Taler`}">
-      <span class="gk-bild">${vorschau(a)}</span><span class="gk-name">${esc(a.name)}</span>${marke}</button>`;
+      : gesperrt ? `<span class="gk-marke zu">${ic("schloss", "klein")} Level ${a.level}</span>` : talerBetrag(preisFuer(a.id, gekauft), preisFuer(a.id, gekauft) > guthaben ? "zu-teuer" : "");
+    // Sets: Ersparnis gegenüber den Einzelteilen zeigen
+    const set = a.paket && !hat ? `<span class="gk-set">Set · statt ${a.paket.reduce((s, t) => s + artikel(t).preis, 0)}</span>` : "";
+    return `<button class="gar-karte${a.id === "pinkdiamond" ? " pd" : ""}${z.probe === a.id ? " gewaehlt" : ""}${gesperrt ? " gesperrt" : ""}${hat ? " hat" : ""}" data-a="garProbe" data-v="${a.id}" aria-pressed="${z.probe === a.id}" aria-label="${esc(a.name)}${hat ? ", im Schrank" : `, ${preisFuer(a.id, gekauft)} Taler`}">
+      <span class="gk-bild">${vorschau(a)}</span><span class="gk-name">${esc(a.name)}</span>${set}${marke}</button>`;
   }).join("");
   const anzahl = ARTIKEL.filter((a) => a.preis > 0 && gekauft[a.id]).length, kaufbarGesamt = ARTIKEL.filter((a) => a.preis > 0).length;
   return `<div class="garderobe">

@@ -49,10 +49,12 @@ const funkeln = (x, y, s, i) =>
 /**
  * SVG-Markup des Maskottchens.
  * stimmung: "hallo" | "jubeln" | "mut"; groesse in px; label = Text für Screenreader (sonst dekorativ).
- * outfit = Garderobe {kopf, augen, hals, ohr, hand, metall, aura} (Standard: das getragene Outfit).
+ * outfit = Garderobe {kopf, haare, augen, gesicht, hals, ohr, hand, metall, aura} (Standard: das getragene Outfit).
  */
 export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "", outfit = aktuellesOutfit } = {}) {
   const p = POSE[stimmung] || POSE.hallo, id = `tg${++nr}`, o = outfitTeile(outfit);
+  const ge = o.gesicht ? o.gesicht({ id, augen: p.augen, mund: p.mund }) : null, haar = o.haare ? o.haare(id) : null;
+  const blick = `translate(${(p.blick || [0, 0]).join(" ")})`;
   const [hx, hy] = p.hand;
   const handDing = o.hand ? `<g transform="translate(${hx} ${hy}) scale(1.3) translate(${-hx} ${-hy})">${o.hand(hx, hy)}</g><circle cx="${hx}" cy="${hy}" r="5.4" fill="var(--taler-gold)" class="t-umriss" stroke-width="2.4"/>` : "";
   const augen = p.augen === "froh"
@@ -70,7 +72,7 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
   </defs>
   ${o.hinten ? `<g class="t-aura">${o.hinten}</g>` : ""}
   <ellipse cx="60" cy="113" rx="25" ry="4.2" class="t-schatten"/>
-  <g class="t-ganz">
+  <g class="t-ganz">${haar ? haar.hinten : ""}
     <ellipse cx="47.5" cy="105" rx="9" ry="5.2" fill="var(--taler-tief)" class="t-umriss" stroke-width="2.6"/>
     <ellipse cx="72.5" cy="105" rx="9" ry="5.2" fill="var(--taler-tief)" class="t-umriss" stroke-width="2.6"/>
     ${p.links}${handDing}${p.rechts}
@@ -81,17 +83,17 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
     <clipPath id="${id}c"><circle cx="60" cy="62" r="34"/></clipPath>
     <g clip-path="url(#${id}c)"><g transform="rotate(24 60 62)"><rect class="t-glanz" x="53" y="12" width="13" height="100" rx="6" fill="#fff"/></g></g>
     <path d="M36 46 A27 27 0 0 1 52 33.5" stroke="#fff" stroke-width="3.4" stroke-linecap="round" fill="none" opacity="0.55"/>
-    <text x="60" y="40.5" text-anchor="middle" font-size="10.5" font-weight="800" font-family="Georgia, 'Times New Roman', serif" fill="var(--taler-tief)" opacity="0.8">§</text>
+    <text x="60" y="40.5" text-anchor="middle" font-size="10.5" font-weight="800" font-family="Georgia, 'Times New Roman', serif" fill="var(--taler-tief)" opacity="0.8">§</text>${haar ? haar.vorne : ""}
     <ellipse cx="37.5" cy="71.5" rx="5.2" ry="3.1" fill="var(--taler-wange)" opacity="0.6"/>
     <ellipse cx="82.5" cy="71.5" rx="5.2" ry="3.1" fill="var(--taler-wange)" opacity="0.6"/>
-    ${augen}${brauen}
+    ${ge ? `<g transform="${blick}">${ge.unter}</g>` : ""}${augen}${ge?.wimpern ? `<g transform="${blick}">${ge.wimpern}</g>` : ""}${brauen}
     ${o.augen !== null ? o.augen : `<g class="t-brille" fill="none">
       <circle cx="47" cy="58.5" r="10.6" fill="#fff" fill-opacity="0.16" class="t-umriss" stroke-width="2.5"/>
       <circle cx="73" cy="58.5" r="10.6" fill="#fff" fill-opacity="0.16" class="t-umriss" stroke-width="2.5"/>
       <path d="M57.4 57.2 Q60 54.6 62.6 57.2" class="t-umriss" stroke-width="2.5" stroke-linecap="round"/>
       <path d="M36.5 56 L29.5 53.5 M83.5 56 L90.5 53.5" class="t-umriss" stroke-width="2.5" stroke-linecap="round"/>
     </g>`}
-    ${mund}${o.hals}${o.ohr}
+    ${mund}${ge ? ge.ueber : ""}${o.hals}${o.ohr}
     <path class="t-tropfen t-umriss" d="M93 33 Q98.5 41.5 96.5 45 Q93 48.5 89.5 45 Q87.5 41.5 93 33Z" fill="#bfe6ff" stroke-width="1.8"/>
     ${o.kopf}
   </g>

@@ -5,11 +5,14 @@
 
 export const NEUIGKEITEN = [
   {
-    id: "2026-10-perlenohrringe",
+    id: "2026-10-beauty",
     datum: "2026-10-30",
-    klein: true,
-    titel: "Perlenohrringe",
-    punkte: [["ohrring", "Neu in der Garderobe: Ohrringe", "Perlenohrringe passend zur Perlenkette – beides lässt sich zusammen tragen (250 Taler). Die Perlenkette liegt jetzt am Münzrand entlang statt quer über Talers Gesicht.", "garderobe", "ohr"]],
+    titel: "Neu in der Garderobe: Make-up, Wimpern, Haare",
+    punkte: [
+      ["auge", "Make-up & Wimpern", "Schimmernder Lidschatten, Lidstrich mit Schwung, Rouge mit Highlighter und glänzende Lippen (250 Taler), geschwungene Wimpern (150 Taler) – oder beides im Set für 300 Taler.", "garderobe", "gesicht"],
+      ["person", "Lange Wellen", "Haare mit Seitenscheitel und Glanz in Schoko, Honig und Rosé.", "garderobe", "haare"],
+      ["ohrring", "Ohrringe", "Herzchen, Goldcreolen, §-Ohrringe, Perlen und Diamantstecker.", "garderobe", "ohr"],
+    ],
   },
   {
     id: "2026-10-ueberblick-suche",
