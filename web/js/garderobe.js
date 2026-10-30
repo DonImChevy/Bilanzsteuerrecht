@@ -55,7 +55,7 @@ const K = [
   ["krawatte", "hals", "Krawatte", 90, 0, "Bereit für den Außendienst"],
   ["halstuch", "hals", "Halstuch", 110, 0, "Lässig gebunden"],
   ["schal", "hals", "Schal", 140, 0, "Gestreift und gemütlich"],
-  ["perlenkette", "hals", "Perlenkette", 300, 0, "Eine Perle für jede Norm"],
+  ["perlenkette", "hals", "Perlenkette", 300, 0, "Am Münzrand entlang – wie ein Perlkreis"],
   ["medaille", "hals", "Medaille", 400, 10, "Ab Level 10"],
   ["goldkette", "hals", "Goldkette", 700, 20, "Ab Level 20 – mit §-Anhänger"],
   // Ohrringe (hängen am Münzrand, auf Höhe der Brillenbügel)
@@ -376,8 +376,9 @@ const HALS = {
     <path d="M76 95 L84 118 L72 120 L68 99Z" fill="#dc2626" ${U} ${sw(2.2)} stroke-linejoin="round"/>
     <path d="M73 101 L79 100 M75 108 L81 107 M77 114 L82 113" stroke="#fff" stroke-width="3"/>
     <path d="M72 120 l-1 3 M75 120 l0 3 M78 119.5 l1 3 M81 119 l1.5 2.6" stroke="#dc2626" stroke-width="1.6" stroke-linecap="round"/>`,
+  // Taler hat keinen Hals: Die Perlen liegen am unteren Münzrand entlang – wie der Perlkreis echter Sammlermünzen
   perlenkette: (() => {
-    let s = ""; for (let i = 0; i <= 12; i++) { const t = i / 12, x = 31 + 58 * t, y = 84 + 15 * Math.sin(Math.PI * t); s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.8" fill="#f8fafc" ${U} ${sw(1.1)}/><circle cx="${(x - 0.9).toFixed(1)}" cy="${(y - 0.9).toFixed(1)}" r="0.9" fill="#fff"/>`; }
+    let s = ""; for (let i = 0; i <= 16; i++) { const w = ((28 + (124 * i) / 16) * Math.PI) / 180, x = 60 + 41 * Math.cos(w), y = 62 + 41 * Math.sin(w); s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="2.9" fill="#f8fafc" ${U} ${sw(1.1)}/><circle cx="${(x - 0.9).toFixed(1)}" cy="${(y - 0.9).toFixed(1)}" r="0.95" fill="#fff"/>`; }
     return s;
   })(),
   medaille: `<path d="M50 84 L57 101 H63 L70 84 H64 L60 96 L56 84Z" fill="#2563eb" ${U} ${sw(1.8)} stroke-linejoin="round"/>

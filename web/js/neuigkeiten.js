@@ -9,7 +9,7 @@ export const NEUIGKEITEN = [
     datum: "2026-10-30",
     klein: true,
     titel: "Perlenohrringe",
-    punkte: [["ohrring", "Neu in der Garderobe: Ohrringe", "Perlenohrringe passend zur Perlenkette – beides lässt sich zusammen tragen (250 Taler).", "garderobe", "ohr"]],
+    punkte: [["ohrring", "Neu in der Garderobe: Ohrringe", "Perlenohrringe passend zur Perlenkette – beides lässt sich zusammen tragen (250 Taler). Die Perlenkette liegt jetzt am Münzrand entlang statt quer über Talers Gesicht.", "garderobe", "ohr"]],
   },
   {
     id: "2026-10-ueberblick-suche",
