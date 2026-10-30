@@ -5,6 +5,13 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-suche-stichworte",
+    datum: "2026-10-30",
+    klein: true,
+    titel: "Schlauere Suche",
+    punkte: [["suche", "Stichworte und Abkürzungen", "Die Suche auf der Startseite versteht jetzt Abkürzungen und Synonyme wie „B to B“, B2C, AfA, VSt oder Pendlerpauschale, verzeiht kleine Tippfehler, durchsucht auch die Lösungen und findet Lernpfad-Blöcke."]],
+  },
+  {
     id: "2026-10-lernpfad-normen",
     datum: "2026-10-30",
     titel: "Lernpfad: Gesetz zum Antippen",
