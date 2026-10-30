@@ -14,7 +14,7 @@ Deploy über GitHub Pages (`.github/workflows/pages.yml`). Antworten an den Nutz
 - Branch `claude/bsr-trainer-app`. Der Nutzer merged die PRs selbst. Vor neuer Arbeit: `git fetch origin main && git merge --ff-only origin/main`.
   Liegt nichts vor `origin/main`, ist der letzte PR gemergt → neuen PR anlegen (sonst den offenen aktualisieren). Kein Force-Push.
 - **Bei jeder Änderung an `web/`:** `VERSION` in `web/sw.js` erhöhen (`bsr-vNN`), neue Dateien in dessen `DATEIEN`-Liste aufnehmen.
-  **Neuigkeiten:** Bei jeder für Nutzer sichtbaren Neuerung oben in `web/js/neuigkeiten.js` einen Eintrag anfügen (neue `id`, Datum, kurze Punkte mit Icon und ggf. Aktion zum Öffnen) – er erscheint beim ersten Start nach dem Update einmal (Einstellungen → Neuigkeiten zeigt alle). **Nur neue Funktionen und große Updates poppen auf;** kleine Verbesserungen an bestehenden Funktionen mit `klein: true` markieren (dann nur in der Liste).
+  **Neuigkeiten:** Bei jeder für Nutzer sichtbaren Neuerung oben in `web/js/neuigkeiten.js` einen Eintrag anfügen (neue `id`, Datum, kurze Punkte mit Icon und ggf. Aktion zum Öffnen) – er erscheint beim ersten Start nach dem Update einmal (Einstellungen → Neuigkeiten zeigt alle). **Nur neue Funktionen und große Updates poppen auf;** kleine Verbesserungen an bestehenden Funktionen mit `klein: true` markieren (dann nur in der Liste). Reine Feinschliffe (Farbe, Größe, Abstand an Bestehendem) bekommen gar keinen Eintrag.
   Nach dem Deploy die App zweimal schließen/öffnen, damit das Update lädt.
 - Prüfen vor dem Push:
   - `node --test web/tests/kern.test.mjs`

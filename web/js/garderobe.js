@@ -66,7 +66,7 @@ const K = [
   ["diamantstecker", "ohr", "Diamantstecker", 400, 0, "Funkelnde Brillanten"],
   // Gesicht – Make-up und Wimpern einzeln oder als Set (paket: enthält die Einzelteile)
   ["wimpern", "gesicht", "Wimpern", 150, 0, "Geschwungen und voll – für den großen Augenaufschlag"],
-  ["makeup", "gesicht", "Make-up", 250, 0, "Schimmernder Lidschatten, Lidstrich mit Schwung, Rouge mit Highlighter und glänzende Lippen"],
+  ["makeup", "gesicht", "Make-up", 250, 0, "Schimmernder Lidschatten, Lidstrich mit Schwung, Rouge mit Highlighter und dezent glänzende Lippen"],
   ["glamour", "gesicht", "Make-up & Wimpern", 300, 0, "Das Set: beides zusammen – 100 Taler gespart"],
   // Hand
   ["faehnchen", "hand", "Fähnchen", 50, 0, "Feuert dich an"],
@@ -458,7 +458,7 @@ function makeup(id, art, mund) {
   const defs = `<defs>
     <linearGradient id="${id}ls" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#7e22ce"/><stop offset="0.4" stop-color="#c026d3" stop-opacity="0.9"/><stop offset="0.75" stop-color="#f472b6" stop-opacity="0.55"/><stop offset="1" stop-color="#fbcfe8" stop-opacity="0.1"/></linearGradient>
     <radialGradient id="${id}rg" cx="0.5" cy="0.55" r="0.5"><stop offset="0" stop-color="#fb7185" stop-opacity="0.75"/><stop offset="0.6" stop-color="#f472b6" stop-opacity="0.35"/><stop offset="1" stop-color="#f472b6" stop-opacity="0"/></radialGradient>
-    <linearGradient id="${id}lp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f43f5e"/><stop offset="1" stop-color="#9f1239"/></linearGradient></defs>`;
+    <linearGradient id="${id}lp" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e88a9b"/><stop offset="1" stop-color="#c9637a"/></linearGradient></defs>`;
   const froh = art === "froh";
   const lid = AUGE_X.map((cx, i) => {
     const s = i ? 1 : -1, y = froh ? 57.6 : 54.6;
@@ -473,8 +473,8 @@ function makeup(id, art, mund) {
   const wangen = [37.5, 82.5].map((x, i) => `<ellipse cx="${x}" cy="72" rx="7.6" ry="4.8" fill="url(#${id}rg)"/>
     <path d="M${x + (i ? 1 : -1) * 5.4} 66.4 Q${x} 64.6 ${x - (i ? 1 : -1) * 4} 66" fill="none" stroke="#fff" stroke-width="1.1" stroke-linecap="round" opacity="0.45"/>`).join("");
   const lippen = mund
-    ? `<path d="${mund}" stroke="url(#${id}lp)" stroke-width="4.4" fill="none" stroke-linecap="round"/><path d="${mund}" stroke="#ffe4e6" stroke-width="0.9" fill="none" stroke-linecap="round" stroke-dasharray="2.4 30" stroke-dashoffset="-6.5" opacity="0.9"/>`
-    : `<path d="${MUND_OFFEN}" stroke="url(#${id}lp)" stroke-width="2.6" fill="none" stroke-linejoin="round"/><ellipse cx="62.6" cy="77.6" rx="1.6" ry="0.6" fill="#ffe4e6" opacity="0.9" transform="rotate(-18 62.6 77.6)"/>`;
+    ? `<path d="${mund}" stroke="url(#${id}lp)" stroke-width="3.3" fill="none" stroke-linecap="round" opacity="0.8"/><path d="${mund}" stroke="#fff1f2" stroke-width="0.7" fill="none" stroke-linecap="round" stroke-dasharray="2 30" stroke-dashoffset="-6.5" opacity="0.7"/>`
+    : `<path d="${MUND_OFFEN}" stroke="url(#${id}lp)" stroke-width="1.8" fill="none" stroke-linejoin="round" opacity="0.8"/><ellipse cx="62.6" cy="77.6" rx="1.3" ry="0.5" fill="#fff1f2" opacity="0.7" transform="rotate(-18 62.6 77.6)"/>`;
   return { unter: defs + wangen + lid, ueber: lippen };
 }
 const GESICHT = {
