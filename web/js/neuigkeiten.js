@@ -5,6 +5,13 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-10-rangliste-taler",
+    datum: "2026-10-30",
+    klein: true,
+    titel: "Rangliste mit Talern",
+    punkte: [["pokal", "Jeder Taler im eigenen Outfit", "In der Rangliste siehst du jetzt alle Taler groß so, wie jede und jeder sie gestaltet hat – mit Level und XP der Woche.", "rangliste"]],
+  },
+  {
     id: "2026-10-nachtschwinge-maske",
     datum: "2026-10-30",
     titel: "Masken: Nachtschwinge",
