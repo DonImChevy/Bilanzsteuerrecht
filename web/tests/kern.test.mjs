@@ -941,4 +941,10 @@ test("Rangliste: Profil-ID geht beim Abgleich nicht verloren, Doppelungen werden
   const g = { mitglieder: { a: { name: "Lea", xp: 10 }, b: { name: "lea ", xp: 30 }, c: { name: "Anonym", xp: 1 }, d: { name: "Anonym", xp: 2 }, e: { name: "Tom", xp: 5 } } };
   assert.deepEqual(rangliste(g, "gesamt").map((e) => e.id), ["b", "e", "d", "c"]);
   assert.deepEqual(Object.keys(namenVereinen(g.mitglieder, "a")).sort(), ["a", "c", "d", "e"]);
+  // Zwei echte Personen gleichen Namens mit aktueller App (fest) bleiben beide; alte Kopien ohne fest fallen weg
+  const h = { mitglieder: { l1: { name: "Lisa", xp: 50, fest: 1 }, l2: { name: "Lisa", xp: 20, fest: 1 }, alt: { name: "lisa", xp: 90 } } };
+  assert.deepEqual(rangliste(h, "gesamt").map((e) => e.id), ["l1", "l2"]);
+  const tag = 24 * 3600 * 1000;
+  const v = { mitglieder: { neu: { name: "Lisa", xp: 5, fest: 1, t: 30 * tag }, verwaist: { name: "Lisa", xp: 80, fest: 1, t: 10 * tag } } };
+  assert.deepEqual(rangliste(v, "gesamt").map((e) => e.id), ["neu"]);
 });
