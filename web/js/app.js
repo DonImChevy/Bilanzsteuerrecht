@@ -981,7 +981,7 @@ function profilId() {
 }
 function meinEintrag() {
   const lv = levelJetzt(), w = zeitraum("woche", 0), { hintergrund, ...outfit } = meinOutfit();
-  return { name: meinName() || "Anonym", xp: lv.xp, level: lv.level, xpWoche: zeitraumAuswerten(stat, w).xp, wocheVon: w.von, outfit, t: Date.now() };
+  return { name: meinName() || "Anonym", xp: lv.xp, level: lv.level, xpWoche: zeitraumAuswerten(stat, w).xp, wocheVon: w.von, outfit, fest: 1, t: Date.now() };
 }
 /** Eigenen Eintrag setzen und eigene Doppelungen (alte IDs) entfernen. */
 function meinenEintragSetzen(d, extra = {}) {
@@ -1018,7 +1018,7 @@ function ranglisteView() {
         <button class="knopf" data-a="gruppeErstellen" style="margin-top:10px">${ic("plus")} Gruppe erstellen</button></div>
       <div class="gruppe"><div class="gruppe-titel">Gruppe beitreten</div><div class="liste"><label class="zeile"><span class="grow">Gruppen-Code</span><input type="text" id="gruppeCode" class="feld-klein mono" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocapitalize="characters"></label></div>
         <button class="knopf zweit" data-a="gruppeBeitreten" style="margin-top:10px">Beitreten</button></div>
-      <div class="gruppe-fuss" style="margin:8px 4px 20px">Geteilt werden nur dein Name, deine XP, dein Level und Talers Outfit – nicht dein Lernstand. Jeder Name steht nur einmal in der Gruppe, nimm also einen eindeutigen.</div>`;
+      <div class="gruppe-fuss" style="margin:8px 4px 20px">Geteilt werden nur dein Name, deine XP, dein Level und Talers Outfit – nicht dein Lernstand.</div>`;
   }
   const d = gruppe.daten, liste = d ? rangliste(d, gruppe.art, zeitraum("woche", 0).von, stat.profil?.id) : [];
   const ich = liste.find((e) => e.id === stat.profil?.id);
