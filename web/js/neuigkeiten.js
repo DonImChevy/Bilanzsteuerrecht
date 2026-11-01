@@ -5,11 +5,21 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-lernkartei",
+    datum: "2026-11-01",
+    titel: "Lernkartei wiederholt jetzt alles",
+    punkte: [
+      ["wiederholen", "Jede Aufgabe kommt morgen wieder", "Nicht nur die Fehler: Alles, was du übst, steht am nächsten Tag unter „Wiederholen“ – danach nach 3, 7, 14 und 30 Tagen. Pro Tag rückt eine Aufgabe höchstens ein Fach vor, auch wenn sie in einer Übung mehrmals drankommt."],
+      ["haken", "Fehler zuerst", "In der Wiederholung kommen Fehler zuerst. Als behoben gilt ein Fehler erst, wenn du die Aufgabe an einem späteren Tag richtig löst. Nach jeder Runde geht es mit „Weiter“ durch den Rest."],
+      ["kalender", "Einmal nachholen", "Was in den letzten 3 Tagen zu weit nach hinten gesprungen ist, kommt einmalig zurück – verteilt auf die nächsten 3 Tage."],
+    ],
+  },
+  {
     id: "2026-10-rangliste-namen",
     datum: "2026-10-30",
     klein: true,
-    titel: "Rangliste: jeder Name nur einmal",
-    punkte: [["pokal", "Keine doppelten Einträge mehr", "Einträge mit gleichem Namen gelten als dieselbe Person – die Rangliste zeigt jeden nur einmal und räumt alte Kopien beim Öffnen auf, auch die von Geräten mit älterer App-Version.", "rangliste"]],
+    titel: "Rangliste ohne doppelte Einträge",
+    punkte: [["pokal", "Keine doppelten Einträge mehr", "Alte Kopien (entstanden durch ältere App-Versionen) werden beim Öffnen aufgeräumt. Heißen zwei Personen gleich, stehen trotzdem beide in der Liste.", "rangliste"]],
   },
   {
     id: "2026-10-leistung",

@@ -14,7 +14,7 @@ import * as MK from "./meinekarten.js";
 import * as HS from "./handschrift.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
-import { planen, faellige, naechste, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
+import { planen, faellige, naechste, nachholen, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
 import { MODULE, MODUL, aktiveModule, moduleDerRolle, rolleVon } from "./module.js";
 import { serie, woche, tagSchluessel } from "./aktivitaet.js";
 import { ic } from "./icons.js";
@@ -981,7 +981,7 @@ function profilId() {
 }
 function meinEintrag() {
   const lv = levelJetzt(), w = zeitraum("woche", 0), { hintergrund, ...outfit } = meinOutfit();
-  return { name: meinName() || "Anonym", xp: lv.xp, level: lv.level, xpWoche: zeitraumAuswerten(stat, w).xp, wocheVon: w.von, outfit, t: Date.now() };
+  return { name: meinName() || "Anonym", xp: lv.xp, level: lv.level, xpWoche: zeitraumAuswerten(stat, w).xp, wocheVon: w.von, outfit, fest: 1, t: Date.now() };
 }
 /** Eigenen Eintrag setzen und eigene Doppelungen (alte IDs) entfernen. */
 function meinenEintragSetzen(d, extra = {}) {
@@ -1018,7 +1018,7 @@ function ranglisteView() {
         <button class="knopf" data-a="gruppeErstellen" style="margin-top:10px">${ic("plus")} Gruppe erstellen</button></div>
       <div class="gruppe"><div class="gruppe-titel">Gruppe beitreten</div><div class="liste"><label class="zeile"><span class="grow">Gruppen-Code</span><input type="text" id="gruppeCode" class="feld-klein mono" placeholder="XXXX-XXXX-XXXX-XXXX" maxlength="19" autocapitalize="characters"></label></div>
         <button class="knopf zweit" data-a="gruppeBeitreten" style="margin-top:10px">Beitreten</button></div>
-      <div class="gruppe-fuss" style="margin:8px 4px 20px">Geteilt werden nur dein Name, deine XP, dein Level und Talers Outfit – nicht dein Lernstand. Jeder Name steht nur einmal in der Gruppe, nimm also einen eindeutigen.</div>`;
+      <div class="gruppe-fuss" style="margin:8px 4px 20px">Geteilt werden nur dein Name, deine XP, dein Level und Talers Outfit – nicht dein Lernstand.</div>`;
   }
   const d = gruppe.daten, liste = d ? rangliste(d, gruppe.art, zeitraum("woche", 0).von, stat.profil?.id) : [];
   const ich = liste.find((e) => e.id === stat.profil?.id);
@@ -1350,11 +1350,11 @@ function tabLernen() {
   let heute;
   if (due.length) {
     heute = `<button class="kachel breit betont" data-a="wiederholen"><span class="k-icon">${ic("wiederholen")}</span>
-      <span class="grow"><b>${due.length} ${due.length === 1 ? "Aufgabe" : "Aufgaben"} zum Wiederholen</b><div class="sub">${due.length > PRO_WIEDERHOLUNG ? `Die ${PRO_WIEDERHOLUNG} ältesten zuerst · ` : ""}genau jetzt, bevor du sie vergisst</div></span><span class="rechts">${ic("pfeil")}</span></button>`;
+      <span class="grow"><b>${due.length} ${due.length === 1 ? "Aufgabe" : "Aufgaben"} zum Wiederholen</b><div class="sub">${(() => { const f = due.filter((id) => stat.lern[id]?.falsch).length; return f === due.length ? "deine Fehler von zuletzt · " : f ? `davon ${f} Fehler (kommen zuerst) · ` : ""; })()}${due.length > PRO_WIEDERHOLUNG ? `in Runden zu ${PRO_WIEDERHOLUNG}` : "genau jetzt, bevor du sie vergisst"}</div></span><span class="rechts">${ic("pfeil")}</span></button>`;
   } else {
     const n = naechste(stat.lern, ids);
     heute = `<div class="kachel breit"><span class="k-icon" style="background:var(--ok-weak);color:var(--ok)">${ic("haken")}</span>
-      <span class="grow"><b>${n ? "Heute nichts zu wiederholen" : "Lernkartei startet mit deiner ersten Übung"}</b><div class="sub">${n ? `Nächste Wiederholung ${inTagen(n)}.` : "Jede Aufgabe kommt nach 1, 3, 7, 16 und 35 Tagen wieder."}</div></span></div>`;
+      <span class="grow"><b>${n ? "Heute nichts zu wiederholen" : "Lernkartei startet mit deiner ersten Übung"}</b><div class="sub">${n ? `Nächste Wiederholung ${inTagen(n)}.` : "Jede Aufgabe kommt nach 1, 3, 7, 14 und 30 Tagen wieder."}</div></span></div>`;
   }
   const mkFaellig = MK.faelligeKarten(meine(), state.fach).length;
   if (mkFaellig) heute += `<button class="kachel breit" data-a="meineLernen" data-v="faellig"><span class="k-icon">${ic("karten")}</span>
@@ -1679,7 +1679,7 @@ function meineKartenBereich() {
     : `<div class="mk-leer"><div class="mk-leer-karten" aria-hidden="true"><span>§</span><span>?</span></div>
         <div><b>Noch keine eigenen Karten</b><div class="sub">Schreib eine Karte oder tippe bei Aufgaben, im Kompaktwissen, in Gesetzestexten und im Lernpfad auf <b>„+ Als Karte“</b>.</div></div></div>`;
   return `<section class="mk-bereich">
-    <div class="gruppe-titel">Meine Karten <span class="sub" style="text-transform:none;letter-spacing:0">${alle.length ? `${alle.length} · Lernkartei 1–3–7–16–35 Tage` : ""}</span></div>
+    <div class="gruppe-titel">Meine Karten <span class="sub" style="text-transform:none;letter-spacing:0">${alle.length ? `${alle.length} · Lernkartei 1–3–7–14–30 Tage` : ""}</span></div>
     <div class="kachel-grid">
       <button class="kachel" data-a="meineLernen" data-v="faellig" ${faellig.length ? "" : "disabled"}><span class="k-icon" style="${faellig.length ? "background:var(--warn-weak);color:var(--warn)" : ""}">${ic("wiederholen")}</span><span class="k-text"><b>${faellig.length ? `${faellig.length} fällig` : "Nichts fällig"}</b><span class="sub">${faellig.length ? "Jetzt wiederholen" : alle.length ? "Alles im Plan" : "Erst Karten anlegen"}</span></span></button>
       <button class="kachel" data-a="karteNeu"><span class="k-icon">${ic("karteNeu")}</span><span class="k-text"><b>Neue Karte</b><span class="sub">Selbst schreiben</span></span></button>
@@ -1901,7 +1901,7 @@ function sitzungView() {
     const showKey = `${x.start}-${x.index}`, neu = state.talerShow !== showKey;
     state.talerShow = showKey;
     const xpInfo = b.plus ? `<span class="xp-chips"><span class="xp-chip${neu ? " neu" : ""}">+${b.plus} XP</span>${b.tagBonus ? `<span class="xp-chip">+${b.tagBonus} Tagesbonus</span>` : ""}${ok && b.serie >= XP.serieAb ? `<span class="xp-chip serie">${ic("flamme", "klein")}${b.serie} in Folge</span>` : ""}</span>` : "";
-    feedback = `<div class="feedback">${talerBuehne(ok, { ruhig: !neu })}<span>${satz}${xpInfo}<small>${ok ? "Kommt in der Lernkartei ein Fach weiter." : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
+    feedback = `<div class="feedback">${talerBuehne(ok, { ruhig: !neu })}<span>${satz}${xpInfo}<small>${ok ? (() => { const l = stat.lern[f.id]; return l ? `Kommt ${inTagen(l.faellig)} wieder${l.falsch ? " – erst dann gilt der Fehler als behoben" : ""}.` : "Kommt in der Lernkartei ein Fach weiter."; })() : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
     fuss = `<button class="knopf ${ok ? "gruen" : "rot"}" data-a="weiter">${x.index === n - 1 ? "Auswertung" : "Weiter"} ${ic("pfeil")}</button>`;
   }
 
@@ -2101,6 +2101,7 @@ function ergebnisView() {
     <div class="vb-fuss"><div class="reihe">
       <button class="knopf zweit" data-a="beenden">Fertig</button>
       ${x.duell ? `<button class="knopf" data-a="duellTeilen">${ic("export")} ${x.duell.gegner ? "Ergebnis senden" : "Herausfordern"}</button>`
+        : x.wiederholung ? (() => { const rest = (x.wiederholung === "alle" ? faelligVon(null) : faelligImTeil(x.fach)).length; return rest ? `<button class="knopf" data-a="nochmal">${ic("wiederholen")} Weiter (${rest} übrig)</button>` : ""; })()
         : `<button class="knopf" data-a="nochmal">${ic("wiederholen")} ${x.modus === "klausur" ? "Neue Klausur" : "Neue Runde"}</button>`}
     </div></div>
   </div>`;
@@ -2450,7 +2451,7 @@ function sheetView() {
         <div class="gruppe-fuss">Praktisch beim Handywechsel oder ohne Synchronisierung. Der Sync-Code wird aus Sicherheitsgründen nicht mitgespeichert.</div></div>
       <div class="gruppe"><div class="gruppe-titel">So funktioniert's</div><div class="liste">
         ${[
-          ["🧠", "Lernkartei: Jede Aufgabe kommt nach 1, 3, 7, 16 und 35 Tagen wieder. Fehler kommen am nächsten Tag zurück."],
+          ["🧠", "Lernkartei: Jede Aufgabe, die du übst, kommt am nächsten Tag wieder – danach nach 3, 7, 14 und 30 Tagen. Pro Tag rückt sie höchstens ein Fach vor, Fehler fangen wieder bei Fach 1 an."],
           ["🔍", "Suche auf der Startseite findet Themen, Zusammenfassungen, Lernpfad-Blöcke, Aufgaben samt Lösungen, Gesetzestexte und Konten – auch mit Abkürzungen (B2B, AfA, VSt) und kleinen Tippfehlern."],
           ["✍️", "Buchungssätze: Konten über „Konto wählen“ suchen, Betrag eintippen. Die Reihenfolge der Positionen ist egal."],
           ["🎲", `Generierte Aufgaben haben bei jedem Durchlauf neue Zahlen – insgesamt ${ALLE.length} Aufgabentypen.`],
@@ -3289,6 +3290,8 @@ gruppeAktualisieren();
 bildLaden().then((d) => { if (d) { eigenesBildSetzen(d); designAnwenden(); if (state.sheet?.art === "garderobe") render(); } });
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") gruppeAktualisieren(); });
 zaehleStart();
+// Einmalig: Aufgaben, die durch mehrfaches Richtig am selben Tag zu weit gesprungen sind, auf die nächsten 3 Tage verteilen
+if (!lies("bsr.lernNachgeholt", "")) { if (nachholen(stat.lern)) speichern(); schreib("bsr.lernNachgeholt", "1"); }
 syncBeimStart();
 leistungMessen();
 suchIndexVorbereiten();

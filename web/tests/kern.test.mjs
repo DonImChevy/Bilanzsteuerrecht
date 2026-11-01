@@ -179,21 +179,42 @@ test("Multiple-Choice-Fassung für jede ÖR-Frage-Antwort-Aufgabe", () => {
 });
 
 test("Wiederholung nach Lernintervallen", async () => {
-  const { planen, faellige, naechste, tagPlus } = await import("../js/wiederholung.js");
+  const { planen, faellige, naechste, tagPlus, nachholen } = await import("../js/wiederholung.js");
   const t0 = new Date(2026, 9, 19, 15, 30).getTime();
+  // Einmaliges Nachholen: nur Fach 2+ aus den letzten 3 Tagen mit Termin nach mehr als 3 Tagen, verteilt auf 3 Tage
+  const jetzt = new Date(2026, 10, 1, 10).getTime(), vor = (n) => jetzt - n * 86400000;
+  const alt = { a: { fach: 3, faellig: tagPlus(vor(1), 7), t: vor(1) }, b: { fach: 2, faellig: tagPlus(vor(0), 3), t: vor(0) },
+    c: { fach: 4, faellig: tagPlus(vor(2), 14), t: vor(2), falsch: true }, d: { fach: 3, faellig: tagPlus(vor(5), 7), t: vor(5) },
+    e: { fach: 1, faellig: tagPlus(vor(0), 1), t: vor(0) }, g: { fach: 5, faellig: tagPlus(vor(0), 30), t: vor(0) }, h: { fach: 2, faellig: tagPlus(vor(1), 3), t: vor(1) } };
+  const nh = JSON.parse(JSON.stringify(alt));
+  assert.equal(nachholen(nh, jetzt), 3);
+  assert.deepEqual(["a", "c", "g"].map((id) => [nh[id].fach, nh[id].faellig]), [[1, tagPlus(jetzt, 1)], [1, tagPlus(jetzt, 2)], [1, tagPlus(jetzt, 3)]]);
+  assert.ok(nh.c.falsch);
+  for (const id of ["b", "d", "e", "h"]) assert.deepEqual(nh[id], alt[id]);
+  assert.equal(nachholen(nh, jetzt), 0, "zweiter Lauf ändert nichts");
   let e = planen(undefined, true, t0);
   assert.deepEqual(e, { fach: 1, faellig: tagPlus(t0, 1), t: t0 });
   assert.equal(new Date(e.faellig).getDate(), 20);
   assert.equal(new Date(e.faellig).getHours(), 0);
-  const tage = [];
-  for (let i = 0; i < 6; i++) { e = planen(e, true, t0); tage.push(e.fach); }
+  // Jeden Tag einmal richtig: ein Fach weiter, Abstände 1 – 3 – 7 – 14 – 30
+  const tage = [], tag = (n) => t0 + n * 86400000;
+  for (let i = 1; i <= 6; i++) { e = planen(e, true, tag(i)); tage.push(e.fach); }
   assert.deepEqual(tage, [2, 3, 4, 5, 5, 5]);
-  assert.equal(new Date(e.faellig).getMonth(), 10); // 35 Tage später → November
+  assert.equal(e.faellig, tagPlus(tag(6), 30));
+  // Mehrfach am selben Tag richtig (gleiche Vorlage in einer Übung): bleibt in Fach 1, morgen wieder
+  let m = planen(undefined, true, t0);
+  m = planen(m, true, t0 + 60000); m = planen(m, true, t0 + 120000);
+  assert.equal(m.fach, 1); assert.equal(m.faellig, tagPlus(t0, 1)); assert.equal(m.t, t0 + 120000);
   assert.deepEqual(planen(e, false, t0), { fach: 1, faellig: tagPlus(t0, 1), t: t0, falsch: true });
-  assert.ok(!planen(planen(e, false, t0), true, t0).falsch, "richtig beantwortet → nicht mehr unter „Meine Fehler“");
+  // Fehler und am selben Tag richtig: bleibt Fehler; erst an einem späteren Tag behoben
+  const f = planen(planen(e, false, t0), true, t0 + 60000);
+  assert.ok(f.falsch && f.fach === 1, "am selben Tag korrigiert → bleibt unter „Meine Fehler“");
+  assert.ok(!planen(f, true, tag(1)).falsch, "am nächsten Tag richtig → nicht mehr unter „Meine Fehler“");
   assert.ok(!planen(undefined, true, t0).falsch);
   const lern = { a: { fach: 1, faellig: t0 - 10 }, b: { fach: 2, faellig: t0 - 99 }, c: { fach: 3, faellig: t0 + 5 } };
   assert.deepEqual(faellige(lern, ["a", "b", "c", "d"], t0), ["b", "a"]);
+  lern.a.falsch = true;
+  assert.deepEqual(faellige(lern, ["a", "b", "c", "d"], t0), ["a", "b"], "Fehler zuerst");
   assert.equal(naechste(lern, ["a", "b", "c"], t0), t0 + 5);
 });
 
@@ -941,4 +962,10 @@ test("Rangliste: Profil-ID geht beim Abgleich nicht verloren, Doppelungen werden
   const g = { mitglieder: { a: { name: "Lea", xp: 10 }, b: { name: "lea ", xp: 30 }, c: { name: "Anonym", xp: 1 }, d: { name: "Anonym", xp: 2 }, e: { name: "Tom", xp: 5 } } };
   assert.deepEqual(rangliste(g, "gesamt").map((e) => e.id), ["b", "e", "d", "c"]);
   assert.deepEqual(Object.keys(namenVereinen(g.mitglieder, "a")).sort(), ["a", "c", "d", "e"]);
+  // Zwei echte Personen gleichen Namens mit aktueller App (fest) bleiben beide; alte Kopien ohne fest fallen weg
+  const h = { mitglieder: { l1: { name: "Lisa", xp: 50, fest: 1 }, l2: { name: "Lisa", xp: 20, fest: 1 }, alt: { name: "lisa", xp: 90 } } };
+  assert.deepEqual(rangliste(h, "gesamt").map((e) => e.id), ["l1", "l2"]);
+  const tag = 24 * 3600 * 1000;
+  const v = { mitglieder: { neu: { name: "Lisa", xp: 5, fest: 1, t: 30 * tag }, verwaist: { name: "Lisa", xp: 80, fest: 1, t: 10 * tag } } };
+  assert.deepEqual(rangliste(v, "gesamt").map((e) => e.id), ["neu"]);
 });
