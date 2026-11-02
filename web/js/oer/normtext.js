@@ -6,11 +6,12 @@ import { NORMEN_EST_BGB } from "../est/punkte.js";
 import { NORMEN_BILR_ZUSATZ } from "../bilr/normen_zusatz.js";
 import { NORMEN_UST } from "../ust/normen.js";
 import { NORMEN_ESTR } from "../est/r2.js";
+import { NORMEN_AO } from "../ao/normen.js";
 
 // Ein Paragraf kann in mehreren Modulen vorkommen (z. B. § 12 EStG): Absätze werden vereinigt,
 // faecher nennt die Module, in deren Nachschlagen-Liste er erscheint.
 const INDEX = new Map();
-for (const [fach, liste] of [["oer", NORMEN_OER], ["bsr", [...NORMEN_BILR, ...NORMEN_BILR_ZUSATZ]], ["est", [...NORMEN_EST, ...NORMEN_EST_BGB, ...NORMEN_ESTR]], ["ust", NORMEN_UST]]) {
+for (const [fach, liste] of [["oer", NORMEN_OER], ["bsr", [...NORMEN_BILR, ...NORMEN_BILR_ZUSATZ]], ["est", [...NORMEN_EST, ...NORMEN_EST_BGB, ...NORMEN_ESTR]], ["ust", NORMEN_UST], ["ao", NORMEN_AO]]) {
   for (const n of liste) {
     const k = `${n.g} ${n.nr}`, da = INDEX.get(k);
     if (!da) { INDEX.set(k, { ...n, faecher: [fach] }); continue; }

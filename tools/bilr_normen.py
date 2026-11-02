@@ -4,6 +4,7 @@ Aufruf (beliebige Teilmenge der Gesetze):
   pdftotext UStG.pdf UStG.raw
   python3 -I tools/bilr_normen.py web/js/bilr/normen.js UStG=UStG.raw HGB=HGB.raw AO=AO.raw EStG=EStG.raw
   python3 -I tools/bilr_normen.py --est web/js/est/normen.js EStG=EStG.raw AO=AO.raw LStDV=LStDV.raw
+  python3 -I tools/bilr_normen.py --ao web/js/ao/normen.js AO=AO.raw
 
 Lange Paragrafen werden als Auszug übernommen: nur die Absätze bzw. Nummern, die in den Aufgaben vorkommen.
 """
@@ -43,6 +44,21 @@ AUSWAHL_UST = {
              "14": ["1", "4"], "14c": None, "15": ["1", "1a", "2", "3", "4"], "17": ["1", "2"], "19": ["1", "2", "3"],
              "3b": ["1"], "13b": ["2", "5"], "16": ["1"], "18": ["1", "2"], "20": None, "25a": ["1", "3"]},
 }
+# Abgabenordnung (Aufruf mit --ao → web/js/ao/normen.js, Export NORMEN_AO)
+AUSWAHL_AO = {
+    "AO": {"1": ["1"], "3": None, "7": None, "8": None, "9": None, "10": None, "11": None, "12": None, "15": None,
+           "17": None, "18": ["1"], "19": ["1", "3"], "20": ["1"], "21": ["1"], "22": ["1"], "24": None, "25": None,
+           "26": None, "28": ["1"], "29": None, "30": ["1", "2", "3", "4", "5"], "33": None, "34": None, "35": None,
+           "37": ["1"], "38": None, "45": ["1"], "78": None, "79": ["1"], "80": ["1", "2", "4", "5", "6"], "82": ["1"],
+           "85": None, "86": None, "88": ["1", "2"], "90": ["1"], "91": None, "92": None, "93": ["1", "2"], "97": ["1"],
+           "101": ["1"], "102": ["1"], "103": None, "104": ["1", "2"], "108": None, "109": ["1", "2"], "110": None,
+           "118": None, "119": None, "120": None, "121": None, "122": ["1", "2", "5", "6", "7"], "122a": ["1", "4"],
+           "124": None, "125": None, "126": ["1", "2", "3"], "127": None, "149": ["1", "2", "3", "4"],
+           "150": ["1", "2", "3", "4", "7"], "152": None, "153": ["1"], "155": ["1", "3"], "157": None, "162": ["1"],
+           "164": None, "165": ["1", "2", "3"], "168": None, "171": ["10"], "175": ["1"], "179": None, "180": ["1", "3"],
+           "181": ["1", "2"], "182": ["1"], "183": ["1"], "183a": ["1"], "218": ["1"], "220": None, "240": ["1", "3"],
+           "328": None, "329": None, "332": None, "333": None, "334": ["1"], "335": None, "347": ["1"], "351": ["2"], "355": ["1"]},
+}
 # Paragrafen ohne amtliche Überschrift: Titel des Abschnitts
 TITEL = {("EStG", "20"): "Einkünfte aus Kapitalvermögen", ("EStG", "10"): "Sonderausgaben", ("EStG", "3"): "Steuerfreie Einnahmen", ("EStG", "11"): "Vereinnahmung und Verausgabung",
          ("EStG", "12"): "Nicht abzugsfähige Ausgaben", ("EStG", "9b"): "Umsatzsteuerrechtlicher Vorsteuerabzug"}
@@ -53,10 +69,20 @@ TEXT_KORREKTUR = {("UStG", "3a"): [(r"\n1\. 2\. Eine sonstige", "\n1. Eine sonst
                                     (r"\n4\. a\) die Abgabe von Speisen", "\na) die Abgabe von Speisen"),
                                     (r" (Eine Vermittlungsleistung an einen Empfänger)", r"\n4. \1")],
                   ("UStG", "12"): [(r" -+\*\).*?(?=\n…)", "")],
+                  # Überschrift des folgenden Unterabschnitts hängt am letzten Absatz
+                  ("AO", "110"): [(r" \d\. Unterabschnitt .*$", "")], ("AO", "335"): [(r" \d\. Unterabschnitt .*$", "")],
+                  ("AO", "92"): [(r" II\. Beweis durch .*$", "")],
+                  # § 180 Abs. 1: Nummern 1 und 2 stehen im PDF vor dem Text von Nr. 1
+                  ("AO", "180"): [(r"\n1\. 2\. (die Grundsteuerwerte[^\n]*)\na\)", r"\n1. \1\n2. a)")],
+                  # Überschrift über zwei Zeilen: zweite Zeile steht am Anfang des Textes
+                  ("AO", "103"): [(r"^Ordnungswidrigkeit ", "")],
                   # § 9 Abs. 1 EStG: Fortsetzung von Nr. 1 steht im PDF in der Spalte hinter Nr. 4; „Satz 8.“ in Abs. 4a nicht als Nummer lesen
                   ("EStG", "9"): [(r"(Lasten, soweit)(\n2\. .*?im Sinne) (sie mit einer Einkunftsart .*?bb ergibt;) (des Absatzes 4\.)", r"\1 \3\2 \4"),
                                   (r"Kürzungsbetrag nach Satz\n8\. ", "Kürzungsbetrag nach Satz 8. ")],
                   ("EStG", "3"): [(r"Trennungsgelder\. Die als Reisekostenvergütungen .*?abziehbaren Aufwendungen nicht übersteigen; ", "")]}
+# Überschriften, die im PDF umbrochen oder verstümmelt sind
+TITEL_KORREKTUR = {("AO", "103"): "Auskunftsverweigerungsrecht bei Gefahr der Verfolgung wegen einer Straftat oder einer Ordnungswidrigkeit",
+                   ("AO", "20"): "Steuern vom Einkommen und Vermögen der Körperschaften, Personenvereinigungen, Vermögensmassen"}
 START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
          "UStG": "§ 1 Steuerbare Umsätze", "LStDV": "§ 1 Arbeitnehmer, Arbeitgeber"}
 STAND = {}
@@ -208,6 +234,8 @@ def main():
         AUSWAHL, name, args = AUSWAHL_EST, "NORMEN_EST", args[1:]
     if args[0] == "--ust":
         AUSWAHL, name, args = AUSWAHL_UST, "NORMEN_UST", args[1:]
+    if args[0] == "--ao":
+        AUSWAHL, name, args = AUSWAHL_AO, "NORMEN_AO", args[1:]
     ziel, *quellen = args
     aus, staende = [], []
     for q in quellen:
@@ -225,7 +253,7 @@ def main():
                 for a in abs_:
                     a["text"] = re.sub(r"(zu entnehmen:) .*?Jahr des Versorgungsbeginns (Bemessungsgrundlage für den)",
                                        lambda m: f"{m.group(1)}\n{tabelle}\n{m.group(2)}", a["text"], flags=re.S)
-            titel = titel or TITEL.get((g, nr), "")
+            titel = TITEL_KORREKTUR.get((g, nr)) or titel or TITEL.get((g, nr), "")
             for muster, ersatz in TEXT_KORREKTUR.get((g, nr), []):
                 for a in abs_:
                     a["text"] = re.sub(muster, ersatz, a["text"], flags=re.S)

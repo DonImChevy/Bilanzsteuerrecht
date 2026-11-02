@@ -8,6 +8,7 @@ import { BSR_TEIL2 } from "./bilr/teil2.js";
 import { BSR_TEIL1_ZUSATZ } from "./bilr/teil1_zusatz.js";
 import { BBF_AUFGABEN } from "./bilr/bbf.js";
 import { UST_AUFGABEN } from "./ust/aufgaben.js";
+import { AO_AUFGABEN } from "./ao/aufgaben.js";
 import { LERNKARTEN as BSR_KARTEN } from "./lernkarten.js";
 import { THEMA, pruefungsThemen, imTeil, Zufall, NICHT_IN, themaIn } from "./kern.js";
 import { normenAusText } from "./oer/normtext.js";
@@ -30,7 +31,7 @@ const mitNormen = (v) => {
   } };
 };
 
-export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...BSR_TEIL1_ZUSATZ, ...EST_AUFGABEN, ...BSR_TEIL2, ...UST_AUFGABEN, ...BBF_AUFGABEN].map(mitNormen);
+export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...BSR_TEIL1_ZUSATZ, ...EST_AUFGABEN, ...BSR_TEIL2, ...UST_AUFGABEN, ...BBF_AUFGABEN, ...AO_AUFGABEN].map(mitNormen);
 
 export const vorlagenFuer = (thema) => ALLE.filter((v) => v.thema === thema);
 export const fachVon = (vorlage) => THEMA[vorlage.thema].fach;
@@ -163,6 +164,13 @@ export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false, teil = "bei
     const qa = gewichtet(pool, anzahl - ue.length, r);
     return r.mischen([...qa, ...ue]);
   }
+  if (fach === "ao") {
+    // AO-Klausur: Fallfragen und Wissensfragen, dazu Fristen und Zuschläge berechnen (ca. 25 %) und Einordnungsfälle (ca. 30 %)
+    const re = fragen(alle, Math.round(anzahl * 0.25), r, "rechnen", false, z);
+    const fa = fragen(alle, Math.round(anzahl * 0.3), r, "fall", false, z);
+    const qa = fragen(alle, anzahl - re.length - fa.length, r, "qa", ohneFaelle, z);
+    return r.mischen([...re, ...fa, ...qa]);
+  }
   if (fach === "est" || fach === "ust") {
     // Klausurstruktur ESt: Gesamtfall-Charakter – ca. 50 % Rechenaufgaben, Rest Einordnungsfälle und Frage-Antwort
     const re = fragen(alle, Math.round(anzahl * 0.5), r, "rechnen", false, z);
@@ -185,7 +193,7 @@ export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false, teil = "bei
 }
 
 // Lernkarten: BSR-Karten plus alle offenen ÖR- und ESt-Fragen (Vorderseite Frage, Rückseite Musterantwort)
-const OER_KARTEN = [...OER_FRAGEN, ...EST_AUFGABEN.filter((v) => v.mc), ...BSR_TEIL2.filter((v) => v.mc), ...UST_AUFGABEN.filter((v) => v.mc)].map((v) => v.erzeugen(new Zufall(1)))
+const OER_KARTEN = [...OER_FRAGEN, ...EST_AUFGABEN.filter((v) => v.mc), ...BSR_TEIL2.filter((v) => v.mc), ...UST_AUFGABEN.filter((v) => v.mc), ...AO_AUFGABEN.filter((v) => v.mc)].map((v) => v.erzeugen(new Zufall(1)))
   .filter((f) => f.typ === "offen")
   .map((f) => ({ id: "k-" + f.id, thema: f.thema, vorne: (f.fall ? "Klausurfall: " : "") + f.text, hinten: f.antwort, normen: f.normen }));
 

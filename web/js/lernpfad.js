@@ -1,6 +1,7 @@
 // Lernpfad-Modus: eigene Vollbild-Welt mit Karte (Stationen auf einem Pfad) und in sich geschlossenen Blöcken
 // (Intro → Lernkarten → Fragen → Abschluss). Inhalte je Modul in PFADE; Fortschritt (beste Sterne je Block) in localStorage.
 import { PFAD_UST } from "./ust/pfad.js";
+import { PFAD_AO } from "./ao/pfad.js";
 import { PFAD_EST } from "./est/pfad.js";
 import { PFAD_OER } from "./oer/pfad.js";
 import { PFAD_BSR1, PFAD_BSR2 } from "./bilr/pfad.js";
@@ -17,6 +18,7 @@ export const PFADE = {
   bsr1: { titel: "Bilanzrecht Teil I", untertitel: "Buchführung – vom Geschäftsvorfall bis zum Abschluss", bloecke: PFAD_BSR1 },
   bsr2: { titel: "Bilanzrecht Teil II", untertitel: "Bilanzierung und Bewertung – vom Betriebsvermögen bis zur Einlage", bloecke: PFAD_BSR2 },
   bsr: { titel: "Bilanzrecht", untertitel: "Teil I und II – Buchführung, Bilanzierung und Bewertung", bloecke: [...PFAD_BSR1, ...PFAD_BSR2] },
+  ao: { titel: "Abgabenordnung", untertitel: "Vom Steuergeheimnis bis zur Fristberechnung – Block für Block", bloecke: PFAD_AO },
   bbf: { titel: "Bilanz und Buchführung", untertitel: "Ausbildung FTA I – von der Buchführungspflicht bis zum Abschluss", bloecke: PFAD_BBF },
 };
 /** Fortschritt wird je Modul gespeichert – Teil I, Teil II und „beide“ teilen sich die Sterne. */

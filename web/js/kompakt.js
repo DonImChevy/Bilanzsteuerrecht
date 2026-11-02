@@ -6,16 +6,18 @@ import { KOMPAKT_EST, KLAUSUR_EST } from "./est/kompakt.js";
 import { KOMPAKT_OER, KLAUSUR_OER } from "./oer/kompakt.js";
 import { KOMPAKT_BBF, BEISPIELE_BBF, KLAUSUR_BBF } from "./bilr/bbf_kompakt.js";
 import { BEISPIELE_UST } from "./ust/beispiele.js";
+import { KOMPAKT_AO, KLAUSUR_AO } from "./ao/kompakt.js";
+import { BEISPIELE_AO } from "./ao/beispiele.js";
 import { BEISPIELE_BSR } from "./bilr/beispiele.js";
 import { BEISPIELE_EST } from "./est/beispiele.js";
 import { BEISPIELE_OER } from "./oer/beispiele.js";
 import { normenAusText, norm } from "./oer/normtext.js";
 
-const BEISPIELE = { ...BEISPIELE_BSR, ...BEISPIELE_OER, ...BEISPIELE_EST, ...BEISPIELE_UST, ...BEISPIELE_BBF };
+const BEISPIELE = { ...BEISPIELE_BSR, ...BEISPIELE_OER, ...BEISPIELE_EST, ...BEISPIELE_UST, ...BEISPIELE_BBF, ...BEISPIELE_AO };
 /** Zusammenfassung je Thema, ergänzt um die Klausurbeispiele (Sachverhalt + Musterlösung). */
-export const KOMPAKT = Object.fromEntries(Object.entries({ ...KOMPAKT_BSR, ...KOMPAKT_OER, ...KOMPAKT_EST, ...KOMPAKT_UST, ...KOMPAKT_BBF })
+export const KOMPAKT = Object.fromEntries(Object.entries({ ...KOMPAKT_BSR, ...KOMPAKT_OER, ...KOMPAKT_EST, ...KOMPAKT_UST, ...KOMPAKT_BBF, ...KOMPAKT_AO })
   .map(([id, k]) => [id, { ...k, beispiele: BEISPIELE[id] || [] }]));
-export const KLAUSURPLAN = { bsr: KLAUSUR_BSR, bbf: KLAUSUR_BBF, oer: KLAUSUR_OER, est: KLAUSUR_EST, ust: KLAUSUR_UST };
+export const KLAUSURPLAN = { bsr: KLAUSUR_BSR, bbf: KLAUSUR_BBF, oer: KLAUSUR_OER, est: KLAUSUR_EST, ust: KLAUSUR_UST, ao: KLAUSUR_AO };
 
 /** Alle Texte einer Zusammenfassung (für Suche und Lesezeit). */
 export function kompaktText(k) {
