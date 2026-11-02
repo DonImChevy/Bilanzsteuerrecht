@@ -5,6 +5,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-ao-modul",
+    datum: "2026-11-02",
+    titel: "Neues Modul: Abgabenordnung",
+    punkte: [
+      ["akte", "Abgabenordnung (GS I)", "14 Themen vom Steuergeheimnis über Bekanntgabe und Nichtigkeit bis zu Fristen und Säumniszuschlägen – mit Frage-Antwort, Fällen, Klausur und AO-Gesetzestext (Stand 2026).", "modul", "ao"],
+      ["kalender", "Fristen mit echten Daten", "Bekanntgabe, Einspruchsfrist und Wiedereinsetzung werden mit echten Kalendertagen 2026 gerechnet – inklusive Wochenenden, Feiertagen und Vier-Tages-Fiktion."],
+      ["karten", "Lernpfad, Zusammenfassungen, Paare", "Für jedes Thema ein Lernpfad-Block, Kompaktwissen mit Klausurbeispiel und das Normen-Paare-Spiel."],
+    ],
+  },
+  {
     id: "2026-11-lernkartei",
     datum: "2026-11-01",
     titel: "Lernkartei wiederholt jetzt alles",

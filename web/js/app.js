@@ -300,7 +300,7 @@ const summeFach = (fach) => themenFuer(fach).map((t) => zaehler(t.id)).reduce((a
 
 // ======================= Zustand =======================
 const state = {
-  fach: ["oer", "est", "ust", "bbf"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
+  fach: ["oer", "est", "ust", "bbf", "ao"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
   // Studium (Grundstudium I) oder Ausbildung (FTA I); leer = noch nicht gewählt (Willkommen fragt danach). Alte Nutzer: Studium
   rolle: ["studium", "ausbildung"].includes(lies("bsr.rolle", "")) ? lies("bsr.rolle", "") : (lies("bsr.willkommen", "") ? "studium" : ""),
   // "mc" = Multiple Choice (Standard), "qa" = selbst formulieren. Eigener Schlüssel „oerModus2“: Der frühere Standard „qa“
@@ -1219,7 +1219,9 @@ function markiere(text, woerter, ausschnitt = false) {
 const SYNONYME = [
   ["b2b", "b to b", "b-to-b", "business to business", "an einen unternehmer", "an unternehmer", "3a abs 2"],
   ["b2c", "b to c", "b-to-c", "business to consumer", "nichtunternehmer", "privatperson", "privatkunde", "endverbraucher", "3a abs 1"],
-  ["vorsteuer", "vst"], ["umsatzsteuer", "ust", "mehrwertsteuer", "mwst"], ["einkommensteuer", "est"], ["lohnsteuer", "lst"],
+  ["vorsteuer", "vst"], ["umsatzsteuer", "ust", "mehrwertsteuer", "mwst"], ["abgabenordnung", "ao"], ["verwaltungsakt", "va"],
+  ["vorbehalt der nachpruefung", "vdn", "164"], ["verspaetungszuschlag", "verspz", "152"], ["saeumniszuschlag", "saeumniszuschlaege", "240"],
+  ["wiedereinsetzung", "110"], ["einspruchsfrist", "355"], ["steuergeheimnis", "30 ao"], ["einkommensteuer", "est"], ["lohnsteuer", "lst"],
   ["absetzung fuer abnutzung", "afa", "abschreibung"], ["geringwertige wirtschaftsgueter", "gwg"], ["werbungskosten", "wk"],
   ["einnahmen ueberschuss", "euer", "4 abs 3"], ["zu versteuernde einkommen", "zve"], ["gesamtbetrag der einkuenfte", "gde"],
   ["rechnungsabgrenzung", "rap", "arap", "prap"], ["entfernungspauschale", "pendlerpauschale", "kilometerpauschale"],
@@ -1372,6 +1374,11 @@ function tabLernen() {
       kachel("fall", "lernen", "Fälle einordnen", "Steuerpflicht, § 11, Einkunftsart") +
       kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Definitionen und Klausurfälle") +
       kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") + paareKachel
+    : state.fach === "ao"
+    ? kachel("rechnen", "kalender", "Fristen & Zuschläge", "Bekanntgabe, Einspruchsfrist, Zuschläge") +
+      kachel("fall", "lernen", "Fälle einordnen", "Steuergeheimnis, Nichtigkeit, Zuständigkeit") +
+      kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Prüfschemata und Klausurfälle") +
+      kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") + paareKachel
     : state.fach === "ust"
     ? kachel("rechnen", "tkonto", "Rechnen", "USt, BMG, Anzahlung, Vorsteuer") +
       kachel("fall", "lernen", "Fälle einordnen", "Ort, Befreiung, Steuersatz, VAZ") +
@@ -1508,6 +1515,8 @@ function tabKlausur() {
       ? (state.oerModus === "mc"
         ? "Ca. 75 % Frage-Antwort als Multiple Choice und 25 % Übertragungsaufgaben. Automatische Auswertung nach der Abgabe."
         : "Wie in der Klausur: ca. 75 % Frage-Antwort und 25 % Übertragungsaufgaben. Nach der Abgabe vergleichst du mit den Musterantworten.")
+      : state.fach === "ao"
+      ? "Wie die AO-Klausur: Fall- und Wissensfragen, dazu Fristen, Bekanntgabe und Zuschläge berechnen. Auswertung erst nach der Abgabe."
       : state.fach === "est" || state.fach === "ust"
       ? "Ca. 50 % Rechenaufgaben mit immer neuen Zahlen, dazu Einordnungsfälle und Frage-Antwort. Auswertung erst nach der Abgabe."
       : state.fach === "bbf"
@@ -1753,6 +1762,7 @@ const GESETZE = {
   bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["EStDV", "Einkommensteuer-Durchführungsverordnung (EStDV)"], ["UStG", "Umsatzsteuergesetz (UStG)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
   est: [["EStG", "Einkommensteuergesetz (EStG)"], ["EStR", "Einkommensteuer-Richtlinien (EStR)"], ["LStDV", "Lohnsteuer-Durchführungsverordnung (LStDV)"], ["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
   ust: [["UStG", "Umsatzsteuergesetz (UStG)"]],
+  ao: [["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"], ["VwZG", "Verwaltungszustellungsgesetz (VwZG)"]],
 };
 /** Paragrafen in Gesetzesreihenfolge (§ 3 vor § 3a vor § 4); Präambel und Nummern ohne Ziffer zuerst. */
 const nrKey = (nr) => { const m = String(nr).match(/^(\d+)(.*)$/); return m ? [Number(m[1]), m[2]] : [-1, String(nr)]; };
@@ -1778,7 +1788,7 @@ function tabNormen() {
   return `
     ${seitenKopf("Normen", "Alle lehrplanrelevanten Vorschriften im Wortlaut – auch offline.")}
     ${kompaktZeile()}
-    <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="${state.fach === "est" ? "Suchen, z. B. Entfernungspauschale, § 11, Wohnsitz" : state.fach === "ust" ? "Suchen, z. B. Vorsteuer, § 4, Kleinunternehmer" : "Suchen, z. B. Bundesrat, Art. 63, Wahlrecht"}" autocomplete="off" value="${esc(state.normSuche)}"></div>
+    <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="${state.fach === "est" ? "Suchen, z. B. Entfernungspauschale, § 11, Wohnsitz" : state.fach === "ust" ? "Suchen, z. B. Vorsteuer, § 4, Kleinunternehmer" : state.fach === "ao" ? "Suchen, z. B. Bekanntgabe, § 122, Steuergeheimnis" : "Suchen, z. B. Bundesrat, Art. 63, Wahlrecht"}" autocomplete="off" value="${esc(state.normSuche)}"></div>
     <div id="normListe">${normenListe()}</div>`;
 }
 

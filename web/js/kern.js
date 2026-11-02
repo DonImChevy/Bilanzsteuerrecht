@@ -70,6 +70,21 @@ export const THEMEN = [
   { id: "ust-vorsteuer", titel: "Vorsteuer & Rechnungen", unter: "§§ 14, 14c, 15 UStG", icon: "🧾", fach: "ust" },
   { id: "ust-wertabgabe", titel: "Unentgeltliche Wertabgaben", unter: "§ 3 Abs. 1b, 9a, § 10 Abs. 4 UStG", icon: "🎁", fach: "ust" },
   { id: "ust-sonder", titel: "Sonderfälle & Kleinunternehmer", unter: "§ 3 Abs. 3, 4, 6a, § 10 Abs. 5, § 19 UStG", icon: "🧩", fach: "ust" },
+  // Abgabenordnung (Skript GS I Modul 1 und Unterricht; Rechtsstand 2026)
+  { id: "ao-grundlagen", titel: "Grundlagen & Steuerbegriff", unter: "§§ 1, 3 AO · Einteilung der Steuern, Nebenleistungen", icon: "📘", fach: "ao" },
+  { id: "ao-steuergeheimnis", titel: "Steuergeheimnis", unter: "§§ 30, 7 AO · Prüfschema und Befugnis", icon: "🤫", fach: "ao" },
+  { id: "ao-beteiligte", titel: "Beteiligte & Vertreter", unter: "§§ 33–36, 44, 45, 78–80 AO · Handlungsfähigkeit", icon: "👥", fach: "ao" },
+  { id: "ao-ermittlung", titel: "Ermittlungsverfahren", unter: "§§ 85, 88, 90–93, 97, 98, 101–104 AO", icon: "🔎", fach: "ao" },
+  { id: "ao-erklaerung", titel: "Steuererklärung & Verspätungszuschlag", unter: "§§ 149–153 AO · Fristen, Form, Berechnung", icon: "📝", fach: "ao" },
+  { id: "ao-zwang", titel: "Zwangsgeld & Schätzung", unter: "§§ 328–335, 162 AO", icon: "⚖️", fach: "ao" },
+  { id: "ao-va", titel: "Verwaltungsakt & Steuerbescheid", unter: "§§ 118–121, 155, 157 AO · Nebenbestimmungen", icon: "📄", fach: "ao" },
+  { id: "ao-wirksamkeit", titel: "Wirksamkeit & Nichtigkeit", unter: "§§ 124–127 AO · Prüfung 2-3-1", icon: "🧪", fach: "ao" },
+  { id: "ao-bekanntgabe", titel: "Bekanntgabe", unter: "§§ 122, 122a, 183 AO · Adressierung, vier Tage", icon: "📬", fach: "ao" },
+  { id: "ao-vorbehalt", titel: "Vorbehalt, Vorläufigkeit, Anmeldung", unter: "§§ 164, 165, 167, 168 AO", icon: "⏳", fach: "ao" },
+  { id: "ao-feststellung", titel: "Gesonderte Feststellung", unter: "§§ 179–182 AO · Grundlagen- und Folgebescheid", icon: "🧩", fach: "ao" },
+  { id: "ao-zustaendigkeit", titel: "Örtliche Zuständigkeit", unter: "§§ 8–12, 17–29 AO · § 19 Abs. 3 vertieft", icon: "🗺️", fach: "ao" },
+  { id: "ao-fristen", titel: "Fristen & Wiedereinsetzung", unter: "§§ 108–110 AO · §§ 187 ff. BGB", icon: "📅", fach: "ao" },
+  { id: "ao-erhebung", titel: "Entstehung, Fälligkeit, Säumnis", unter: "§§ 38, 218, 220, 240 AO", icon: "💶", fach: "ao" },
 ];
 export const THEMA = Object.fromEntries(THEMEN.map((t) => [t.id, t]));
 
@@ -79,6 +94,7 @@ export const FAECHER = {
   oer: { id: "oer", titel: "Öffentliches Recht", kurz: "ÖR" },
   est: { id: "est", titel: "Einkommensteuer", kurz: "ESt" },
   ust: { id: "ust", titel: "Umsatzsteuer", kurz: "USt" },
+  ao: { id: "ao", titel: "Abgabenordnung", kurz: "AO" },
 };
 /**
  * BilBf (Ausbildung FTA I) nutzt die Buchführungsthemen aus Bilanzrecht Teil I mit – in der Reihenfolge des Lehrplans,
