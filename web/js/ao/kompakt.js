@@ -54,6 +54,7 @@ export const KOMPAKT_AO = {
       "**Handlungsfähigkeit (§ 79 Abs. 1 AO):** Volljährige (Nr. 1); beschränkt Geschäftsfähige nur soweit anerkannt – § 112 BGB (genehmigtes Erwerbsgeschäft → betriebliche Steuern, nicht ESt) und § 113 BGB (Arbeitsverhältnis, nicht Ausbildung) (Nr. 2); juristische Personen durch ihre Vertreter (Nr. 3).",
       "**Bevollmächtigte (§ 80 AO):** Vollmacht für alle Verfahrenshandlungen, aber nicht zum Geldempfang; Widerruf wirkt erst mit Zugang beim Finanzamt; der Tod des Vollmachtgebers beendet sie nicht (§ 80 Abs. 4 AO); das Finanzamt soll sich an den Bevollmächtigten wenden (§ 80 Abs. 5 AO). **Beistand** (§ 80 Abs. 6 AO): unterstützt, vertritt nicht.",
       "**Gesetzliche Vertreter, Vermögensverwalter (§ 34 AO), Verfügungsberechtigte (§ 35 AO)** erfüllen die steuerlichen Pflichten der Vertretenen und sorgen für die Zahlung aus den verwalteten Mitteln.",
+      "**Gesamtschuldner (§ 44 AO):** wer dieselbe Leistung schuldet oder zusammen veranlagt wird (Ehegatten, Miterben) – jeder schuldet alles, die Zahlung eines wirkt für alle; zusammengefasster Bescheid möglich (§ 155 Abs. 3 AO).",
       "**Gesamtrechtsnachfolge (§ 45 Abs. 1 AO):** Forderungen und Schulden gehen auf den Erben über („Fußstapfen“) – **Zwangsgelder nicht**.",
     ],
     fallen: [
@@ -191,7 +192,8 @@ export const KOMPAKT_AO = {
       "**Erben:** Bescheid an den Gesamtrechtsnachfolger mit Hinweis auf die Rechtsnachfolge; ein dem Erblasser schon bekannt gegebener Bescheid wirkt gegen den Erben (§ 45 AO).",
       "**Personengesellschaften:** schuldet die Gesellschaft selbst (USt, GewSt) → an sie; Feststellungsbescheide an die rechtsfähige Gesellschaft in Vertretung der Beteiligten (§ 183 Abs. 1 AO), sonst an einen gemeinsamen Empfangsbevollmächtigten (§ 183a AO).",
       "**Zeitpunkt (§ 122 Abs. 2 AO):** vierter Tag nach Aufgabe zur Post (Inland), ein Monat (Ausland); Wochenende oder Feiertag → nächster Werktag (§ 108 Abs. 3 AO entsprechend). Gilt nicht bei späterem Zugang – der Steuerpflichtige muss das substantiiert darlegen. Datenabruf: vierter Tag nach Bereitstellung (§ 122a Abs. 4 AO).",
-      "**Förmliche Zustellung (§ 122 Abs. 5 AO, VwZG):** Bekanntgabetag = Zustellungstag, keine Fiktion.",
+      "**Förmliche Zustellung (§ 122 Abs. 5 AO, § 2 Abs. 1 VwZG):** Bekanntgabetag = Zustellungstag, keine Fiktion; Mängel heilen mit tatsächlichem Zugang (§ 8 VwZG).",
+      "**Bestandskraft:** formell = unanfechtbar nach Ablauf der Einspruchsfrist (§ 355 Abs. 1 AO); materiell = inhaltlich bindend, Änderung nur über Korrekturvorschriften – ein Vorbehalt der Nachprüfung verhindert sie (§ 164 Abs. 2 AO).",
     ],
     fallen: [
       "Seit 2025 vier statt drei Tage – alte Lösungen mit drei Tagen sind überholt.",
@@ -310,11 +312,12 @@ export const KOMPAKT_AO = {
 export const KLAUSUR_AO = {
   titel: "AO-Klausur: so holst du die Punkte",
   aufbau: [
+    "**180 Minuten.** Prüfungsstoff ist Modul 1 des Lehrplans (bis zur GS-I-Klausur); die meisten Stunden haben Feststellungsverfahren, Ermittlung, Folgen verspäteter Abgabe und Zuständigkeit (inkl. § 19 Abs. 3 AO).",
     "**Wissens- und Fallfragen** aus allen Bereichen von Modul 1: Steuergeheimnis, Beteiligte und Ermittlung, Erklärungen und Zuschläge, Verwaltungsakt, Bekanntgabe, Vorbehalt und Vorläufigkeit, Feststellung, Zuständigkeit, Fristen.",
     "**Hilfsmittel:** Gesetzestexte (AO, BGB-Auszug) – jede Aussage mit der genauen Fundstelle belegen (§, Abs., S., Nr.).",
     "**Fallaufbau:** Obersatz kurz („I könnte das Steuergeheimnis nach § 30 Abs. 1 AO verletzt haben.“), dann Merkmal für Merkmal mit Norm und Sachverhalt, Ergebnis.",
   ],
-  top: ["ao-steuergeheimnis", "ao-bekanntgabe", "ao-fristen", "ao-wirksamkeit", "ao-erklaerung", "ao-vorbehalt"],
+  top: ["ao-feststellung", "ao-ermittlung", "ao-erklaerung", "ao-zustaendigkeit", "ao-bekanntgabe", "ao-fristen", "ao-steuergeheimnis"],
   tipps: [
     "Fristen immer in drei Schritten aufschreiben: Ereignis/Beginn – Dauer – Ende, jeweils mit Norm und Wochentag.",
     "Bei der Bekanntgabe zuerst die vier Tage zählen, dann Wochenende und Feiertag prüfen (§ 108 Abs. 3 AO).",

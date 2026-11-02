@@ -4,7 +4,7 @@ Aufruf (beliebige Teilmenge der Gesetze):
   pdftotext UStG.pdf UStG.raw
   python3 -I tools/bilr_normen.py web/js/bilr/normen.js UStG=UStG.raw HGB=HGB.raw AO=AO.raw EStG=EStG.raw
   python3 -I tools/bilr_normen.py --est web/js/est/normen.js EStG=EStG.raw AO=AO.raw LStDV=LStDV.raw
-  python3 -I tools/bilr_normen.py --ao web/js/ao/normen.js AO=AO.raw
+  python3 -I tools/bilr_normen.py --ao web/js/ao/normen.js AO=AO.raw BGB=BGB.raw VwZG=VwZG.raw
 
 Lange Paragrafen werden als Auszug übernommen: nur die Absätze bzw. Nummern, die in den Aufgaben vorkommen.
 """
@@ -47,7 +47,7 @@ AUSWAHL_UST = {
 # Abgabenordnung (Aufruf mit --ao → web/js/ao/normen.js, Export NORMEN_AO)
 AUSWAHL_AO = {
     "AO": {"1": ["1"], "3": None, "7": None, "8": None, "9": None, "10": None, "11": None, "12": None, "15": None,
-           "17": None, "18": ["1"], "19": ["1", "3"], "20": ["1"], "21": ["1"], "22": ["1"], "24": None, "25": None,
+           "17": None, "18": ["1"], "19": ["1", "3", "4"], "20": ["1"], "21": ["1"], "22": ["1"], "24": None, "25": None,
            "26": None, "28": ["1"], "29": None, "30": ["1", "2", "3", "4", "5"], "33": None, "34": None, "35": None,
            "37": ["1"], "38": None, "45": ["1"], "78": None, "79": ["1"], "80": ["1", "2", "4", "5", "6"], "82": ["1"],
            "85": None, "86": None, "88": ["1", "2"], "90": ["1"], "91": None, "92": None, "93": ["1", "2"], "97": ["1"],
@@ -57,7 +57,10 @@ AUSWAHL_AO = {
            "150": ["1", "2", "3", "4", "7"], "152": None, "153": ["1"], "155": ["1", "3"], "157": None, "162": ["1"],
            "164": None, "165": ["1", "2", "3"], "168": None, "171": ["10"], "175": ["1"], "179": None, "180": ["1", "3"],
            "181": ["1", "2"], "182": ["1"], "183": ["1"], "183a": ["1"], "218": ["1"], "220": None, "240": ["1", "3"],
-           "328": None, "329": None, "332": None, "333": None, "334": ["1"], "335": None, "347": ["1"], "351": ["2"], "355": ["1"]},
+           "328": None, "329": None, "332": None, "333": None, "334": ["1"], "335": None, "347": ["1"], "351": ["2"], "355": ["1"],
+           "36": None, "44": ["1", "2"], "98": ["1"], "167": ["1"]},
+    "BGB": {"112": None, "113": ["1"], "187": None, "188": None, "193": None, "1922": ["1"]},
+    "VwZG": {"2": None, "8": None},
 }
 # Paragrafen ohne amtliche Überschrift: Titel des Abschnitts
 TITEL = {("EStG", "20"): "Einkünfte aus Kapitalvermögen", ("EStG", "10"): "Sonderausgaben", ("EStG", "3"): "Steuerfreie Einnahmen", ("EStG", "11"): "Vereinnahmung und Verausgabung",
@@ -76,6 +79,7 @@ TEXT_KORREKTUR = {("UStG", "3a"): [(r"\n1\. 2\. Eine sonstige", "\n1. Eine sonst
                   ("AO", "180"): [(r"\n1\. 2\. (die Grundsteuerwerte[^\n]*)\na\)", r"\n1. \1\n2. a)")],
                   # Überschrift über zwei Zeilen: zweite Zeile steht am Anfang des Textes
                   ("AO", "103"): [(r"^Ordnungswidrigkeit ", "")],
+                  ("BGB", "193"): [(r" Abschnitt 5 Verjährung.*$", ""), (r"Erklärungsoder", "Erklärungs- oder")],
                   # § 9 Abs. 1 EStG: Fortsetzung von Nr. 1 steht im PDF in der Spalte hinter Nr. 4; „Satz 8.“ in Abs. 4a nicht als Nummer lesen
                   ("EStG", "9"): [(r"(Lasten, soweit)(\n2\. .*?im Sinne) (sie mit einer Einkunftsart .*?bb ergibt;) (des Absatzes 4\.)", r"\1 \3\2 \4"),
                                   (r"Kürzungsbetrag nach Satz\n8\. ", "Kürzungsbetrag nach Satz 8. ")],
@@ -84,7 +88,8 @@ TEXT_KORREKTUR = {("UStG", "3a"): [(r"\n1\. 2\. Eine sonstige", "\n1. Eine sonst
 TITEL_KORREKTUR = {("AO", "103"): "Auskunftsverweigerungsrecht bei Gefahr der Verfolgung wegen einer Straftat oder einer Ordnungswidrigkeit",
                    ("AO", "20"): "Steuern vom Einkommen und Vermögen der Körperschaften, Personenvereinigungen, Vermögensmassen"}
 START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
-         "UStG": "§ 1 Steuerbare Umsätze", "LStDV": "§ 1 Arbeitnehmer, Arbeitgeber"}
+         "UStG": "§ 1 Steuerbare Umsätze", "LStDV": "§ 1 Arbeitnehmer, Arbeitgeber",
+         "BGB": "§ 1 Beginn der Rechtsfähigkeit", "VwZG": "§ 1 Anwendungsbereich"}
 STAND = {}
 
 

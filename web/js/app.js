@@ -1762,7 +1762,7 @@ const GESETZE = {
   bsr: [["HGB", "Handelsgesetzbuch (HGB)"], ["AO", "Abgabenordnung (AO)"], ["EStG", "Einkommensteuergesetz (EStG)"], ["EStDV", "Einkommensteuer-Durchführungsverordnung (EStDV)"], ["UStG", "Umsatzsteuergesetz (UStG)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
   est: [["EStG", "Einkommensteuergesetz (EStG)"], ["EStR", "Einkommensteuer-Richtlinien (EStR)"], ["LStDV", "Lohnsteuer-Durchführungsverordnung (LStDV)"], ["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"]],
   ust: [["UStG", "Umsatzsteuergesetz (UStG)"]],
-  ao: [["AO", "Abgabenordnung (AO)"]],
+  ao: [["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"], ["VwZG", "Verwaltungszustellungsgesetz (VwZG)"]],
 };
 /** Paragrafen in Gesetzesreihenfolge (§ 3 vor § 3a vor § 4); Präambel und Nummern ohne Ziffer zuerst. */
 const nrKey = (nr) => { const m = String(nr).match(/^(\d+)(.*)$/); return m ? [Number(m[1]), m[2]] : [-1, String(nr)]; };

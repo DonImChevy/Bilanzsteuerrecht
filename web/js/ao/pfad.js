@@ -127,6 +127,7 @@ export const PFAD_AO = [
       { art: "merksatz", titel: "Ohne Bekanntgabe kein Verwaltungsakt", text: "Wirksam wird der Verwaltungsakt erst mit der **Bekanntgabe** – mit dem Inhalt, mit dem er bekannt gegeben wird (§ 124 Abs. 1 AO). Die Behörde muss das **Ob** und **Wie** wollen (Bekanntgabewille)." },
       { art: "erklaerung", titel: "Vier Tage", text: "Per Post im Inland gilt der Bescheid am **vierten Tag** nach Aufgabe zur Post als bekannt gegeben (§ 122 Abs. 2 Nr. 1 AO) – seit 2025, vorher drei Tage. Fällt der Tag auf **Samstag, Sonntag oder Feiertag**, gilt der **nächste Werktag** (§ 108 Abs. 3 AO)." },
       { art: "beispiel", titel: "Durchgezählt", text: "Aufgabe zur Post **Mittwoch, 22.04.2026** → vierter Tag **Sonntag, 26.04.** → bekannt gegeben **Montag, 27.04.2026**." },
+      { art: "erklaerung", titel: "Formell und materiell bestandskräftig", text: "• **Formell bestandskräftig** (unanfechtbar) wird der Bescheid, wenn die Einspruchsfrist ungenutzt abläuft (§ 355 Abs. 1 AO).\n• **Materiell bestandskräftig** heißt: Änderung nur noch mit einer Korrekturvorschrift. Ein **Vorbehalt der Nachprüfung** verhindert das (§ 164 Abs. 2 AO).\n• Bei **förmlicher Zustellung** (VwZG) gilt der Zustellungstag, keine Vier-Tages-Fiktion." },
       { art: "erklaerung", titel: "Richtig adressieren", text: "• **Kind:** Inhaltsadressat das Kind, bekannt gegeben an die Eltern.\n• **Ehegatten:** eine Ausfertigung an die gemeinsame Anschrift mit beiden Namen (§ 122 Abs. 7 AO).\n• **Erbin:** „als Gesamtrechtsnachfolgerin des …“.\n• **Steuerberater mit Empfangsvollmacht:** Bescheid soll an ihn gehen (§ 122 Abs. 1 S. 4 AO)." },
     ],
     fragen: [
@@ -169,12 +170,14 @@ export const PFAD_AO = [
     karten: [
       { art: "erklaerung", titel: "Grundbegriffe", text: "• **Wohnsitz** (§ 8 AO): Wohnung, die beibehalten und benutzt wird.\n• **Gewöhnlicher Aufenthalt** (§ 9 AO): stets bei mehr als **sechs Monaten** zusammenhängend.\n• **Geschäftsleitung** (§ 10 AO): Mittelpunkt der Oberleitung.\n• **Sitz** (§ 11 AO): laut Satzung." },
       { art: "merksatz", titel: "Wer ist zuständig?", text: "• **ESt:** Wohnsitzfinanzamt (§ 19 AO)\n• **KSt:** Finanzamt der Geschäftsleitung (§ 20 AO)\n• **USt:** von wo aus das Unternehmen betrieben wird (§ 21 AO)\n• **Grundsteuermessbetrag:** Lagefinanzamt (§ 22 AO)" },
+      { art: "erklaerung", titel: "Großstadtregelung (§ 19 Abs. 3 AO)", text: "Wohnung und Betrieb liegen in **derselben Gemeinde** mit mehreren Finanzämtern (z. B. Hamburg), aber in **verschiedenen Bezirken** → das **Betriebs- bzw. Tätigkeitsfinanzamt** ist auch für die ESt zuständig, eine gesonderte Feststellung entfällt. Zusammenveranlagte Ehegatten gelten dabei als ein Steuerpflichtiger (§ 19 Abs. 4 AO). Liegt der Betrieb in einer **anderen Gemeinde**, bleibt es beim Wohnsitzfinanzamt plus gesonderter Feststellung." },
       { art: "erklaerung", titel: "Fehler und Wechsel", text: "• Unzuständiges Finanzamt: **rechtswidrig, nicht nichtig** (§ 125 Abs. 3 Nr. 1 AO).\n• Umzug: Zuständigkeit wechselt, sobald eines der Finanzämter davon **erfährt** (§ 26 AO).\n• Mehrere zuständig: das **zuerst befasste** (§ 25 AO)." },
     ],
     fragen: [
       { art: "wahl", frage: "GmbH: Satzungssitz Hamburg, Geschäftsleitung Bremen. KSt-Finanzamt?", optionen: ["Bremen", "Hamburg", "Beide", "Wohnsitz des Geschäftsführers"], richtig: 0, erkl: "§ 20 Abs. 1 AO – Geschäftsleitung." },
       { art: "wahl", frage: "Friseurin wohnt in Lübeck, Salon in Kiel. USt-Finanzamt?", optionen: ["Kiel", "Lübeck", "Das ihrer Wahl", "Das Bundeszentralamt"], richtig: 0, erkl: "§ 21 Abs. 1 AO." },
       { art: "wahl", frage: "Saisonkraft ohne Wohnung bleibt sieben Monate am Stück in Uelzen. Folge?", optionen: ["Gewöhnlicher Aufenthalt in Uelzen", "Kein Aufenthalt im Inland", "Wohnsitz in Uelzen", "Nur bei Meldung beim Einwohneramt"], richtig: 0, erkl: "§ 9 S. 2 AO – mehr als sechs Monate." },
+      { art: "wahl", frage: "Bäcker wohnt in Hamburg-Altona, Bäckerei in Hamburg-Barmbek (anderer Finanzamtsbezirk). ESt-Finanzamt?", optionen: ["Betriebsfinanzamt Barmbek, keine gesonderte Feststellung", "Wohnsitzfinanzamt Altona mit gesonderter Feststellung", "Beide Finanzämter gemeinsam", "Das Finanzamt seiner Wahl"], richtig: 0, erkl: "§ 19 Abs. 3 AO – gleiche Gemeinde, anderer Bezirk." },
       { art: "wahl", frage: "Folge eines Bescheids vom örtlich unzuständigen Finanzamt?", optionen: ["Rechtswidrig, aber nicht nichtig", "Nichtig", "Rechtmäßig", "Kein Verwaltungsakt"], richtig: 0, erkl: "§ 125 Abs. 3 Nr. 1 AO." },
     ],
   },

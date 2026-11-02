@@ -29,7 +29,7 @@ export function kompaktText(k) {
 export const lesezeit = (k) => Math.max(1, Math.round(kompaktText(k).split(/\s+/).length / 170));
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const ZITAT = /(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|EStDV|LStDV)\b|\bR \d+[a-z]?(?: Abs\. \d+)? EStR\b/g;
+const ZITAT = /(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|EStDV|LStDV|VwZG)\b|\bR \d+[a-z]?(?: Abs\. \d+)? EStR\b/g;
 
 /** Fließtext: **fett** wird zum Textmarker, Normzitate werden antippbar (öffnen den Gesetzestext). */
 export function kompaktInline(text) {
@@ -41,8 +41,8 @@ export function kompaktInline(text) {
 /** Normzitate in bereits maskiertem HTML antippbar machen (nur Normen, deren Text in der App steht). */
 export function normenVerlinken(h) {
   return h.replace(ZITAT, (m) => {
-    // BGB und EStDV erkennt normenAusText nicht – einfache Zitate („§ 449 BGB“, „§ 9a EStDV“) direkt auflösen
-    const einfach = /^§\s?(\d+[a-z]?)(?:\s+Abs\.\s?(\d+))?.*\b(BGB|EStDV)$/.exec(m);
+    // BGB, EStDV und VwZG erkennt normenAusText nicht – einfache Zitate („§ 449 BGB“, „§ 8 VwZG“) direkt auflösen
+    const einfach = /^§\s?(\d+[a-z]?)(?:\s+Abs\.\s?(\d+))?.*\b(BGB|EStDV|VwZG)$/.exec(m);
     const ref = einfach ? [`${einfach[3]} ${einfach[1]}${einfach[2] ? " " + einfach[2] : ""}`, `${einfach[3]} ${einfach[1]}`].find((r) => norm(r))
       : normenAusText(m.replace(/&amp;/g, "&"))[0];
     return ref ? `<span class="km-norm" role="button" tabindex="0" data-a="normDetail" data-v="${esc(ref)}">${m}</span>` : m;

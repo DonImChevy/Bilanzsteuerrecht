@@ -1,5 +1,5 @@
 // Automatisch erzeugt aus den Gesetzestexten (tools/bilr_normen.py) – nicht von Hand ändern.
-// Quelle: www.gesetze-im-internet.de. AO: zuletzt geändert durch Artikel 15 Absatz 6 des Gesetzes vom 3. Juli 2026 (BGBl. 2026 I Nr. 199)
+// Quelle: www.gesetze-im-internet.de. AO: zuletzt geändert durch Artikel 15 Absatz 6 des Gesetzes vom 3. Juli 2026 (BGBl. 2026 I Nr. 199) · BGB: zuletzt geändert durch Artikel 6 des Gesetzes vom 23. Juli 2026 (BGBl. 2026 I Nr. 226) · VwZG: zuletzt geändert durch Artikel 15 Absatz 3 des Gesetzes vom 3. Juli 2026 (BGBl. 2026 I Nr. 199)
 export const NORMEN_AO = [
 {
 "g": "AO",
@@ -156,6 +156,10 @@ export const NORMEN_AO = [
 {
 "abs": "3",
 "text": "Gehören zum Bereich der Wohnsitzgemeinde mehrere Finanzämter und übt ein Steuerpflichtiger mit Einkünften aus Land- und Forstwirtschaft, Gewerbebetrieb oder freiberuflicher Tätigkeit diese Tätigkeit innerhalb der Wohnsitzgemeinde, aber im Bezirk eines anderen Finanzamts als dem des Wohnsitzfinanzamts aus, so ist abweichend von Absatz 1 jenes Finanzamt zuständig, wenn es nach § 18 Absatz 1 Nummer 1, 2 oder 3 für eine gesonderte Feststellung dieser Einkünfte zuständig wäre. Einkünfte aus Gewinnanteilen sind bei Anwendung des Satzes 1 nur dann zu berücksichtigen, wenn sie die einzigen Einkünfte des Steuerpflichtigen im Sinne des Satzes 1 sind."
+},
+{
+"abs": "4",
+"text": "Steuerpflichtige, die zusammen zu veranlagen sind oder zusammen veranlagt werden können, sind bei Anwendung des Absatzes 3 so zu behandeln, als seien ihre Einkünfte von einem Steuerpflichtigen bezogen worden."
 }
 ],
 "auszug": true
@@ -1337,5 +1341,170 @@ export const NORMEN_AO = [
 }
 ],
 "auszug": true
+},
+{
+"g": "AO",
+"nr": "36",
+"titel": "Erlöschen der Vertretungsmacht",
+"abs": [
+{
+"abs": "",
+"text": "Das Erlöschen der Vertretungsmacht oder der Verfügungsmacht lässt die nach den §§ 34 und 35 entstandenen Pflichten unberührt, soweit diese den Zeitraum betreffen, in dem die Vertretungsmacht oder Verfügungsmacht bestanden hat und soweit der Verpflichtete sie erfüllen kann."
+}
+]
+},
+{
+"g": "AO",
+"nr": "44",
+"titel": "Gesamtschuldner",
+"abs": [
+{
+"abs": "1",
+"text": "Personen, die nebeneinander dieselbe Leistung aus dem Steuerschuldverhältnis schulden oder für sie haften oder die zusammen zu einer Steuer zu veranlagen sind, sind Gesamtschuldner. Soweit nichts anderes bestimmt ist, schuldet jeder Gesamtschuldner die gesamte Leistung."
+},
+{
+"abs": "2",
+"text": "Die Erfüllung durch einen Gesamtschuldner wirkt auch für die übrigen Schuldner. Das Gleiche gilt für die Aufrechnung und für eine geleistete Sicherheit. Andere Tatsachen wirken nur für und gegen den Gesamtschuldner, in dessen Person sie eintreten. Die Vorschriften der §§ 268 bis 280 über die Beschränkung der Vollstreckung in den Fällen der Zusammenveranlagung bleiben unberührt."
+}
+],
+"auszug": true
+},
+{
+"g": "AO",
+"nr": "98",
+"titel": "Einnahme des Augenscheins",
+"abs": [
+{
+"abs": "1",
+"text": "Führt die Finanzbehörde einen Augenschein durch, so ist das Ergebnis aktenkundig zu machen."
+}
+],
+"auszug": true
+},
+{
+"g": "AO",
+"nr": "167",
+"titel": "Steueranmeldung, Verwendung von Steuerzeichen oder Steuerstemplern",
+"abs": [
+{
+"abs": "1",
+"text": "Ist eine Steuer auf Grund gesetzlicher Verpflichtung anzumelden (§ 150 Absatz 1 Satz 3), so ist eine Festsetzung der Steuer nach § 155 nur erforderlich, wenn die Festsetzung zu einer abweichenden Steuer führt oder der Steuer- oder Haftungsschuldner die Steueranmeldung nicht abgibt. Satz 1 gilt sinngemäß, wenn die Steuer auf Grund gesetzlicher Verpflichtung durch Verwendung von Steuerzeichen oder Steuerstemplern zu entrichten ist. Erkennt der Steuer- oder Haftungsschuldner nach Abschluss einer Außenprüfung im Sinne des § 193 Absatz 2 Nummer 1 seine Zahlungsverpflichtung schriftlich an, steht das Anerkenntnis einer Steueranmeldung gleich."
+}
+],
+"auszug": true
+},
+{
+"g": "BGB",
+"nr": "112",
+"titel": "Selbständiger Betrieb eines Erwerbsgeschäfts",
+"abs": [
+{
+"abs": "1",
+"text": "Ermächtigt der gesetzliche Vertreter mit Genehmigung des Familiengerichts den Minderjährigen zum selbständigen Betrieb eines Erwerbsgeschäfts, so ist der Minderjährige für solche Rechtsgeschäfte unbeschränkt geschäftsfähig, welche der Geschäftsbetrieb mit sich bringt. Ausgenommen sind Rechtsgeschäfte, zu denen der Vertreter der Genehmigung des Familiengerichts bedarf."
+},
+{
+"abs": "2",
+"text": "Die Ermächtigung kann von dem Vertreter nur mit Genehmigung des Familiengerichts zurückgenommen werden."
+}
+]
+},
+{
+"g": "BGB",
+"nr": "113",
+"titel": "Dienst- oder Arbeitsverhältnis",
+"abs": [
+{
+"abs": "1",
+"text": "Ermächtigt der gesetzliche Vertreter den Minderjährigen, in Dienst oder in Arbeit zu treten, so ist der Minderjährige für solche Rechtsgeschäfte unbeschränkt geschäftsfähig, welche die Eingehung oder Aufhebung eines Dienst- oder Arbeitsverhältnisses der gestatteten Art oder die Erfüllung der sich aus einem solchen Verhältnis ergebenden Verpflichtungen betreffen. Ausgenommen sind Verträge, zu denen der Vertreter der Genehmigung des Familiengerichts bedarf."
+}
+],
+"auszug": true
+},
+{
+"g": "BGB",
+"nr": "187",
+"titel": "Fristbeginn",
+"abs": [
+{
+"abs": "1",
+"text": "Ist für den Anfang einer Frist ein Ereignis oder ein in den Lauf eines Tages fallender Zeitpunkt maßgebend, so wird bei der Berechnung der Frist der Tag nicht mitgerechnet, in welchen das Ereignis oder der Zeitpunkt fällt."
+},
+{
+"abs": "2",
+"text": "Ist der Beginn eines Tages der für den Anfang einer Frist maßgebende Zeitpunkt, so wird dieser Tag bei der Berechnung der Frist mitgerechnet. Das Gleiche gilt von dem Tage der Geburt bei der Berechnung des Lebensalters."
+}
+]
+},
+{
+"g": "BGB",
+"nr": "188",
+"titel": "Fristende",
+"abs": [
+{
+"abs": "1",
+"text": "Eine nach Tagen bestimmte Frist endigt mit dem Ablauf des letzten Tages der Frist."
+},
+{
+"abs": "2",
+"text": "Eine Frist, die nach Wochen, nach Monaten oder nach einem mehrere Monate umfassenden Zeitraum - Jahr, halbes Jahr, Vierteljahr - bestimmt ist, endigt im Falle des § 187 Abs. 1 mit dem Ablauf desjenigen Tages der letzten Woche oder des letzten Monats, welcher durch seine Benennung oder seine Zahl dem Tage entspricht, in den das Ereignis oder der Zeitpunkt fällt, im Falle des § 187 Abs. 2 mit dem Ablauf desjenigen Tages der letzten Woche oder des letzten Monats, welcher dem Tage vorhergeht, der durch seine Benennung oder seine Zahl dem Anfangstag der Frist entspricht."
+},
+{
+"abs": "3",
+"text": "Fehlt bei einer nach Monaten bestimmten Frist in dem letzten Monat der für ihren Ablauf maßgebende Tag, so endigt die Frist mit dem Ablauf des letzten Tages dieses Monats."
+}
+]
+},
+{
+"g": "BGB",
+"nr": "193",
+"titel": "Sonn- und Feiertag; Sonnabend",
+"abs": [
+{
+"abs": "",
+"text": "Ist an einem bestimmten Tage oder innerhalb einer Frist eine Willenserklärung abzugeben oder eine Leistung zu bewirken und fällt der bestimmte Tag oder der letzte Tag der Frist auf einen Sonntag, einen am Erklärungs- oder Leistungsort staatlich anerkannten allgemeinen Feiertag oder einen Sonnabend, so tritt an die Stelle eines solchen Tages der nächste Werktag."
+}
+]
+},
+{
+"g": "BGB",
+"nr": "1922",
+"titel": "Gesamtrechtsnachfolge",
+"abs": [
+{
+"abs": "1",
+"text": "Mit dem Tode einer Person (Erbfall) geht deren Vermögen (Erbschaft) als Ganzes auf eine oder mehrere andere Personen (Erben) über."
+}
+],
+"auszug": true
+},
+{
+"g": "VwZG",
+"nr": "2",
+"titel": "Allgemeines",
+"abs": [
+{
+"abs": "1",
+"text": "Zustellung ist die Bekanntgabe eines schriftlichen oder elektronischen Dokuments in der in diesem Gesetz bestimmten Form."
+},
+{
+"abs": "2",
+"text": "Die Zustellung wird durch einen Erbringer von Postdienstleistungen (Post), oder durch die Behörde ausgeführt. Daneben gelten die in den §§ 9 und 10 geregelten Sonderarten der Zustellung."
+},
+{
+"abs": "3",
+"text": "Die Behörde hat die Wahl zwischen den einzelnen Zustellungsarten. § 5 Absatz 5 Satz 2 bleibt unberührt."
+}
+]
+},
+{
+"g": "VwZG",
+"nr": "8",
+"titel": "Heilung von Zustellungsmängeln",
+"abs": [
+{
+"abs": "",
+"text": "Lässt sich die formgerechte Zustellung eines Dokuments nicht nachweisen oder ist es unter Verletzung zwingender Zustellungsvorschriften zugegangen, gilt es als in dem Zeitpunkt zugestellt, in dem es dem Empfangsberechtigten tatsächlich zugegangen ist, im Fall des § 5 Abs. 5 in dem Zeitpunkt, in dem der Empfänger das Empfangsbekenntnis zurückgesendet hat."
+}
+]
 }
 ];
