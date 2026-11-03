@@ -542,6 +542,8 @@ const lohnZuflussFall = F("est-lohn-zufluss-fall", "est-zufluss", "In welchem Ka
   { text: "Der Arbeitgeber überweist das Januargehalt 02 bereits am 28.12.01.", richtig: 1, erkl: "Laufender Arbeitslohn: maßgeblich ist das Ende des Lohnzahlungszeitraums (Januar 02), nicht die Zahlung → 02 (§ 38a Abs. 1 S. 2 EStG).", normen: ["EStG 38a 1"] },
   { text: "Eine Tantieme für das Geschäftsjahr 01 wird nach Feststellung des Jahresabschlusses am 20.03.02 ausgezahlt.", richtig: 1, erkl: "Tantieme = sonstiger Bezug → Zufluss in 02 (§ 38a Abs. 1 S. 3 EStG).", normen: ["EStG 38a 1"] },
   { text: "Das Urlaubsgeld für den Sommerurlaub 02 zahlt der Arbeitgeber schon am 30.12.01 aus.", richtig: 0, erkl: "Urlaubsgeld = sonstiger Bezug → maßgeblich ist der Zufluss am 30.12.01 → 01 (§ 38a Abs. 1 S. 3 EStG).", normen: ["EStG 38a 1"] },
+  { text: "Wegen einer Umstellung der Lohnsoftware wird das Dezembergehalt 01 einer Arbeitnehmerin erst am 18.01.02 überwiesen.", richtig: 0, erkl: "Laufender Arbeitslohn für das Vorjahr, der innerhalb der ersten drei Wochen des Folgejahres zufließt, bleibt laufender Arbeitslohn → Lohnzahlungszeitraum Dezember 01 → 01 (§ 38a Abs. 1 S. 2 EStG, R 39b.2 Abs. 1 Nr. 7 LStR).", normen: ["EStG 38a 1"] },
+  { text: "Das Dezembergehalt 01 wird wegen einer Insolvenz des Arbeitgebers erst am 20.02.02 nachgezahlt.", richtig: 1, erkl: "Zufluss später als drei Wochen nach Jahresende → Nachzahlung ist ein sonstiger Bezug (R 39b.2 Abs. 2 S. 2 Nr. 8 LStR) → Jahr des Zuflusses 02 (§ 38a Abs. 1 S. 3 EStG).", normen: ["EStG 38a 1"] },
   { text: "Das Ruhegehalt eines Pensionärs für Dezember 01 wird am 02.01.02 überwiesen.", richtig: 0, erkl: "Laufende Versorgungsbezüge sind laufender Arbeitslohn → Lohnzahlungszeitraum Dezember 01 → 01 (§ 38a Abs. 1 S. 2 EStG).", normen: ["EStG 38a 1"] },
 ]);
 
@@ -558,6 +560,12 @@ const elfFall = F("est-11-fall", "est-zufluss", "In welchem Kalenderjahr ist die
     erkl: "Keine regelmäßig wiederkehrende Ausgabe (einmalige Warenrechnung) → Abflussprinzip: BA im Jahr der Zahlung 02 (§ 11 Abs. 2 S. 1 EStG).", normen: ["EStG 11 2"] },
   { text: "Ein Handelsvertreter (§ 4 Abs. 3 EStG) zahlt die Kfz-Versicherung für das Jahr 02 (fällig 01.01.02) bereits am 10.12.01.", richtig: 0,
     erkl: "Die Zahlung am 10.12. liegt außerhalb der kurzen Zeit (22.12. – 10.01.) → § 11 Abs. 2 S. 2 greift nicht; Abfluss in 01.", normen: ["EStG 11 2"] },
+  { text: "Ein Vermieter nimmt für sein Mietshaus ein Darlehen auf (Laufzeit 10 Jahre). Die Bank behält bei der Auszahlung am 15.12.01 ein marktübliches Damnum von 3 % ein.", richtig: 0,
+    erkl: "Abfluss mit Einbehalt bei Auszahlung; ein marktübliches Damnum wird nicht nach § 11 Abs. 2 S. 3 EStG verteilt (§ 11 Abs. 2 S. 4 EStG) → Werbungskosten in 01.", normen: ["EStG 11 2"] },
+  { text: "Der Alleingesellschafter einer GmbH (Anteile im Privatvermögen) beschließt am 15.12.01 eine Gewinnausschüttung; ausgezahlt wird am 20.02.02.", richtig: 0,
+    erkl: "Beherrschender Gesellschafter: Zufluss bereits mit dem Ausschüttungsbeschluss, da er über die Auszahlung verfügen kann (vgl. H 20.2 „Zuflusszeitpunkt bei Gewinnausschüttungen“ EStH) → 01.", normen: ["EStG 11 1"] },
+  { text: "Eine Kleinaktionärin (Anteile im Privatvermögen) erhält die am 15.12.01 beschlossene Dividende am 05.01.02 gutgeschrieben.", richtig: 1,
+    erkl: "Nicht beherrschend → Zufluss mit Gutschrift (§ 11 Abs. 1 S. 1 EStG) → 02.", normen: ["EStG 11 1"] },
   { text: "Eine selbständige Ärztin lässt ihre Privathonorare von einer Verrechnungsstelle einziehen. Diese vereinnahmt im Dezember 01 12.000 € und überweist sie am 08.01.02 an die Ärztin.", richtig: 0,
     erkl: "Zahlungen an einen Bevollmächtigten fließen dem Steuerpflichtigen bereits mit Eingang beim Bevollmächtigten zu (R 11 S. 1, 2 EStR) → Betriebseinnahmen 01.", normen: ["EStG 11 1"] },
   { text: "Ein Arbeitnehmer zahlt sein Monatsticket für Dezember 01 (fällig 01.12.01) wegen eines Fehlers der App erst am 04.01.02.", richtig: 1,
