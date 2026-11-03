@@ -132,6 +132,12 @@ export const KOMPAKT_EST = {
 
   "est-einnahmen": {
     satz: "Einnahmen sind alle Güter in Geld oder Geldeswert, die im Rahmen einer Überschusseinkunftsart zufließen – manche davon stellt § 3 EStG ausdrücklich steuerfrei.",
+    schema: [
+      "Ist der Zufluss einer der sieben Einkunftsarten zuzuordnen (§ 2 Abs. 1 EStG)? Nein → nicht steuerbar, keine Besteuerung",
+      "Ja → steuerbar: Betriebseinnahme (Gewinneinkünfte) bzw. Einnahme (§ 8 Abs. 1 EStG, Überschusseinkünfte)",
+      "Steuerbefreiung nach §§ 3 ff. EStG? Ja → steuerfrei",
+      "Nein → steuerbar und steuerpflichtig; Zeitpunkt nach § 11 EStG bzw. § 38a EStG",
+    ],
     zahlen: [["50 €", "Sachbezugsfreigrenze monatlich"], ["60 €", "Aufmerksamkeit (Sachgeschenk, persönlicher Anlass)"], ["1.080 €", "Rabattfreibetrag (§ 8 Abs. 3)"], ["3.300 € / 960 €", "Übungsleiter / Ehrenamt"], ["960 € + 288 €", "Versorgungsfreibetrag + Zuschlag (Beginn 2026)"]],
     punkte: [
       "**Einnahmen (§ 8 Abs. 1 EStG):** alle Güter in Geld oder Geldeswert, die dem Steuerpflichtigen im Rahmen einer der Einkunftsarten des § 2 Abs. 1 Nr. 4–7 zufließen.",
@@ -179,15 +185,24 @@ export const KOMPAKT_EST = {
       "**Typische Fälle:** Miete, Zinsen, **USt-Vorauszahlungen** (fällig am 10.01.), Versicherungsbeiträge (§ 11 Abs. 1 S. 2, Abs. 2 S. 2 EStG; Fälligkeit der USt-Vorauszahlung § 18 Abs. 1 S. 4 UStG).",
       "**Vorauszahlungen für eine Nutzungsüberlassung von mehr als 5 Jahren** können gleichmäßig verteilt werden (Einnahmen: Wahlrecht, § 11 Abs. 1 S. 3; Ausgaben: Pflicht, § 11 Abs. 2 S. 3 EStG).",
       "**Arbeitslohn (§ 11 Abs. 1 S. 4 i. V. m. § 38a Abs. 1 EStG):** **laufender Arbeitslohn** (Monatsgehalt, laufende Pension) gilt im Kalenderjahr als bezogen, in dem der **Lohnzahlungszeitraum endet** – Dezembergehalt im Januar gezahlt → altes Jahr. **Sonstige Bezüge** (Weihnachtsgeld, Urlaubsgeld, Jubiläumszuwendung, Tantieme) zählen im Jahr des **Zuflusses** (§ 38a Abs. 1 S. 3 EStG) – keine 10-Tage-Regel.",
+      "**Drei-Wochen-Grenze:** Laufender Arbeitslohn für das abgelaufene Jahr, der erst **später als drei Wochen** nach Jahresende zufließt, ist ein **sonstiger Bezug** → Jahr des Zuflusses (R 39b.2 Abs. 1 Nr. 7, Abs. 2 S. 2 Nr. 8 LStR, § 38a Abs. 1 S. 3 EStG).",
+      "**Damnum/Disagio:** Ein **marktübliches** Damnum ist im Jahr der Zahlung bzw. des Einbehalts sofort abziehbar – keine Verteilung nach § 11 Abs. 2 S. 3 EStG (§ 11 Abs. 2 S. 4 EStG).",
+      "**Gewinnausschüttungen:** Zufluss grundsätzlich mit Gutschrift; beim **beherrschenden Gesellschafter** schon mit dem Ausschüttungsbeschluss, da er über die Auszahlung bestimmen kann (vgl. H 20.2 „Zuflusszeitpunkt bei Gewinnausschüttungen“ EStH).",
       "**Nicht nach § 11:** AfA auf abnutzbare Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 7 i. V. m. § 7 EStG) – sie wird über die Nutzungsdauer verteilt, egal wann bezahlt wurde – und die Gewinnermittlung durch Bestandsvergleich.",
     ],
     fallen: [
       "Die 10-Tage-Regel gilt nur für regelmäßig wiederkehrende Zahlungen – nicht für einmalige (§ 11 Abs. 1 S. 2 EStG).",
       "Nicht das Rechnungsdatum, sondern der Zahlungszeitpunkt entscheidet (§ 11 Abs. 1 S. 1, Abs. 2 S. 1 EStG).",
+      "Die 10-Tage-Regel gilt **nie für Arbeitslohn** – dort entscheidet § 38a Abs. 1 S. 2, 3 EStG (§ 11 Abs. 1 S. 4 EStG).",
     ],
   },
 
   "est-werbungskosten": {
+    schema: [
+      "Ist die Aufwendung beruflich bzw. betrieblich veranlasst? Ja → Werbungskosten (§ 9 EStG) bzw. Betriebsausgabe (§ 4 Abs. 4 EStG)",
+      "Nein → nicht abziehbare Kosten der Lebensführung (§ 12 Nr. 1 EStG), ggf. Sonderausgaben oder außergewöhnliche Belastungen",
+      "Teilweise (gemischte Aufwendung) → objektiver Maßstab: unter 10 % privat → voll abziehbar; unter 10 % beruflich → nicht abziehbar; dazwischen aufteilen",
+    ],
     satz: "Werbungskosten sind alle Aufwendungen, die durch die Einnahmeerzielung veranlasst sind – wer weniger als 1.230 € nachweist, bekommt als Arbeitnehmer den Pauschbetrag (§ 9 Abs. 1 S. 1, § 9a S. 1 Nr. 1 a EStG).",
     zahlen: [["1.230 €", "Arbeitnehmer-Pauschbetrag"], ["102 €", "Pauschbetrag Versorgungsbezüge/Renten"], ["+ Gewerkschaft", "seit 2026 zusätzlich zum Pauschbetrag"]],
     punkte: [
