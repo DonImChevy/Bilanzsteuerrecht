@@ -49,7 +49,7 @@ Deploy über GitHub Pages (`.github/workflows/pages.yml`). Antworten an den Nutz
 ## Präsenztest-Trainer (`web/testtrainer/`)
 Eigene PWA unter `…/testtrainer/` für den Präsenztest der Bundesbank (23.11.2026; Online-Test PERLS/eligo). Nutzt `../css/style.css` und `../js/icons.js`, eigene Stile in `css/tt.css`, eigener Service Worker `sw.js` (`VERSION` `tt-vN` erhöhen, neue Dateien in `DATEIEN`; Caches `tt-*`, der Haupt-SW löscht nur `bsr-*`).
 - Module wie im Ergebnisbericht: Verarbeitungsgeschwindigkeit (`vg.js`, Formen-Gleichungen, Legende 1–9 unten links), Angewandtes Schlussfolgern (`logik.js`: Szenarien mit allen möglichen Fällen, Antwort richtig/unbestimmt/falsch wird **berechnet**), Umgang mit Zahlen (`zahlen.js`, seed-basierte Generatoren inkl. Ableitungen/Graphen), Englisch (`englisch.js`: Sätze ergänzen, Satzbau und Verstehen, Lückentext, Texte zuordnen – eigene Texte).
-- `typen.js` Registry (`erzeuge(typ, seed, stufe, idx)` reproduzierbar), `speicher.js` (localStorage `tt.stat.v1`, Lernkartei je Typ, Fehlerprotokoll, Export/Import), `plan.js` (Phasen bis 23.11., Tagesplan; Schwerpunkt Verarbeitungsgeschwindigkeit + Englisch Satzbau/Lückentext).
+- `typen.js` Registry (`erzeuge(typ, seed, stufe, idx)` reproduzierbar), `speicher.js` (localStorage `tt.stat.v1`, Lernkartei je Typ, Fehlerprotokoll, Export/Import), `plan.js` (Phasen bis 23.11., Tagesplan; Schwerpunkt Mathe täglich – ein Typ pro Tag im Zyklus `MATHE_ZYKLUS`, ab 17.11. der schwächste – plus Formen-Sprint; zuerst der Einstiegstest).
 - Keine Originalaufgaben aus dem Test übernehmen, nur eigene Aufgaben im gleichen Format. Tests: `node --test web/testtrainer/tests/*.test.mjs`.
 
 ## Design

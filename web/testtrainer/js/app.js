@@ -103,6 +103,7 @@ function blockEnde(zeitUm = false) {
 function sessionEnde() {
   const s = state.s;
   if (s.planId) S.planErledigt(s.planId);
+  if (s.art === "einstieg") { S.stat.einstiegFertig = heute(); S.speichern(); }
   if (s.art === "simulation") S.simSpeichern({ t: Date.now(), kurz: !!s.kurz, bloecke: s.ergebnisse.map((e) => ({ titel: e.titel, prozent: e.prozent, richtig: e.richtig, gesamt: e.gesamt })) });
   state.ergebnis = { titel: s.titel, art: s.art, ergebnisse: s.ergebnisse, farbe: s.farbe };
   state.offen = -1; state.s = null; state.view = "ergebnis";
@@ -168,9 +169,9 @@ function simulation(kurz = false, planId) {
   });
 }
 
-function einstieg() {
+function einstieg(planId) {
   starten({
-    art: "einstieg", titel: "Einstiegstest", farbe: BEREICH.zahlen.farbe,
+    art: "einstieg", titel: "Einstiegstest", farbe: BEREICH.zahlen.farbe, planId,
     bloecke: [{ titel: "Einstiegstest Mathe", liste: Array.from({ length: EINSTIEG_ANZAHL }, (_, i) => ({ typ: "einstieg", seed: i })), anzahl: EINSTIEG_ANZAHL, zeitModus: "keine", feedback: "ende" }],
   });
 }
@@ -188,8 +189,11 @@ function planStarten(item) {
   if (st.sprint) return sprint(st.sprint, item.id);
   if (st.simulation) return simulation(false, item.id);
   if (st.fehler) return fehlerTraining(item.id);
+  if (st.einstieg) return einstieg(item.id);
   lernSession({ typen: st.typen, bereich: st.bereich, anzahl: st.anzahl, modus: st.modus || "lernen", stufe: phase(heute()).id === "verstehen" ? 2 : 3, titel: item.titel, planId: item.id });
 }
+
+const planOpts = () => ({ schwach: S.schwaechste(3), fehler: S.offeneFehler().length, einstiegFertig: !!S.stat.einstiegFertig });
 
 // ======================================================= views
 function tabbar() {
@@ -200,7 +204,7 @@ function tabbar() {
 function startView() {
   const h = heute(), p = phase(h), rest = tageBisTest(h);
   const ziel = S.stat.einst.ziel, n = S.heuteAnzahl(), serie = S.serie();
-  const plan = tagesplan(h, { schwach: S.schwaechste(1), fehler: S.offeneFehler().length });
+  const plan = tagesplan(h, planOpts());
   const erledigt = S.stat.plan[h] || [];
   const naechster = plan.find((x) => !erledigt.includes(x.id));
   const countdown = rest > 0 ? `Noch <b>${rest}</b> ${rest === 1 ? "Tag" : "Tage"} bis zum Präsenztest` : rest === 0 ? "<b>Heute</b> ist Testtag" : "Präsenztest vorbei";
@@ -450,8 +454,8 @@ function reviewZeile(a, w, key) {
 // ----- plan
 function planView() {
   const h = heute(), p = phase(h);
-  const plan = tagesplan(h, { schwach: S.schwaechste(1), fehler: S.offeneFehler().length }), erledigt = S.stat.plan[h] || [];
-  const wochenplan = [["Mo", "Logik"], ["Di", "Zahlen"], ["Mi", "Englisch"], ["Do", "Logik"], ["Fr", "Zahlen"], ["Sa", "Englisch"], ["So", "Simula­tion"]];
+  const plan = tagesplan(h, planOpts()), erledigt = S.stat.plan[h] || [];
+  const wochenplan = [["Mo", "Logik"], ["Di", "Englisch A"], ["Mi", "Englisch B + Mathe-Mix"], ["Do", "Logik"], ["Fr", "Englisch A"], ["Sa", "Englisch B + Mathe-Mix"], ["So", "Simula­tion"]];
   const wt = (new Date(h + "T12:00:00").getDay() + 6) % 7;
   return `
   <h1 class="titel">Lernplan</h1>
@@ -462,8 +466,8 @@ function planView() {
     return `<div class="phase ${aktiv ? "aktiv" : h > x.bis ? "vorbei" : ""}"><span class="ph-punkt"></span><div><b>${esc(x.titel)}</b><span class="sub">${von ? "ab " + new Date(S.plusTage(von, 1) + "T12:00:00").toLocaleDateString("de-DE", { day: "numeric", month: "numeric" }) + " · " : "bis " + new Date(x.bis + "T12:00:00").toLocaleDateString("de-DE", { day: "numeric", month: "numeric" }) + " · "}${esc(x.text)}</span></div></div>`;
   }).join("")}</div></div>
   <div class="gruppe"><div class="gruppe-titel">Täglicher Schwerpunkt</div>
-    <div class="hinweis-box"><span class="symbol">${ic("blitz")}</span><div><b>Jeden Tag:</b> Formen-Sprint (Verarbeitungsgeschwindigkeit) und Englisch Satzbau + Lückentext – das sind laut Online-Ergebnis die Module mit dem meisten Potenzial. Zahlen und Schlussfolgern laufen zum Warmhalten im Wechsel mit.</div></div></div>
-  <div class="gruppe"><div class="gruppe-titel">Wechselbereich</div><div class="gruppe-fuss" style="margin:0 4px 8px">Logik = Schlussfolgern · Englisch = Sätze ergänzen + Texte zuordnen</div><div class="wochen-raster">${wochenplan.map(([d, t], i) => `<div class="wr-tag ${i === wt ? "heute" : ""}"><b>${d}</b><span>${esc(t)}</span></div>`).join("")}</div></div>
+    <div class="hinweis-box"><span class="symbol">${ic("prozent")}</span><div><b>Jeden Tag:</b> Mathe (ca. 25 Min, jeden Tag ein anderer Aufgabentyp, bis alle neun sitzen – ab 17.11. automatisch dein schwächster) und ein Formen-Sprint. Schlussfolgern und Englisch laufen im Wechsel mit. Rechne jede Aufgabe selbst auf Papier, ohne Taschenrechner – genau so wird vor Ort geprüft.</div></div></div>
+  <div class="gruppe"><div class="gruppe-titel">Wechselbereich</div><div class="gruppe-fuss" style="margin:0 4px 8px">Logik = Schlussfolgern · Englisch A = Satzbau + Lückentext · Englisch B = Sätze ergänzen + Texte zuordnen</div><div class="wochen-raster">${wochenplan.map(([d, t], i) => `<div class="wr-tag ${i === wt ? "heute" : ""}"><b>${d}</b><span>${esc(t)}</span></div>`).join("")}</div></div>
   <div class="gruppe"><div class="gruppe-titel">Heute · ${esc(datumLang(h))}</div><div class="plan-liste">${plan.map((x, i) => planKarte(x, erledigt.includes(x.id), i)).join("")}</div></div>`;
 }
 
@@ -558,7 +562,7 @@ const AKTIONEN = {
   typStart: (v) => lernSession({ typen: [v], modus: "lernen", stufe: 2 }),
   bereichStart: () => lernSession({ bereich: state.bereich }),
   sprint: (v) => sprint(Number(v)),
-  plan: (v) => { const item = tagesplan(heute(), { schwach: S.schwaechste(1), fehler: S.offeneFehler().length }).find((x) => x.id === v); if (item) planStarten(item); },
+  plan: (v) => { const item = tagesplan(heute(), planOpts()).find((x) => x.id === v); if (item) planStarten(item); },
   simStart: () => { state.view = "simStart"; render(); window.scrollTo(0, 0); },
   simKurz: (v) => { state.simKurz = v === "1"; render(); },
   simLos: () => simulation(state.simKurz),

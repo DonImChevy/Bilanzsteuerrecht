@@ -1,6 +1,6 @@
 // Service Worker for the Präsenztest-Trainer (scope ./testtrainer/): stores the whole app for offline use.
 // Bump VERSION with every change so devices load the update.
-const VERSION = "tt-v1";
+const VERSION = "tt-v2";
 const DATEIEN = [
   "./",
   "./index.html",

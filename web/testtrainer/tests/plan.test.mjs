@@ -1,7 +1,7 @@
 // Plan and progress logic (pure functions, no browser needed).
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { phase, tagesplan, tageBisTest } from "../js/plan.js";
+import { phase, tagesplan, tageBisTest, matheDesTages } from "../js/plan.js";
 import * as S from "../js/speicher.js";
 import { erzeuge } from "../js/typen.js";
 
@@ -18,14 +18,19 @@ test("Phasen bis zum Präsenztest", () => {
 
 test("Tagesplan: Schwerpunkte täglich, Wechselbereich nach Wochentag", () => {
   const di = tagesplan("2026-11-03").map((x) => x.id);
-  assert.deepEqual(di.slice(0, 2), ["sprint", "e-fokus"]);
-  assert.ok(di.includes("w-zahlen"), "Dienstag = Zahlen");
+  assert.deepEqual(di.slice(0, 2), ["mathe", "sprint"]);
+  assert.ok(di.includes("w-englisch1"), "Dienstag = Englisch Satzbau/Lückentext");
+  assert.equal(tagesplan("2026-11-03", { einstiegFertig: false })[0].id, "einstieg");
   assert.ok(tagesplan("2026-11-02").some((x) => x.id === "w-logik"), "Montag = Schlussfolgern");
   assert.ok(tagesplan("2026-11-08").some((x) => x.id === "w-sim"), "Sonntag = Simulation");
-  assert.equal(tagesplan("2026-11-12")[1].start.modus, "tempo");
+  assert.equal(tagesplan("2026-11-12")[0].start.modus, "tempo");
+  // maths cycle covers all nine types on consecutive days
+  const typen = new Set(Array.from({ length: 9 }, (_, i) => matheDesTages(`2026-11-${String(3 + i).padStart(2, "0")}`)));
+  assert.equal(typen.size, 9);
+  assert.equal(matheDesTages("2026-11-18", "z-zins"), "z-zins", "ab 17.11. schwächster Mathetyp");
   assert.ok(tagesplan("2026-11-18", { fehler: 3 }).some((x) => x.id === "fehler"));
   assert.equal(tagesplan("2026-11-23").length, 1);
-  assert.match(tagesplan("2026-11-03", { schwach: ["z-zins"] }).at(-1).text, /Zinsrechnung/);
+  assert.match(tagesplan("2026-11-03", { schwach: ["logik"] }).at(-1).text, /Regeltexte/);
 });
 
 test("Erfassen, Fehlerprotokoll und Lernkartei auf Typ-Ebene", () => {
