@@ -46,6 +46,12 @@ Deploy über GitHub Pages (`.github/workflows/pages.yml`). Antworten an den Nutz
 - Normtexte: `python3 -I tools/bilr_normen.py` erzeugt `*/normen.js` aus Gesetzesdateien. Tabellen im Gesetz (Versorgungsfreibetrag, § 19 Abs. 2 EStG) als Zeilen mit „ | “ – `saetze()` zählt den Satz nach der Tabelle mit, `normTabelle()` (app.js) zeigt sie als Raster.
 - Schemata als Grafik statt Normtext: `bilr/gliederung.js` (§ 266 HGB) und `est/r2.js` (R 2 EStR, Ausgabe 2025 des amtlichen ESt-Handbuchs; als Norm `EStR 2` im Index, Zitate „R 2 Abs. 1 EStR“ werden antippbar).
 
+## Präsenztest-Trainer (`web/testtrainer/`)
+Eigene PWA unter `…/testtrainer/` für den Präsenztest der Bundesbank (23.11.2026; Online-Test PERLS/eligo). Nutzt `../css/style.css` und `../js/icons.js`, eigene Stile in `css/tt.css`, eigener Service Worker `sw.js` (`VERSION` `tt-vN` erhöhen, neue Dateien in `DATEIEN`; Caches `tt-*`, der Haupt-SW löscht nur `bsr-*`).
+- Module wie im Ergebnisbericht: Verarbeitungsgeschwindigkeit (`vg.js`, Formen-Gleichungen, Legende 1–9 unten links), Angewandtes Schlussfolgern (`logik.js`: Szenarien mit allen möglichen Fällen, Antwort richtig/unbestimmt/falsch wird **berechnet**), Umgang mit Zahlen (`zahlen.js`, seed-basierte Generatoren inkl. Ableitungen/Graphen), Englisch (`englisch.js`: Sätze ergänzen, Satzbau und Verstehen, Lückentext, Texte zuordnen – eigene Texte).
+- `typen.js` Registry (`erzeuge(typ, seed, stufe, idx)` reproduzierbar), `speicher.js` (localStorage `tt.stat.v1`, Lernkartei je Typ, Fehlerprotokoll, Export/Import), `plan.js` (Phasen bis 23.11., Tagesplan; Schwerpunkt Verarbeitungsgeschwindigkeit + Englisch Satzbau/Lückentext).
+- Keine Originalaufgaben aus dem Test übernehmen, nur eigene Aufgaben im gleichen Format. Tests: `node --test web/testtrainer/tests/*.test.mjs`.
+
 ## Design
 - `web/css/style.css`: Basis oben, darunter „Design 2.0“ (Glas, Leuchten, 3D-Knöpfe) und Komponenten wie `.themen-karte`.
 - Animationen: Schalter „Animationen“ (`state.bewegungAus`, Einstellung `bewegungAus`, synchronisiert) setzt `data-bewegung="an|aus"` auf `<html>`; Startwert = Systemeinstellung. Reduzierte Bewegung in CSS über `:root[data-bewegung="aus"] …`, nicht über `prefers-reduced-motion`.

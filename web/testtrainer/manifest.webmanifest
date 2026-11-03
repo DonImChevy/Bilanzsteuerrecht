@@ -1,0 +1,17 @@
+{
+  "name": "Präsenztest-Trainer",
+  "short_name": "Testtrainer",
+  "description": "Training für den Präsenztest: Zahlen, Schlussfolgern, Verarbeitungsgeschwindigkeit, Englisch – offline.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#eef0f8",
+  "theme_color": "#4f46e5",
+  "icons": [
+    { "src": "../icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "../icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "../icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
