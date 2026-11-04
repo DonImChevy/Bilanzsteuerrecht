@@ -125,6 +125,7 @@ export const KOMPAKT_OER = {
       "**Fraktionen (§ 10 GOBT):** Vereinigungen von mindestens **5 % der Mitglieder** derselben Partei; Ausschüsse werden spiegelbildlich besetzt.",
       "**Mehrheiten:** einfache Mehrheit der abgegebenen Stimmen (Art. 42 Abs. 2 GG); Mehrheit der Mitglieder (Art. 121 GG, „Kanzlermehrheit“); zwei Drittel für Verfassungsänderungen.",
       "**Kontrollrechte:** Zitierrecht (Art. 43 GG), Untersuchungsausschuss auf Antrag eines Viertels (Art. 44 GG), Fragerecht, Misstrauensvotum (Art. 67 GG).",
+      "**Untersuchungsausschuss (Art. 44 GG):** schärfstes Kontrollinstrument. Der Bundestag **darf** ihn einsetzen und **muss** es auf Antrag eines **Viertels** seiner Mitglieder (Minderheitenrecht, bei 630 Mitgliedern 158). Er erhebt Beweise in **öffentlicher** Verhandlung (Ausschluss möglich, Abs. 1), nach den Regeln des **Strafprozesses** sinngemäß – das Brief-, Post- und Fernmeldegeheimnis bleibt geschützt (Abs. 2). Gerichte und Behörden leisten **Rechts- und Amtshilfe** (Abs. 3). Seine Beschlüsse kann kein Gericht überprüfen, die Gerichte bleiben aber in ihrer eigenen Würdigung frei (Abs. 4). Sonderfall: Der **Verteidigungsausschuss** hat die Rechte eines Untersuchungsausschusses (Art. 45a Abs. 2 GG).",
       "**Kein Selbstauflösungsrecht:** Auflösung nur durch den Bundespräsidenten nach Art. 63 Abs. 4 S. 3 oder Art. 68 GG.",
     ],
     fallen: [
