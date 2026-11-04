@@ -137,7 +137,7 @@ export const BEISPIELE_OER = {
       aufgabe: "a) Wie heißt die erste Sitzung und wann findet sie statt? b) Hat die A-Fraktion Recht?",
       loesung: [
         "a) Konstituierende Sitzung, spätestens am 30. Tag nach der Wahl (Art. 39 Abs. 2 GG).",
-        "b) Jede Fraktion ist durch mindestens einen Vizepräsidenten vertreten (§ 2 Abs. 1 S. 2 GOBT). Die Vizepräsidenten werden aber gewählt (Art. 40 Abs. 1 S. 1 GG), und die Abgeordneten sind bei der Wahl frei (Art. 38 Abs. 1 S. 2 GG). Die Fraktion hat nur ein Vorschlagsrecht, keinen Anspruch auf die Wahl ihres Kandidaten.",
+        "b) Bei der Zahl der Vizepräsidenten ist jede Fraktion mit mindestens einem Amt zu berücksichtigen (§ 2a Abs. 1 S. 1 GOBT). Die Vizepräsidenten werden aber gewählt (Art. 40 Abs. 1 S. 1 GG), und die Abgeordneten sind bei der Wahl frei (Art. 38 Abs. 1 S. 2 GG). Die Fraktion hat nur ein Vorschlagsrecht, keinen Anspruch auf die Wahl ihres Kandidaten.",
       ],
     },
     {
