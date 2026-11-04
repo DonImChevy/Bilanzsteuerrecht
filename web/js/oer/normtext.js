@@ -7,11 +7,12 @@ import { NORMEN_BILR_ZUSATZ } from "../bilr/normen_zusatz.js";
 import { NORMEN_UST } from "../ust/normen.js";
 import { NORMEN_ESTR } from "../est/r2.js";
 import { NORMEN_AO } from "../ao/normen.js";
+import { NORMEN_GOBT } from "./gobt.js";
 
 // Ein Paragraf kann in mehreren Modulen vorkommen (z. B. § 12 EStG): Absätze werden vereinigt,
 // faecher nennt die Module, in deren Nachschlagen-Liste er erscheint.
 const INDEX = new Map();
-for (const [fach, liste] of [["oer", NORMEN_OER], ["bsr", [...NORMEN_BILR, ...NORMEN_BILR_ZUSATZ]], ["est", [...NORMEN_EST, ...NORMEN_EST_BGB, ...NORMEN_ESTR]], ["ust", NORMEN_UST], ["ao", NORMEN_AO]]) {
+for (const [fach, liste] of [["oer", [...NORMEN_OER, ...NORMEN_GOBT]], ["bsr", [...NORMEN_BILR, ...NORMEN_BILR_ZUSATZ]], ["est", [...NORMEN_EST, ...NORMEN_EST_BGB, ...NORMEN_ESTR]], ["ust", NORMEN_UST], ["ao", NORMEN_AO]]) {
   for (const n of liste) {
     const k = `${n.g} ${n.nr}`, da = INDEX.get(k);
     if (!da) { INDEX.set(k, { ...n, faecher: [fach] }); continue; }
@@ -61,7 +62,7 @@ export function normenAusText(text) {
     const ref = m[2] && norm(`GG ${nr} ${m[2]}`) ? `GG ${nr} ${m[2]}` : `GG ${nr}`;
     if (!refs.includes(ref) && !refs.includes(`GG ${nr}`)) refs.push(ref);
   }
-  for (const m of String(text).matchAll(/§§?[\s\u00a0]*([^§]*?)[\s\u00a0](HGB|AO|EStG|UStG|BWahlG|PartG|LStDV)\b/g)) {
+  for (const m of String(text).matchAll(/§§?[\s\u00a0]*([^§]*?)[\s\u00a0](HGB|AO|EStG|UStG|BWahlG|PartG|LStDV|GOBT)\b/g)) {
     const g = m[2];
     let vorher = null;
     for (const teil of m[1].split(/,|\bi\.\s?V\.\s?m\.|\bund\b/)) {

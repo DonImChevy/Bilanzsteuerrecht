@@ -5,6 +5,13 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-gobt",
+    datum: "2026-11-04",
+    klein: true,
+    titel: "Geschäftsordnung des Bundestages im Normen-Tab",
+    punkte: [["akte", "GOBT zum Nachschlagen", "Öffentliches Recht: die wichtigsten Paragrafen der Geschäftsordnung des Bundestages (Stand Juli 2026) – u. a. Fraktionen, Beschlussfähigkeit, Beratungen, Misstrauens- und Vertrauensantrag. Zitate wie „§ 10 GOBT“ sind jetzt antippbar."]],
+  },
+  {
     id: "2026-11-ao-modul",
     datum: "2026-11-02",
     titel: "Neues Modul: Abgabenordnung",
