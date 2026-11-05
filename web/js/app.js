@@ -33,6 +33,7 @@ import { hinweisAktiv, hinweisSenden, offeneHinweiseSenden } from "./hinweis.js"
 import { GESETZE as GESETZBUECHER, PALETTE, farbeVon, farbenCss, farbenText, farbenAusText, farbeGueltig } from "./gesetzfarben.js";
 import { zeitraum, auswerten as zeitraumAuswerten } from "./statistik.js";
 import { levelAus, xpGesamt, bonusFuerAntwort, erfolgePruefen, tagesBonus, laengsteSerie, XP } from "./level.js";
+import { vorlesen, hoerSegmente, umschalten as hoerUmschalten, springen as hoerSpringen, tempoWechseln, stopp as hoerStopp, hoertGerade, leisteAktualisieren } from "./vorlesen.js";
 import { levelZeile, levelSeite, levelFeier, erfolgBanner, levelStartFeier } from "./levelansicht.js";
 
 // ======================= Speicher =======================
@@ -733,6 +734,8 @@ function render() {
   if (scrollVoll.some(Boolean)) app.querySelectorAll(".vollbild .vb-inhalt").forEach((el, i) => { if (scrollVoll[i]) el.scrollTop = scrollVoll[i]; });
   if (scrollSheet) { const el = app.querySelector(".sheet .vb-inhalt"); if (el) el.scrollTop = scrollSheet; }
   handschriftAnbinden();
+  // Vorlesen: läuft weiter, solange das Thema offen ist; Schließen oder ein anderes Thema beendet es
+  if (hoertGerade() && !hoertGerade(state.kompakt?.id)) hoerStopp(); else leisteAktualisieren();
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
@@ -3054,6 +3057,24 @@ const AKTIONEN = {
     stat.kompakt[v] = Date.now(); speichern(); // zuletzt geöffnet (Wiederholungshilfe, kein Abhaken)
     render();
   },
+  hoeren: (v) => {
+    if (hoertGerade(v)) return hoerUmschalten();
+    vorlesen(v, hoerSegmente(KOMPAKT[v], THEMA[v]));
+  },
+  hoerenAlle: (fach) => {
+    const liste = (kompaktThemen(fach).length ? kompaktThemen(fach) : themenFuer(fach).filter((t) => KOMPAKT[t.id])).map((t) => t.id);
+    const starte = (id) => {
+      state.kompakt = { id, fach, liste: true, ausSitzung: false };
+      stat.kompakt[id] = Date.now(); speichern();
+      render(); app.querySelector(".vollbild .vb-inhalt")?.scrollTo(0, 0);
+      vorlesen(id, hoerSegmente(KOMPAKT[id], THEMA[id]), { liste, weiter: starte });
+    };
+    if (liste.length) starte(liste[0]);
+  },
+  hoerPause: () => hoerUmschalten(),
+  hoerSprung: (v) => hoerSpringen(Number(v)),
+  hoerTempo: () => tempoWechseln(),
+  hoerStopp: () => hoerStopp(),
   kompaktListe: () => { state.kompakt = { id: null, fach: state.fach, liste: true }; render(); },
   kompaktZu: () => { state.kompakt = state.kompakt?.id && state.kompakt.liste ? { id: null, fach: state.kompakt.fach, liste: true } : null; render(); },
   kompaktUeben: (v) => { state.kompakt = null; AKTIONEN.thema(v); },

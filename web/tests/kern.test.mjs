@@ -969,3 +969,20 @@ test("Rangliste: Profil-ID geht beim Abgleich nicht verloren, Doppelungen werden
   const v = { mitglieder: { neu: { name: "Lisa", xp: 5, fest: 1, t: 30 * tag }, verwaist: { name: "Lisa", xp: 80, fest: 1, t: 10 * tag } } };
   assert.deepEqual(rangliste(v, "gesamt").map((e) => e.id), ["neu"]);
 });
+
+test("Vorlesen: Normen und Abkürzungen ausgeschrieben, jeder Überblick hat einen hörbaren Ablauf", async () => {
+  const { sprechbar, hoerSegmente, saetze } = await import("../js/vorlesen.js");
+  const { KOMPAKT } = await import("../js/kompakt.js");
+  assert.equal(sprechbar("**§ 11 Abs. 2 S. 4 EStG**"), "Paragraf 11 Absatz 2 Satz 4 Einkommensteuergesetz");
+  assert.equal(sprechbar("Art. 44 Abs. 1 GG i. V. m. §§ 187, 188 BGB"), "Artikel 44 Absatz 1 Grundgesetz in Verbindung mit Paragrafen 187, 188 Bürgerliches Gesetzbuch");
+  assert.equal(sprechbar("EÜR, z. B. AfA"), "Einnahmenüberschussrechnung, zum Beispiel Absetzung für Abnutzung");
+  assert.equal(sprechbar("R 2 Abs. 1 EStR"), "Richtlinie 2 Absatz 1 Einkommensteuer-Richtlinien");
+  for (const [id, k] of Object.entries(KOMPAKT)) {
+    const seg = hoerSegmente(k, THEMA[id]);
+    assert.ok(seg.length > 3, id);
+    for (const s of seg) {
+      assert.ok(!/[§*]|\bAbs\.|\bNr\./.test(s.text), `${id}: ${s.text}`);
+      for (const t of saetze(s.text)) assert.ok(t.length <= 400, `${id}: zu lang`);
+    }
+  }
+});
