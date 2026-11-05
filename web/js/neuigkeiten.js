@@ -5,6 +5,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-vorlesen",
+    datum: "2026-11-05",
+    titel: "Überblicke zum Anhören",
+    punkte: [
+      ["play", "Kompaktwissen vorlesen lassen", "Jeder Überblick hat jetzt „Anhören“: Kernsatz, Zahlen, Prüfungsschema, das Wichtigste, typische Fehler und Klausurbeispiele – Paragrafen und Abkürzungen werden ausgeschrieben („Paragraf 11 Absatz 2 Satz 4 Einkommensteuergesetz“). Der gerade gelesene Punkt leuchtet zum Mitlesen."],
+      ["wiederholen", "Pause, Springen, Tempo", "Punkt vor oder zurück, Tempo von 0,8× bis 1,3× (startet etwas langsamer). In der Themenliste: „Alle Überblicke anhören“ spielt das ganze Modul nacheinander."],
+      ["info", "Kein Speicherplatz nötig", "Es liest die eingebaute Stimme deines Geräts – nichts wird heruntergeladen, es geht auch offline. Der Bildschirm muss dabei an bleiben: Beim Sperren hält das Vorlesen an, „Weiter“ macht an derselben Stelle weiter."],
+    ],
+  },
+  {
     id: "2026-11-gobt",
     datum: "2026-11-04",
     klein: true,

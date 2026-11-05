@@ -28,6 +28,9 @@ export function kompaktText(k) {
 /** Lesezeit in Minuten (ca. 170 Wörter je Minute für Lernstoff). */
 export const lesezeit = (k) => Math.max(1, Math.round(kompaktText(k).split(/\s+/).length / 170));
 
+import { hoerSegmente, hoerMinuten, vorlesenMoeglich, hoerTempo, hoertGerade } from "./vorlesen.js";
+
+const dauerText = (min) => min < 90 ? `${min} Min.` : `${String(Math.round(min / 6) / 10).replace(".", ",")} Std.`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const ZITAT = /(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|EStDV|LStDV|VwZG|GOBT)\b|\bR \d+[a-z]?(?: Abs\. \d+)? EStR\b/g;
 
@@ -58,7 +61,7 @@ function loesungZeile(z) {
 
 /** Klausurbeispiel: Sachverhalt wie im Aufgabenblatt, darunter die Lösung auf Klausurpapier. */
 function beispielView(b, i, karte = "") {
-  return `<article class="km-bsp">
+  return `<article class="km-bsp" data-hoer="bsp-${i}">
     <div class="km-bsp-kopf"><span class="km-bsp-nr">Klausurbeispiel ${i + 1}</span><h4>${esc(b.titel)}</h4></div>
     <div class="km-sv"><span class="km-etikett">Sachverhalt</span><p>${kompaktInline(b.sv)}</p>${b.aufgabe ? `<p class="km-aufgabe"><b>Aufgabe:</b> ${kompaktInline(b.aufgabe)}</p>` : ""}</div>
     <div class="km-loesung"><span class="km-etikett">Lösung – so schreibst du es in der Klausur</span>${b.loesung.map(loesungZeile).join("")}</div>
@@ -86,21 +89,27 @@ export function kompaktView(id, h) {
   const abschnitt = (cls, titel, inhalt) => inhalt ? `<section class="km-abschnitt ${cls}"><h3>${titel}</h3>${inhalt}</section>` : "";
   // Jeder Punkt lässt sich mit „+“ als eigene Karteikarte übernehmen
   const karte = (feld, i) => (h.alsKarte ? h.alsKarte("punkt", `${id}|${feld}|${i}`, "mini") : "");
-  const liste = (arr, feld) => arr?.length ? `<ul class="km-liste">${arr.map((p, i) => `<li>${kompaktInline(p)}${karte(feld, i)}</li>`).join("")}</ul>` : "";
+  const liste = (arr, feld) => arr?.length ? `<ul class="km-liste">${arr.map((p, i) => `<li data-hoer="${feld}-${i}">${kompaktInline(p)}${karte(feld, i)}</li>`).join("")}</ul>` : "";
+  const an = hoertGerade(id);
+  const hoeren = vorlesenMoeglich() ? `<button class="hoer-start${an ? " an" : ""}" data-a="hoeren" data-v="${id}" aria-label="Überblick anhören">
+      <span class="hs-welle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      <span class="hs-text"><b>${an ? "Wird vorgelesen" : "Anhören"}</b><span>ca. ${hoerMinuten(hoerSegmente(k, t), hoerTempo())} Min. · Normen ausgeschrieben</span></span></button>` : "";
   return `<div class="vollbild kompakt" role="dialog" aria-label="Zusammenfassung ${esc(t.titel)}">
     <div class="vb-kopf"><button class="rund" data-a="kompaktZu" aria-label="Schließen">${h.ic("kreuz")}</button>
       <div class="mitte">Kompaktwissen</div><span class="km-zeit">${lesezeit(k)} Min.</span></div>
     <div class="vb-inhalt km-inhalt">
-      <header class="km-kopf"><span class="km-icon">${t.icon}</span>
+      <header class="km-kopf" data-hoer="kopf"><span class="km-icon">${t.icon}</span>
         <div><h2>${esc(t.titel)}</h2><div class="sub">${esc(t.unter)}</div></div></header>
-      <p class="km-satz">${kompaktInline(k.satz)}</p>
-      ${k.zahlen?.length ? `<div class="km-zahlen">${k.zahlen.map(([w, b]) => `<div><b>${esc(w)}</b><span>${kompaktInline(b)}</span></div>`).join("")}</div>` : ""}
-      ${abschnitt("km-schema", "Prüfungsschema", k.schema?.length ? `<ol class="km-schritte">${k.schema.map((s) => `<li>${kompaktInline(s)}</li>`).join("")}</ol>` : "")}
+      ${hoeren}
+      <p class="km-satz" data-hoer="satz">${kompaktInline(k.satz)}</p>
+      ${k.zahlen?.length ? `<div class="km-zahlen">${k.zahlen.map(([w, b], i) => `<div data-hoer="zahlen-${i}"><b>${esc(w)}</b><span>${kompaktInline(b)}</span></div>`).join("")}</div>` : ""}
+      ${abschnitt("km-schema", "Prüfungsschema", k.schema?.length ? `<ol class="km-schritte">${k.schema.map((s, i) => `<li data-hoer="schema-${i}">${kompaktInline(s)}</li>`).join("")}</ol>` : "")}
       ${abschnitt("km-kern", "Das Wichtigste", liste(k.punkte, "punkte"))}
       ${abschnitt("km-fallen", "Typische Fehler", liste(k.fallen, "fallen"))}
       ${abschnitt("km-beispiele", k.beispiele.length === 1 ? "Klausurbeispiel" : "Klausurbeispiele", k.beispiele.map((b, i) => beispielView(b, i, h.alsKarte ? `<div class="km-bsp-karte">${h.alsKarte("beispiel", `${id}|${i}`)}</div>` : "")).join(""))}
-      <p class="km-hinweis">Die Zusammenfassung gibt einen Überblick über die klausurrelevanten Punkte – sie ersetzt nicht das Skript. Paragrafen antippen, um den Gesetzestext zu lesen.</p>
+      <p class="km-hinweis" data-hoer="ende">Die Zusammenfassung gibt einen Überblick über die klausurrelevanten Punkte – sie ersetzt nicht das Skript. Paragrafen antippen, um den Gesetzestext zu lesen.</p>
     </div>
+    <div class="hoer-leiste" id="hoerLeiste" data-thema="${id}" role="region" aria-label="Vorlesen" hidden></div>
     <div class="vb-fuss km-fuss">
       ${h.ausSitzung
         ? `<button class="knopf" data-a="kompaktZu">${h.ic("zurueck", "klein")} Zurück zur Aufgabe</button>`
@@ -121,6 +130,9 @@ export function bibliothekView(fach, themen, h) {
     <div class="vb-inhalt km-inhalt">
       <header class="km-bib-kopf"><h2>Das Wichtigste für die Klausur</h2>
         <p class="sub">${mit.length} Zusammenfassungen mit Klausurbeispielen und Musterlösungen – jede Aussage mit ihrer Norm. Ideal zum Wiederholen vor dem Üben und in den Tagen vor der Klausur.</p>
+        ${vorlesenMoeglich() && mit.length ? `<button class="hoer-start hoer-alle" data-a="hoerenAlle" data-v="${fach}">
+          <span class="hs-welle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="hs-text"><b>Alle Überblicke anhören</b><span>${mit.length} Themen nacheinander, ca. ${dauerText(mit.reduce((n, t) => n + hoerMinuten(hoerSegmente(KOMPAKT[t.id], t), hoerTempo()), 0))}</span></span></button>` : ""}
 </header>
       ${plan ? `<section class="km-plan"><h3>${esc(plan.titel)}</h3>
         <ul class="km-liste">${plan.aufbau.map((p) => `<li>${kompaktInline(p)}</li>`).join("")}</ul>
