@@ -30,7 +30,7 @@ export function kompaktText(k) {
 /** Lesezeit in Minuten (ca. 170 Wörter je Minute für Lernstoff). */
 export const lesezeit = (k) => Math.max(1, Math.round(kompaktText(k).split(/\s+/).length / 170));
 
-import { hoerSegmente, hoerMinuten, vorlesenMoeglich, hoerTempo, hoertGerade } from "./vorlesen.js";
+import { hoerSegmente, hoerInfo, vorlesenMoeglich, hoertGerade, offlineMoeglich } from "./vorlesen.js";
 
 const dauerText = (min) => min < 90 ? `${min} Min.` : `${String(Math.round(min / 6) / 10).replace(".", ",")} Std.`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -93,9 +93,10 @@ export function kompaktView(id, h) {
   const karte = (feld, i) => (h.alsKarte ? h.alsKarte("punkt", `${id}|${feld}|${i}`, "mini") : "");
   const liste = (arr, feld) => arr?.length ? `<ul class="km-liste">${arr.map((p, i) => `<li data-hoer="${feld}-${i}">${kompaktInline(p)}${karte(feld, i)}</li>`).join("")}</ul>` : "";
   const an = hoertGerade(id);
-  const hoeren = vorlesenMoeglich() ? `<button class="hoer-start${an ? " an" : ""}" data-a="hoeren" data-v="${id}" aria-label="Überblick anhören">
+  const info = vorlesenMoeglich() ? hoerInfo(id, hoerSegmente(k, t)) : null;
+  const hoeren = info ? `<button class="hoer-start${an ? " an" : ""}" data-a="hoeren" data-v="${id}" aria-label="Überblick anhören">
       <span class="hs-welle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-      <span class="hs-text"><b>${an ? "Wird vorgelesen" : "Anhören"}</b><span>ca. ${hoerMinuten(hoerSegmente(k, t), hoerTempo())} Min. · Normen ausgeschrieben</span></span></button>` : "";
+      <span class="hs-text"><b>${an ? "Wird vorgelesen" : "Anhören"}</b><span>ca. ${info.min} Min. · ${info.profi ? "Sprecher Cedar" : "Gerätestimme, Normen ausgeschrieben"}</span></span></button>` : "";
   return `<div class="vollbild kompakt" role="dialog" aria-label="Zusammenfassung ${esc(t.titel)}">
     <div class="vb-kopf"><button class="rund" data-a="kompaktZu" aria-label="Schließen">${h.ic("kreuz")}</button>
       <div class="mitte">Kompaktwissen</div><span class="km-zeit">${lesezeit(k)} Min.</span></div>
@@ -134,7 +135,8 @@ export function bibliothekView(fach, themen, h) {
         <p class="sub">${mit.length} Zusammenfassungen mit Klausurbeispielen und Musterlösungen – jede Aussage mit ihrer Norm. Ideal zum Wiederholen vor dem Üben und in den Tagen vor der Klausur.</p>
         ${vorlesenMoeglich() && mit.length ? `<button class="hoer-start hoer-alle" data-a="hoerenAlle" data-v="${fach}">
           <span class="hs-welle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-          <span class="hs-text"><b>Alle Überblicke anhören</b><span>${mit.length} Themen nacheinander, ca. ${dauerText(mit.reduce((n, t) => n + hoerMinuten(hoerSegmente(KOMPAKT[t.id], t), hoerTempo()), 0))}</span></span></button>` : ""}
+          <span class="hs-text"><b>Alle Überblicke anhören</b><span>${mit.length} Themen nacheinander, ca. ${dauerText(mit.reduce((n, t) => n + hoerInfo(t.id, hoerSegmente(KOMPAKT[t.id], t)).min, 0))}</span></span></button>` : ""}
+        ${offlineMoeglich(mit.map((t) => t.id)) ? `<div class="hoer-offline" id="hoerOffline" data-fach="${fach}" data-ids="${mit.map((t) => t.id).join(",")}"></div>` : ""}
 </header>
       ${plan ? `<section class="km-plan"><h3>${esc(plan.titel)}</h3>
         <ul class="km-liste">${plan.aufbau.map((p) => `<li>${kompaktInline(p)}</li>`).join("")}</ul>

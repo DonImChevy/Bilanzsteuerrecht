@@ -1,6 +1,6 @@
 // Service Worker: speichert die komplette App für die Offline-Nutzung.
 // Bei jeder inhaltlichen Änderung VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = "bsr-v90";
+const VERSION = "bsr-v91";
 const DATEIEN = [
   "./",
   "./index.html",
@@ -17,6 +17,7 @@ const DATEIEN = [
   "./js/meinekarten.js",
   "./js/handschrift.js",
   "./js/vorlesen.js",
+  "./js/hoeraudio.js",
   "./js/maskottchen.js",
   "./js/level.js",
   "./js/levelansicht.js",
@@ -120,15 +121,29 @@ self.addEventListener("install", (e) => {
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== "bsr-audio").map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
 // Netz zuerst (immer die aktuelle Version, wenn online), bei Offline oder nach 3 s der Speicher.
+async function audioAntwort(anfrage) {
+  const gespeichert = await (await caches.open("bsr-audio")).match(anfrage.url);
+  if (!gespeichert) return fetch(anfrage);
+  const blob = await gespeichert.blob(), m = /bytes=(\d*)-(\d*)/.exec(anfrage.headers.get("range") || "");
+  const kopf = { "Content-Type": "audio/mp4", "Accept-Ranges": "bytes" };
+  if (!m) return new Response(blob, { status: 200, headers: { ...kopf, "Content-Length": String(blob.size) } });
+  const start = m[1] ? Number(m[1]) : Math.max(0, blob.size - Number(m[2])), ende = m[1] && m[2] ? Math.min(Number(m[2]), blob.size - 1) : blob.size - 1;
+  return new Response(blob.slice(start, ende + 1), { status: 206,
+    headers: { ...kopf, "Content-Length": String(ende - start + 1), "Content-Range": `bytes ${start}-${ende}/${blob.size}` } });
+}
+
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== "GET" || url.origin !== location.origin) return;
+  // Vertonte Überblicke: offline gespeicherte (Cache „bsr-audio“, Knopf „Offline speichern“) mit Teilanfragen (Range)
+  // ausliefern, damit Springen funktioniert; alles andere direkt aus dem Netz.
+  if (url.pathname.includes("/audio/")) { e.respondWith(audioAntwort(e.request)); return; }
   e.respondWith((async () => {
     const cache = await caches.open(VERSION);
     const ausCache = () => cache.match(e.request, { ignoreSearch: true })

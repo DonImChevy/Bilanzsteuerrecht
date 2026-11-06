@@ -1041,6 +1041,13 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
   background: linear-gradient(120deg, color-mix(in srgb, var(--m) 14%, var(--glas-stark)), var(--glas)); border: 1px solid color-mix(in srgb, var(--m) 26%, var(--glas-rand)); box-shadow: var(--schatten); cursor: pointer; }
 .hoer-start:active { transform: scale(0.985); }
 .hoer-alle { margin: 12px 0 0; }
+.hoer-offline { display: flex; align-items: center; gap: 12px; margin: 8px 0 0; padding: 10px 14px; border-radius: 16px; background: var(--glas); border: 1px dashed color-mix(in srgb, var(--m) 35%, var(--glas-rand)); }
+.hoer-offline:empty { display: none; }
+.ho-text { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.ho-text b { font-size: 14px; font-weight: 800; }
+.ho-text span { font-size: 12.5px; color: var(--text2); }
+.ho-knopf { flex: none; padding: 8px 14px; border-radius: 12px; font-size: 14px; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--m-licht), var(--fill)); }
+.ho-knopf.zweit { color: var(--text2); background: color-mix(in srgb, var(--m) 10%, transparent); }
 .hs-welle { flex: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; gap: 3px;
   background: linear-gradient(135deg, var(--m-licht), var(--fill)); box-shadow: 0 6px 14px -6px var(--fill); }
 .hs-welle i { width: 3px; border-radius: 3px; background: #fff; height: 8px; }
@@ -1059,6 +1066,7 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 :root[data-leistung="spar"] .hoer-leiste { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--card); }
 .hl-info { flex: 1 1 160px; min-width: 0; display: grid; gap: 2px; }
 .hl-info b { font-size: 14px; font-weight: 800; }
+.hl-stimme { font-style: normal; font-size: 11px; font-weight: 800; margin-left: 6px; padding: 1px 7px; border-radius: 999px; color: var(--accent); background: color-mix(in srgb, var(--m) 14%, transparent); vertical-align: 1px; }
 .hl-info span { font-size: 12.5px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hl-balken { height: 4px; border-radius: 4px; margin-top: 4px; background: color-mix(in srgb, var(--m) 16%, transparent); overflow: hidden; }
 .hl-balken i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--m-licht), var(--m)); transition: width 0.3s; }

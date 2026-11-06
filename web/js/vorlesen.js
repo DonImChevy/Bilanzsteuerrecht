@@ -1,6 +1,8 @@
 // Vorlesen: Kompaktwissen als gesprochener Text (für auditive Lerner, z. B. mit Kopfhörern).
-// Nutzt die eingebaute Sprachausgabe des Geräts (speechSynthesis) – nichts wird heruntergeladen, funktioniert offline.
+// Profi-Stimme: vorab vertonte Audiodateien (web/audio/<thema>.m4a, Zeitmarken in hoeraudio.js) – laufen auch bei gesperrtem
+// Bildschirm. Fehlt die Datei oder passt sie nicht mehr zum Text, liest die eingebaute Gerätestimme (speechSynthesis).
 // Rein (getestet): sprechbar() macht Text hörbar (Normen und Abkürzungen ausgeschrieben), hoerSegmente() baut den Ablauf.
+import { HOER_AUDIO } from "./hoeraudio.js";
 
 const GESETZ = {
   EStG: "Einkommensteuergesetz", UStG: "Umsatzsteuergesetz", HGB: "Handelsgesetzbuch", AO: "Abgabenordnung", GG: "Grundgesetz",
@@ -112,6 +114,27 @@ export function hoerSegmente(k, thema) {
   return seg;
 }
 
+// ---------------------------------------------------------------------------------------------
+// Profi-Stimme: vorab erzeugte Audiodateien (tools/vorlesen_audio.mjs, OpenAI gpt-4o-mini-tts, Stimme „Cedar“).
+// Gruppen = aufeinanderfolgende Segmente mit gleichem Ziel – je Gruppe eine Zeitmarke zum Mitlesen.
+export const STIMME = { name: "Cedar", version: 1 };
+export function hoerGruppen(seg) {
+  const g = [];
+  for (const s of seg) {
+    const letzte = g[g.length - 1];
+    if (letzte && letzte.ziel === s.ziel) letzte.text += "\n\n" + s.text;
+    else g.push({ ziel: s.ziel, teil: s.teil, pause: s.pause, text: s.text });
+  }
+  return g;
+}
+/** Prüfsumme über Stimme und Text: Audio passt nur, solange sich der Überblick nicht geändert hat. */
+export function hoerHash(seg) {
+  let h = 0x811c9dc5;
+  const t = `${STIMME.name}|${STIMME.version}|` + seg.map((s) => s.ziel + "|" + s.pause + "|" + s.text).join("\n");
+  for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return h.toString(36);
+}
+
 /** Hördauer in Minuten (ca. 140 Wörter je Minute bei Tempo 1, plus Pausen). */
 export function hoerMinuten(seg, tempo = 1) {
   const woerter = seg.reduce((n, s) => n + s.text.split(/\s+/).length, 0);
@@ -123,13 +146,25 @@ export function hoerMinuten(seg, tempo = 1) {
 // Abspielen (Browser). Zustand außerhalb von render(), damit die Ausgabe beim Neuzeichnen weiterläuft.
 
 export const TEMPI = [0.8, 0.9, 1, 1.15, 1.3];
+export const TEMPI_AUDIO = [0.85, 1, 1.15, 1.3, 1.5];
 const lies = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch { return d; } };
-const P = { an: false, pausiert: false, id: null, teile: [], i: 0, token: 0, tempo: Number(lies("bsr.hoerTempo", "0.9")) || 0.9, liste: null, weiter: null, zuletztZiel: null };
+const merk = (k, v) => { try { localStorage.setItem(k, v); } catch { /* egal */ } };
+const P = { an: false, pausiert: false, modus: "stimme", id: null, teile: [], i: 0, token: 0, tempo: Number(lies("bsr.hoerTempo", "0.9")) || 0.9,
+  tempoAudio: Number(lies("bsr.hoerTempoAudio", "1")) || 1, liste: null, weiter: null, zuletztZiel: null, titel: "" };
 const synth = () => (typeof window !== "undefined" && window.speechSynthesis) || null;
-export const vorlesenMoeglich = () => !!synth() && typeof SpeechSynthesisUtterance !== "undefined";
+const audioMoeglich = () => typeof window !== "undefined" && typeof Audio !== "undefined";
+export const vorlesenMoeglich = () => audioMoeglich() || (!!synth() && typeof SpeechSynthesisUtterance !== "undefined");
 export const hoerTempo = () => P.tempo;
 export const hoertGerade = (id) => P.an && (!id || P.id === id);
 export const hoertModul = () => P.an && !!P.liste;
+
+/** Vertonte Datei zum Thema – nur wenn sie zum aktuellen Text passt (sonst Gerätestimme). */
+export function audioFuer(id, seg) { const a = HOER_AUDIO[id]; return a && a.h === hoerHash(seg) ? a : null; }
+/** Für den Knopf: Profi-Stimme vorhanden? Dauer in Minuten. */
+export function hoerInfo(id, seg) {
+  const a = audioFuer(id, seg);
+  return a ? { profi: true, min: Math.max(1, Math.round(a.d / 60 / P.tempoAudio)) } : { profi: false, min: hoerMinuten(seg, P.tempo) };
+}
 
 let stimme = null;
 function stimmeWaehlen() {
@@ -139,19 +174,80 @@ function stimmeWaehlen() {
     + (/anna|petra|helena|katja|marlene/i.test(v.name) ? 1 : 0) + (/de-DE/i.test(v.lang) ? 1 : 0);
   stimme = de.sort((a, b) => punkte(b) - punkte(a))[0] || null;
 }
-if (vorlesenMoeglich()) {
+if (synth()) {
   stimmeWaehlen();
   synth().addEventListener?.("voiceschanged", stimmeWaehlen);
-  // App im Hintergrund (Bildschirm gesperrt): Ausgabe stoppt am Gerät – Stand anhalten, damit „Weiter“ an derselben Stelle fortsetzt
-  document.addEventListener("visibilitychange", () => { if (document.hidden && P.an && !P.pausiert) pause(); });
+}
+if (typeof document !== "undefined") {
+  // Gerätestimme stoppt bei gesperrtem Bildschirm – Stand anhalten. Die Profi-Stimme (Audiodatei) läuft weiter.
+  document.addEventListener("visibilitychange", () => { if (document.hidden && P.an && !P.pausiert && P.modus === "stimme") pause(); });
+}
+
+// ---------------------------------------------------------------- Profi-Stimme: ein <audio> für alles
+let el = null;
+function audioEl() {
+  if (el) return el;
+  el = new Audio();
+  el.preload = "auto";
+  el.addEventListener("timeupdate", () => {
+    if (P.modus !== "audio" || !P.an) return;
+    const t = el.currentTime; let i = 0;
+    while (i + 1 < P.teile.length && P.teile[i + 1].t <= t + 0.05) i++;
+    if (i !== P.i) { P.i = i; leisteAktualisieren(true); } else balken();
+  });
+  el.addEventListener("ended", () => { if (P.modus === "audio" && P.an) themaEnde(); });
+  el.addEventListener("error", () => {
+    if (P.modus !== "audio" || !P.an || !el.getAttribute("src")) return;
+    // Datei nicht erreichbar (offline): mit der Gerätestimme an derselben Stelle weiter
+    const ziel = P.teile[P.i]?.ziel; ersatzStimme(ziel);
+  });
+  el.addEventListener("pause", () => { if (P.modus === "audio" && P.an && !el.ended && !P.pausiert) { P.pausiert = true; leisteAktualisieren(); } });
+  el.addEventListener("play", () => { if (P.modus === "audio" && P.an && P.pausiert) { P.pausiert = false; leisteAktualisieren(); } });
+  return el;
+}
+let ersatz = null; // Segmente für den Wechsel zur Gerätestimme
+function ersatzStimme(abZiel) {
+  if (!ersatz || !synth()) return stopp();
+  el.pause(); el.removeAttribute("src");
+  const seg = ersatz, ab = Math.max(0, seg.findIndex((s) => s.ziel === abZiel));
+  starteStimme(P.id, seg, ab);
+}
+function mediaSession() {
+  if (typeof navigator === "undefined" || !navigator.mediaSession) return;
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({ title: P.titel || "Überblick", artist: "Finanzwirt-Trainer · Kompaktwissen", album: STIMME.name });
+    navigator.mediaSession.setActionHandler("play", () => fortsetzen());
+    navigator.mediaSession.setActionHandler("pause", () => pause());
+    navigator.mediaSession.setActionHandler("previoustrack", () => springen(-1));
+    navigator.mediaSession.setActionHandler("nexttrack", () => springen(1));
+    navigator.mediaSession.setActionHandler("seekbackward", () => { el.currentTime = Math.max(0, el.currentTime - 10); });
+    navigator.mediaSession.setActionHandler("seekforward", () => { el.currentTime = Math.min(el.duration || 0, el.currentTime + 10); });
+  } catch { /* ältere Browser */ }
 }
 
 /** Thema vorlesen. liste = Themen-IDs für „ganzes Modul“, weiter(id) öffnet das nächste Thema in der App. */
-export function vorlesen(id, segmente, { liste = null, weiter = null, ab = 0 } = {}) {
+export function vorlesen(id, segmente, { liste = null, weiter = null, ab = 0, titel = "" } = {}) {
   if (!vorlesenMoeglich()) return false;
+  P.token++; synth()?.cancel();
+  Object.assign(P, { liste, weiter, titel: titel || segmente[0]?.text.split(".")[0] || "" });
+  const a = audioMoeglich() ? audioFuer(id, segmente) : null;
+  if (!a) { if (el) { el.pause(); el.removeAttribute("src"); } return starteStimme(id, segmente, ab); }
+  ersatz = segmente;
+  const teil = Object.fromEntries(segmente.map((s) => [s.ziel, s.teil]));
+  Object.assign(P, { an: true, pausiert: false, modus: "audio", id, i: 0, zuletztZiel: null, teile: a.m.map(([t, ziel]) => ({ t, ziel, teil: teil[ziel] })) });
+  const e = audioEl();
+  e.src = audioUrl(id); e.playbackRate = P.tempoAudio;
+  e.play().catch(() => ersatzStimme(P.teile[0]?.ziel));
+  mediaSession();
+  leisteAktualisieren(true);
+  return true;
+}
+
+function starteStimme(id, segmente, ab = 0) {
+  if (!synth()) return false;
   P.token++; synth().cancel();
-  P.teile = segmente.flatMap((s) => saetze(s.text).map((text, j) => ({ text, ziel: s.ziel, teil: s.teil, pause: j ? 0 : s.pause })));
-  Object.assign(P, { an: true, pausiert: false, id, i: ab, liste, weiter, zuletztZiel: null });
+  P.teile = segmente.slice(ab).flatMap((s) => saetze(s.text).map((text, j) => ({ text, ziel: s.ziel, teil: s.teil, pause: j ? 0 : s.pause })));
+  Object.assign(P, { an: true, pausiert: false, modus: "stimme", id, i: 0, zuletztZiel: null });
   sprich();
   return true;
 }
@@ -179,14 +275,35 @@ function themaEnde() {
   stopp();
 }
 
-export function pause() { if (!P.an) return; P.pausiert = true; P.token++; synth()?.cancel(); leisteAktualisieren(); }
-export function fortsetzen() { if (!P.an) return; P.pausiert = false; sprich(); }
+export function pause() {
+  if (!P.an) return; P.pausiert = true;
+  if (P.modus === "audio") el?.pause(); else { P.token++; synth()?.cancel(); }
+  leisteAktualisieren();
+}
+export function fortsetzen() {
+  if (!P.an) return; P.pausiert = false;
+  if (P.modus === "audio") { el?.play().catch(() => {}); leisteAktualisieren(); } else sprich();
+}
 export function umschalten() { P.pausiert ? fortsetzen() : pause(); }
-export function stopp() { P.token++; synth()?.cancel(); Object.assign(P, { an: false, pausiert: false, id: null, teile: [], liste: null, weiter: null }); leisteAktualisieren(); }
+export function stopp() {
+  P.token++; synth()?.cancel();
+  if (el) { el.pause(); el.removeAttribute("src"); try { el.load(); } catch { /* egal */ } }
+  Object.assign(P, { an: false, pausiert: false, id: null, teile: [], liste: null, weiter: null });
+  leisteAktualisieren();
+}
 
 /** Zum nächsten / vorherigen Punkt springen (nicht Satz). */
 export function springen(richtung) {
   if (!P.an) return;
+  if (P.modus === "audio") {
+    const jetzt = el.currentTime, a = P.teile[P.i];
+    let i = richtung > 0 ? P.i + 1 : (a && jetzt - a.t > 3 ? P.i : P.i - 1);
+    if (i >= P.teile.length) return themaEnde();
+    i = Math.max(0, i);
+    el.currentTime = P.teile[i].t; P.i = i;
+    if (P.pausiert) fortsetzen(); else leisteAktualisieren(true);
+    return;
+  }
   const start = (i) => { while (i > 0 && P.teile[i - 1].ziel === P.teile[i].ziel && !P.teile[i].pause) i--; return i; };
   let i = P.i;
   if (richtung > 0) { const z = P.teile[i]?.ziel; i++; while (i < P.teile.length && P.teile[i].ziel === z && !P.teile[i].pause) i++; }
@@ -197,12 +314,89 @@ export function springen(richtung) {
 }
 
 export function tempoWechseln() {
+  if (P.an && P.modus === "audio") {
+    P.tempoAudio = TEMPI_AUDIO[(TEMPI_AUDIO.indexOf(P.tempoAudio) + 1) % TEMPI_AUDIO.length];
+    merk("bsr.hoerTempoAudio", String(P.tempoAudio));
+    if (el) el.playbackRate = P.tempoAudio;
+    leisteAktualisieren();
+    return P.tempoAudio;
+  }
   const i = TEMPI.indexOf(P.tempo);
   P.tempo = TEMPI[(i + 1) % TEMPI.length];
-  try { localStorage.setItem("bsr.hoerTempo", String(P.tempo)); } catch { /* egal */ }
+  merk("bsr.hoerTempo", String(P.tempo));
   if (P.an && !P.pausiert) { P.token++; synth().cancel(); sprich(); } else leisteAktualisieren();
   return P.tempo;
 }
+
+// ---------------------------------------------------------------- Offline speichern (je Modul)
+// Die Aufnahmen liegen im Cache „bsr-audio“ (übersteht Updates); der Service Worker spielt sie von dort mit Range ab.
+// Die Prüfsumme steht in der Adresse – eine neu vertonte Fassung wird so nicht mit der alten verwechselt.
+const AUDIO_CACHE = "bsr-audio";
+const audioUrl = (id) => `audio/${id}.m4a?h=${HOER_AUDIO[id]?.h || ""}`;
+const absolut = (id) => new URL(audioUrl(id), typeof location !== "undefined" ? location.href : "http://x/").href;
+const OFF = { laedt: null, fertig: 0, gesamt: 0, fehler: false };
+const cacheDa = () => typeof caches !== "undefined";
+export const offlineMoeglich = (ids) => cacheDa() && ids.some((id) => HOER_AUDIO[id]);
+/** Wie viele der Themen sind offline gespeichert (in aktueller Fassung)? */
+async function offlineZaehlen(ids) {
+  const c = await caches.open(AUDIO_CACHE), da = new Set((await c.keys()).map((r) => r.url));
+  return ids.filter((id) => HOER_AUDIO[id] && da.has(absolut(id))).length;
+}
+export async function modulOffline(fach, ids) {
+  if (!cacheDa() || OFF.laedt) return;
+  const mit = ids.filter((id) => HOER_AUDIO[id]);
+  Object.assign(OFF, { laedt: fach, fertig: 0, gesamt: mit.length, fehler: false });
+  try { await navigator.storage?.persist?.(); } catch { /* egal */ }
+  const c = await caches.open(AUDIO_CACHE), alte = await c.keys();
+  for (const id of mit) {
+    try {
+      if (!(await c.match(absolut(id)))) {
+        const r = await fetch(audioUrl(id), { cache: "no-cache" });
+        if (!r.ok) throw new Error(r.status);
+        await c.put(absolut(id), r);
+      }
+      // ältere Fassungen desselben Themas löschen
+      for (const k of alte) if (k.url.includes(`/audio/${id}.m4a`) && k.url !== absolut(id)) await c.delete(k);
+    } catch { OFF.fehler = true; }
+    OFF.fertig++; offlineAnzeigen();
+  }
+  OFF.laedt = null; offlineAnzeigen();
+}
+export async function modulOfflineWeg(ids) {
+  if (!cacheDa()) return;
+  const c = await caches.open(AUDIO_CACHE);
+  for (const k of await c.keys()) if (ids.some((id) => k.url.includes(`/audio/${id}.m4a`))) await c.delete(k);
+  offlineAnzeigen();
+}
+const mb = (bytes) => String(Math.max(1, Math.round(bytes / 1e6))).replace(".", ",");
+/** Zeile „Offline speichern“ in der Themenliste (nach jedem render() und während des Ladens). */
+export async function offlineAnzeigen() {
+  if (typeof document === "undefined") return;
+  const el = document.getElementById("hoerOffline");
+  if (!el || !cacheDa()) return;
+  const ids = el.dataset.ids.split(","), fach = el.dataset.fach, mit = ids.filter((id) => HOER_AUDIO[id]);
+  const groesse = mit.reduce((n, id) => n + (HOER_AUDIO[id].s || HOER_AUDIO[id].d * 5000), 0);
+  if (OFF.laedt === fach) {
+    el.innerHTML = `<div class="ho-text"><b>Wird gespeichert … ${OFF.fertig}/${OFF.gesamt}</b><span>Bitte die App geöffnet lassen</span>
+      <div class="hl-balken"><i style="width:${Math.round((OFF.fertig / Math.max(1, OFF.gesamt)) * 100)}%"></i></div></div>`;
+    return;
+  }
+  const da = await offlineZaehlen(ids);
+  if (!document.body.contains(el)) return;
+  el.innerHTML = da >= mit.length
+    ? `<div class="ho-text"><b>✓ Offline verfügbar</b><span>${mit.length} Aufnahmen · ca. ${mb(groesse)} MB auf dem Gerät</span></div>
+       <button class="ho-knopf zweit" data-a="hoerOfflineWeg" data-v="${fach}">Entfernen</button>`
+    : `<div class="ho-text"><b>Offline speichern</b><span>${da ? `${da}/${mit.length} gespeichert · ` : ""}ca. ${mb(groesse)} MB – danach ohne Internet anhören${OFF.fehler ? " · Fehler beim letzten Versuch" : ""}</span></div>
+       <button class="ho-knopf" data-a="hoerOffline" data-v="${fach}">${da ? "Rest laden" : "Laden"}</button>`;
+}
+
+/** Fortschrittsbalken ohne komplettes Neuzeichnen (bei jedem timeupdate). */
+function balken() {
+  const b = typeof document !== "undefined" && document.querySelector("#hoerLeiste .hl-balken i");
+  if (b) b.style.width = fortschritt() + "%";
+}
+const fortschritt = () => P.modus === "audio" && el?.duration ? Math.round((el.currentTime / el.duration) * 100)
+  : Math.round((P.i / Math.max(1, P.teile.length)) * 100);
 
 const tempoText = (t) => String(t).replace(".", ",") + "×";
 const SYM = {
@@ -224,13 +418,13 @@ export function leisteAktualisieren(rollen = false) {
   const punkte = [...new Set(P.teile.map((x) => x.ziel))], nr = punkte.indexOf(t.ziel) + 1;
   const modul = P.liste ? ` · Thema ${P.liste.indexOf(P.id) + 1}/${P.liste.length}` : "";
   el.hidden = false;
-  el.innerHTML = `<div class="hl-info"><b>${P.pausiert ? "Pausiert" : "Wird vorgelesen"}</b><span>${t.teil || ""} · ${nr}/${punkte.length}${modul}</span>
-      <div class="hl-balken"><i style="width:${Math.round((P.i / Math.max(1, P.teile.length)) * 100)}%"></i></div></div>
+  el.innerHTML = `<div class="hl-info"><b>${P.pausiert ? "Pausiert" : "Wird vorgelesen"}${P.modus === "audio" ? ` <em class="hl-stimme">${STIMME.name}</em>` : ""}</b><span>${t.teil || ""} · ${nr}/${punkte.length}${modul}</span>
+      <div class="hl-balken"><i style="width:${fortschritt()}%"></i></div></div>
     <div class="hl-knoepfe">
       <button class="hl-k" data-a="hoerSprung" data-v="-1" aria-label="Vorheriger Punkt">${sym("zurueck")}</button>
       <button class="hl-k hl-haupt" data-a="hoerPause" aria-label="${P.pausiert ? "Weiter vorlesen" : "Pause"}">${sym(P.pausiert ? "play" : "pause")}</button>
       <button class="hl-k" data-a="hoerSprung" data-v="1" aria-label="Nächster Punkt">${sym("vor")}</button>
-      <button class="hl-tempo" data-a="hoerTempo" aria-label="Tempo ändern">${tempoText(P.tempo)}</button>
+      <button class="hl-tempo" data-a="hoerTempo" aria-label="Tempo ändern">${tempoText(P.modus === "audio" ? P.tempoAudio : P.tempo)}</button>
       <button class="hl-k hl-zu" data-a="hoerStopp" aria-label="Vorlesen beenden">${sym("kreuz", false)}</button>
     </div>`;
   const ziel = document.querySelector(`[data-hoer="${t.ziel}"]`);

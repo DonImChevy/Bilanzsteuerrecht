@@ -33,7 +33,7 @@ import { hinweisAktiv, hinweisSenden, offeneHinweiseSenden } from "./hinweis.js"
 import { GESETZE as GESETZBUECHER, PALETTE, farbeVon, farbenCss, farbenText, farbenAusText, farbeGueltig } from "./gesetzfarben.js";
 import { zeitraum, auswerten as zeitraumAuswerten } from "./statistik.js";
 import { levelAus, xpGesamt, bonusFuerAntwort, erfolgePruefen, tagesBonus, laengsteSerie, XP } from "./level.js";
-import { vorlesen, hoerSegmente, umschalten as hoerUmschalten, springen as hoerSpringen, tempoWechseln, stopp as hoerStopp, hoertGerade, leisteAktualisieren } from "./vorlesen.js";
+import { vorlesen, modulOffline, modulOfflineWeg, offlineAnzeigen, hoerSegmente, umschalten as hoerUmschalten, springen as hoerSpringen, tempoWechseln, stopp as hoerStopp, hoertGerade, leisteAktualisieren } from "./vorlesen.js";
 import { levelZeile, levelSeite, levelFeier, erfolgBanner, levelStartFeier } from "./levelansicht.js";
 
 // ======================= Speicher =======================
@@ -736,6 +736,7 @@ function render() {
   handschriftAnbinden();
   // Vorlesen: läuft weiter, solange das Thema offen ist; Schließen oder ein anderes Thema beendet es
   if (hoertGerade() && !hoertGerade(state.kompakt?.id)) hoerStopp(); else leisteAktualisieren();
+  offlineAnzeigen();
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
@@ -3066,7 +3067,7 @@ const AKTIONEN = {
   },
   hoeren: (v) => {
     if (hoertGerade(v)) return hoerUmschalten();
-    vorlesen(v, hoerSegmente(KOMPAKT[v], THEMA[v]));
+    vorlesen(v, hoerSegmente(KOMPAKT[v], THEMA[v]), { titel: THEMA[v].titel });
   },
   hoerenAlle: (fach) => {
     const liste = (kompaktThemen(fach).length ? kompaktThemen(fach) : themenFuer(fach).filter((t) => KOMPAKT[t.id])).map((t) => t.id);
@@ -3074,9 +3075,18 @@ const AKTIONEN = {
       state.kompakt = { id, fach, liste: true, ausSitzung: false };
       stat.kompakt[id] = Date.now(); speichern();
       render(); app.querySelector(".vollbild .vb-inhalt")?.scrollTo(0, 0);
-      vorlesen(id, hoerSegmente(KOMPAKT[id], THEMA[id]), { liste, weiter: starte });
+      vorlesen(id, hoerSegmente(KOMPAKT[id], THEMA[id]), { liste, weiter: starte, titel: THEMA[id].titel });
     };
     if (liste.length) starte(liste[0]);
+  },
+  hoerOffline: (fach) => {
+    const ids = (kompaktThemen(fach).length ? kompaktThemen(fach) : themenFuer(fach).filter((t) => KOMPAKT[t.id])).map((t) => t.id);
+    modulOffline(fach, ids);
+    offlineAnzeigen();
+  },
+  hoerOfflineWeg: (fach) => {
+    if (!confirm("Offline gespeicherte Aufnahmen dieses Moduls vom Gerät löschen?")) return;
+    modulOfflineWeg((kompaktThemen(fach).length ? kompaktThemen(fach) : themenFuer(fach).filter((t) => KOMPAKT[t.id])).map((t) => t.id));
   },
   hoerPause: () => hoerUmschalten(),
   hoerSprung: (v) => hoerSpringen(Number(v)),
