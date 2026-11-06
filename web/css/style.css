@@ -2356,3 +2356,16 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .ks-ergebnis .sub { display: block; margin-top: 2px; font-size: 13px; line-height: 1.4; }
 .ks-note { flex: none; width: 64px; height: 64px; border-radius: 50%; display: grid; place-content: center; text-align: center; color: #fff; background: linear-gradient(135deg, var(--m-licht), var(--fill)); box-shadow: 0 8px 18px -8px var(--fill); }
 .ks-note b { font-size: 26px; font-weight: 900; line-height: 1; } .ks-note span { font-size: 10px; font-weight: 700; }
+.ks-feld-kopf { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.ks-feld-kopf > span:first-child { font-size: 12.5px; font-weight: 700; color: var(--text2); flex: 1 1 200px; }
+.ks-modus { flex: none; }
+.ks-modus button { display: inline-flex; align-items: center; gap: 4px; }
+.ks-leiste { position: sticky; top: 0; z-index: 3; margin-bottom: 10px; }
+.ks-hs-blatt { margin-bottom: 12px; }
+.ks-hs-kopf { display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+.ks-hs-kopf span { flex: 1; font-size: 12px; font-weight: 800; color: var(--text3); }
+.ks-hs-kopf .hs-wz { width: 32px; height: 32px; }
+.ks-blatt-neu { width: 100%; }
+.ks-hs-bild { margin: 8px 0 0; }
+.ks-hs-bild figcaption { font-size: 12px; font-weight: 700; color: var(--text3); margin-bottom: 4px; }
+.ks-hs-bild .hs-svg { width: 100%; height: auto; border-radius: 12px; background: var(--hs-papier); }

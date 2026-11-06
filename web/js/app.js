@@ -731,7 +731,7 @@ function render() {
     html += state.pfad.block ? blockView(state.pfad.fach, state.pfad.block, hilfe) : kartenView(state.pfad.fach, hilfe);
   }
   if (state.kompakt) html += kompaktEbene();
-  if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile });
+  if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile, hs: state.hs, modus: lies("bsr.ksimModus", "text") });
   if (state.sheet) html += sheetView();
   if (state.hgVorschau && !state.sheet) html += vorschauLeiste();
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
@@ -1627,7 +1627,26 @@ function handschriftFeld(e, s) {
     <div class="hs-papier">${HS.papier(z.g)}<canvas class="hs-canvas" data-seite="${s}" aria-label="Schreibfläche ${s === "v" ? "Vorderseite" : "Rückseite"}"></canvas></div>`;
 }
 /** Nach jedem Neuzeichnen: Schreibflächen des Karteneditors an die Entwürfe binden. */
+// Klausursimulation: Zeichnungen der Blätter im Speicher halten (Rückgängig-Verlauf), gespeichert wird der kurze Text
+const ksimZeichnungen = new Map();
+function ksimZeichnung(id, j) {
+  const k = state.ksim, schl = `${k.start}|${id}|${j}`;
+  if (!ksimZeichnungen.has(schl)) { const z = HS.dekodieren(k.hand?.[id]?.[j] || ""); z.g = "l"; ksimZeichnungen.set(schl, z); }
+  return ksimZeichnungen.get(schl);
+}
+function ksimZeichnungSichern(id, j) {
+  const k = state.ksim, z = ksimZeichnung(id, j);
+  ((k.hand ||= {})[id] ||= [""])[j] = HS.kodieren(z);
+  if (k.hand[id][j].length > HS.MAX_ZEICHEN) toast("Dieses Blatt ist sehr voll – bitte ein neues Blatt beginnen.");
+  ksimSichern();
+}
 function handschriftAnbinden() {
+  if (state.ksim?.phase === "laufend") {
+    document.querySelectorAll("[data-ksim-hs]").forEach((c) => {
+      const [id, j] = c.dataset.ksimHs.split("|");
+      HS.anbinden(c, ksimZeichnung(id, j), () => ({ art: state.hs.art, farbe: state.hs.art === "m" ? state.hs.mfarbe : state.hs.farbe }), () => ksimZeichnungSichern(id, j));
+    });
+  }
   const e = state.sheet?.art === "karteEdit" && state.sheet.e;
   if (!e) return;
   document.querySelectorAll(".hs-canvas").forEach((c) => {
@@ -2924,6 +2943,19 @@ const AKTIONEN = {
     ksimSichern(); render(); scrollOben();
   },
   ksimWeiter: () => { state.ksim = ksimGespeichert(); render(); },
+  ksimModus: (v) => {
+    const [id, m] = v.split("|"), k = state.ksim;
+    (k.modi ||= {})[id] = m; schreib("bsr.ksimModus", m);
+    if (m === "hand") ((k.hand ||= {})[id] ||= [""]);
+    ksimSichern(); render();
+  },
+  ksimBlatt: (id) => { ((state.ksim.hand ||= {})[id] ||= [""]).push(""); ksimSichern(); render(); },
+  ksimRueck: (v) => { const [id, j] = v.split("|"); HS.rueckgaengig(ksimZeichnung(id, j)); ksimZeichnungSichern(id, j); render(); },
+  ksimLeeren: (v) => {
+    const [id, j] = v.split("|"), z = ksimZeichnung(id, j);
+    if (!z.s.length || !confirm(`Blatt ${Number(j) + 1} leeren?`)) return;
+    (z._rueck ||= []).push(z.s.slice()); z.s = []; ksimZeichnungSichern(id, j); render();
+  },
   ksimBeginnen: () => { Object.assign(state.ksim, { phase: "laufend", start: Date.now() }); ksimSichern(); render(); scrollOben(); },
   ksimAbgeben: (automatisch) => {
     const k = state.ksim;

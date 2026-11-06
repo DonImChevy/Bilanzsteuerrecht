@@ -5,6 +5,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-ksim-handschrift",
+    datum: "2026-11-06",
+    titel: "Klausur mit der Hand schreiben",
+    punkte: [
+      ["stift", "Tippen oder Schreiben", "In der Klausursimulation kannst du je Sachverhalt auf „Schreiben“ umschalten und mit Stift oder Finger auf liniertem Papier lösen – so schnell wie in der echten Klausur.", "tab", "klausur"],
+      ["plus", "Beliebig viele Blätter", "Mit „Blatt hinzufügen“ geht es auf dem nächsten Blatt weiter. Stift, Textmarker, Radierer und Rückgängig wie im Karteneditor; alles bleibt auf dem Gerät gespeichert."],
+      ["haken", "Vergleich in der Auswertung", "Nach der Abgabe stehen deine Blätter direkt über der Musterlösung und dem Bewertungsbogen."],
+    ],
+  },
+  {
     id: "2026-11-klausursim",
     datum: "2026-11-06",
     titel: "Klausur simulieren – wie in echt",
