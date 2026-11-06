@@ -9,7 +9,8 @@ import { PUNKTESAMMLER } from "./est/punkte.js";
 import { PAARE } from "./paare.js";
 import { gliederungView } from "./bilr/gliederung.js";
 import { r2View } from "./est/r2.js";
-import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, lesezeit, kompaktInline, zuletztText } from "./kompakt.js";
+import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, lesezeit, kompaktInline, zuletztText, loesungZeile } from "./kompakt.js";
+import { SIM, startKarte as simStartKarte, simView, zusammenstellen, hoechstpunkte, punkte as simPunkte, note as simNote, restSekunden as simRest, uhrText as simUhr } from "./klausursim.js";
 import * as MK from "./meinekarten.js";
 import * as HS from "./handschrift.js";
 import { goodnotesLesen } from "./goodnotes.js";
@@ -334,6 +335,7 @@ const state = {
   hs: { art: "s", farbe: 0, mfarbe: 0 }, // Handschrift: Werkzeug (Stift, Textmarker, Radierer) und Farben
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
+  ksim: null, // Klausursimulation (begonnene liegt in localStorage bsr.ksim, „fortsetzen“ öffnet sie wieder)
   kompakt: null, // Kompaktwissen: {id: Thema | null (Übersicht), fach, liste: aus der Übersicht geöffnet, ausSitzung}
   pfad: null, // Lernpfad-Modus: {fach, block: null | {id, schritt, fehler, antwort, start, reihen}}
   paare: null, // Spiel „Paare finden“: {links, rechts, weg, leben, wahl, start, ende, sperre}
@@ -664,6 +666,17 @@ setInterval(() => {
   if (r === 0) { abgeben(); toast("Zeit abgelaufen – Klausur wurde abgegeben."); }
 }, 1000);
 
+// Klausursimulation: Uhr ohne Neuzeichnen; bei Ablauf automatisch abgeben
+const ksimGespeichert = () => { try { return JSON.parse(localStorage.getItem("bsr.ksim") || "null"); } catch (_) { return null; } };
+const ksimSichern = () => { if (state.ksim) schreib("bsr.ksim", JSON.stringify(state.ksim)); };
+setInterval(() => {
+  const k = state.ksim;
+  if (!k || k.phase !== "laufend") return;
+  const r = simRest(k), el = document.getElementById("ksimUhr");
+  if (el) { el.querySelector("span").textContent = simUhr(r); el.classList.toggle("knapp", r < 600); }
+  if (r === 0) { AKTIONEN.ksimAbgeben(true); toast("Zeit abgelaufen – die Klausur wurde abgegeben."); }
+}, 1000);
+
 function scrollOben() {
   requestAnimationFrame(() => { const el = document.querySelector(".vb-inhalt"); if (el) el.scrollTop = 0; });
 }
@@ -718,6 +731,7 @@ function render() {
     html += state.pfad.block ? blockView(state.pfad.fach, state.pfad.block, hilfe) : kartenView(state.pfad.fach, hilfe);
   }
   if (state.kompakt) html += kompaktEbene();
+  if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile });
   if (state.sheet) html += sheetView();
   if (state.hgVorschau && !state.sheet) html += vorschauLeiste();
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
@@ -740,7 +754,7 @@ function render() {
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
-  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.kompakt || state.sheet ? "hidden" : "";
+  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.kompakt || state.ksim || state.sheet ? "hidden" : "";
   if (fokusId) {
     const el = document.querySelector(`[data-fokus="${fokusId}"]`);
     if (el) { el.focus(); if (pos && el.setSelectionRange) try { el.setSelectionRange(...pos); } catch (_) { /* egal */ } }
@@ -751,7 +765,7 @@ function render() {
 // Jede geöffnete Ebene (Unterseite, Übung, Rückschau, Lernkarten, Menü) bekommt einen Eintrag im Browserverlauf.
 // So schließt die Zurück-Geste (Android) bzw. Zurück-Taste die oberste Ebene, statt die App zu verlassen.
 let verlaufTiefe = 0, popIgnorieren = 0;
-const ansichtTiefe = () => (state.hgVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.sheet ? 1 : 0);
+const ansichtTiefe = () => (state.hgVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.ksim ? 1 : 0) + (state.sheet ? 1 : 0);
 function verlaufAbgleichen() {
   const t = ansichtTiefe();
   while (verlaufTiefe < t) { verlaufTiefe += 1; history.pushState({ tiefe: verlaufTiefe }, ""); }
@@ -762,6 +776,7 @@ function ebeneZurueck() {
   if (state.sheet) AKTIONEN.sheetZu();
   else if (state.hgVorschau) AKTIONEN.vorschauEnde();
   else if (state.kompakt) AKTIONEN.kompaktZu();
+  else if (state.ksim) AKTIONEN.ksimZu();
   else if (state.deck) AKTIONEN.deckZu();
   else if (state.paare) AKTIONEN.paareZu();
   else if (state.pfad?.block) AKTIONEN.pfadKarte();
@@ -1534,6 +1549,7 @@ function tabKlausur() {
       : { 1: "Teil I: Buchführung mit Schwerpunkt Buchungssätze (ca. 60 %), dazu Rechnen und Theorie. Auswertung erst nach der Abgabe.",
           2: "Teil II: Bilanzierung und Bewertung – ca. 40 % Buchungssätze, dazu Berechnungen und Würdigung. Auswertung erst nach der Abgabe.",
           beide: "Wie die Semesterklausur: ca. 25 % Teil I (Buchführung) und 75 % Teil II (Bilanzierung und Bewertung). Auswertung erst nach der Abgabe." }[state.bilrTeil])}
+    ${SIM[state.fach] ? simStartKarte(state.fach, { ic, laufend: ksimGespeichert()?.phase === "laufend" }) : ""}
     ${modusSchalter()}
     ${KLAUSURPLAN[state.fach] ? `<button class="km-vorher" data-a="kompaktListe"><span class="km-vorher-icon">${ic("akte")}</span>
       <span class="grow"><b>Vor der Klausur</b><span class="sub">Aufbau, Schwerpunkte und alle Zusammenfassungen zum Wiederholen</span></span>${ic("pfeil", "klein")}</button>` : ""}
@@ -2900,6 +2916,39 @@ const AKTIONEN = {
   punktesammler: () => { state.sheet = { art: "punktesammler" }; render(); },
   anzahl: (v) => { state.klausurAnzahl = Math.min(60, Math.max(5, state.klausurAnzahl + Number(v))); render(); },
   minuten: (v) => { state.klausurMinuten = Number(v); render(); },
+  ksimNeu: (v) => {
+    const alt = ksimGespeichert();
+    if (alt && alt.phase === "laufend" && !confirm("Es gibt eine begonnene Klausur. Neue Klausur beginnen und die alte verwerfen?")) return;
+    const seed = Math.floor(Math.random() * 1e9), minuten = Number(v);
+    state.ksim = { fach: state.fach, minuten, seed, teile: zusammenstellen(state.fach, minuten, seed), phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
+    ksimSichern(); render(); scrollOben();
+  },
+  ksimWeiter: () => { state.ksim = ksimGespeichert(); render(); },
+  ksimBeginnen: () => { Object.assign(state.ksim, { phase: "laufend", start: Date.now() }); ksimSichern(); render(); scrollOben(); },
+  ksimAbgeben: (automatisch) => {
+    const k = state.ksim;
+    if (!k || k.phase !== "laufend") return;
+    if (automatisch !== true && !confirm("Klausur jetzt abgeben? Danach siehst du Musterlösung und Bewertungsbogen.")) return;
+    Object.assign(k, { phase: "abgegeben", ende: Date.now() }); ksimSichern(); render(); scrollOben();
+  },
+  ksimHaken: (v, el) => {
+    const [id, j] = v.split("|"), k = state.ksim;
+    ((k.haken ||= {})[id] ||= {})[j] = el.checked; ksimSichern(); render();
+  },
+  ksimSpeichern: () => {
+    const k = state.ksim, max = hoechstpunkte(k.fach, k), p = simPunkte(k.fach, k);
+    const eintrag = { datum: k.start, richtig: p, gesamt: max, sek: Math.round((k.ende - k.start) / 1000), fach: k.fach, sim: k.minuten, note: simNote(max ? (p / max) * 100 : 0) };
+    const i = stat.klausuren.findIndex((x) => x.datum === k.start);
+    if (i >= 0) stat.klausuren[i] = eintrag; else stat.klausuren.push(eintrag);
+    k.gespeichert = true; speichern(); ksimSichern();
+    toast(`Gespeichert: ${eintrag.note} Punkte (${String(p).replace(".", ",")} / ${String(max).replace(".", ",")})`); render();
+  },
+  ksimZu: () => {
+    const k = state.ksim;
+    if (k?.phase === "abgegeben" && !k.gespeichert && !confirm("Auswertung schließen, ohne das Ergebnis zu speichern?")) return;
+    if (k?.phase === "abgegeben" || k?.phase === "deckblatt") { try { localStorage.removeItem("bsr.ksim"); } catch (_) { /* egal */ } }
+    state.ksim = null; render();
+  },
   klausurStart: () => starte({ modus: "klausur", fach: state.fach, teil: teilVon(state.fach), anzahl: state.klausurAnzahl, minuten: state.klausurMinuten || null }),
   kartenThema: (v) => { state.kartenThemen.has(v) ? state.kartenThemen.delete(v) : state.kartenThemen.add(v); render(); },
   kartenAlle: () => { state.kartenThemen = new Set(themenImTeil(state.fach).map((t) => t.id).filter((id) => kartenImTeil(state.fach).some((k) => k.thema === id))); render(); },
@@ -3140,6 +3189,12 @@ app.addEventListener("click", (e) => {
 });
 
 app.addEventListener("input", (e) => {
+  const kt = e.target.dataset?.ksimText, kz = e.target.dataset?.ksimZahl;
+  if ((kt || kz) && state.ksim) {
+    if (kt) (state.ksim.antworten ||= {})[kt] = e.target.value;
+    else { const [id, j] = kz.split("|"); ((state.ksim.zahlen ||= {})[id] ||= {})[j] = e.target.value; }
+    ksimSichern(); return;
+  }
   if (e.target.dataset?.gesetz && e.target.type === "color") { gesetzFarbenAnwenden({ ...gesetzFarbenWahl(), [e.target.dataset.gesetz]: e.target.value.toLowerCase() }); return; } // Vorschau beim Ziehen
   const t = e.target;
   if (t.id === "bildStaerke") { state.bildEinst.s = Number(t.value) / 100; bildEinstAnwenden(); bildEinstSpeichern(); return; }
