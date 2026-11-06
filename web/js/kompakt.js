@@ -55,7 +55,7 @@ export function normenVerlinken(h) {
 }
 
 /** Eine Zeile der Musterlösung: „BS: …“ wird als Buchungssatz dargestellt, „→ GuV … · BVV …“ als Gewinnauswirkung. */
-function loesungZeile(z) {
+export function loesungZeile(z) {
   if (!z.startsWith("BS:")) return `<p>${kompaktInline(z)}</p>`;
   const [satz, wirkung] = z.slice(3).trim().split(" → ");
   return `<div class="km-bs"><span class="km-bs-tag">BS</span><span class="km-bs-text">${kompaktInline(satz)}</span>${wirkung ? `<span class="km-bs-wirkung">${kompaktInline(wirkung)}</span>` : ""}</div>`;

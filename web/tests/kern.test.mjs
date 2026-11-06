@@ -1005,3 +1005,27 @@ test("Profi-Stimme: Audio nur bei passender Prüfsumme, Zeitmarken je Punkt", as
     if (audioFuer(id, s)) assert.ok(hoerInfo(id, s).profi && a.m.every(([, z]) => s.some((x) => x.ziel === z)), id);
   }
 });
+
+test("Klausursimulation: Zeit geht exakt auf, Sachverhalte rechnen sauber, Notentabelle", async () => {
+  const { SIM, zusammenstellen, inhalt, hoechstpunkte, note, zahlStimmt } = await import("../js/klausursim.js");
+  for (const fach of Object.keys(SIM)) {
+    for (const minuten of [60, 90, 180]) for (let seed = 1; seed <= 60; seed++) {
+      const teile = zusammenstellen(fach, minuten, seed);
+      const svs = teile.map((id, i) => inhalt(fach, id, seed, i));
+      assert.equal(svs.reduce((n, s) => n + s.min, 0), minuten, `${fach} ${minuten} Min. (Startwert ${seed})`);
+      assert.equal(new Set(teile).size, teile.length, "Sachverhalt doppelt");
+      assert.ok(svs.every((s, i) => !i || s.teil >= svs[i - 1].teil), "Teil I vor Teil II");
+      for (const s of svs) {
+        assert.ok(!/NaN|undefined|Infinity/.test(JSON.stringify([s.sv, s.loesung, s.bewertung, s.zahlen])), `${s.id}: Rechenfehler`);
+        assert.ok(s.bewertung.length >= 3 && s.loesung.length >= 2 && s.aufgaben.length >= 1, s.id);
+      }
+      const max = hoechstpunkte(fach, { teile, seed });
+      assert.ok(max > minuten * 0.4 && max < minuten * 0.7, `${fach} ${minuten}: ${max} Punkte`);
+    }
+    // jeder Sachverhalt ist in mindestens einer Zusammenstellung erreichbar
+    const vorkommen = new Set([60, 90, 180].flatMap((m) => Array.from({ length: 80 }, (_, i) => zusammenstellen(fach, m, i + 1)).flat()));
+    for (const s of SIM[fach].pool) assert.ok(vorkommen.has(s.id), "nie gezogen: " + s.id);
+  }
+  assert.deepEqual([100, 96, 90, 50, 49.9, 19].map(note), [15, 15, 13, 5, 4, 0]);
+  assert.ok(zahlStimmt({ wert: 1234.5, toleranz: 1 }, "1.234,50") && !zahlStimmt({ wert: 1234.5, toleranz: 1 }, "1.240"));
+});

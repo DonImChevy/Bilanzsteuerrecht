@@ -5,6 +5,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-klausursim",
+    datum: "2026-11-06",
+    titel: "Klausur simulieren – wie in echt",
+    punkte: [
+      ["klausur", "60, 90 oder 180 Minuten", "Bilanzrecht: Deckblatt mit Zeiteinteilung, Einzelsachverhalte im Stil der Semesterklausur – Warenkonten, Grundstückskauf, Darlehen, Firmenwagen, RAP und mehr – mit immer neuen Zahlen.", "tab", "klausur"],
+      ["stift", "Schreiben wie auf Papier", "Würdigung, Berechnungen und Buchungssätze mit GuV- und BVV-Auswirkung frei eingeben. Die Uhr läuft, nach Ablauf wird abgegeben; dein Entwurf bleibt auf dem Gerät gespeichert."],
+      ["haken", "Bewertungsbogen und Note", "Nach der Abgabe: Musterlösung je Sachverhalt, Bewertungsbogen zum Abhaken und Note von 0 bis 15 Punkten. Weitere Module folgen."],
+    ],
+  },
+  {
     id: "2026-11-handtaschen",
     datum: "2026-11-06",
     klein: true,
