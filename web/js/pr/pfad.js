@@ -77,6 +77,7 @@ export const PFAD_PR = [
     id: "pr-minderjaehrige", titel: "Minderjährige im Rechtsverkehr", kurz: "§§ 104–113 BGB", icon: "🧒", normen: ["BGB 104", "BGB 106", "BGB 107", "BGB 108 1", "BGB 110"],
     karten: [
       { art: "merksatz", titel: "Drei Altersstufen", text: "• **unter 7:** geschäftsunfähig – Erklärungen nichtig (§§ 104, 105 BGB)\n• **7 bis 17:** beschränkt geschäftsfähig (§ 106 BGB)\n• **ab 18:** voll geschäftsfähig (§ 2 BGB)" },
+      { art: "erklaerung", titel: "Vollrausch", text: "Auch ein Erwachsener gibt keine wirksame Erklärung ab, wenn er **bewusstlos** oder seine Geistestätigkeit **vorübergehend gestört** ist – etwa im Vollrausch (§ 105 Abs. 2 BGB). Er bleibt geschäftsfähig; nichtig ist nur diese eine Erklärung." },
       { art: "erklaerung", titel: "Zustimmung nötig?", text: "Ein Minderjähriger braucht die **Einwilligung** (vorher) seiner Eltern, wenn das Geschäft **nicht lediglich rechtlich vorteilhaft** ist (§ 107 BGB). Fehlt sie, ist ein Vertrag **schwebend unwirksam** – bis die Eltern **genehmigen** (nachträglich, § 108 BGB)." },
       { art: "erklaerung", titel: "Taschengeld", text: "Zahlt der Minderjährige **vollständig** mit Geld, das ihm dafür oder zur freien Verfügung überlassen wurde, ist der Vertrag wirksam (§ 110 BGB). Ratenkäufe erst mit der letzten Rate." },
       { art: "klausur", titel: "Achtung Falle", text: "Jeder **Kaufvertrag** ist rechtlich nachteilig – er verpflichtet zur Zahlung, auch wenn er ein Schnäppchen ist. Ein **Geschenk** anzunehmen ist dagegen lediglich vorteilhaft." },
@@ -84,6 +85,7 @@ export const PFAD_PR = [
     fragen: [
       { art: "wahl", frage: "Die 6-jährige Ella kauft mit Taschengeld ein Eis. Wirksam?", optionen: ["Nein – nichtig, sie ist geschäftsunfähig", "Ja – § 110 BGB", "Schwebend unwirksam", "Ja, weil das Eis billig ist"], richtig: 0, erkl: "Unter 7 Jahren nichtig (§ 104 Nr. 1 BGB, § 105 Abs. 1 BGB)." },
       { art: "wahl", frage: "Der 15-jährige Jan kauft ohne Wissen der Eltern ein Handy auf Raten. Folge?", optionen: ["Schwebend unwirksam bis zur Genehmigung", "Wirksam nach § 110 BGB", "Sofort nichtig", "Wirksam, weil er über 14 ist"], richtig: 0, erkl: "Nicht lediglich vorteilhaft, § 110 BGB greift nicht (Raten) → § 108 Abs. 1 BGB." },
+      { art: "wahl", frage: "Die 25-jährige Jana bestellt im Vollrausch, ohne zu wissen, was sie tut, ein teures Kleid. Wirksam?", optionen: ["Nein – nichtig nach § 105 Abs. 2 BGB", "Ja – sie ist volljährig", "Schwebend unwirksam", "Nur anfechtbar"], richtig: 0, erkl: "Vorübergehende Störung der Geistestätigkeit – die Erklärung ist nichtig, obwohl Jana geschäftsfähig ist." },
       { art: "wahl", frage: "Die 12-jährige Pia bekommt ein Fahrrad geschenkt. Brauchen die Eltern zuzustimmen?", optionen: ["Nein – lediglich rechtlich vorteilhaft", "Ja, immer", "Nur bei Fahrrädern über 100 €", "Ja, weil sie unter 14 ist"], richtig: 0, erkl: "§ 107 BGB – kein rechtlicher Nachteil." },
       { art: "wahl", frage: "Ein 17-Jähriger kauft ohne Zustimmung einen Roller und wird dann 18. Ist der Vertrag jetzt wirksam?", optionen: ["Erst wenn er ihn selbst genehmigt", "Ja, automatisch", "Nein, er bleibt immer nichtig", "Nur wenn die Eltern noch zustimmen"], richtig: 0, erkl: "§ 108 Abs. 3 BGB – seine Genehmigung ersetzt die der Eltern." },
     ],
@@ -174,10 +176,12 @@ export const PFAD_PR = [
       { art: "merksatz", titel: "§ 823 Abs. 1 BGB", text: "Wer **vorsätzlich oder fahrlässig** Leben, Körper, Gesundheit, Freiheit, **Eigentum** oder ein sonstiges Recht eines anderen **widerrechtlich** verletzt, muss den **Schaden** ersetzen." },
       { art: "erklaerung", titel: "Prüfung", text: "Rechtsgut verletzt → Handlung → Kausalität → Rechtswidrigkeit (indiziert) → **Verschulden** mit Deliktsfähigkeit (§ 828 BGB) → Schaden → Ersatz nach §§ 249 ff. BGB." },
       { art: "erklaerung", titel: "Alter des Schädigers", text: "• unter 7: nie verantwortlich\n• 7 bis 9: nicht bei Unfällen mit Kfz oder Bahn (außer Vorsatz)\n• bis 17: verantwortlich, wenn er die nötige **Einsicht** hatte (§ 828 Abs. 3 BGB)" },
+      { art: "klausur", titel: "Rausch", text: "Im Vollrausch geschlossene Verträge sind **nichtig** (§ 105 Abs. 2 BGB). Schäden im **selbstverschuldeten** Rausch muss man aber ersetzen – als hätte man fahrlässig gehandelt (§ 827 S. 2 BGB)." },
       { art: "beispiel", titel: "Und wenn der Vertrag nichtig ist?", text: "Geleistetes zurück über die **Bereicherung** (§ 812 BGB); ist man noch Eigentümer, Herausgabe nach **§ 985 BGB** vom Besitzer." },
     ],
     fragen: [
       { art: "wahl", frage: "Ein 16-Jähriger fährt mit dem Rad bei Rot über die Ampel und beschädigt eine Jacke. Haftet er?", optionen: ["Ja, wenn er die nötige Einsicht hatte", "Nein, Minderjährige haften nie", "Nur seine Eltern", "Nur bei Vorsatz"], richtig: 0, erkl: "§ 828 Abs. 3 BGB." },
+      { art: "wahl", frage: "Ein Erwachsener tritt im selbst angetrunkenen Vollrausch eine Scheibe ein. Haftet er?", optionen: ["Ja – wie bei Fahrlässigkeit (§ 827 S. 2 BGB)", "Nein – er war nicht bei Sinnen", "Nur wenn er sich erinnert", "Nur seine Eltern"], richtig: 0, erkl: "Das Verschulden liegt im Sich-Betrinken." },
       { art: "wahl", frage: "Ist das bloße Vermögen durch § 823 Abs. 1 BGB geschützt?", optionen: ["Nein", "Ja, als sonstiges Recht", "Ja, als Eigentum", "Nur bei Unternehmen"], richtig: 0, erkl: "Reine Vermögensschäden nur über § 823 Abs. 2 oder § 826 BGB." },
       { art: "wahl", frage: "Was verlangt der Eigentümer vom Besitzer ohne Besitzrecht?", optionen: ["Herausgabe nach § 985 BGB", "Kaufpreis nach § 433 BGB", "Miete nach § 535 BGB", "Nichts"], richtig: 0, erkl: "Vindikation – § 985 BGB." },
     ],
