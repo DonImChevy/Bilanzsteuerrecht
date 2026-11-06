@@ -1249,6 +1249,17 @@ export const NORMEN_PR = [
 },
 {
 "g": "BGB",
+"nr": "205",
+"titel": "Hemmung der Verjährung bei Leistungsverweigerungsrecht",
+"abs": [
+{
+"abs": "",
+"text": "Die Verjährung ist gehemmt, solange der Schuldner auf Grund einer Vereinbarung mit dem Gläubiger vorübergehend zur Verweigerung der Leistung berechtigt ist."
+}
+]
+},
+{
+"g": "BGB",
 "nr": "207",
 "titel": "Hemmung der Verjährung aus familiären und ähnlichen Gründen",
 "abs": [
@@ -1542,6 +1553,21 @@ export const NORMEN_PR = [
 },
 {
 "g": "BGB",
+"nr": "274",
+"titel": "Wirkungen des Zurückbehaltungsrechts",
+"abs": [
+{
+"abs": "1",
+"text": "Gegenüber der Klage des Gläubigers hat die Geltendmachung des Zurückbehaltungsrechts nur die Wirkung, dass der Schuldner zur Leistung gegen Empfang der ihm gebührenden Leistung (Erfüllung Zug um Zug) zu verurteilen ist."
+},
+{
+"abs": "2",
+"text": "Auf Grund einer solchen Verurteilung kann der Gläubiger seinen Anspruch ohne Bewirkung der ihm obliegenden Leistung im Wege der Zwangsvollstreckung verfolgen, wenn der Schuldner im Verzug der Annahme ist."
+}
+]
+},
+{
+"g": "BGB",
 "nr": "275",
 "titel": "Ausschluss der Leistungspflicht",
 "abs": [
@@ -1816,6 +1842,33 @@ export const NORMEN_PR = [
 },
 {
 "g": "BGB",
+"nr": "326",
+"titel": "Befreiung von der Gegenleistung und Rücktritt beim Ausschluss der Leistungspflicht",
+"abs": [
+{
+"abs": "1",
+"text": "Braucht der Schuldner nach § 275 Abs. 1 bis 3 nicht zu leisten, entfällt der Anspruch auf die Gegenleistung; bei einer Teilleistung findet § 441 Abs. 3 entsprechende Anwendung. Satz 1 gilt nicht, wenn der Schuldner im Falle der nicht vertragsgemäßen Leistung die Nacherfüllung nach § 275 Abs. 1 bis 3 nicht zu erbringen braucht."
+},
+{
+"abs": "2",
+"text": "Ist der Gläubiger für den Umstand, auf Grund dessen der Schuldner nach § 275 Abs. 1 bis 3 nicht zu leisten braucht, allein oder weit überwiegend verantwortlich oder tritt dieser vom Schuldner nicht zu vertretende Umstand zu einer Zeit ein, zu welcher der Gläubiger im Verzug der Annahme ist, so behält der Schuldner den Anspruch auf die Gegenleistung. Er muss sich jedoch dasjenige anrechnen lassen, was er infolge der Befreiung von der Leistung erspart oder durch anderweitige Verwendung seiner Arbeitskraft erwirbt oder zu erwerben böswillig unterlässt."
+},
+{
+"abs": "3",
+"text": "Verlangt der Gläubiger nach § 285 Herausgabe des für den geschuldeten Gegenstand erlangten Ersatzes oder Abtretung des Ersatzanspruchs, so bleibt er zur Gegenleistung verpflichtet. Diese mindert sich jedoch nach Maßgabe des § 441 Abs. 3 insoweit, als der Wert des Ersatzes oder des Ersatzanspruchs hinter dem Wert der geschuldeten Leistung zurückbleibt."
+},
+{
+"abs": "4",
+"text": "Soweit die nach dieser Vorschrift nicht geschuldete Gegenleistung bewirkt ist, kann das Geleistete nach den §§ 346 bis 348 zurückgefordert werden."
+},
+{
+"abs": "5",
+"text": "Braucht der Schuldner nach § 275 Abs. 1 bis 3 nicht zu leisten, kann der Gläubiger zurücktreten; auf den Rücktritt findet § 323 mit der Maßgabe entsprechende Anwendung, dass die Fristsetzung entbehrlich ist."
+}
+]
+},
+{
+"g": "BGB",
 "nr": "331",
 "titel": "Leistung nach Todesfall",
 "abs": [
@@ -1854,6 +1907,25 @@ export const NORMEN_PR = [
 },
 {
 "g": "BGB",
+"nr": "355",
+"titel": "Widerrufsrecht bei Verbraucherverträgen",
+"abs": [
+{
+"abs": "1",
+"text": "Wird einem Verbraucher durch Gesetz ein Widerrufsrecht nach dieser Vorschrift eingeräumt, so sind der Verbraucher und der Unternehmer an ihre auf den Abschluss des Vertrags gerichteten Willenserklärungen nicht mehr gebunden, wenn der Verbraucher seine Willenserklärung fristgerecht widerrufen hat. Der Widerruf erfolgt durch Erklärung gegenüber dem Unternehmer. Aus der Erklärung muss der Entschluss des Verbrauchers zum Widerruf des Vertrags eindeutig hervorgehen. Der Widerruf muss keine Begründung enthalten. Zur Fristwahrung genügt die rechtzeitige Absendung des Widerrufs."
+},
+{
+"abs": "2",
+"text": "Die Widerrufsfrist beträgt 14 Tage. Sie beginnt mit Vertragsschluss, soweit nichts anderes bestimmt ist."
+},
+{
+"abs": "3",
+"text": "Im Falle des Widerrufs sind die empfangenen Leistungen unverzüglich zurückzugewähren. Bestimmt das Gesetz eine Höchstfrist für die Rückgewähr, so beginnt diese für den Unternehmer mit dem Zugang und für den Verbraucher mit der Abgabe der Widerrufserklärung. Ein Verbraucher wahrt diese Frist durch die rechtzeitige Absendung der Waren. Der Unternehmer trägt bei Widerruf die Gefahr der Rücksendung der Waren."
+}
+]
+},
+{
+"g": "BGB",
 "nr": "362",
 "titel": "Erlöschen durch Leistung",
 "abs": [
@@ -1879,6 +1951,17 @@ export const NORMEN_PR = [
 {
 "abs": "2",
 "text": "Übernimmt der Schuldner zum Zwecke der Befriedigung des Gläubigers diesem gegenüber eine neue Verbindlichkeit, so ist im Zweifel nicht anzunehmen, dass er die Verbindlichkeit an Erfüllungs statt übernimmt."
+}
+]
+},
+{
+"g": "BGB",
+"nr": "372",
+"titel": "Voraussetzungen",
+"abs": [
+{
+"abs": "",
+"text": "Geld, Wertpapiere und sonstige Urkunden sowie Kostbarkeiten kann der Schuldner bei einer dazu bestimmten öffentlichen Stelle für den Gläubiger hinterlegen, wenn der Gläubiger im Verzug der Annahme ist. Das Gleiche gilt, wenn der Schuldner aus einem anderen in der Person des Gläubigers liegenden Grund oder infolge einer nicht auf Fahrlässigkeit beruhenden Ungewissheit über die Person des Gläubigers seine Verbindlichkeit nicht oder nicht mit Sicherheit erfüllen kann."
 }
 ]
 },
@@ -3740,6 +3823,61 @@ export const NORMEN_PR = [
 {
 "abs": "",
 "text": "Ansprüche aus dem Steuerschuldverhältnis erlöschen insbesondere durch Zahlung (§§ 224, 224a, 225), Aufrechnung (§ 226), Erlass (§§ 163, 227), Verjährung (§§ 169 bis 171, §§ 228 bis 232), ferner durch Eintritt der Bedingung bei auflösend bedingten Ansprüchen."
+}
+]
+},
+{
+"g": "AO",
+"nr": "93",
+"titel": "Auskunftspflicht der Beteiligten und anderer Personen",
+"abs": [
+{
+"abs": "1",
+"text": "Die Beteiligten und andere Personen haben der Finanzbehörde die zur Feststellung eines für die Besteuerung erheblichen Sachverhalts erforderlichen Auskünfte zu erteilen. Dies gilt auch für nicht rechtsfähige Vereinigungen, Vermögensmassen, Behörden und Betriebe gewerblicher Art der Körperschaften des öffentlichen Rechts. Andere Personen als die Beteiligten sollen erst dann zur Auskunft angehalten werden, wenn die Sachverhaltsaufklärung durch die Beteiligten nicht zum Ziel führt oder keinen Erfolg verspricht."
+},
+{
+"abs": "1a",
+"text": "Die Finanzbehörde darf an andere Personen als die Beteiligten Auskunftsersuchen über eine ihr noch unbekannte Anzahl von Sachverhalten mit dem Grunde nach bestimmbaren, ihr noch nicht bekannten Personen stellen (Sammelauskunftsersuchen). Voraussetzung für ein Sammelauskunftsersuchen ist, dass ein hinreichender Anlass für die Ermittlungen besteht und andere zumutbare Maßnahmen zur Sachverhaltsaufklärung keinen Erfolg versprechen. Absatz 1 Satz 3 ist nicht anzuwenden."
+},
+{
+"abs": "2",
+"text": "In dem Auskunftsersuchen ist anzugeben, worüber Auskünfte erteilt werden sollen und ob die Auskunft für die Besteuerung des Auskunftspflichtigen oder für die Besteuerung anderer Personen angefordert wird. Auskunftsersuchen haben auf Verlangen des Auskunftspflichtigen schriftlich zu ergehen."
+},
+{
+"abs": "3",
+"text": "Die Auskünfte sind wahrheitsgemäß nach bestem Wissen und Gewissen zu erteilen. Auskunftspflichtige, die nicht aus dem Gedächtnis Auskunft geben können, haben Bücher, Aufzeichnungen, Geschäftspapiere und andere Urkunden, die ihnen zur Verfügung stehen, einzusehen und, soweit nötig, Aufzeichnungen daraus zu entnehmen."
+},
+{
+"abs": "4",
+"text": "Der Auskunftspflichtige kann die Auskunft schriftlich, elektronisch, mündlich oder fernmündlich erteilen. Die Finanzbehörde kann verlangen, dass der Auskunftspflichtige schriftlich Auskunft erteilt, wenn dies sachdienlich ist."
+},
+{
+"abs": "5",
+"text": "Die Finanzbehörde kann anordnen, dass der Auskunftspflichtige eine mündliche Auskunft an Amtsstelle erteilt. Hierzu ist sie insbesondere dann befugt, wenn trotz Aufforderung eine schriftliche Auskunft nicht erteilt worden ist oder eine schriftliche Auskunft nicht zu einer Klärung des Sachverhalts geführt hat. Absatz 2 Satz 1 gilt entsprechend."
+},
+{
+"abs": "6",
+"text": "Auf Antrag des Auskunftspflichtigen ist über die mündliche Auskunft an Amtsstelle eine Niederschrift aufzunehmen. Die Niederschrift soll den Namen der anwesenden Personen, den Ort, den Tag und den wesentlichen Inhalt der Auskunft enthalten. Sie soll von dem Amtsträger, dem die mündliche Auskunft erteilt wird, und dem Auskunftspflichtigen unterschrieben werden. Den Beteiligten ist eine Abschrift der Niederschrift zu überlassen."
+},
+{
+"abs": "7",
+"text": "Ein automatisierter Abruf von Kontoinformationen nach § 93b ist nur zulässig, soweit\n1. der Steuerpflichtige eine Steuerfestsetzung nach § 32d Absatz 6 des Einkommensteuergesetzes beantragt oder\n2. (weggefallen) und der Abruf in diesen Fällen zur Festsetzung der Einkommensteuer erforderlich ist oder er erforderlich ist\n3. zur Feststellung von Einkünften nach den §§ 20 und 23 Absatz 1 des Einkommensteuergesetzes in Veranlagungszeiträumen bis einschließlich des Jahres 2008 oder\n4. zur Erhebung von bundesgesetzlich geregelten Steuern oder Rückforderungsansprüchen bundesgesetzlich geregelter Steuererstattungen und Steuervergütungen oder\n4a. zur Ermittlung, in welchen Fällen ein inländischer Steuerpflichtiger im Sinne des § 138 Absatz 2 Satz 1 Verfügungsberechtigter oder wirtschaftlich Berechtigter im Sinne des Geldwäschegesetzes eines Kontos oder Depots einer natürlichen Person, Körperschaft, Personenvereinigung oder Vermögensmasse mit Wohnsitz, gewöhnlichem Aufenthalt, Sitz, Hauptniederlassung oder Geschäftsleitung außerhalb des Geltungsbereichs dieses Gesetzes ist, oder\n4b. zur Ermittlung der Besteuerungsgrundlagen in den Fällen des § 208 Absatz 1 Satz 1 Nummer 3 oder\n4c. zur Durchführung der Amtshilfe für andere Mitgliedstaaten der Europäischen Union nach § 3a des EUAmtshilfegesetzes oder\n4d. zur Verifizierung der Kontoverbindung des Zuwendungsempfängers nach § 60b Absatz 2 Nummer 10, wenn dieser eine Änderung oder Ergänzung von Kontoverbindungen nach § 60b Absatz 5 beantragt, oder\n5. der Steuerpflichtige zustimmt oder die von ihm oder eine für ihn nach § 139b Absatz 10 Satz 1 an das Bundeszentralamt für Steuern übermittelte Kontoverbindung verifiziert werden soll. In diesen Fällen darf die Finanzbehörde oder in den Fällen des § 1 Absatz 2 die Gemeinde das Bundeszentralamt für Steuern ersuchen, bei den Kreditinstituten einzelne Daten aus den nach § 93b Absatz 1 und 1a zu führenden Dateisystemen abzurufen; in den Fällen des Satzes 1 Nummer 1 bis 4b darf ein Abrufersuchen nur dann erfolgen, wenn ein Auskunftsersuchen an den Steuerpflichtigen nicht zum Ziel geführt hat oder keinen Erfolg verspricht."
+},
+{
+"abs": "8",
+"text": "Das Bundeszentralamt für Steuern erteilt auf Ersuchen Auskunft über die in § 93b Absatz 1 und 1a bezeichneten Daten, ausgenommen die Identifikationsnummer nach § 139b,\n1. den für die Verwaltung\na) der Grundsicherung für Arbeitsuchende nach dem Zweiten Buch Sozialgesetzbuch,\nb) der Sozialhilfe nach dem Zwölften Buch Sozialgesetzbuch,\nc) der Ausbildungsförderung nach dem Bundesausbildungsförderungsgesetz,\nd) der Aufstiegsfortbildungsförderung nach dem Aufstiegsfortbildungsförderungsgesetz,\ne) des Wohngeldes nach dem Wohngeldgesetz,\nf) der Leistungen nach dem Asylbewerberleistungsgesetz und\ng) des Zuschlags an Entgeltpunkten für langjährige Versicherung nach dem Sechsten Buch Sozialgesetzbuch zuständigen Behörden, soweit dies zur Überprüfung des Vorliegens der Anspruchsvoraussetzungen erforderlich ist und ein vorheriges Auskunftsersuchen an die betroffene Person nicht zum Ziel geführt hat oder keinen Erfolg verspricht;\n2. den Polizeivollzugsbehörden des Bundes und der Länder, soweit dies zur Abwehr einer erheblichen Gefahr für die öffentliche Sicherheit erforderlich ist, und\n3. den Verfassungsschutzbehörden der Länder, soweit dies für ihre Aufgabenerfüllung erforderlich ist und durch Landesgesetz ausdrücklich zugelassen ist. Die für die Vollstreckung nach dem Verwaltungs-Vollstreckungsgesetz und nach den Verwaltungsvollstreckungsgesetzen der Länder zuständigen Behörden dürfen zur Durchführung der Vollstreckung das Bundeszentralamt für Steuern ersuchen, bei den Kreditinstituten die in § 93b Absatz 1 und 1a bezeichneten Daten, ausgenommen die Identifikationsnummer nach § 139b, abzurufen, wenn\n1. die Ladung zu dem Termin zur Abgabe der Vermögensauskunft an den Vollstreckungsschuldner nicht zustellbar ist und\na) die Anschrift, unter der die Zustellung ausgeführt werden sollte, mit der Anschrift übereinstimmt, die von einer der in § 755 Absatz 1 und 2 der Zivilprozessordnung genannten Stellen innerhalb von drei Monaten vor oder nach dem Zustellungsversuch mitgeteilt wurde, oder\nb) die Meldebehörde nach dem Zustellungsversuch die Auskunft erteilt, dass ihr keine derzeitige Anschrift des Vollstreckungsschuldners bekannt ist, oder\nc) die Meldebehörde innerhalb von drei Monaten vor Erlass der Vollstreckungsanordnung die Auskunft erteilt hat, dass ihr keine derzeitige Anschrift des Vollstreckungsschuldners bekannt ist;\n2. der Vollstreckungsschuldner seiner Pflicht zur Abgabe der Vermögensauskunft in dem dem Ersuchen zugrundeliegenden Vollstreckungsverfahren nicht nachkommt oder\n3. bei einer Vollstreckung in die in der Vermögensauskunft aufgeführten Vermögensgegenstände eine vollständige Befriedigung der Forderung nicht zu erwarten ist. Für andere Zwecke ist ein Abrufersuchen an das Bundeszentralamt für Steuern hinsichtlich der in § 93b Absatz 1 und 1a bezeichneten Daten, ausgenommen die Identifikationsnummer nach § 139b, nur zulässig, soweit dies durch ein Bundesgesetz ausdrücklich zugelassen ist."
+},
+{
+"abs": "8a",
+"text": "Kontenabrufersuchen an das Bundeszentralamt für Steuern sind nach amtlich vorgeschriebenem Datensatz über die amtlich bestimmten Schnittstellen zu übermitteln; § 87a Absatz 6 und § 87b Absatz 1 und 2 gelten entsprechend. Das Bundeszentralamt für Steuern kann Ausnahmen von der elektronischen Übermittlung zulassen. Das Bundeszentralamt für Steuern soll der ersuchenden Stelle die Ergebnisse des Kontenabrufs elektronisch übermitteln; § 87a Absatz 7 und 8 gilt entsprechend."
+},
+{
+"abs": "9",
+"text": "Vor einem Abrufersuchen nach Absatz 7 oder Absatz 8 ist die betroffene Person auf die Möglichkeit eines Kontenabrufs hinzuweisen; dies kann auch durch ausdrücklichen Hinweis in amtlichen Vordrucken und Merkblättern geschehen. Nach Durchführung eines Kontenabrufs ist die betroffene Person vom Ersuchenden über die Durchführung zu benachrichtigen. Ein Hinweis nach Satz 1 erster Halbsatz und eine Benachrichtigung nach Satz 2 unterbleiben,\n1. soweit die Voraussetzungen des § 32b Absatz 1 vorliegen,\n2. wenn die Überprüfung der Kontoverbindung ergibt, dass die betroffene Person über das nach § 139b Absatz 10 übermittelte Konto verfügungsberechtigt ist, oder\n3. wenn die Information der betroffenen Person anderweitig gesetzlich ausgeschlossen ist. § 32c Absatz 5 ist entsprechend anzuwenden. In den Fällen des Absatzes 8 gilt Satz 4 entsprechend, soweit gesetzlich nichts anderes bestimmt ist. Die Sätze 1 und 2 sind nicht anzuwenden in den Fällen des Absatzes 8 Satz 1 Nummer 2 oder 3 oder soweit dies bundesgesetzlich ausdrücklich bestimmt ist."
+},
+{
+"abs": "10",
+"text": "Ein Abrufersuchen nach Absatz 7 oder Absatz 8 und dessen Ergebnis sind vom Ersuchenden zu dokumentieren."
 }
 ]
 },

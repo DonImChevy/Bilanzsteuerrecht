@@ -29,7 +29,10 @@ export const KOMPAKT_PR = {
     ],
     punkte: [
       "**Anspruch** = Recht, von einem anderen ein Tun oder Unterlassen zu verlangen (§ 194 Abs. 1 BGB). **Anspruchsgrundlage** = Norm mit Tatbestand und Rechtsfolge, z. B. § 433 Abs. 2 BGB.",
-      "**Reihenfolge:** vertraglich → vertragsähnlich (§ 280 Abs. 1 i. V. m. §§ 311 Abs. 2, 241 Abs. 2 BGB) → GoA (§§ 677 ff. BGB) → dinglich (§ 985 BGB) → Bereicherung (§ 812 BGB) → Delikt (§ 823 BGB).",
+      "**Reihenfolge bei mehreren Anspruchsgrundlagen:** vertraglich (erst Primär-, dann Sekundäransprüche wie § 280 Abs. 1 BGB) → quasivertraglich (§ 280 Abs. 1 i. V. m. §§ 311 Abs. 2, 241 Abs. 2 BGB; GoA §§ 677 ff. BGB) → dinglich (§ 985 BGB) → **Delikt** (§ 823 BGB) → **Bereicherung** (§ 812 BGB). Grundsätzlich **alle** in Betracht kommenden prüfen, auch wenn die erste schon trägt.",
+      "**Wer, von wem?** Ist die Rechtsfähigkeit eines Beteiligten zweifelhaft (Verein, Gesellschaft, Erbengemeinschaft), vor der Anspruchsgrundlage prüfen (§ 1 BGB, § 13 Abs. 1 GmbHG, § 105 Abs. 2 HGB).",
+      "**Typische Prüfungspunkte bei § 433 Abs. 2 BGB:** entstanden – Angebot und Annahme, ggf. Stellvertretung; Geschäftsfähigkeit, bewusste Willensmängel (§§ 116 ff.), Form (§ 125), Verbot (§ 134), Sitten (§ 138 BGB). Erloschen – Anfechtung (§ 142, auch schon bei „entstanden“ möglich), Erfüllung und Surrogate (§§ 362, 364, 389, 397 BGB), Unmöglichkeit (§§ 275, 326 BGB), Rücktritt, Kündigung, Widerruf. Durchsetzbar – Verjährung, Stundung, §§ 273, 320 BGB.",
+      "**Obersatz-Varianten:** „V könnte gegen K einen Anspruch auf … aus § 433 Abs. 2 BGB haben.“ oder „Fraglich ist, ob dem V gegen K ein Anspruch auf … aus § 433 Abs. 2 BGB zusteht.“ – immer mit Wer, von wem, was (Betrag, Sache) und woraus.",
       "**Einwendungen** sind von Amts wegen zu beachten; **Einreden** wirken nur, wenn sich der Schuldner auf sie beruft.",
       "**Gutachtenstil:** Obersatz im Konjunktiv („V könnte … aus § 433 Abs. 2 BGB haben“) → Definition/Voraussetzungen → Subsumtion → Ergebnis. Unproblematisches darf kurz im **Urteilsstil** festgestellt werden.",
       "**Auslegung von Gesetzen:** Wortlaut (Grenze), Systematik, Historie, Telos (Sinn und Zweck). Verträge und Willenserklärungen dagegen nach §§ 133, 157 BGB.",

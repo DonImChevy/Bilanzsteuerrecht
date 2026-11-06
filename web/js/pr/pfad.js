@@ -22,12 +22,14 @@ export const PFAD_PR = [
     karten: [
       { art: "merksatz", titel: "Der Einstieg", text: "Jede Falllösung beginnt mit der Frage: **Wer will was von wem woraus?** Das „Woraus“ ist die **Anspruchsgrundlage** – eine Norm mit Tatbestand und Rechtsfolge, z. B. § 433 Abs. 2 BGB." },
       { art: "erklaerung", titel: "Drei Stufen", text: "1. **Entstanden?** – Voraussetzungen erfüllt, keine Nichtigkeit (z. B. §§ 105, 125, 138 BGB)\n2. **Erloschen?** – z. B. Erfüllung (§ 362 BGB), Anfechtung (§ 142 BGB), Aufrechnung\n3. **Durchsetzbar?** – Einreden wie Verjährung (§ 214 BGB)" },
+      { art: "klausur", titel: "Mehrere Anspruchsgrundlagen", text: "Reihenfolge: **Vertrag** → **quasivertraglich** (c. i. c., GoA) → **dinglich** (§ 985 BGB) → **Delikt** (§ 823 BGB) → **Bereicherung** (§ 812 BGB). Alle in Betracht kommenden prüfen – auch wenn schon die erste trägt." },
       { art: "erklaerung", titel: "Gutachtenstil", text: "**Obersatz** im Konjunktiv („V **könnte** … haben“) → **Definition** → **Subsumtion** (Sachverhalt unter die Definition) → **Ergebnis**. Unproblematisches darf kurz im Urteilsstil stehen." },
       { art: "beispiel", titel: "So klingt ein Obersatz", text: "„V könnte gegen K einen Anspruch auf Zahlung von 500 € aus § 433 Abs. 2 BGB haben. Dann müssten V und K einen wirksamen Kaufvertrag geschlossen haben.“" },
     ],
     fragen: [
       { art: "wahl", frage: "Wo prüfen Sie die Verjährung?", optionen: ["Anspruch durchsetzbar?", "Anspruch entstanden?", "Anspruch erloschen?", "Gar nicht – sie gilt automatisch"], richtig: 0, erkl: "Verjährung ist eine Einrede (§ 214 Abs. 1 BGB)." },
       { art: "wahl", frage: "Wo prüfen Sie die Erfüllung durch Zahlung?", optionen: ["Anspruch erloschen?", "Anspruch entstanden?", "Anspruch durchsetzbar?", "Im Obersatz"], richtig: 0, erkl: "Erfüllung ist eine rechtsvernichtende Einwendung (§ 362 BGB)." },
+      { art: "wahl", frage: "Welche Anspruchsgrundlage prüfen Sie zuerst?", optionen: ["§ 433 Abs. 2 BGB (Vertrag)", "§ 985 BGB (dinglich)", "§ 823 Abs. 1 BGB (Delikt)", "§ 812 BGB (Bereicherung)"], richtig: 0, erkl: "Vertragliche Ansprüche zuerst – sie können die gesetzlichen beeinflussen." },
       { art: "wahl", frage: "Welcher Satz ist im Gutachtenstil geschrieben?", optionen: ["„K könnte einen Anspruch aus § 433 Abs. 2 BGB haben.“", "„K hat einen Anspruch, weil …“", "„Der Anspruch besteht.“", "„Es ist klar, dass K zahlen muss.“"], richtig: 0, erkl: "Gutachtenstil: offene Frage im Konjunktiv, Ergebnis erst am Ende." },
     ],
   },
