@@ -989,8 +989,9 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .km-zahlen { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin: 0 0 22px; }
 .km-zahlen > div { padding: 12px 14px; border-radius: 16px; background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
 .km-zahlen b { display: block; font-size: 21px; font-weight: 800; letter-spacing: -0.4px; font-variant-numeric: tabular-nums; color: var(--accent); line-height: 1.2; }
-.km-zahlen span { display: block; margin-top: 3px; font-size: 12.5px; line-height: 1.35; color: var(--text2); }
-.km-zahlen span mark.km { background: none; padding: 0; }
+.km-zahlen > div > span { display: block; margin-top: 3px; font-size: 12.5px; line-height: 1.35; color: var(--text2); }
+.km-zahlen > div > span mark.km { background: none; padding: 0; }
+.km-zahlen .km-norm { white-space: nowrap; }
 
 /* Abschnitte */
 .km-abschnitt { margin: 0 0 22px; }
