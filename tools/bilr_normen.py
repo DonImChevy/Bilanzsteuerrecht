@@ -49,7 +49,7 @@ AUSWAHL_UST = {
 AUSWAHL_AO = {
     "AO": {"1": ["1"], "3": None, "7": None, "8": None, "9": None, "10": None, "11": None, "12": None, "15": None,
            "17": None, "18": ["1"], "19": ["1", "3", "4"], "20": ["1"], "21": ["1"], "22": ["1"], "24": None, "25": None,
-           "26": None, "28": ["1"], "29": None, "30": ["1", "2", "3", "4", "5"], "33": None, "34": None, "35": None,
+           "26": None, "28": ["1"], "29": None, "30": ["1", "2", "3", "4", "5"], "31": ["1"], "31a": ["1"], "31b": ["1"], "33": None, "34": None, "35": None,
            "37": ["1"], "38": None, "45": ["1"], "78": None, "79": ["1"], "80": ["1", "2", "4", "5", "6"], "82": ["1"],
            "85": None, "86": None, "88": ["1", "2"], "90": ["1"], "91": None, "92": None, "93": ["1", "2"], "97": ["1"],
            "101": ["1"], "102": ["1"], "103": None, "104": ["1", "2"], "108": None, "109": ["1", "2"], "110": None,
@@ -117,6 +117,9 @@ TEXT_KORREKTUR = {("UStG", "3a"): [(r"\n1\. 2\. Eine sonstige", "\n1. Eine sonst
                   # Überschrift des folgenden Unterabschnitts hängt am letzten Absatz
                   ("AO", "110"): [(r" \d\. Unterabschnitt .*$", "")], ("AO", "335"): [(r" \d\. Unterabschnitt .*$", "")],
                   ("AO", "92"): [(r" II\. Beweis durch .*$", "")],
+                  # § 30 Abs. 4: Im PDF steht „5.“ vor Buchst. a von Nr. 4 statt vor dem Text von Nr. 5
+                  ("AO", "30"): [(r"die Kenntnisse\n5\. a\) in einem", "die Kenntnisse\na) in einem"),
+                                 (r"erlangt worden sind, für sie ein zwingendes", "erlangt worden sind,\n5. für sie ein zwingendes")],
                   # § 180 Abs. 1: Nummern 1 und 2 stehen im PDF vor dem Text von Nr. 1
                   ("AO", "180"): [(r"\n1\. 2\. (die Grundsteuerwerte[^\n]*)\na\)", r"\n1. \1\n2. a)")],
                   # Überschrift über zwei Zeilen: zweite Zeile steht am Anfang des Textes
