@@ -4,6 +4,7 @@
 // Rein bis auf die Ansichten: zusammenstellen(), note() und die Bausteine sind getestet.
 import { Zufall } from "./kern.js";
 import { SV_BSR, VORBEMERKUNGEN as VB_BSR } from "./bilr/klausur_sv.js";
+import * as HS from "./handschrift.js";
 
 export const DAUERN = [60, 90, 180];
 export const SIM = {
@@ -74,6 +75,28 @@ export function startKarte(fach, h) {
   </section>`;
 }
 
+/** Schreibwerkzeuge (gleiche Aktionen wie im Karteneditor: Stift, Textmarker, Radierer, Farben). */
+function werkzeuge(h) {
+  const w = h.hs, m = w.art === "m", farben = m ? HS.MARKER : HS.FARBEN, aktiv = m ? w.mfarbe : w.farbe;
+  return `<div class="hs-leiste ks-leiste" role="toolbar" aria-label="Schreibwerkzeuge">
+    <button class="hs-wz${w.art === "s" ? " an" : ""}" data-a="hsWerkzeug" data-v="s" aria-label="Stift">${h.ic("stift", "klein")}</button>
+    <button class="hs-wz${m ? " an" : ""}" data-a="hsWerkzeug" data-v="m" aria-label="Textmarker"><svg class="ic klein" viewBox="0 0 24 24"><path d="M5 19h6M9.5 15.5l-3-3L15 4l3 3z"/><path d="M6.5 12.5 4 17l3.5 1.5 2-3"/></svg></button>
+    <button class="hs-wz${w.art === "r" ? " an" : ""}" data-a="hsWerkzeug" data-v="r" aria-label="Radierer"><svg class="ic klein" viewBox="0 0 24 24"><path d="M8 20h12M5.5 14.5 14 6l5 5-8.5 8.5H7.5L4.5 16.5z"/><path d="m9.5 10.5 5 5"/></svg></button>
+    <span class="hs-trenn"></span>
+    ${w.art === "r" ? `<span class="hs-hinweis">Über den Strich wischen</span>` : farben.map((f, i) => `<button class="hs-farbe${aktiv === i ? " an" : ""}" data-a="hsFarbe" data-v="${i}" style="--f:var(--hs-${m ? "m-" : ""}${f})" aria-label="Farbe ${f}"></button>`).join("")}
+  </div>`;
+}
+/** Handgeschriebene Blätter eines Sachverhalts (Bearbeitung: Zeichenflächen, Auswertung: Bilder). */
+function blaetter(k, id, h, lesen = false) {
+  const seiten = k.hand?.[id] || [];
+  if (lesen) return seiten.filter(HS.hatStriche).map((t, j) => `<figure class="ks-hs-bild"><figcaption>Blatt ${j + 1}</figcaption>${HS.svg(t)}</figure>`).join("");
+  return (seiten.length ? seiten : [""]).map((t, j) => `<div class="ks-hs-blatt"><div class="ks-hs-kopf"><span>Blatt ${j + 1}</span>
+      <button class="hs-wz" data-a="ksimRueck" data-v="${id}|${j}" aria-label="Rückgängig">${h.ic("zurueck", "klein")}</button>
+      <button class="hs-wz" data-a="ksimLeeren" data-v="${id}|${j}" aria-label="Blatt leeren">${h.ic("muell", "klein")}</button></div>
+      <div class="hs-papier ks-hs">${HS.papier("l")}<canvas class="hs-canvas" data-ksim-hs="${id}|${j}" aria-label="Schreibfläche Blatt ${j + 1}"></canvas></div></div>`).join("") +
+    `<button class="knopf zweit ks-blatt-neu" data-a="ksimBlatt" data-v="${id}">${h.ic("plus", "klein")} Blatt hinzufügen</button>`;
+}
+
 const absatz = (t, h) => String(t).split("\n").map((z) => `<p>${h.inline(z)}</p>`).join("");
 
 export function simView(k, h) {
@@ -94,7 +117,7 @@ export function simView(k, h) {
       <h3>Zeiteinteilung</h3>
       <ol class="ks-plan">${svs.map((s, i) => `<li><span>${s.teil === 1 ? "Teil I" : "Teil II"} · ${h.esc(s.titel)}</span><b>ca. ${s.min} Min.</b></li>`).join("")}</ol>
       <h3>Bearbeitungshinweise</h3>
-      <ul class="ks-hinweise"><li>Die Teile I und II sind unabhängig voneinander zu bearbeiten.</li><li>Offenbare Unrichtigkeiten oder fehlende Angaben im Sachverhalt: kurz vermerken, wie Sie ergänzt haben.</li><li>Ihre Eingaben werden laufend auf diesem Gerät gespeichert. Nach Ablauf der Zeit wird automatisch abgegeben.</li></ul>
+      <ul class="ks-hinweise"><li>Die Teile I und II sind unabhängig voneinander zu bearbeiten.</li><li>Offenbare Unrichtigkeiten oder fehlende Angaben im Sachverhalt: kurz vermerken, wie Sie ergänzt haben.</li><li>Je Sachverhalt tippen oder mit Stift bzw. Finger auf Blättern schreiben („Schreiben“). Ihre Eingaben werden laufend auf diesem Gerät gespeichert. Nach Ablauf der Zeit wird automatisch abgegeben.</li></ul>
       <h3>Allgemeine Vorbemerkungen</h3>
       <ul class="ks-hinweise">${d.vorbemerkungen.map((v) => `<li>${h.inline(v)}</li>`).join("")}</ul>
     </article></div>
@@ -115,12 +138,14 @@ export function simView(k, h) {
       <div class="ks-text">${absatz(s.sv, h)}</div>
       <div class="ks-aufgaben"><b>Aufgaben</b><ol>${s.aufgaben.map((a) => `<li>${h.inline(a)}</li>`).join("")}</ol></div>
       ${fertig ? `
-        ${eigene ? `<details class="ks-eigene"><summary>Deine Lösung</summary><pre>${h.esc(eigene)}</pre></details>` : `<p class="ks-leer">Keine Lösung eingegeben.</p>`}
+        ${eigene || blaetter(k, id, h, true) ? `<details class="ks-eigene" open><summary>Deine Lösung</summary>${eigene ? `<pre>${h.esc(eigene)}</pre>` : ""}${blaetter(k, id, h, true)}</details>` : `<p class="ks-leer">Keine Lösung eingegeben.</p>`}
         ${zahlen.length ? `<div class="ks-kontrolle">${zahlen.map((z, j) => { const ein = k.zahlen?.[id]?.[j]; const ok = zahlStimmt(z, ein); return `<span class="${ein ? (ok ? "ok" : "falsch") : ""}">${h.esc(z.frage)}: <b>${ein ? h.esc(ein) : "–"}</b> ${ein ? (ok ? "✓" : `✗ richtig: ${h.esc(String(z.wert.toLocaleString("de-DE")))} ${z.einheit}`) : `(richtig: ${z.wert.toLocaleString("de-DE")} ${z.einheit})`}</span>`; }).join("")}</div>` : ""}
         <div class="km-loesung ks-loesung"><span class="km-etikett">Musterlösung</span>${s.loesung.map(h.loesungZeile).join("")}</div>
         <div class="ks-bogen"><div class="ks-bogen-kopf"><b>Bewertungsbogen</b><span>${String(erreichtSv).replace(".", ",")} / ${String(maxSv).replace(".", ",")} P.</span></div>${bogen}</div>`
-      : `<label class="ks-feld"><span>Ihre Lösung (Würdigung, Berechnungen, Buchungssätze mit GuV/BVV)</span>
-          <textarea data-ksim-text="${id}" rows="10" placeholder="z. B. … gem. § 255 Abs. 1 HGB …&#10;Gebäude 1.000 € an Bank 1.000 € (GuV ±0 · BVV ±0)">${h.esc(eigene)}</textarea></label>
+      : `<div class="ks-feld-kopf"><span>Ihre Lösung (Würdigung, Berechnungen, Buchungssätze mit GuV/BVV)</span>
+          <span class="segment ks-modus">${[["text", "Tippen"], ["hand", "Schreiben"]].map(([m, t]) => `<button data-a="ksimModus" data-v="${id}|${m}" class="${(k.modi?.[id] || h.modus) === m ? "aktiv" : ""}">${m === "hand" ? h.ic("stift", "klein") : ""}${t}</button>`).join("")}</span></div>
+        ${(k.modi?.[id] || h.modus) === "hand" ? werkzeuge(h) + blaetter(k, id, h)
+          : `<label class="ks-feld"><textarea data-ksim-text="${id}" rows="10" aria-label="Ihre Lösung" placeholder="z. B. … gem. § 255 Abs. 1 HGB …&#10;Gebäude 1.000 € an Bank 1.000 € (GuV ±0 · BVV ±0)">${h.esc(eigene)}</textarea></label>`}
         ${zahlen.length ? `<div class="ks-zahlen"><span>Ergebnisse zur Kontrolle (optional)</span>${zahlen.map((z, j) => `<label>${h.esc(z.frage)}<input inputmode="decimal" data-ksim-zahl="${id}|${j}" value="${h.esc(k.zahlen?.[id]?.[j] || "")}" placeholder="${z.einheit}"></label>`).join("")}</div>` : ""}`}
     </article>`;
   }).join("");

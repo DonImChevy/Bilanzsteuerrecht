@@ -1029,3 +1029,20 @@ test("Klausursimulation: Zeit geht exakt auf, Sachverhalte rechnen sauber, Noten
   assert.deepEqual([100, 96, 90, 50, 49.9, 19].map(note), [15, 15, 13, 5, 4, 0]);
   assert.ok(zahlStimmt({ wert: 1234.5, toleranz: 1 }, "1.234,50") && !zahlStimmt({ wert: 1234.5, toleranz: 1 }, "1.240"));
 });
+
+test("Klausursimulation: Handschrift – Blätter je Sachverhalt, Auswertung zeigt die Zeichnung", async () => {
+  const { simView, zusammenstellen } = await import("../js/klausursim.js");
+  const HS = await import("../js/handschrift.js");
+  const teile = zusammenstellen("bsr", 60, 3), id = teile[0];
+  const z = { g: "l", s: [{ w: "s", c: 1, p: [[10, 20, 7], [60, 25, 7], [120, 30, 7]] }] };
+  const code = HS.kodieren(z);
+  const h = { ic: () => "", esc: (t) => String(t), inline: (t) => t, loesungZeile: (t) => t, hs: { art: "s", farbe: 0, mfarbe: 0 }, modus: "text" };
+  const k = { fach: "bsr", minuten: 60, seed: 3, teile, phase: "laufend", start: 1, text: {}, zahlen: {}, haken: {}, modi: { [id]: "hand" }, hand: { [id]: [code, ""] } };
+  const laufend = simView(k, h);
+  assert.ok(laufend.includes(`data-ksim-hs="${id}|0"`) && laufend.includes(`data-ksim-hs="${id}|1"`), "zwei Blätter");
+  assert.ok(laufend.includes(`data-a="ksimBlatt" data-v="${id}"`) && laufend.includes('data-a="hsWerkzeug"'));
+  assert.ok(laufend.includes(`data-ksim-text="${teile[1]}"`), "übrige Sachverhalte bleiben im Tippmodus");
+  const fertig = simView({ ...k, phase: "abgegeben", ende: 2 }, h);
+  assert.equal((fertig.match(/ks-hs-bild/g) || []).length, 1, "nur das beschriebene Blatt erscheint");
+  assert.ok(!fertig.includes("data-ksim-hs"));
+});
