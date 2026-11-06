@@ -27,7 +27,7 @@ export const KOMPAKT_AO = {
       "Geschützte Daten: personenbezogene Daten eines anderen (§ 30 Abs. 2 Nr. 1 AO) oder ein fremdes Betriebs- oder Geschäftsgeheimnis (§ 30 Abs. 2 Nr. 2 AO)?",
       "Dienstlich bekannt geworden (§ 30 Abs. 2 Nr. 1 a–c AO)?",
       "Offenbaren oder verwerten (§ 30 Abs. 2 Nr. 1, 2 AO) oder im automatisierten Verfahren abrufen (§ 30 Abs. 2 Nr. 3 AO)?",
-      "Ohne Befugnis – keine Erlaubnis nach § 30 Abs. 4 oder 5 AO?",
+      "Ohne Befugnis – greift keine Erlaubnisnorm? Steuerverfahren (§ 30 Abs. 4 Nr. 1 AO), Gesetz (§ 30 Abs. 4 Nr. 2 AO), Zustimmung (§ 30 Abs. 4 Nr. 3 AO), nichtsteuerliche Straftat (§ 30 Abs. 4 Nr. 4 AO), zwingendes öffentliches Interesse (§ 30 Abs. 4 Nr. 5 AO), falsche Angaben (§ 30 Abs. 5 AO)",
     ],
     punkte: [
       "**Amtsträger (§ 7 AO):** Beamte und Richter (Nr. 1), sonstige öffentlich-rechtliche Amtsverhältnisse wie Minister oder Notare (Nr. 2), alle, die sonst Aufgaben der öffentlichen Verwaltung wahrnehmen, z. B. angestellte Sachbearbeiter (Nr. 3).",
@@ -35,7 +35,13 @@ export const KOMPAKT_AO = {
       "**Personenbezogene Daten** (§ 30 Abs. 2 Nr. 1 AO) sind weit zu verstehen – auch Privates wie Wohnungseinrichtung oder Kinderzahl, auch Daten Dritter (Angehörige, Geschäftspartner). Anonymisierte Angaben sind nicht geschützt.",
       "**Dienstlich** = aus einem Verfahren in Steuersachen oder sonstigem dienstlichen Anlass; **privat Erfahrenes** fällt nicht unter § 30 AO.",
       "**Offenbaren:** ein Dritter erfährt etwas Neues – durch Tun, Dulden, Unterlassen, auch schlüssig; ein Wille dazu ist nicht nötig. **Verwerten:** zum eigenen oder fremden Vorteil ausnutzen. **Abrufen:** unbefugter Zugriff auf geschützte Daten, die in einem automationsgestützten Dateisystem gespeichert sind (§ 30 Abs. 2 Nr. 3 AO).",
-      "**Befugt (§ 30 Abs. 4 AO):** Durchführung eines Steuerverfahrens (Nr. 1, z. B. Kontrollmitteilung), ausdrückliche gesetzliche Zulassung (Nr. 2), vorherige Zustimmung (Nr. 3), nichtsteuerliche Straftaten unter engen Voraussetzungen (Nr. 4), zwingendes öffentliches Interesse (Nr. 5); vorsätzlich falsche Angaben dürfen der Staatsanwaltschaft offenbart werden (§ 30 Abs. 5 AO).",
+      "**Erlaubnisnormen (§ 30 Abs. 4 AO)** – offenbaren oder verwerten ist zulässig, soweit es …",
+      "**Nr. 1 – Steuerverfahren:** der Durchführung eines Verwaltungs- oder Gerichtsverfahrens in Steuersachen oder eines Steuerstraf- oder Bußgeldverfahrens dient (Abs. 2 Nr. 1 Buchst. a, b) – z. B. **Kontrollmitteilung** an ein anderes Finanzamt, Akten an das Finanzgericht. (Nr. 1a, 1b: Weiterverarbeitung nach § 29c AO, Datenschutz-Bußgeldverfahren.)",
+      "**Nr. 2 – Gesetz:** **ausdrücklich** durch Bundesgesetz zugelassen, z. B. § 31 AO (Besteuerungsgrundlagen an öffentlich-rechtliche Körperschaften, etwa für IHK-Beiträge, und an Sozialleistungsträger), § 31a AO (illegale Beschäftigung, Leistungsmissbrauch), § 31b AO (Geldwäsche); allgemeine Amtshilfe (Art. 35 GG) genügt **nicht**. (Nr. 2a–2d: EU-Recht, Statistik, Gesetzesfolgenabschätzung, Archive.)",
+      "**Nr. 3 – Zustimmung** der betroffenen Person – sie muss **vorher** vorliegen.",
+      "**Nr. 4 – nichtsteuerliche Straftat:** Strafverfahren wegen einer Tat, die keine Steuerstraftat ist, **und** die Kenntnisse stammen a) aus einem Steuerstraf- oder Bußgeldverfahren (nicht: was der Steuerpflichtige vorher im Besteuerungsverfahren offenbart hat) oder b) wurden ohne steuerliche Pflicht bzw. unter Verzicht auf ein Auskunftsverweigerungsrecht erlangt.",
+      "**Nr. 5 – zwingendes öffentliches Interesse,** namentlich a) Abwehr erheblicher Nachteile für das Gemeinwohl oder Gefahren für die öffentliche Sicherheit, Verfolgung von Verbrechen und vorsätzlichen schweren Vergehen gegen Leib und Leben oder den Staat, b) schwere Wirtschaftsstraftaten, c) Richtigstellung unwahrer Tatsachen in der Öffentlichkeit (Entscheidung der obersten Finanzbehörde mit dem BMF).",
+      "**§ 30 Abs. 5 AO:** Vorsätzlich falsche Angaben der betroffenen Person dürfen den Strafverfolgungsbehörden offenbart werden – z. B. die falsche Anzeige eines Denunzianten.",
       "**Folgen eines Bruchs:** Strafbarkeit (§ 355 StGB), Amtshaftung (Art. 34 GG i. V. m. § 839 BGB), Disziplinarmaßnahmen. Die Pflicht endet nicht mit dem Dienstende.",
     ],
     fallen: [
