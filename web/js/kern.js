@@ -85,6 +85,23 @@ export const THEMEN = [
   { id: "ao-zustaendigkeit", titel: "Örtliche Zuständigkeit", unter: "§§ 8–12, 17–29 AO · § 19 Abs. 3 vertieft", icon: "🗺️", fach: "ao" },
   { id: "ao-fristen", titel: "Fristen & Wiedereinsetzung", unter: "§§ 108–110 AO · §§ 187 ff. BGB", icon: "📅", fach: "ao" },
   { id: "ao-erhebung", titel: "Entstehung, Fälligkeit, Säumnis", unter: "§§ 38, 218, 220, 240 AO", icon: "💶", fach: "ao" },
+  // Privatrecht (GS I, Kapitel 1–12 der Lernlandkarte bis zur Klausur)
+  { id: "pr-grundlagen", titel: "Privatrecht im Rechtssystem", unter: "Abgrenzung zum öffentlichen Recht · Aufbau des BGB · Steuerrecht", icon: "🏛️", fach: "pr" },
+  { id: "pr-anspruch", titel: "Anspruchsaufbau & Gutachtenstil", unter: "Wer will was von wem woraus · Einwendungen, Einreden", icon: "🧭", fach: "pr" },
+  { id: "pr-privatautonomie", titel: "Privatautonomie & Grenzen", unter: "Vertragsfreiheit · §§ 134, 138, 125, 311b BGB", icon: "🗽", fach: "pr" },
+  { id: "pr-rechtssubjekte", titel: "Rechtssubjekte", unter: "§§ 1, 21 ff., 705 BGB · oHG, KG, GmbH", icon: "👤", fach: "pr" },
+  { id: "pr-rechtsobjekte", titel: "Rechtsobjekte", unter: "§§ 90–97 BGB · Bestandteile, Zubehör", icon: "📦", fach: "pr" },
+  { id: "pr-geschaeftsfaehigkeit", titel: "Geschäfts- und Deliktsfähigkeit", unter: "§§ 104–113, 827–829 BGB", icon: "🧒", fach: "pr" },
+  { id: "pr-willenserklaerung", titel: "Willenserklärung", unter: "Tatbestand, Auslegung, Zugang · §§ 130, 133, 157 BGB", icon: "💬", fach: "pr" },
+  { id: "pr-rechtsgeschaefte", titel: "Rechtsgeschäfte, Form, Nichtigkeit", unter: "Trennung und Abstraktion · §§ 116 ff., 125 ff. BGB", icon: "🧾", fach: "pr" },
+  { id: "pr-vertragsschluss", titel: "Vertragsschluss", unter: "Angebot und Annahme · §§ 145–157 BGB", icon: "🤝", fach: "pr" },
+  { id: "pr-anfechtung", titel: "Anfechtung", unter: "§§ 119–124, 142–144 BGB", icon: "↩️", fach: "pr" },
+  { id: "pr-stellvertretung", titel: "Stellvertretung", unter: "§§ 164–181 BGB · Bote, Vollmacht, Prokura", icon: "🧑‍💼", fach: "pr" },
+  { id: "pr-schuldverhaeltnis", titel: "Schuldverhältnis – Grundlagen", unter: "§ 241 BGB · Ziel- und Dauerschuld, Leistung, Erlöschen", icon: "🔗", fach: "pr" },
+  { id: "pr-gesetzlich", titel: "Delikt, Bereicherung, Herausgabe", unter: "§§ 823, 812, 985 BGB · Schadensersatz", icon: "🚲", fach: "pr" },
+  { id: "pr-verjaehrung", titel: "Verjährung", unter: "§§ 194–218 BGB", icon: "⌛", fach: "pr" },
+  { id: "pr-kauf", titel: "Kaufvertrag & Mängelrechte", unter: "§§ 433–479 BGB", icon: "🛒", fach: "pr" },
+  { id: "pr-sachenrecht", titel: "Sachenrecht", unter: "Besitz, Eigentum · §§ 854, 929 ff., 873, 925 BGB", icon: "🏠", fach: "pr" },
 ];
 export const THEMA = Object.fromEntries(THEMEN.map((t) => [t.id, t]));
 
@@ -95,6 +112,7 @@ export const FAECHER = {
   est: { id: "est", titel: "Einkommensteuer", kurz: "ESt" },
   ust: { id: "ust", titel: "Umsatzsteuer", kurz: "USt" },
   ao: { id: "ao", titel: "Abgabenordnung", kurz: "AO" },
+  pr: { id: "pr", titel: "Privatrecht", kurz: "PrivR" },
 };
 /**
  * BilBf (Ausbildung FTA I) nutzt die Buchführungsthemen aus Bilanzrecht Teil I mit – in der Reihenfolge des Lehrplans,

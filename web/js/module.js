@@ -10,7 +10,7 @@ export const MODULE = [
   { id: "bbf", titel: "Bilanz und Buchführung", kurz: "BilBf", unter: "Buchführung und Bilanzwesen · FTA I", icon: "tkonto", farbe: "#0e7490", farbeDunkel: "#22d3ee", rolle: "ausbildung" },
   { id: "ao", titel: "Abgabenordnung", kurz: "AO", unter: "Verfahrensrecht · Grundstudium I", icon: "akte", farbe: "#7c3aed", farbeDunkel: "#b794f6" },
   { id: "bewr", titel: "Bewertungsrecht", kurz: "BewR", unter: "BewG", icon: "haus", farbe: "#0284c7", farbeDunkel: "#38bdf8", bald: true },
-  { id: "pr", titel: "Privatrecht", kurz: "PrivR", unter: "BGB, HGB", icon: "waage", farbe: "#c026d3", farbeDunkel: "#e879f9", bald: true },
+  { id: "pr", titel: "Privatrecht", kurz: "PrivR", unter: "BGB, HGB", icon: "waage", farbe: "#c026d3", farbeDunkel: "#e879f9" },
 ];
 export const MODUL = Object.fromEntries(MODULE.map((m) => [m.id, m]));
 export const rolleVon = (m) => m.rolle || "studium";
