@@ -5,6 +5,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-pr-modul",
+    datum: "2026-11-06",
+    titel: "Neues Modul: Privatrecht",
+    punkte: [
+      ["waage", "Privatrecht (GS I)", "16 Themen von der Rechtsfähigkeit über Willenserklärung, Anfechtung und Stellvertretung bis zu Kauf, Verjährung und Eigentum – mit Frage-Antwort, Fällen, Klausur und BGB-, HGB- und GmbHG-Text (Stand 2026).", "modul", "pr"],
+      ["stift", "Gutachten-Fälle wie in der Klausur", "Zahlungsansprüche mit Stellvertretung, minderjährigen Vertretern, Anfechtung und Delikt – mit Musterlösung im Gutachtenstil und Klausur-Fahrplan im Kompaktwissen."],
+      ["karten", "Lernpfad, Kompaktwissen, Paare", "Für jedes Thema ein Lernpfad-Block, eine Zusammenfassung mit Klausurbeispiel (auch zum Anhören) und das Normen-Paare-Spiel."],
+    ],
+  },
+  {
     id: "2026-11-vorlesen",
     datum: "2026-11-05",
     titel: "Überblicke zum Anhören",

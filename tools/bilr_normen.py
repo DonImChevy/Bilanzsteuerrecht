@@ -5,6 +5,7 @@ Aufruf (beliebige Teilmenge der Gesetze):
   python3 -I tools/bilr_normen.py web/js/bilr/normen.js UStG=UStG.raw HGB=HGB.raw AO=AO.raw EStG=EStG.raw
   python3 -I tools/bilr_normen.py --est web/js/est/normen.js EStG=EStG.raw AO=AO.raw LStDV=LStDV.raw
   python3 -I tools/bilr_normen.py --ao web/js/ao/normen.js AO=AO.raw BGB=BGB.raw VwZG=VwZG.raw
+  python3 -I tools/bilr_normen.py --pr web/js/pr/normen.js BGB=BGB.raw HGB=HGB.raw GmbHG=GmbHG.raw AO=AO.raw
 
 Lange Paragrafen werden als Auszug übernommen: nur die Absätze bzw. Nummern, die in den Aufgaben vorkommen.
 """
@@ -62,9 +63,50 @@ AUSWAHL_AO = {
     "BGB": {"112": None, "113": ["1"], "187": None, "188": None, "193": None, "1922": ["1"]},
     "VwZG": {"2": None, "8": None},
 }
+# Privatrecht (Aufruf mit --pr → web/js/pr/normen.js, Export NORMEN_PR): alle im Modul zitierten Paragrafen
+AUSWAHL_PR = {
+    "BGB": {"1": None, "2": None, "13": None, "14": None, "21": None, "22": None, "24": None, "26": None, "31": None, 
+            "53": None, "54": None, "56": None, "80": None, "90": None, "90a": None, "91": None, "92": None, "93": None, 
+            "94": None, "95": None, "97": None, "98": None, "104": None, "105": None, "105a": None, "106": None, 
+            "107": None, "108": None, "109": None, "110": None, "111": None, "112": None, "113": None, "116": None, 
+            "117": None, "118": None, "119": None, "120": None, "121": None, "122": None, "123": None, "124": None, 
+            "125": None, "126": None, "126a": None, "126b": None, "128": None, "129": None, "130": None, "131": None, 
+            "133": None, "134": None, "138": None, "139": None, "142": None, "143": None, "144": None, "145": None, 
+            "146": None, "147": None, "148": None, "150": None, "151": None, "153": None, "154": None, "155": None, 
+            "156": None, "157": None, "158": None, "164": None, "165": None, "166": None, "167": None, "170": None, 
+            "172": None, "177": None, "178": None, "179": None, "180": None, "181": None, "184": None, "187": None, 
+            "194": None, "195": None, "196": None, "197": None, "199": None, "201": None, "203": None, "204": None, 
+            "205": None, "207": None, "209": None, "212": None, "214": None, "227": None, "228": None, "241": None, 
+            "241a": None, "242": None, "243": None, "249": None, "251": None, "252": None, "253": None, "254": None, 
+            "269": None, "270": None, "271": None, "273": None, "274": None, "275": None, "276": None, "280": None, 
+            "281": None, "283": None, "284": None, "305": None, "311": None, "311b": None, "311c": None, "314": None, 
+            "320": None, "322": None, "323": None, "326": None, "331": None, "346": None, "355": None, "362": None, 
+            "364": None, "372": None, "387": None, "388": None, "389": None, "397": None, "398": None, "399": None, 
+            "404": None, "407": None, "414": None, "415": None, "421": None, "426": None, "433": None, "434": None, 
+            "435": None, "437": None, "438": None, "439": None, "440": None, "441": None, "442": None, "444": None, 
+            "446": None, "447": None, "449": None, "474": None, "475": None, "476": None, "477": None, "480": None, 
+            "488": None, "518": None, "535": None, "542": None, "581": None, "598": None, "611": None, "611a": None, 
+            "620": None, "621": None, "622": None, "626": None, "631": None, "677": None, "705": None, "721": None, 
+            "740": None, "741": None, "747": None, "765": None, "766": None, "771": None, "812": None, "816": None, 
+            "818": None, "823": None, "826": None, "827": None, "828": None, "829": None, "831": None, "832": None, 
+            "840": None, "844": None, "854": None, "855": None, "857": None, "868": None, "872": None, "873": None, 
+            "892": None, "903": None, "904": None, "925": None, "926": None, "929": None, "930": None, "931": None, 
+            "932": None, "935": None, "985": None, "986": None, "987": None, "1629": None, "1923": None, "1937": None, 
+            "2058": None, "2064": None, "2247": None},
+    "HGB": {"1": None, "15": None, "48": None, "49": None, "50": None, "52": None, "53": None, "54": None, "56": None, 
+            "105": None, "126": None, "161": None, "171": None, "350": None, "362": None, "377": None},
+    "GmbHG": {"2": None, "5": None, "6": None, "7": None, "11": None, "13": None, "15": None, "35": None, "60": None},
+    "AO": {"39": None, "40": None, "41": None, "44": None, "47": None, "93": None, "226": None, "228": None, "232": None},
+}
 # Paragrafen ohne amtliche Überschrift: Titel des Abschnitts
 TITEL = {("EStG", "20"): "Einkünfte aus Kapitalvermögen", ("EStG", "10"): "Sonderausgaben", ("EStG", "3"): "Steuerfreie Einnahmen", ("EStG", "11"): "Vereinnahmung und Verausgabung",
-         ("EStG", "12"): "Nicht abzugsfähige Ausgaben", ("EStG", "9b"): "Umsatzsteuerrechtlicher Vorsteuerabzug"}
+         ("EStG", "12"): "Nicht abzugsfähige Ausgaben", ("EStG", "9b"): "Umsatzsteuerrechtlicher Vorsteuerabzug",
+         # HGB-Paragrafen ohne amtliche Überschrift (Privatrecht): Titel nach dem Inhalt
+         ("HGB", "1"): "Istkaufmann", ("HGB", "15"): "Publizität des Handelsregisters", ("HGB", "48"): "Erteilung der Prokura",
+         ("HGB", "49"): "Umfang der Prokura", ("HGB", "50"): "Beschränkung der Prokura", ("HGB", "52"): "Widerruf der Prokura",
+         ("HGB", "53"): "Anmeldung der Prokura", ("HGB", "54"): "Handlungsvollmacht", ("HGB", "56"): "Angestellte in Läden",
+         ("HGB", "161"): "Kommanditgesellschaft", ("HGB", "171"): "Haftung des Kommanditisten", ("HGB", "350"): "Formfreiheit der Bürgschaft",
+         ("HGB", "362"): "Schweigen auf Anträge", ("HGB", "377"): "Untersuchungs- und Rügeobliegenheit"}
 # Im PDF über einen Seitenumbruch verschobene Textteile (gehören zu § 3 Nr. 13 EStG)
 # § 3a Abs. 3 UStG: Im PDF stehen die Nummern 1/2 und 3a/4 vertauscht vor dem Text – Nummern wieder an die richtige Stelle setzen
 TEXT_KORREKTUR = {("UStG", "3a"): [(r"\n1\. 2\. Eine sonstige", "\n1. Eine sonstige"),
@@ -89,7 +131,7 @@ TITEL_KORREKTUR = {("AO", "103"): "Auskunftsverweigerungsrecht bei Gefahr der Ve
                    ("AO", "20"): "Steuern vom Einkommen und Vermögen der Körperschaften, Personenvereinigungen, Vermögensmassen"}
 START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
          "UStG": "§ 1 Steuerbare Umsätze", "LStDV": "§ 1 Arbeitnehmer, Arbeitgeber",
-         "BGB": "§ 1 Beginn der Rechtsfähigkeit", "VwZG": "§ 1 Anwendungsbereich"}
+         "BGB": "§ 1 Beginn der Rechtsfähigkeit", "VwZG": "§ 1 Anwendungsbereich", "GmbHG": "§ 1 Zweck; Gründerzahl"}
 STAND = {}
 
 
@@ -241,6 +283,8 @@ def main():
         AUSWAHL, name, args = AUSWAHL_UST, "NORMEN_UST", args[1:]
     if args[0] == "--ao":
         AUSWAHL, name, args = AUSWAHL_AO, "NORMEN_AO", args[1:]
+    if args[0] == "--pr":
+        AUSWAHL, name, args = AUSWAHL_PR, "NORMEN_PR", args[1:]
     ziel, *quellen = args
     aus, staende = [], []
     for q in quellen:
@@ -266,6 +310,16 @@ def main():
     for n in aus:
         for a in n["abs"]:
             a["text"] = a["text"].replace("\u200b", "")
+    if name == "NORMEN_PR":
+        # Am Ende des letzten Absatzes hängen im PDF oft Gliederungsüberschriften, Fußnoten oder weggefallene Paragrafen
+        for n in aus:
+            if not n["abs"]:
+                continue
+            letzter = n["abs"][-1]
+            for muster in (r"\s*\*\) Amtlicher Hinweis:.*$", r"\s+§§ \d+[a-z]? (?:bis|und) \d+[a-z]? \(weggefallen\).*$",
+                           r"\s+(?:Untertitel|Kapitel|Abschnitt|Titel) \d+ [A-ZÄÖÜ].*$"):
+                letzter["text"] = re.sub(muster, "", letzter["text"], flags=re.S)
+            n["titel"] = n["titel"].replace("*)", "").strip().rstrip(".").strip()
     js = ("// Automatisch erzeugt aus den Gesetzestexten (tools/bilr_normen.py) – nicht von Hand ändern.\n"
           "// Quelle: www.gesetze-im-internet.de. " + " · ".join(staende) + "\n"
           "export const " + name + " = " + json.dumps(aus, ensure_ascii=False, indent=0) + ";\n")

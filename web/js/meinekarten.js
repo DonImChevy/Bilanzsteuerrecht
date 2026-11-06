@@ -121,7 +121,7 @@ export function importieren(meine, text, { fach, stapel } = {}, jetzt = Date.now
   const vorhanden = new Set(kartenVon(meine).map((k) => k.v + "\u0000" + k.h + "\u0000" + (k.zv || "") + (k.zh || "")));
   let out = meine, neu = 0, doppelt = 0, i = 0;
   for (const e of eintraege) {
-    const ent = { v: sauber(e.v), h: sauber(e.h), zv: zeichnung(e.zv), zh: zeichnung(e.zh), f: ["bsr", "oer", "est", "ust", "bbf", "ao"].includes(e.f) ? e.f : fach, st: stapel || e.st, q: e.q || "Importiert" };
+    const ent = { v: sauber(e.v), h: sauber(e.h), zv: zeichnung(e.zv), zh: zeichnung(e.zh), f: ["bsr", "oer", "est", "ust", "bbf", "ao", "pr"].includes(e.f) ? e.f : fach, st: stapel || e.st, q: e.q || "Importiert" };
     if (!entwurfOk(ent)) continue;
     const schluessel = ent.v + "\u0000" + ent.h + "\u0000" + ent.zv + ent.zh;
     if (vorhanden.has(schluessel)) { doppelt += 1; continue; }

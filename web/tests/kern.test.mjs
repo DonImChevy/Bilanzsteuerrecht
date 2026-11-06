@@ -234,8 +234,8 @@ test("Lernserie, Wochenverlauf und Module", async () => {
   assert.equal(w.length, 7);
   assert.deepEqual([w[0].n, w[6].n, w[6].heute, w[6].kurz], [2, 7, true, "Di"]);
   // Module: aktive haben Themen und Aufgaben, kommende nicht; Icons existieren
-  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer", "est", "ust", "bbf", "ao"]);
-  assert.deepEqual(aktiveModule("studium").map((m) => m.id), ["bsr", "oer", "est", "ust", "ao"]);
+  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer", "est", "ust", "bbf", "ao", "pr"]);
+  assert.deepEqual(aktiveModule("studium").map((m) => m.id), ["bsr", "oer", "est", "ust", "ao", "pr"]);
   assert.deepEqual(aktiveModule("ausbildung").map((m) => m.id), ["bbf"]);
   assert.ok(MODULE.length === 8 && !MODUL.asv && MODUL.ust.kurz === "USt" && MODUL.bsr.kurz === "BilR" && MODUL.bbf.kurz === "BilBf" && MODUL.pr.kurz === "PrivR");
   for (const m of MODULE) {
@@ -453,9 +453,9 @@ test("Paare finden: Normen und Kurzerklärungen eindeutig", async () => {
 
 test("Lernpfade aller Module: jeder Block in sich vollständig", async () => {
   const { PFADE } = await import("../js/lernpfad.js");
-  for (const fach of ["ust", "est", "oer", "bsr1", "bsr2", "bbf", "ao"]) assert.ok(PFADE[fach]?.bloecke.length >= 8, "Lernpfad fehlt: " + fach);
+  for (const fach of ["ust", "est", "oer", "bsr1", "bsr2", "bbf", "ao", "pr"]) assert.ok(PFADE[fach]?.bloecke.length >= 8, "Lernpfad fehlt: " + fach);
   const ids = new Set();
-  for (const b of ["ust", "est", "oer", "bsr1", "bsr2", "bbf", "ao"].flatMap((f) => PFADE[f].bloecke)) {
+  for (const b of ["ust", "est", "oer", "bsr1", "bsr2", "bbf", "ao", "pr"].flatMap((f) => PFADE[f].bloecke)) {
     assert.ok(!ids.has(b.id), "doppelt: " + b.id); ids.add(b.id);
     assert.ok(b.karten.length >= 3 && b.fragen.length >= 3, b.id + ": zu wenig Karten oder Fragen");
     for (const r of b.normen) assert.ok(norm(r), `${b.id}: Norm ${r} fehlt`);
@@ -495,7 +495,7 @@ test("Kompaktwissen: jedes Thema hat eine vollständige Zusammenfassung", async 
     assert.ok(lesezeit(k) >= 1);
   }
   for (const id of Object.keys(KOMPAKT)) assert.ok(THEMA[id], `Zusammenfassung ohne Thema: ${id}`);
-  for (const fach of ["bsr", "oer", "est", "ust", "ao"]) for (const id of KLAUSURPLAN[fach].top) assert.equal(THEMA[id].fach, fach);
+  for (const fach of ["bsr", "oer", "est", "ust", "ao", "pr"]) for (const id of KLAUSURPLAN[fach].top) assert.equal(THEMA[id].fach, fach);
   // Normzitate werden antippbar und zeigen auf vorhandene Vorschriften
   const html = kompaktInline("nach § 4 Nr. 12 a UStG und Art. 20 Abs. 3 GG");
   assert.match(html, /data-a="normDetail" data-v="UStG 4[^"]*"/);
@@ -627,7 +627,7 @@ test("Keine doppelten Fragen: Übung je Thema, gemischt und Klausur in allen Mod
   const ohneDoppelte = (name, fr) => { const t = schl(fr); assert.equal(new Set(t).size, t.length, `${name}: doppelte Frage`); };
   for (let s = 0; s < 12; s++) {
     for (const t of THEMEN) { ohneDoppelte(t.id, fragen([t.id], 10, new Zufall(s))); ohneDoppelte(t.id + " MC", fragen([t.id], 10, new Zufall(s), null, true)); }
-    for (const fach of ["bsr", "oer", "est", "ust", "ao"]) {
+    for (const fach of ["bsr", "oer", "est", "ust", "ao", "pr"]) {
       const alle = THEMEN.filter((t) => t.fach === fach).map((t) => t.id);
       for (const f of [null, "qa", "rechnen", "fall", "buchung"]) ohneDoppelte(`${fach} ${f}`, fragen(alle, 20, new Zufall(s), f));
       for (const n of [20, 60]) { const k = klausur(n, new Zufall(s), fach); ohneDoppelte(`Klausur ${fach}`, k); assert.equal(k.length, n, `Klausur ${fach} ${n} vollständig`); }
@@ -806,7 +806,7 @@ test("Duell: gleicher Startwert → gleiche Aufgaben, auch nach anderen Übungen
     const r = new K.Zufall(seed);
     return KA.fragen(K.pruefungsThemen(fach).map((t) => t.id), 16, r, null, true, KA.neueZiehung(fach)).map((f) => alsMultipleChoice(f, r)).filter((f) => f.typ !== "offen").slice(0, 10).map((f) => f.text);
   });
-  for (const fach of ["bsr", "oer", "est", "ust", "bbf", "ao"]) {
+  for (const fach of ["bsr", "oer", "est", "ust", "bbf", "ao", "pr"]) {
     const a = satz(fach, 12345);
     // dazwischen „normal“ üben (verändert die Fallstapel)
     KA.fragen(K.pruefungsThemen(fach).map((t) => t.id), 30, new K.Zufall(), null, false, KA.neueZiehung(fach));

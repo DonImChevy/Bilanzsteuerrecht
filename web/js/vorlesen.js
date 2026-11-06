@@ -9,7 +9,7 @@ const GESETZ = {
   GOBT: "Geschäftsordnung des Bundestages", UStAE: "Umsatzsteuer-Anwendungserlass", EStR: "Einkommensteuer-Richtlinien",
   EStH: "Einkommensteuer-Hinweise", LStR: "Lohnsteuer-Richtlinien", LStH: "Lohnsteuer-Hinweise", BRKG: "Bundesreisekostengesetz",
   BVerfGG: "Bundesverfassungsgerichtsgesetz", StPO: "Strafprozessordnung", KStG: "Körperschaftsteuergesetz", GewStG: "Gewerbesteuergesetz",
-  GrEStG: "Grunderwerbsteuergesetz", BewG: "Bewertungsgesetz", GoBD: "G o B D",
+  GrEStG: "Grunderwerbsteuergesetz", BewG: "Bewertungsgesetz", GoBD: "G o B D", GmbHG: "GmbH-Gesetz", AktG: "Aktiengesetz", EnWG: "Energiewirtschaftsgesetz",
 };
 // Fachkürzel → ausgesprochen (nur eindeutige; Rechtsformen wie GmbH liest die Stimme selbst richtig)
 const KUERZEL = {

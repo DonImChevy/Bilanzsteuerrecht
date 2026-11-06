@@ -8,11 +8,12 @@ import { NORMEN_UST } from "../ust/normen.js";
 import { NORMEN_ESTR } from "../est/r2.js";
 import { NORMEN_AO } from "../ao/normen.js";
 import { NORMEN_GOBT } from "./gobt.js";
+import { NORMEN_PR } from "../pr/normen.js";
 
 // Ein Paragraf kann in mehreren Modulen vorkommen (z. B. § 12 EStG): Absätze werden vereinigt,
 // faecher nennt die Module, in deren Nachschlagen-Liste er erscheint.
 const INDEX = new Map();
-for (const [fach, liste] of [["oer", [...NORMEN_OER, ...NORMEN_GOBT]], ["bsr", [...NORMEN_BILR, ...NORMEN_BILR_ZUSATZ]], ["est", [...NORMEN_EST, ...NORMEN_EST_BGB, ...NORMEN_ESTR]], ["ust", NORMEN_UST], ["ao", NORMEN_AO]]) {
+for (const [fach, liste] of [["oer", [...NORMEN_OER, ...NORMEN_GOBT]], ["bsr", [...NORMEN_BILR, ...NORMEN_BILR_ZUSATZ]], ["est", [...NORMEN_EST, ...NORMEN_EST_BGB, ...NORMEN_ESTR]], ["ust", NORMEN_UST], ["ao", NORMEN_AO], ["pr", NORMEN_PR]]) {
   for (const n of liste) {
     const k = `${n.g} ${n.nr}`, da = INDEX.get(k);
     if (!da) { INDEX.set(k, { ...n, faecher: [fach] }); continue; }
@@ -62,7 +63,7 @@ export function normenAusText(text) {
     const ref = m[2] && norm(`GG ${nr} ${m[2]}`) ? `GG ${nr} ${m[2]}` : `GG ${nr}`;
     if (!refs.includes(ref) && !refs.includes(`GG ${nr}`)) refs.push(ref);
   }
-  for (const m of String(text).matchAll(/§§?[\s\u00a0]*([^§]*?)[\s\u00a0](HGB|AO|EStG|UStG|BWahlG|PartG|LStDV|GOBT)\b/g)) {
+  for (const m of String(text).matchAll(/§§?[\s\u00a0]*([^§]*?)[\s\u00a0](HGB|AO|EStG|UStG|BWahlG|PartG|LStDV|GOBT|BGB|GmbHG)\b/g)) {
     const g = m[2];
     let vorher = null;
     for (const teil of m[1].split(/,|\bi\.\s?V\.\s?m\.|\bund\b/)) {
@@ -103,7 +104,7 @@ export function zitate(text) {
   const s = String(text);
   for (const m of s.matchAll(/Präambel\s+(?:Satz|S\.)\s*(\d+)/g)) erg.push({ g: "GG", nr: "Präambel", abs: null, satz: m[1], nummern: [] });
   for (const m of s.matchAll(new RegExp(String.raw`Art\.\s*(\d+[a-z]?)` + MODS, "g"))) lesen("GG", m[1], m[2]);
-  for (const m of s.matchAll(new RegExp(String.raw`§\s*(\d+[a-z]?)` + MODS + String.raw`\s*(?:des\s+)?(HGB|AO|EStG|UStG|BWahlG|PartG|GG)\b`, "g"))) lesen(m[3], m[1], m[2]);
+  for (const m of s.matchAll(new RegExp(String.raw`§\s*(\d+[a-z]?)` + MODS + String.raw`\s*(?:des\s+)?(HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|GmbHG)\b`, "g"))) lesen(m[3], m[1], m[2]);
   return erg;
 }
 
