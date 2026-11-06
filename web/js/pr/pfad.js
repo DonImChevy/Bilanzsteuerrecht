@@ -176,10 +176,12 @@ export const PFAD_PR = [
       { art: "merksatz", titel: "§ 823 Abs. 1 BGB", text: "Wer **vorsätzlich oder fahrlässig** Leben, Körper, Gesundheit, Freiheit, **Eigentum** oder ein sonstiges Recht eines anderen **widerrechtlich** verletzt, muss den **Schaden** ersetzen." },
       { art: "erklaerung", titel: "Prüfung", text: "Rechtsgut verletzt → Handlung → Kausalität → Rechtswidrigkeit (indiziert) → **Verschulden** mit Deliktsfähigkeit (§ 828 BGB) → Schaden → Ersatz nach §§ 249 ff. BGB." },
       { art: "erklaerung", titel: "Alter des Schädigers", text: "• unter 7: nie verantwortlich\n• 7 bis 9: nicht bei Unfällen mit Kfz oder Bahn (außer Vorsatz)\n• bis 17: verantwortlich, wenn er die nötige **Einsicht** hatte (§ 828 Abs. 3 BGB)" },
+      { art: "klausur", titel: "Rausch", text: "Im Vollrausch geschlossene Verträge sind **nichtig** (§ 105 Abs. 2 BGB). Schäden im **selbstverschuldeten** Rausch muss man aber ersetzen – als hätte man fahrlässig gehandelt (§ 827 S. 2 BGB)." },
       { art: "beispiel", titel: "Und wenn der Vertrag nichtig ist?", text: "Geleistetes zurück über die **Bereicherung** (§ 812 BGB); ist man noch Eigentümer, Herausgabe nach **§ 985 BGB** vom Besitzer." },
     ],
     fragen: [
       { art: "wahl", frage: "Ein 16-Jähriger fährt mit dem Rad bei Rot über die Ampel und beschädigt eine Jacke. Haftet er?", optionen: ["Ja, wenn er die nötige Einsicht hatte", "Nein, Minderjährige haften nie", "Nur seine Eltern", "Nur bei Vorsatz"], richtig: 0, erkl: "§ 828 Abs. 3 BGB." },
+      { art: "wahl", frage: "Ein Erwachsener tritt im selbst angetrunkenen Vollrausch eine Scheibe ein. Haftet er?", optionen: ["Ja – wie bei Fahrlässigkeit (§ 827 S. 2 BGB)", "Nein – er war nicht bei Sinnen", "Nur wenn er sich erinnert", "Nur seine Eltern"], richtig: 0, erkl: "Das Verschulden liegt im Sich-Betrinken." },
       { art: "wahl", frage: "Ist das bloße Vermögen durch § 823 Abs. 1 BGB geschützt?", optionen: ["Nein", "Ja, als sonstiges Recht", "Ja, als Eigentum", "Nur bei Unternehmen"], richtig: 0, erkl: "Reine Vermögensschäden nur über § 823 Abs. 2 oder § 826 BGB." },
       { art: "wahl", frage: "Was verlangt der Eigentümer vom Besitzer ohne Besitzrecht?", optionen: ["Herausgabe nach § 985 BGB", "Kaufpreis nach § 433 BGB", "Miete nach § 535 BGB", "Nichts"], richtig: 0, erkl: "Vindikation – § 985 BGB." },
     ],

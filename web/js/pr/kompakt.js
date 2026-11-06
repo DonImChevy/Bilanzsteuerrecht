@@ -114,6 +114,7 @@ export const KOMPAKT_PR = {
       "**§ 108 Abs. 2 BGB:** Nach Aufforderung des Vertragspartners kann nur noch ihm gegenüber genehmigt werden; Schweigen zwei Wochen lang = Verweigerung. **§ 109 BGB:** Widerrufsrecht des Partners bis zur Genehmigung.",
       "**Vorübergehende Störung (§ 105 Abs. 2 BGB):** Wer **bewusstlos** ist oder dessen Geistestätigkeit **vorübergehend gestört** ist (Volltrunkenheit, Drogenrausch, hohes Fieber), gibt eine **nichtige** Willenserklärung ab – auch als Volljähriger. Anders als bei § 104 Nr. 2 BGB bleibt er geschäftsfähig; unwirksam ist nur die Erklärung in diesem Zustand.",
       "**Als Vertreter** kann ein beschränkt Geschäftsfähiger wirksam handeln (§ 165 BGB) – ihn treffen die Folgen nicht.",
+      "**Rausch – zwei Regeln:** Verträge im Vollrausch sind **nichtig** (§ 105 Abs. 2 BGB), egal ob selbst verschuldet. Für Schäden im **selbstverschuldeten** Rausch haftet man dagegen wie bei Fahrlässigkeit (§ 827 S. 2 BGB); nur wer ohne Verschulden hineingeraten ist (K.-o.-Tropfen), ist nicht verantwortlich (§ 827 S. 1 BGB).",
       "**Deliktsfähigkeit:** unter 7 nie verantwortlich; 7 bis 9 nicht bei Unfällen mit Kfz oder Bahnen (außer Vorsatz); bis 17 verantwortlich bei **Einsichtsfähigkeit** (§ 828 BGB); Billigkeitshaftung § 829 BGB.",
     ],
     fallen: [
@@ -262,6 +263,7 @@ export const KOMPAKT_PR = {
     ],
     punkte: [
       "Das bloße **Vermögen** ist kein „sonstiges Recht“ – reine Vermögensschäden nur über § 823 Abs. 2 BGB (Schutzgesetz) oder § 826 BGB.",
+      "**Verschulden im Rausch:** Bewusstlose sind nicht verantwortlich (§ 827 S. 1 BGB); wer sich selbst betrunken hat, haftet wie bei Fahrlässigkeit (§ 827 S. 2 BGB).",
       "**Schadensersatz:** Naturalrestitution (§ 249 Abs. 1 BGB) oder der erforderliche Geldbetrag (§ 249 Abs. 2 BGB); Wertersatz (§ 251 BGB); entgangener Gewinn (§ 252 BGB); Schmerzensgeld (§ 253 Abs. 2 BGB); Mitverschulden (§ 254 BGB).",
       "**Leistungskondiktion (§ 812 Abs. 1 S. 1 Alt. 1 BGB):** etwas erlangt, durch Leistung, ohne Rechtsgrund → Herausgabe, sonst Wertersatz (§ 818 Abs. 2 BGB), Entreicherung (§ 818 Abs. 3 BGB).",
       "**Herausgabeanspruch (§ 985 BGB):** Eigentümer gegen Besitzer ohne Recht zum Besitz (§ 986 BGB).",

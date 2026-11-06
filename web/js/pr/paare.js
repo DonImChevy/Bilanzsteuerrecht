@@ -41,6 +41,7 @@ export const PAARE_PR = [
   ["§ 437 BGB", "Rechte des Käufers bei Mängeln"],
   ["§ 812 BGB", "Ungerechtfertigte Bereicherung"],
   ["§ 823 BGB", "Schadensersatz für Rechtsgutverletzung"],
+  ["§ 827 BGB", "Bewusstlosigkeit und Rausch im Delikt"],
   ["§ 828 BGB", "Deliktsfähigkeit Minderjähriger"],
   ["§ 854 BGB", "Besitz: tatsächliche Gewalt"],
   ["§ 925 BGB", "Auflassung"],
