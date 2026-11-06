@@ -1,6 +1,6 @@
 // Service Worker: speichert die komplette App für die Offline-Nutzung.
 // Bei jeder inhaltlichen Änderung VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = "bsr-v90";
+const VERSION = "bsr-v91";
 const DATEIEN = [
   "./",
   "./index.html",
@@ -17,6 +17,7 @@ const DATEIEN = [
   "./js/meinekarten.js",
   "./js/handschrift.js",
   "./js/vorlesen.js",
+  "./js/hoeraudio.js",
   "./js/maskottchen.js",
   "./js/level.js",
   "./js/levelansicht.js",
@@ -129,6 +130,8 @@ self.addEventListener("activate", (e) => {
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
   if (e.request.method !== "GET" || url.origin !== location.origin) return;
+  // Vertonte Überblicke: direkt laden – Audio braucht Teilanfragen (Range), die der Cache nicht liefert
+  if (url.pathname.includes("/audio/")) return;
   e.respondWith((async () => {
     const cache = await caches.open(VERSION);
     const ausCache = () => cache.match(e.request, { ignoreSearch: true })

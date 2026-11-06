@@ -986,3 +986,22 @@ test("Vorlesen: Normen und Abkürzungen ausgeschrieben, jeder Überblick hat ein
     }
   }
 });
+
+test("Profi-Stimme: Audio nur bei passender Prüfsumme, Zeitmarken je Punkt", async () => {
+  const { hoerSegmente, hoerGruppen, hoerHash, audioFuer, hoerInfo } = await import("../js/vorlesen.js");
+  const { HOER_AUDIO } = await import("../js/hoeraudio.js");
+  const { KOMPAKT } = await import("../js/kompakt.js");
+  const fs = await import("node:fs");
+  const seg = hoerSegmente(KOMPAKT["pr-stellvertretung"], THEMA["pr-stellvertretung"]);
+  assert.equal(hoerHash(seg), hoerHash(seg));
+  assert.notEqual(hoerHash(seg), hoerHash([...seg.slice(1)]));
+  assert.ok(hoerGruppen(seg).length < seg.length && hoerGruppen(seg).every((g, i, a) => !i || a[i - 1].ziel !== g.ziel));
+  assert.equal(audioFuer("pr-stellvertretung", seg.slice(1)), null);
+  for (const [id, a] of Object.entries(HOER_AUDIO)) {
+    assert.ok(KOMPAKT[id], "Audio ohne Thema: " + id);
+    assert.ok(fs.existsSync(new URL(`../audio/${id}.m4a`, import.meta.url)), "Datei fehlt: " + id);
+    assert.ok(a.d > 30 && a.m.length >= 3 && a.m.every((x, i, m) => !i || x[0] > m[i - 1][0]), id);
+    const s = hoerSegmente(KOMPAKT[id], THEMA[id]);
+    if (audioFuer(id, s)) assert.ok(hoerInfo(id, s).profi && a.m.every(([, z]) => s.some((x) => x.ziel === z)), id);
+  }
+});

@@ -5,6 +5,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-profi-stimme",
+    datum: "2026-11-06",
+    titel: "Überblicke mit echter Sprecherstimme",
+    punkte: [
+      ["play", "Sprecher Cedar", "Alle Überblicke im Kompaktwissen sind jetzt professionell vertont – natürliche Betonung, ruhig wie ein Dozent, Paragrafen ausgeschrieben. Einfach „Anhören“ tippen."],
+      ["haken", "Läuft auch bei gesperrtem Bildschirm", "Mit Kopfhörern unterwegs lernen: Pause, Vor und Zurück gehen auch über den Sperrbildschirm. „Alle Überblicke anhören“ spielt das ganze Modul am Stück."],
+      ["info", "Ohne Internet", "Die Aufnahmen werden beim Anhören geladen (ca. 1–2 MB je Thema). Offline liest wie bisher die Gerätestimme."],
+    ],
+  },
+  {
     id: "2026-11-pr-modul",
     datum: "2026-11-06",
     titel: "Neues Modul: Privatrecht",

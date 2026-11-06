@@ -3066,7 +3066,7 @@ const AKTIONEN = {
   },
   hoeren: (v) => {
     if (hoertGerade(v)) return hoerUmschalten();
-    vorlesen(v, hoerSegmente(KOMPAKT[v], THEMA[v]));
+    vorlesen(v, hoerSegmente(KOMPAKT[v], THEMA[v]), { titel: THEMA[v].titel });
   },
   hoerenAlle: (fach) => {
     const liste = (kompaktThemen(fach).length ? kompaktThemen(fach) : themenFuer(fach).filter((t) => KOMPAKT[t.id])).map((t) => t.id);
@@ -3074,7 +3074,7 @@ const AKTIONEN = {
       state.kompakt = { id, fach, liste: true, ausSitzung: false };
       stat.kompakt[id] = Date.now(); speichern();
       render(); app.querySelector(".vollbild .vb-inhalt")?.scrollTo(0, 0);
-      vorlesen(id, hoerSegmente(KOMPAKT[id], THEMA[id]), { liste, weiter: starte });
+      vorlesen(id, hoerSegmente(KOMPAKT[id], THEMA[id]), { liste, weiter: starte, titel: THEMA[id].titel });
     };
     if (liste.length) starte(liste[0]);
   },
