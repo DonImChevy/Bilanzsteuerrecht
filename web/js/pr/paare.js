@@ -10,6 +10,7 @@ export const PAARE_PR = [
   ["§ 95 BGB", "Scheinbestandteile"],
   ["§ 97 BGB", "Zubehör"],
   ["§ 104 BGB", "Geschäftsunfähigkeit"],
+  ["§ 105 BGB", "Nichtigkeit der Willenserklärung"],
   ["§ 107 BGB", "Einwilligung des gesetzlichen Vertreters"],
   ["§ 108 BGB", "Genehmigung, schwebende Unwirksamkeit"],
   ["§ 110 BGB", "Taschengeldparagraf"],
