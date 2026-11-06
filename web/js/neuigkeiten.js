@@ -5,6 +5,13 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-handtaschen",
+    datum: "2026-11-06",
+    klein: true,
+    titel: "Drei Handtaschen in der Garderobe",
+    punkte: [["muenze", "Neu für Talers Hand", "Henkeltasche aus Cognac-Leder, gesteppte Kettentasche (ab Level 8) und Bügeltasche aus Samt mit Kussverschluss.", "garderobe", "hand"]],
+  },
+  {
     id: "2026-11-profi-stimme",
     datum: "2026-11-06",
     titel: "Überblicke mit echter Sprecherstimme",
