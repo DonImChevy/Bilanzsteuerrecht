@@ -30,7 +30,7 @@ export function kompaktText(k) {
 /** Lesezeit in Minuten (ca. 170 Wörter je Minute für Lernstoff). */
 export const lesezeit = (k) => Math.max(1, Math.round(kompaktText(k).split(/\s+/).length / 170));
 
-import { hoerSegmente, hoerInfo, vorlesenMoeglich, hoertGerade } from "./vorlesen.js";
+import { hoerSegmente, hoerInfo, vorlesenMoeglich, hoertGerade, offlineMoeglich } from "./vorlesen.js";
 
 const dauerText = (min) => min < 90 ? `${min} Min.` : `${String(Math.round(min / 6) / 10).replace(".", ",")} Std.`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -136,6 +136,7 @@ export function bibliothekView(fach, themen, h) {
         ${vorlesenMoeglich() && mit.length ? `<button class="hoer-start hoer-alle" data-a="hoerenAlle" data-v="${fach}">
           <span class="hs-welle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
           <span class="hs-text"><b>Alle Überblicke anhören</b><span>${mit.length} Themen nacheinander, ca. ${dauerText(mit.reduce((n, t) => n + hoerInfo(t.id, hoerSegmente(KOMPAKT[t.id], t)).min, 0))}</span></span></button>` : ""}
+        ${offlineMoeglich(mit.map((t) => t.id)) ? `<div class="hoer-offline" id="hoerOffline" data-fach="${fach}" data-ids="${mit.map((t) => t.id).join(",")}"></div>` : ""}
 </header>
       ${plan ? `<section class="km-plan"><h3>${esc(plan.titel)}</h3>
         <ul class="km-liste">${plan.aufbau.map((p) => `<li>${kompaktInline(p)}</li>`).join("")}</ul>

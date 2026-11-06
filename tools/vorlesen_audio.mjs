@@ -82,11 +82,12 @@ for (const id of Object.keys(KOMPAKT)) {
 }
 // Verwaiste Dateien entfernen
 for (const f of fs.readdirSync(AUDIO)) if (f.endsWith(".m4a") && !neu[f.slice(0, -4)]) fs.rmSync(path.join(AUDIO, f));
+for (const id of Object.keys(neu)) neu[id].s = fs.statSync(path.join(AUDIO, id + ".m4a")).size;
 fs.writeFileSync(INDEX, kopf() + JSON.stringify(neu) + ";\n");
 console.log(`fertig: ${Object.keys(neu).length} Themen mit Audio, neu vertont ${zeichen} Zeichen`);
 
 function kopf() {
   return "// Automatisch erzeugt (tools/vorlesen_audio.mjs) – nicht von Hand ändern.\n" +
-    `// Vorab vertonte Überblicke (OpenAI gpt-4o-mini-tts, Stimme ${STIMME.name}): Prüfsumme h, Dauer d (s), Zeitmarken m [[Sekunde, data-hoer]].\n` +
+    `// Vorab vertonte Überblicke (OpenAI gpt-4o-mini-tts, Stimme ${STIMME.name}): Prüfsumme h, Dauer d (s), Größe s (Bytes), Zeitmarken m [[Sekunde, data-hoer]].\n` +
     "export const HOER_AUDIO = ";
 }

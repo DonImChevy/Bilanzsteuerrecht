@@ -236,7 +236,7 @@ export function vorlesen(id, segmente, { liste = null, weiter = null, ab = 0, ti
   const teil = Object.fromEntries(segmente.map((s) => [s.ziel, s.teil]));
   Object.assign(P, { an: true, pausiert: false, modus: "audio", id, i: 0, zuletztZiel: null, teile: a.m.map(([t, ziel]) => ({ t, ziel, teil: teil[ziel] })) });
   const e = audioEl();
-  e.src = `audio/${id}.m4a`; e.playbackRate = P.tempoAudio;
+  e.src = audioUrl(id); e.playbackRate = P.tempoAudio;
   e.play().catch(() => ersatzStimme(P.teile[0]?.ziel));
   mediaSession();
   leisteAktualisieren(true);
@@ -326,6 +326,68 @@ export function tempoWechseln() {
   merk("bsr.hoerTempo", String(P.tempo));
   if (P.an && !P.pausiert) { P.token++; synth().cancel(); sprich(); } else leisteAktualisieren();
   return P.tempo;
+}
+
+// ---------------------------------------------------------------- Offline speichern (je Modul)
+// Die Aufnahmen liegen im Cache „bsr-audio“ (übersteht Updates); der Service Worker spielt sie von dort mit Range ab.
+// Die Prüfsumme steht in der Adresse – eine neu vertonte Fassung wird so nicht mit der alten verwechselt.
+const AUDIO_CACHE = "bsr-audio";
+const audioUrl = (id) => `audio/${id}.m4a?h=${HOER_AUDIO[id]?.h || ""}`;
+const absolut = (id) => new URL(audioUrl(id), typeof location !== "undefined" ? location.href : "http://x/").href;
+const OFF = { laedt: null, fertig: 0, gesamt: 0, fehler: false };
+const cacheDa = () => typeof caches !== "undefined";
+export const offlineMoeglich = (ids) => cacheDa() && ids.some((id) => HOER_AUDIO[id]);
+/** Wie viele der Themen sind offline gespeichert (in aktueller Fassung)? */
+async function offlineZaehlen(ids) {
+  const c = await caches.open(AUDIO_CACHE), da = new Set((await c.keys()).map((r) => r.url));
+  return ids.filter((id) => HOER_AUDIO[id] && da.has(absolut(id))).length;
+}
+export async function modulOffline(fach, ids) {
+  if (!cacheDa() || OFF.laedt) return;
+  const mit = ids.filter((id) => HOER_AUDIO[id]);
+  Object.assign(OFF, { laedt: fach, fertig: 0, gesamt: mit.length, fehler: false });
+  try { await navigator.storage?.persist?.(); } catch { /* egal */ }
+  const c = await caches.open(AUDIO_CACHE), alte = await c.keys();
+  for (const id of mit) {
+    try {
+      if (!(await c.match(absolut(id)))) {
+        const r = await fetch(audioUrl(id), { cache: "no-cache" });
+        if (!r.ok) throw new Error(r.status);
+        await c.put(absolut(id), r);
+      }
+      // ältere Fassungen desselben Themas löschen
+      for (const k of alte) if (k.url.includes(`/audio/${id}.m4a`) && k.url !== absolut(id)) await c.delete(k);
+    } catch { OFF.fehler = true; }
+    OFF.fertig++; offlineAnzeigen();
+  }
+  OFF.laedt = null; offlineAnzeigen();
+}
+export async function modulOfflineWeg(ids) {
+  if (!cacheDa()) return;
+  const c = await caches.open(AUDIO_CACHE);
+  for (const k of await c.keys()) if (ids.some((id) => k.url.includes(`/audio/${id}.m4a`))) await c.delete(k);
+  offlineAnzeigen();
+}
+const mb = (bytes) => String(Math.max(1, Math.round(bytes / 1e6))).replace(".", ",");
+/** Zeile „Offline speichern“ in der Themenliste (nach jedem render() und während des Ladens). */
+export async function offlineAnzeigen() {
+  if (typeof document === "undefined") return;
+  const el = document.getElementById("hoerOffline");
+  if (!el || !cacheDa()) return;
+  const ids = el.dataset.ids.split(","), fach = el.dataset.fach, mit = ids.filter((id) => HOER_AUDIO[id]);
+  const groesse = mit.reduce((n, id) => n + (HOER_AUDIO[id].s || HOER_AUDIO[id].d * 5000), 0);
+  if (OFF.laedt === fach) {
+    el.innerHTML = `<div class="ho-text"><b>Wird gespeichert … ${OFF.fertig}/${OFF.gesamt}</b><span>Bitte die App geöffnet lassen</span>
+      <div class="hl-balken"><i style="width:${Math.round((OFF.fertig / Math.max(1, OFF.gesamt)) * 100)}%"></i></div></div>`;
+    return;
+  }
+  const da = await offlineZaehlen(ids);
+  if (!document.body.contains(el)) return;
+  el.innerHTML = da >= mit.length
+    ? `<div class="ho-text"><b>✓ Offline verfügbar</b><span>${mit.length} Aufnahmen · ca. ${mb(groesse)} MB auf dem Gerät</span></div>
+       <button class="ho-knopf zweit" data-a="hoerOfflineWeg" data-v="${fach}">Entfernen</button>`
+    : `<div class="ho-text"><b>Offline speichern</b><span>${da ? `${da}/${mit.length} gespeichert · ` : ""}ca. ${mb(groesse)} MB – danach ohne Internet anhören${OFF.fehler ? " · Fehler beim letzten Versuch" : ""}</span></div>
+       <button class="ho-knopf" data-a="hoerOffline" data-v="${fach}">${da ? "Rest laden" : "Laden"}</button>`;
 }
 
 /** Fortschrittsbalken ohne komplettes Neuzeichnen (bei jedem timeupdate). */
