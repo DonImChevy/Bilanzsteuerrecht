@@ -81,6 +81,9 @@ const K = [
   ["lupe", "hand", "Lupe", 180, 0, "Prüft jeden Beleg"],
   ["stempel", "hand", "Stempel", 220, 0, "Geprüft und abgezeichnet"],
   ["pokal", "hand", "Pokal", 500, 15, "Ab Level 15"],
+  ["henkeltasche", "hand", "Henkeltasche", 320, 0, "Cognac-Leder mit Ziernaht"],
+  ["kettentasche", "hand", "Kettentasche", 480, 8, "Gesteppt mit Goldkette – ab Level 8"],
+  ["buegeltasche", "hand", "Bügeltasche", 400, 0, "Samt mit Kussverschluss"],
   // Metall
   ["gold", "metall", "Gold", 0, 0, "Talers Original"],
   ["silber", "metall", "Silber", 400, 0, "Glänzt kühl"],
@@ -562,6 +565,50 @@ const HAND = {
     <rect x="${x - 9}" y="${y - 12}" width="4" height="9" fill="#92400e" ${U} ${sw(1.4)}/>
     <rect x="${x - 16}" y="${y - 4}" width="18" height="6" rx="1.6" fill="#78350f" ${U} ${sw(1.8)}/>
     <rect x="${x - 16}" y="${y + 2}" width="18" height="3" rx="1" fill="#dc2626"/>`,
+  // Handtaschen: Die Hand (x, y) greift oben Henkel bzw. Kette, die Tasche hängt darunter.
+  henkeltasche: (x, y) => {
+    const m = x - 2, o = y + 9, u = y + 27;
+    return `<path d="M${m + 6} ${o + 1} Q${m + 6} ${y - 2} ${x} ${y}" stroke="#5b210a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M${m - 12} ${o} H${m + 10} L${m + 12.5} ${u - 3} Q${m + 13} ${u} ${m + 10} ${u} H${m - 12} Q${m - 15} ${u} ${m - 14.5} ${u - 3}Z" fill="#b45309" ${U} ${sw(2)} stroke-linejoin="round"/>
+    <path d="M${m + 4} ${o} H${m + 10} L${m + 12.5} ${u - 3} Q${m + 13} ${u} ${m + 10} ${u} H${m + 6}Z" fill="#7c2d12" fill-opacity="0.35"/>
+    <path d="M${m - 10.5} ${o + 2.4} Q${m - 12} ${o + 9} ${m - 11} ${u - 4}" stroke="#fff" stroke-opacity="0.32" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+    <path d="M${m - 12} ${o} H${m + 10} L${m + 10.6} ${o + 5} H${m - 12.6}Z" fill="#92400e"/>
+    <path d="M${m - 11.4} ${o + 6.4} H${m + 10.2} M${m - 13} ${u - 2.2} H${m + 11.6}" stroke="#fde68a" stroke-opacity="0.75" stroke-width="0.8" stroke-dasharray="1.4 1.2"/>
+    <rect x="${m - 2.6}" y="${o + 3.4}" width="5.2" height="4.4" rx="1" fill="#facc15" ${U} ${sw(1.1)}/><circle cx="${m}" cy="${o + 5.6}" r="0.9" fill="#a16207"/>
+    <circle cx="${m - 10}" cy="${u + 0.6}" r="1.1" fill="#facc15"/><circle cx="${m + 8}" cy="${u + 0.6}" r="1.1" fill="#facc15"/>
+    <path d="M${m - 6} ${o + 1} Q${m - 6} ${y - 2} ${x} ${y}" stroke="#7c2d12" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <path d="M${m - 5.3} ${o - 1} Q${m - 5.6} ${y - 0.4} ${x - 1} ${y + 0.6}" stroke="#fdba74" stroke-opacity="0.55" stroke-width="0.8" fill="none" stroke-linecap="round"/>`;
+  },
+  kettentasche: (x, y) => {
+    const m = x - 2, o = y + 11, u = y + 27, links = [m - 11, o + 0.5], rechts = [m + 11, o + 0.5];
+    // Kettenglieder von beiden Ecken zur Hand – abwechselnd hell und dunkel, quer bzw. längs
+    const kette = (a) => Array.from({ length: 7 }, (_, i) => {
+      const t = (i + 0.5) / 7, px = a[0] + (x - a[0]) * t, py = a[1] + (y - a[1]) * t - Math.sin(t * Math.PI) * 1.2;
+      return `<ellipse cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" rx="${i % 2 ? 0.9 : 1.6}" ry="${i % 2 ? 1.6 : 0.9}" fill="none" stroke="${i % 2 ? "#ca8a04" : "#facc15"}" stroke-width="0.9"/>`;
+    }).join("");
+    const steppung = [-12, -6, 0, 6, 12, 18].map((d) => `<path d="M${m + d - 8} ${o} L${m + d + 8} ${u}" stroke="#4b5563" stroke-width="0.7"/><path d="M${m + d + 8} ${o} L${m + d - 8} ${u}" stroke="#4b5563" stroke-width="0.7"/>`).join("");
+    return `${kette(rechts)}
+    <rect x="${m - 12.5}" y="${o}" width="25" height="${u - o}" rx="3" fill="#111827" ${U} ${sw(2)}/>
+    <svg x="${m - 12}" y="${o + 0.5}" width="24" height="${u - o - 1}" viewBox="${m - 12} ${o + 0.5} 24 ${u - o - 1}" overflow="hidden">${steppung}</svg>
+    <path d="M${m - 12.5} ${o + 3} Q${m} ${o + 12} ${m + 12.5} ${o + 3} V${o + 2} Q${m + 12.5} ${o} ${m + 10} ${o} H${m - 10} Q${m - 12.5} ${o} ${m - 12.5} ${o + 2}Z" fill="#1f2937" ${U} ${sw(1.4)}/>
+    <path d="M${m - 9} ${o + 2.6} Q${m} ${o + 8} ${m + 9} ${o + 2.6}" stroke="#fff" stroke-opacity="0.18" stroke-width="1" fill="none"/>
+    <rect x="${m - 3.4}" y="${o + 5.2}" width="6.8" height="4.6" rx="1.4" fill="#facc15" ${U} ${sw(1)}/><rect x="${m - 1.6}" y="${o + 6.3}" width="3.2" height="2.4" rx="0.8" fill="#a16207"/>
+    <path d="M${m - 10.5} ${u - 3} Q${m - 11} ${o + 13} ${m - 9.5} ${o + 9}" stroke="#fff" stroke-opacity="0.22" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <circle cx="${links[0]}" cy="${links[1]}" r="1.3" fill="#facc15"/><circle cx="${rechts[0]}" cy="${rechts[1]}" r="1.3" fill="#facc15"/>
+    ${kette(links)}`;
+  },
+  buegeltasche: (x, y) => {
+    const m = x - 2, o = y + 12, u = y + 28;
+    return `<path d="M${m - 8.5} ${o - 0.5} Q${m - 9} ${y - 2} ${x} ${y} Q${m + 9} ${y - 2} ${m + 8.5} ${o - 0.5}" stroke="#4c0519" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    <path d="M${m - 12} ${o} Q${m - 16.5} ${u - 2} ${m - 8} ${u} H${m + 8} Q${m + 16.5} ${u - 2} ${m + 12} ${o}Z" fill="#9f1239" ${U} ${sw(2)} stroke-linejoin="round"/>
+    <path d="M${m + 3} ${o + 1} Q${m + 14} ${o + 4} ${m + 10.5} ${u - 0.5} H${m + 7} Q${m + 11} ${o + 8} ${m + 3} ${o + 1}Z" fill="#4c0519" fill-opacity="0.35"/>
+    <ellipse cx="${m - 5.5}" cy="${o + 8}" rx="3.2" ry="5" fill="#fff" fill-opacity="0.16" transform="rotate(14 ${m - 5.5} ${o + 8})"/>
+    <path d="M${m - 7} ${u - 4.5} q2 -1.4 4 0 t4 0 t4 0" stroke="#fda4af" stroke-opacity="0.45" stroke-width="0.7" fill="none"/>
+    <path d="M${m - 12.6} ${o + 1.2} Q${m} ${o - 3.2} ${m + 12.6} ${o + 1.2}" stroke="#ca8a04" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+    <path d="M${m - 12.6} ${o + 1.2} Q${m} ${o - 3.2} ${m + 12.6} ${o + 1.2}" stroke="#fde047" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <circle cx="${m - 1.5}" cy="${o - 3}" r="1.9" fill="#facc15" ${U} ${sw(0.9)}/><circle cx="${m + 1.5}" cy="${o - 3}" r="1.9" fill="#facc15" ${U} ${sw(0.9)}/>
+    <circle cx="${m - 2}" cy="${o - 3.6}" r="0.6" fill="#fff" fill-opacity="0.8"/><circle cx="${m + 1}" cy="${o - 3.6}" r="0.6" fill="#fff" fill-opacity="0.8"/>`;
+  },
   pokal: (x, y) => `<path d="M${x - 16} ${y - 14} H${x + 2} V${y - 9} Q${x + 2} ${y} ${x - 7} ${y} Q${x - 16} ${y} ${x - 16} ${y - 9}Z" fill="#facc15" ${U} ${sw(2)}/>
     <path d="M${x - 16} ${y - 12} Q${x - 22} ${y - 12} ${x - 20} ${y - 6} Q${x - 18} ${y - 3} ${x - 15} ${y - 4} M${x + 2} ${y - 12} Q${x + 8} ${y - 12} ${x + 6} ${y - 6} Q${x + 4} ${y - 3} ${x + 1} ${y - 4}" stroke="#ca8a04" stroke-width="2" fill="none"/>
     <path d="M${x - 9} ${y} h4 v5 h-4z" fill="#eab308"/><rect x="${x - 13}" y="${y + 5}" width="12" height="4" rx="1.2" fill="#a16207" ${U} ${sw(1.6)}/>
