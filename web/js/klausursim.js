@@ -75,6 +75,13 @@ export function startKarte(fach, h) {
   </section>`;
 }
 
+/** Zeitwächter: tatsächliche Zeit am Sachverhalt (k.zeit[id] in Sekunden) gegen die Empfehlung. */
+function zeitwaechter(k, id, min) {
+  const sek = k.zeit?.[id] || 0;
+  if (k.phase !== "laufend" && !sek) return "";
+  const m = Math.floor(sek / 60), ueber = sek > min * 60;
+  return `<span class="ks-zw${ueber ? " ueber" : ""}" data-zw="${id}" data-min="${min}" title="Zeit an diesem Sachverhalt">⏱ ${k.phase === "laufend" ? `du ${m} Min.` : `${m} von ${min} Min.`}</span>`;
+}
 /** Schreibwerkzeuge (gleiche Aktionen wie im Karteneditor: Stift, Textmarker, Radierer, Farben). */
 function werkzeuge(h) {
   const w = h.hs, m = w.art === "m", farben = m ? HS.MARKER : HS.FARBEN, aktiv = m ? w.mfarbe : w.farbe;
@@ -134,7 +141,8 @@ export function simView(k, h) {
     const bogen = s.bewertung.map(([p, t], j) => `<label class="ks-haken"><input type="checkbox" data-a="ksimHaken" data-v="${id}|${j}" ${k.haken?.[id]?.[j] ? "checked" : ""}><span>${h.esc(t)}</span><b>${String(p).replace(".", ",")}</b></label>`).join("");
     const erreichtSv = s.bewertung.reduce((a, [p], j) => a + (k.haken?.[id]?.[j] ? p : 0), 0), maxSv = s.bewertung.reduce((a, [p]) => a + p, 0);
     return `${ueberschrift}<article class="ks-blatt ks-sv" id="ks-${id}">
-      <header class="ks-sv-kopf"><span class="ks-nr">Sachverhalt ${i + 1}</span><h3>${h.esc(s.titel)}</h3><span class="ks-min">ca. ${s.min} Min. · ${String(maxSv).replace(".", ",")} P.</span></header>
+      <header class="ks-sv-kopf"><span class="ks-nr">Sachverhalt ${i + 1}</span><h3>${h.esc(s.titel)}</h3><span class="ks-min">ca. ${s.min} Min. · ${String(maxSv).replace(".", ",")} P.</span>
+        ${zeitwaechter(k, id, s.min)}</header>
       <div class="ks-text">${absatz(s.sv, h)}</div>
       <div class="ks-aufgaben"><b>Aufgaben</b><ol>${s.aufgaben.map((a) => `<li>${h.inline(a)}</li>`).join("")}</ol></div>
       ${fertig ? `
@@ -153,6 +161,10 @@ export function simView(k, h) {
       <div class="ks-note"><b>${n}</b><span>Punkte</span></div>
       <div><b>${String(erreicht).replace(".", ",")} von ${String(max).replace(".", ",")} Punkten (${String(proz).replace(".", ",")} %)</b>
         <span class="sub">Note: ${noteText(n)}. Hake im Bewertungsbogen jedes Merkmal ab, das deine Lösung enthält – die Note rechnet mit.</span></div>
+    </section>
+    <section class="ks-foto"><div><b>Auf Papier geschrieben?</b><span class="sub">Fotografiere deine Blätter – sie erscheinen hier neben Musterlösung und Bewertungsbogen (nur auf diesem Gerät).</span></div>
+      <label class="knopf zweit ks-foto-knopf">${h.ic("plus", "klein")} Blätter fotografieren<input type="file" id="ksimFoto" accept="image/*" capture="environment" multiple hidden></label>
+      ${(h.fotos || []).length ? `<div class="ks-foto-liste">${h.fotos.map((u, j) => `<figure><img src="${u}" alt="Blatt ${j + 1}" data-a="ksimFotoGross" data-v="${j}"><button class="ks-foto-weg" data-a="ksimFotoWeg" data-v="${j}" aria-label="Foto entfernen">${h.ic("kreuz", "klein")}</button></figure>`).join("")}</div>` : ""}
     </section>` : "";
   return `<div class="vollbild ksim" role="dialog" aria-label="Klausur">${kopfZeile(fertig ? "Auswertung" : `Klausur · ${k.minuten} Min.`, uhr)}
     <div class="vb-inhalt">${kopf}${blatt}</div>

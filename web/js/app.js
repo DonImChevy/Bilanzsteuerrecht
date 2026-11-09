@@ -27,7 +27,7 @@ import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, code
 import qrcode from "./lib/qrcode.js";
 import { taler, talerBuehne, TALER_SPRUECHE, talerOutfitSetzen } from "./maskottchen.js";
 import { kasse, kaufbar, outfitVon, artikel, preisFuer, STANDARD, FARBWELTEN } from "./garderobe.js";
-import { bildLaden, bildSpeichern, bildVerkleinern } from "./bildspeicher.js";
+import { bildLaden, bildSpeichern, bildVerkleinern, ablageLaden, ablageSpeichern } from "./bildspeicher.js";
 import { garderobeView, talerBetrag } from "./garderobeansicht.js";
 import { kommende, countdownText, proTag, icsErzeugen } from "./termine.js";
 import { rueckblickView, statistikView, statistikStart } from "./statistikansicht.js";
@@ -684,11 +684,30 @@ const ksimSichern = () => { if (state.ksim) schreib("bsr.ksim", JSON.stringify(s
 setInterval(() => {
   const k = state.ksim;
   if (!k || k.phase !== "laufend") return;
+  // Zeitwächter: Sekunden dem Sachverhalt gutschreiben, der gerade oben im Bild ist
+  const box = document.querySelector(".ksim .vb-inhalt");
+  if (box && document.visibilityState === "visible") {
+    const oben = box.getBoundingClientRect().top + 60;
+    const akt = [...box.querySelectorAll(".ks-sv")].find((el) => { const r = el.getBoundingClientRect(); return r.top <= oben + 220 && r.bottom > oben; });
+    if (akt) {
+      const id = akt.id.slice(3), sek = ((k.zeit ||= {})[id] = (k.zeit[id] || 0) + 1), zw = akt.querySelector(".ks-zw");
+      if (zw) { zw.textContent = `⏱ du ${Math.floor(sek / 60)} Min.`; zw.classList.toggle("ueber", sek > Number(zw.dataset.min) * 60); }
+      if (sek % 15 === 0) ksimSichern();
+    }
+  }
   const r = simRest(k), el = document.getElementById("ksimUhr");
   if (el) { el.querySelector("span").textContent = simUhr(r); el.classList.toggle("knapp", r < 600); }
   if (r === 0) { AKTIONEN.ksimAbgeben(true); toast("Zeit abgelaufen – die Klausur wurde abgegeben."); }
 }, 1000);
 
+// Klausursimulation: Fotos der Papierlösung (IndexedDB, nur auf dem Gerät)
+const fotoCache = {};
+function ksimFotos(k) {
+  if (k?.phase !== "abgegeben") return [];
+  const key = "ksim-foto-" + k.start;
+  if (!(key in fotoCache)) { fotoCache[key] = []; ablageLaden(key).then((l) => { if (l?.length) { fotoCache[key] = l; render(); } }); }
+  return fotoCache[key];
+}
 // Generalprobe Online-Test (Bilanzrecht, nur an den Tagen aus OT.SICHTBAR)
 const otGespeichert = () => { try { return JSON.parse(localStorage.getItem("bsr.otest2")); } catch (_) { return null; } };
 const otSichern = () => { if (state.otest) schreib("bsr.otest2", JSON.stringify(state.otest)); };
@@ -803,7 +822,7 @@ function render() {
   if (state.kompakt) html += kompaktEbene();
   if (state.abfrage) html += abfrageView();
   if (state.otest) html += OT.testView(state.otest, { ic, esc, uhr: uhr(otZeit()) });
-  if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile, hs: state.hs, modus: lies("bsr.ksimModus", "text") });
+  if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile, hs: state.hs, modus: lies("bsr.ksimModus", "text"), fotos: ksimFotos(state.ksim) });
   if (state.sheet) html += sheetView();
   if (state.hgVorschau && !state.sheet) html += vorschauLeiste();
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
@@ -3288,6 +3307,8 @@ const AKTIONEN = {
     dateiSpeichern("Klausurtermine.ics", ics, "text/calendar");
   },
   sicherWahl: (v) => { const x = s(); if (!x) return; (x.sicher ||= [])[x.index] = x.sicher[x.index] === v ? null : v; render(); },
+  ksimFotoWeg: (v) => { const k = state.ksim, key = "ksim-foto-" + k.start, l = ksimFotos(k).filter((_, i) => i !== Number(v)); fotoCache[key] = l; ablageSpeichern(key, l).catch(() => {}); render(); },
+  ksimFotoGross: (v, el) => { el.closest("figure")?.classList.toggle("gross"); },
   fortsetzen: (v) => {
     if (v === "sitzung") { const x = sitzungGespeichert(); if (!x) return; state.sitzung = x; state.fach = x.fach || state.fach; render(); scrollOben(); }
     else if (v === "ksim") AKTIONEN.ksimWeiter();
@@ -3691,6 +3712,11 @@ app.addEventListener("change", async (e) => {
   if (e.target.id === "hgBildVorschau" && e.target.files?.[0]) { bildVorschauWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "hgBildDatei" && e.target.files?.[0]) { eigenesBildWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "profilName") { const n = e.target.value.trim().slice(0, 20); if (n !== meinName()) { stat.profil = { ...(stat.profil || {}), name: n, t: Date.now() }; speichern(); } return; }
+  if (e.target.id === "ksimFoto" && e.target.files?.length && state.ksim) {
+    const key = "ksim-foto-" + state.ksim.start, l = [...ksimFotos(state.ksim)];
+    for (const f of e.target.files) { try { l.push(await bildVerkleinern(f, 1800)); } catch (err) { toast(err.message); } }
+    fotoCache[key] = l; await ablageSpeichern(key, l).catch(() => toast("Speicher voll – Foto nur bis zum Schließen sichtbar.")); e.target.value = ""; render(); return;
+  }
   if (e.target.id === "dozDatei" && e.target.files?.[0]) {
     const file = e.target.files[0];
     if (file.size > KR.MAX_DATEI) { toast("Die Datei ist größer als 4 MB."); e.target.value = ""; return; }

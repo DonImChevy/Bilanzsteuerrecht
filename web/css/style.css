@@ -2627,3 +2627,17 @@ button.ot-option:hover { background: color-mix(in srgb, var(--ot-blau) 7%, trans
 .sicher-chips > span { font-weight: 700; margin-right: 4px; }
 .sicher-chips .chip { padding: 6px 12px; font-size: 13px; }
 .kalibrierung { margin: 0 0 10px; padding: 8px 12px; border-radius: 12px; background: var(--glas); font-size: 13.5px; }
+
+/* Klausursimulation: Zeitwächter und Fotos der Papierlösung */
+.ks-zw { display: inline-block; margin-top: 4px; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: var(--glas); color: var(--text2); font-variant-numeric: tabular-nums; }
+.ks-zw.ueber { background: color-mix(in srgb, var(--err) 16%, transparent); color: var(--err); }
+.ks-foto { display: grid; gap: 10px; margin: 0 0 16px; padding: 14px; border-radius: 18px; background: var(--glas-stark); border: 1px dashed color-mix(in srgb, var(--m) 40%, var(--glas-rand)); }
+.ks-foto > div { display: grid; gap: 2px; }
+.ks-foto .sub { font-size: 13px; color: var(--text3); }
+.ks-foto-knopf { margin: 0; width: auto; justify-self: start; display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.ks-foto-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 8px; }
+.ks-foto-liste figure { position: relative; margin: 0; }
+.ks-foto-liste img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 10px; border: 1px solid var(--glas-rand); cursor: zoom-in; }
+.ks-foto-liste figure.gross { grid-column: 1 / -1; }
+.ks-foto-liste figure.gross img { aspect-ratio: auto; object-fit: contain; cursor: zoom-out; }
+.ks-foto-weg { position: absolute; top: 4px; right: 4px; width: 26px; height: 26px; border-radius: 50%; border: 0; background: rgba(0, 0, 0, .55); color: #fff; display: grid; place-items: center; }
