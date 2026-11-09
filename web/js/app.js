@@ -14,6 +14,9 @@ import { SIM, startKarte as simStartKarte, simView, zusammenstellen, hoechstpunk
 import * as MK from "./meinekarten.js";
 import * as HS from "./handschrift.js";
 import * as OT from "./bilr/onlinetest.js";
+import * as DF from "./denkfehler.js";
+import * as AB from "./abfrage.js";
+import * as KR from "./kursraum.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, nachholen, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
@@ -24,9 +27,9 @@ import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, code
 import qrcode from "./lib/qrcode.js";
 import { taler, talerBuehne, TALER_SPRUECHE, talerOutfitSetzen } from "./maskottchen.js";
 import { kasse, kaufbar, outfitVon, artikel, preisFuer, STANDARD, FARBWELTEN } from "./garderobe.js";
-import { bildLaden, bildSpeichern, bildVerkleinern } from "./bildspeicher.js";
+import { bildLaden, bildSpeichern, bildVerkleinern, ablageLaden, ablageSpeichern } from "./bildspeicher.js";
 import { garderobeView, talerBetrag } from "./garderobeansicht.js";
-import { kommende, countdownText, proTag } from "./termine.js";
+import { kommende, countdownText, proTag, icsErzeugen } from "./termine.js";
 import { rueckblickView, statistikView, statistikStart } from "./statistikansicht.js";
 import { DUELL_ANZAHL, neuerSeed, duellLesen, duellLink, duellSieger, zeitText } from "./duell.js";
 import { eintragen, austragen, rangliste, gruppeSchreiben, doppelteEntfernen } from "./gruppe.js";
@@ -193,6 +196,7 @@ const zaehler = (t) => stat.proThema[t] || { b: 0, r: 0 };
 const quote = (z) => (z.b ? z.r / z.b : 0);
 /** Bearbeitete Aufgabe zählen. Gibt die gewonnenen XP und die aktuelle Serie zurück (für die Rückmeldung). */
 function erfasse(frage, korrekt) {
+  if (state.sitzung?.kursBlatt && (korrekt === true || korrekt === false)) KR.melden(state.sitzung.kursBlatt, frage.id, korrekt); // anonym, nur Zähler
   const vorher = levelJetzt(), basisVorher = xpGesamt(stat).basis, heuteVorher = stat.tage[tagSchluessel()] || 0;
   if (korrekt === true || korrekt === false) {
     const l = (stat.lauf ||= { serie: 0, bs: 0 });
@@ -205,7 +209,9 @@ function erfasse(frage, korrekt) {
   z.b += 1;
   if (korrekt) z.r += 1;
   stat.proThema[frage.thema] = z;
-  if (korrekt !== null && korrekt !== undefined) stat.lern[frage.id] = planen(stat.lern[frage.id], korrekt);
+  const sicher = state.sitzung?.sicher?.[state.sitzung.index];
+  if (korrekt !== null && korrekt !== undefined) stat.lern[frage.id] = planen(stat.lern[frage.id], korrekt, Date.now(), { geraten: sicher === "geraten" });
+  if (sicher && (korrekt === true || korrekt === false)) kalibrierungMerken(sicher, korrekt);
   const heute = tagSchluessel();
   stat.tage[heute] = (stat.tage[heute] || 0) + 1;
   const tl = ((stat.log ||= {})[heute] ||= {}), alt = tl[frage.thema] || [0, 0];
@@ -336,6 +342,8 @@ const state = {
   hs: { art: "s", farbe: 0, mfarbe: 0 }, // Handschrift: Werkzeug (Stift, Textmarker, Radierer) und Farben
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
+  doz: null, // Dozierenden-Bereich {pw, form, liste, stat} – Passwort nur im Speicher
+  abfrage: null, // „Frag mich ab“: Hör-Abfrage der Lernkartei (abfrage.js)
   otest: null, // Generalprobe Online-Test Bilanzrecht (zeitlich begrenzt, Entwurf in localStorage bsr.otest)
   ksim: null, // Klausursimulation (begonnene liegt in localStorage bsr.ksim, „fortsetzen“ öffnet sie wieder)
   kompakt: null, // Kompaktwissen: {id: Thema | null (Übersicht), fach, liste: aus der Übersicht geöffnet, ausSitzung}
@@ -550,6 +558,7 @@ const aktFrage = () => s().fragen[s().index];
 const aktAntwort = () => s().antworten[s().index];
 
 function sitzungTitel(x) {
+  if (x.titel) return x.titel;
   if (x.modus === "klausur") return "Klausur " + MODUL[x.fach || "bsr"].kurz;
   if (x.duell) return "Duell " + MODUL[x.fach || "bsr"].kurz;
   if (x.wiederholung) return "Wiederholung";
@@ -582,6 +591,7 @@ function pruefen() {
   if (istLeer(aktFrage(), aktAntwort())) return;
   const b = bewerte(aktFrage(), aktAntwort());
   x.bewertungen[x.index] = b;
+  denkfehlerMerken(aktFrage(), b);
   Object.assign(b, erfasse(aktFrage(), b.korrekt));
   if (navigator.vibrate) navigator.vibrate(b.korrekt ? 20 : [30, 40, 30]);
   render();
@@ -674,11 +684,30 @@ const ksimSichern = () => { if (state.ksim) schreib("bsr.ksim", JSON.stringify(s
 setInterval(() => {
   const k = state.ksim;
   if (!k || k.phase !== "laufend") return;
+  // Zeitwächter: Sekunden dem Sachverhalt gutschreiben, der gerade oben im Bild ist
+  const box = document.querySelector(".ksim .vb-inhalt");
+  if (box && document.visibilityState === "visible") {
+    const oben = box.getBoundingClientRect().top + 60;
+    const akt = [...box.querySelectorAll(".ks-sv")].find((el) => { const r = el.getBoundingClientRect(); return r.top <= oben + 220 && r.bottom > oben; });
+    if (akt) {
+      const id = akt.id.slice(3), sek = ((k.zeit ||= {})[id] = (k.zeit[id] || 0) + 1), zw = akt.querySelector(".ks-zw");
+      if (zw) { zw.textContent = `⏱ du ${Math.floor(sek / 60)} Min.`; zw.classList.toggle("ueber", sek > Number(zw.dataset.min) * 60); }
+      if (sek % 15 === 0) ksimSichern();
+    }
+  }
   const r = simRest(k), el = document.getElementById("ksimUhr");
   if (el) { el.querySelector("span").textContent = simUhr(r); el.classList.toggle("knapp", r < 600); }
   if (r === 0) { AKTIONEN.ksimAbgeben(true); toast("Zeit abgelaufen – die Klausur wurde abgegeben."); }
 }, 1000);
 
+// Klausursimulation: Fotos der Papierlösung (IndexedDB, nur auf dem Gerät)
+const fotoCache = {};
+function ksimFotos(k) {
+  if (k?.phase !== "abgegeben") return [];
+  const key = "ksim-foto-" + k.start;
+  if (!(key in fotoCache)) { fotoCache[key] = []; ablageLaden(key).then((l) => { if (l?.length) { fotoCache[key] = l; render(); } }); }
+  return fotoCache[key];
+}
 // Generalprobe Online-Test (Bilanzrecht, nur an den Tagen aus OT.SICHTBAR)
 const otGespeichert = () => { try { return JSON.parse(localStorage.getItem("bsr.otest2")); } catch (_) { return null; } };
 const otSichern = () => { if (state.otest) schreib("bsr.otest2", JSON.stringify(state.otest)); };
@@ -735,6 +764,43 @@ const TABS = () => [
   ["nachschlagen", "nachschlagen", buchungsFach(state.fach) ? "Nachschlagen" : "Normen"],
 ];
 
+// Laufende Übung/Klausur sichern: übersteht Neuladen und das Beenden der App durch iOS (localStorage bsr.sitzung)
+let sitzungLief = false;
+function sitzungSichern() {
+  const x = state.sitzung;
+  if (x && !x.beendet && !x.duell) { schreib("bsr.sitzung", JSON.stringify(x)); sitzungLief = true; }
+  else if (sitzungLief || x?.beendet) { try { localStorage.removeItem("bsr.sitzung"); } catch (_) { /* egal */ } sitzungLief = false; }
+}
+const sitzungGespeichert = () => { try { const x = JSON.parse(localStorage.getItem("bsr.sitzung") || "null"); return x && !x.beendet && Date.now() - x.start < 3 * 864e5 ? x : null; } catch (_) { return null; } };
+window.addEventListener("pagehide", () => sitzungSichern());
+
+// Bildschirm wach halten (Klausur, Klausursimulation, Generalprobe, Vorlesen/Abfrage, Handschrift)
+let wachSperre = null;
+async function wachHalten() {
+  const noetig = (state.sitzung && state.sitzung.modus === "klausur" && !state.sitzung.beendet) || state.ksim?.phase === "laufend" || (state.otest && !state.otest.ende) || state.abfrage || hoertGerade() || state.sheet?.art === "karteEdit";
+  try {
+    if (noetig && !wachSperre && "wakeLock" in navigator && document.visibilityState === "visible") { wachSperre = await navigator.wakeLock.request("screen"); wachSperre.addEventListener?.("release", () => { wachSperre = null; }); }
+    else if (!noetig && wachSperre) { await wachSperre.release(); wachSperre = null; }
+  } catch (_) { wachSperre = null; }
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") wachHalten(); else sitzungSichern(); });
+
+/** Banner „Weitermachen“: unterbrochene Übung/Klausur, Klausursimulation oder Generalprobe. */
+function fortsetzenBanner() {
+  if (state.sitzung || state.ksim || state.otest) return "";
+  const l = [];
+  const x = sitzungGespeichert();
+  if (x) { const r = x.modus === "klausur" && x.minuten ? Math.max(0, x.minuten * 60 - Math.floor((Date.now() - x.start) / 1000)) : null;
+    l.push(["sitzung", sitzungTitel(x), `${x.antworten.filter((a, i) => x.bewertungen[i] || JSON.stringify(a) !== JSON.stringify(leereAntwort(x.fragen[i]))).length} von ${x.fragen.length} bearbeitet${r != null ? ` · noch ${uhr(r)}` : ""}`]); }
+  const k = ksimGespeichert();
+  if (k?.phase === "laufend") l.push(["ksim", `Klausursimulation ${k.minuten} Min.`, `noch ${simUhr(simRest(k))}`]);
+  const o = otGespeichert();
+  if (o && !o.ende && OT.sichtbar()) l.push(["otest", "Generalprobe Bilanz", `${Object.keys(o.antworten || {}).length} von 60 beantwortet`]);
+  return l.map(([v, titel, sub]) => `<div class="fortsetzen" role="status"><span class="fs-puls" aria-hidden="true"></span>
+    <button class="grow fs-text" data-a="fortsetzen" data-v="${v}"><b>${esc(titel)} läuft</b><span class="sub">${esc(sub)} – weitermachen</span></button>
+    <button class="fs-weg" data-a="fortsetzenWeg" data-v="${v}" aria-label="Verwerfen">${ic("kreuz", "klein")}</button></div>`).join("");
+}
+
 function render() {
   const aktiv = document.activeElement;
   const fokusId = aktiv && aktiv.dataset ? aktiv.dataset.fokus : null;
@@ -754,8 +820,9 @@ function render() {
     html += state.pfad.block ? blockView(state.pfad.fach, state.pfad.block, hilfe) : kartenView(state.pfad.fach, hilfe);
   }
   if (state.kompakt) html += kompaktEbene();
+  if (state.abfrage) html += abfrageView();
   if (state.otest) html += OT.testView(state.otest, { ic, esc, uhr: uhr(otZeit()) });
-  if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile, hs: state.hs, modus: lies("bsr.ksimModus", "text") });
+  if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile, hs: state.hs, modus: lies("bsr.ksimModus", "text"), fotos: ksimFotos(state.ksim) });
   if (state.sheet) html += sheetView();
   if (state.hgVorschau && !state.sheet) html += vorschauLeiste();
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
@@ -771,14 +838,17 @@ function render() {
   });
   if (scrollVoll.some(Boolean)) app.querySelectorAll(".vollbild .vb-inhalt").forEach((el, i) => { if (scrollVoll[i]) el.scrollTop = scrollVoll[i]; });
   if (scrollSheet) { const el = app.querySelector(".sheet .vb-inhalt"); if (el) el.scrollTop = scrollSheet; }
+  app.querySelectorAll(".heat").forEach((el) => { if (!el.dataset.gescrollt) { el.scrollLeft = el.scrollWidth; el.dataset.gescrollt = 1; } });
   handschriftAnbinden();
+  sitzungSichern();
+  wachHalten();
   // Vorlesen: läuft weiter, solange das Thema offen ist; Schließen oder ein anderes Thema beendet es
   if (hoertGerade() && !hoertGerade(state.kompakt?.id)) hoerStopp(); else leisteAktualisieren();
   offlineAnzeigen();
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
-  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.kompakt || state.ksim || state.otest || state.sheet ? "hidden" : "";
+  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.kompakt || state.ksim || state.otest || state.abfrage || state.sheet ? "hidden" : "";
   if (fokusId) {
     const el = document.querySelector(`[data-fokus="${fokusId}"]`);
     if (el) { el.focus(); if (pos && el.setSelectionRange) try { el.setSelectionRange(...pos); } catch (_) { /* egal */ } }
@@ -789,7 +859,7 @@ function render() {
 // Jede geöffnete Ebene (Unterseite, Übung, Rückschau, Lernkarten, Menü) bekommt einen Eintrag im Browserverlauf.
 // So schließt die Zurück-Geste (Android) bzw. Zurück-Taste die oberste Ebene, statt die App zu verlassen.
 let verlaufTiefe = 0, popIgnorieren = 0;
-const ansichtTiefe = () => (state.hgVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.ksim ? 1 : 0) + (state.otest ? 1 : 0) + (state.sheet ? 1 : 0);
+const ansichtTiefe = () => (state.hgVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.ksim ? 1 : 0) + (state.otest ? 1 : 0) + (state.abfrage ? 1 : 0) + (state.sheet ? 1 : 0);
 function verlaufAbgleichen() {
   const t = ansichtTiefe();
   while (verlaufTiefe < t) { verlaufTiefe += 1; history.pushState({ tiefe: verlaufTiefe }, ""); }
@@ -800,6 +870,7 @@ function ebeneZurueck() {
   if (state.sheet) AKTIONEN.sheetZu();
   else if (state.hgVorschau) AKTIONEN.vorschauEnde();
   else if (state.kompakt) AKTIONEN.kompaktZu();
+  else if (state.abfrage) AKTIONEN.abfrageZu();
   else if (state.otest) AKTIONEN.otZu();
   else if (state.ksim) AKTIONEN.ksimZu();
   else if (state.deck) AKTIONEN.deckZu();
@@ -870,6 +941,7 @@ function tabStart() {
       </div>
       <div class="kopf-aktionen"><button class="icon-btn" data-a="einstellungen" aria-label="Einstellungen">${ic("einstellungen")}</button></div>
     </div>
+    ${fortsetzenBanner()}
     ${state.talerSpruch >= 0 ? `<div class="taler-blase" role="status">${esc(TALER_SPRUECHE[state.talerSpruch % TALER_SPRUECHE.length])}</div>` : ""}
     <section class="hero">
       <div class="oben">
@@ -1182,6 +1254,9 @@ function termineView() {
       ${e ? `<button class="knopf zweit" data-a="terminAbbrechen" style="flex:1">Abbrechen</button>` : ""}
       <button class="knopf" data-a="terminNeu" style="flex:2">${ic(e ? "haken" : "plus")} ${e ? "Speichern" : "Termin speichern"}</button></div>
       <div class="sub" style="margin:8px 4px 0">Fach nicht in der App? „Anderes Fach“ wählen und den Namen als Bezeichnung eintragen.</div></div>
+    ${alle.length ? `<div class="gruppe"><div class="gruppe-titel">In deinen Kalender</div><div class="liste">
+      <label class="zeile"><span class="grow">Tägliche Lernerinnerung um</span><input type="time" id="icsZeit" value="${esc(lies("bsr.icsZeit", "18:00"))}"></label>
+      <button class="zeile" data-a="icsExport"><span class="symbol">${ic("kalender")}</span><span class="grow"><b>Termine und Erinnerung exportieren</b><div class="sub">Kalender-Datei (.ics) – erinnert ohne Push, auch wenn die App zu ist</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
     <div class="gruppe-fuss" style="margin:8px 4px 20px">Termine werden mit dem Sync-Code auf deine anderen Geräte übertragen.</div>`;
 }
 
@@ -1402,6 +1477,8 @@ function tabLernen() {
     heute = `<div class="kachel breit"><span class="k-icon" style="background:var(--ok-weak);color:var(--ok)">${ic("haken")}</span>
       <span class="grow"><b>${n ? "Heute nichts zu wiederholen" : "Lernkartei startet mit deiner ersten Übung"}</b><div class="sub">${n ? `Nächste Wiederholung ${inTagen(n)}.` : "Jede Aufgabe kommt nach 1, 3, 7, 14 und 30 Tagen wieder."}</div></span></div>`;
   }
+  if (AB.abfrageMoeglich()) heute += `<button class="kachel breit abfrage-kachel" data-a="abfrageStart"><span class="k-icon">🎧</span>
+      <span class="grow"><b>Frag mich ab</b><div class="sub">${due.length ? `${due.length} fällige Wiederholungen` : "Gemischte Fragen"} zum Hören – Antwort per Kopfhörertaste</div></span><span class="rechts">${ic("pfeil", "klein")}</span></button>`;
   const mkFaellig = MK.faelligeKarten(meine(), state.fach).length;
   if (mkFaellig) heute += `<button class="kachel breit" data-a="meineLernen" data-v="faellig"><span class="k-icon">${ic("karten")}</span>
       <span class="grow"><b>${mkFaellig} ${mkFaellig === 1 ? "eigene Karteikarte" : "eigene Karteikarten"} fällig</b><div class="sub">Umdrehen, bewerten – dauert nur kurz</div></span><span class="rechts">${ic("pfeil")}</span></button>`;
@@ -1441,6 +1518,7 @@ function tabLernen() {
 
   return `
     ${modulLeiste()}
+    ${fortsetzenBanner()}
     <section class="modul-banner">
       <div class="reihe1"><span class="m-icon">${ic(m.icon, "gross")}</span>
         <div style="min-width:0"><h1>${m.titel}</h1><div class="unter">${esc(m.unter)}</div></div></div>
@@ -1456,6 +1534,8 @@ function tabLernen() {
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     ${pfadKachel()}
     ${kompaktKachel()}
+    ${kursKarte()}
+    ${denkfehlerKarte()}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
     <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien", ust: "Themen · Skript & Klausurtechnik" }[state.fach] || { 1: "Themen · Skript Teil I", 2: "Themen · Skript Teil II", beide: "Themen · Skript Teil I und II" }[state.bilrTeil]}<span class="sub" style="text-transform:none;letter-spacing:0">${themenImTeil(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
@@ -1495,12 +1575,20 @@ function modusSchalter() {
 /** Themen eines Moduls mit Zusammenfassung (bei BilR im gewählten Teil). */
 const kompaktThemen = (fach) => themenImTeil(fach).filter((t) => KOMPAKT[t.id]);
 
+// Abdecken: zuletzt nicht gewusste Lücken je Thema (nur auf dem Gerät, localStorage bsr.luecken)
+const lueckenAlt = () => { try { return JSON.parse(localStorage.getItem("bsr.luecken") || "{}"); } catch (_) { return {}; } };
+function lueckenMerken() {
+  const k = state.kompakt, a = k?.ab; if (!a) return;
+  const alle = lueckenAlt(); alle[k.id] = Object.entries(a.wertung).filter(([, w]) => w === "nein").map(([i]) => Number(i));
+  schreib("bsr.luecken", JSON.stringify(alle));
+}
 function kompaktEbene() {
   const { id, fach, ausSitzung } = state.kompakt;
   const themen = kompaktThemen(fach).length ? kompaktThemen(fach) : themenFuer(fach).filter((t) => KOMPAKT[t.id]);
   if (!id) return bibliothekView(fach, themen, { ic, gelesen: stat.kompakt });
   const i = themen.findIndex((t) => t.id === id);
-  return kompaktView(id, { ic, thema: THEMA[id], nachbarn: [themen[i - 1], themen[i + 1]], gelesen: stat.kompakt, ausSitzung, alsKarte: alsKarteKnopf });
+  state.kompakt.ab ||= { an: false, auf: [], wertung: {}, frage: null, alt: lueckenAlt()[id] || [] };
+  return kompaktView(id, { ic, thema: THEMA[id], nachbarn: [themen[i - 1], themen[i + 1]], gelesen: stat.kompakt, ausSitzung, alsKarte: alsKarteKnopf, abdecken: state.kompakt.ab });
 }
 
 /** Einstieg ins Kompaktwissen auf der Modulseite. */
@@ -1555,6 +1643,17 @@ function lernkarteiView() {
 // ======================= Tab: Klausur =======================
 const klausurenFach = () => stat.klausuren.filter((k) => (k.fach || "bsr") === state.fach);
 
+/** Punkte-Hebel: welches Thema bringt in der nächsten Stunde die meisten Klausurpunkte? (Klausurschwerpunkt × Lücke) */
+function punkteHebel() {
+  const top = new Set(KLAUSURPLAN[state.fach]?.top || []);
+  const l = pruefImTeil(state.fach).map((t) => { const z = zaehler(t.id), q = z.b >= 3 ? quote(z) : 0.4; return { t, q, z, wert: (top.has(t.id) ? 2 : 1) * (1 - q) }; })
+    .sort((a, b) => b.wert - a.wert).slice(0, 3);
+  if (!l.length || l[0].wert <= 0.1) return "";
+  return `<div class="gruppe"><div class="gruppe-titel">Punkte-Hebel <span class="sub" style="text-transform:none;letter-spacing:0">– hier holst du die nächsten Punkte</span></div><div class="hebel">
+    ${l.map(({ t, q, z }, i) => `<button class="hebel-zeile" data-a="schnell" data-v="thema" data-t="${t.id}"><span class="hebel-nr">${i + 1}</span>
+      <span class="grow"><b>${esc(t.titel)}</b><span class="sub">${top.has(t.id) ? "Klausurschwerpunkt · " : ""}${z.b >= 3 ? `du ${Math.round(q * 100)} %` : "noch kaum geübt"}</span></span>
+      ${z.b >= 3 ? `<span class="hebel-balken" style="--q:${Math.round(q * 100)}%"></span>` : ""}${ic("pfeil", "klein")}</button>`).join("")}</div></div>`;
+}
 function tabKlausur() {
   const zeiten = [0, 30, 45, 60, 90];
   const ks = klausurenFach();
@@ -1576,6 +1675,7 @@ function tabKlausur() {
           2: "Teil II: Bilanzierung und Bewertung – ca. 40 % Buchungssätze, dazu Berechnungen und Würdigung. Auswertung erst nach der Abgabe.",
           beide: "Wie die Semesterklausur: ca. 25 % Teil I (Buchführung) und 75 % Teil II (Bilanzierung und Bewertung). Auswertung erst nach der Abgabe." }[state.bilrTeil])}
     ${otKarte()}
+    ${punkteHebel()}
     ${SIM[state.fach] ? simStartKarte(state.fach, { ic, laufend: ksimGespeichert()?.phase === "laufend" }) : ""}
     ${modusSchalter()}
     ${KLAUSURPLAN[state.fach] ? `<button class="km-vorher" data-a="kompaktListe"><span class="km-vorher-icon">${ic("akte")}</span>
@@ -1975,6 +2075,7 @@ function sitzungView() {
     feedback = `<div class="feedback" style="color:var(--text);font-size:16px"><span>Hast du es gewusst?<small>Ehrlich vergleichen – das steuert, wann die Frage wiederkommt.</small></span></div>`;
     fuss = `<button class="knopf rot" data-a="selbst" data-v="0">${ic("kreuz")} Nicht gewusst</button><button class="knopf gruen" data-a="selbst" data-v="1">${ic("haken")} Gewusst</button>`;
   } else if (!b) {
+    if (x.modus === "uebung" && !x.duell) feedback = sicherheitsChips(x);
     fuss = `<span class="fb-warte">${taler("warte", { groesse: 52 })}</span><button class="knopf" id="pruefen" data-a="pruefen" ${istLeer(f, aktAntwort()) ? "disabled" : ""}>Prüfen</button>`;
   } else {
     const ok = b.korrekt;
@@ -2089,6 +2190,162 @@ function auswertungView(f, b) {
   const link = KOMPAKT[f.thema] ? `<button class="km-link" data-a="kompaktSitzung" data-v="${f.thema}">${ic("akte", "klein")}<span><b>Überblick: ${esc(THEMA[f.thema].titel)}</b><span class="sub">Das Wichtigste in ${lesezeit(KOMPAKT[f.thema])} Min. – danach geht es hier weiter</span></span></button>` : "";
   return html.replace(/<\/div><\/div>\s*$/, `${karte}${link}</div></div>`);
 }
+// Denkfehler-Radar: Häufigkeit je Fehlerfamilie (nur auf dem Gerät, localStorage bsr.denkfehler)
+const denkfehlerStand = () => { try { return JSON.parse(localStorage.getItem("bsr.denkfehler") || "{}"); } catch (_) { return {}; } };
+function denkfehlerMerken(f, b) {
+  if (f.typ !== "buchung") return;
+  const st = denkfehlerStand(), heute = tagSchluessel(), fach = state.sitzung?.fach || state.fach;
+  for (const d of b.denkfehler || []) { const fam = DF.FAMILIE(d.id), e = (st[fam] ||= { n: 0, ok: [], fach }); e.n += 1; e.letzt = heute; e.ok = []; e.fach = fach; delete e.behoben; }
+  if (b.korrekt) for (const [fam, e] of Object.entries(st)) {
+    if (e.behoben || !DF.provoziert(fam, b.buchung.loesung)) continue;
+    if (!e.ok.includes(heute) && heute !== e.letzt) e.ok.push(heute);
+    if (e.ok.length >= 3) { e.behoben = heute; toast(`Denkfehler „${DF.FAMILIEN[fam]}“ an 3 Tagen vermieden – abgehakt!`); }
+  }
+  schreib("bsr.denkfehler", JSON.stringify(st));
+}
+/** Karte „Deine Denkfehler“ auf der Modulseite (nur Buchführungsmodule). */
+function denkfehlerKarte() {
+  if (!buchungsFach(state.fach)) return "";
+  const l = Object.entries(denkfehlerStand()).filter(([, e]) => !e.behoben && e.n > 0 && (!e.fach || buchungsFach(e.fach))).sort((a, b) => b[1].n - a[1].n).slice(0, 3);
+  if (!l.length) return "";
+  return `<div class="gruppe"><div class="gruppe-titel">Deine Denkfehler</div><div class="df-karte">
+    ${l.map(([fam, e]) => `<div class="df-zeile"><span class="df-radar klein" aria-hidden="true"><i></i></span><span class="grow"><b>${esc(DF.FAMILIEN[fam] || fam)}</b><span class="sub">${e.n}× · ${e.ok.length}/3 Tage vermieden</span></span>
+      <button class="knopf zweit klein" data-a="denkfehlerUeben" data-v="${fam}">Gezielt üben</button></div>`).join("")}
+  </div></div>`;
+}
+let dfVorlagen = null;
+function denkfehlerIds(fam, fach) {
+  if (!dfVorlagen) { const r = new Zufall(11); dfVorlagen = ALLE.map((v) => { try { const f = v.erzeugen(r); return f.typ === "buchung" ? [v, f.loesungen[0]] : null; } catch (_) { return null; } }).filter(Boolean); }
+  return dfVorlagen.filter(([v, l]) => vorlageIn(v, fach) && imTeil(THEMA[v.thema], teilVon(fach)) && DF.provoziert(fam, l)).map(([v]) => v.id);
+}
+
+// „Frag mich ab“: Hör-Abfrage der Lernkartei (abfrage.js)
+const abfragePause = () => Number(lies("bsr.abfragePause", "8")) || 8;
+function abfrageFragen(fach) {
+  const r = new Zufall(), erzeuge = (id) => { const v = ALLE.find((x) => x.id === id); try { return v ? v.erzeugen(r) : null; } catch (_) { return null; } };
+  let l = faelligImTeil(fach).map(erzeuge).filter(AB.geeignet);
+  if (l.length < 10) l = [...l, ...r.mischen(idsImTeil(fach)).map(erzeuge).filter((f) => AB.geeignet(f) && !l.some((x) => x.id === f.id)).slice(0, 15 - l.length)];
+  return l.slice(0, 25);
+}
+async function abfrageLauf() {
+  const a = state.abfrage; if (!a) return;
+  const f = a.fragen[a.i]; if (!f) { a.phase = "fertig"; AB.stopp(); render(); AB.sprich(`Fertig. ${a.ja} von ${a.ja + a.nein} gewusst.`); return; }
+  const t = AB.teile(f), tok = AB.neu();
+  AB.tastenAn(() => AKTIONEN.abfrageWertung("ja"), () => AKTIONEN.abfrageWertung("nein"), `Frage ${a.i + 1} von ${a.fragen.length}`);
+  a.phase = "frage"; render();
+  const ok = await AB.sprich(t.frage);
+  if (!ok || tok !== AB.aktuell() || state.abfrage !== a || a.phase !== "frage") return;
+  a.phase = "pause"; render();
+  if (!(await AB.warte(abfragePause() * 1000)) || a.phase !== "pause") return;
+  abfrageLoesung();
+}
+async function abfrageLoesung() {
+  const a = state.abfrage; if (!a) return;
+  const t = AB.teile(a.fragen[a.i]);
+  a.phase = "loesung"; render();
+  await AB.sprich(t.loesung);
+  if (state.abfrage === a && a.phase === "loesung") { a.phase = "wertung"; render(); }
+}
+function abfrageView() {
+  const a = state.abfrage, f = a.fragen[a.i], t = f ? AB.teile(f) : null, n = a.fragen.length;
+  const kopf = `<div class="vb-kopf"><button class="rund" data-a="abfrageZu" aria-label="Beenden">${ic("kreuz")}</button><div class="mitte">Frag mich ab</div><span class="km-zeit">${Math.min(a.i + 1, n)}/${n}</span></div>`;
+  if (a.phase === "fertig" || !f) return `<div class="vollbild abfrage" role="dialog" aria-label="Abfrage">${kopf}<div class="vb-inhalt"><div class="ab-fertig">
+      ${taler(a.ja >= a.nein ? "jubeln" : "mut", { groesse: 90 })}<h2>${a.ja} von ${a.ja + a.nein} gewusst</h2><p class="sub">Alles ist in deiner Lernkartei verbucht – die nicht gewussten kommen morgen wieder.</p></div></div>
+      <div class="vb-fuss"><button class="knopf" data-a="abfrageZu">Fertig</button></div></div>`;
+  const zeigt = a.phase === "loesung" || a.phase === "wertung";
+  return `<div class="vollbild abfrage" role="dialog" aria-label="Abfrage">${kopf}
+    <div class="ab-fortschritt" aria-hidden="true"><i style="width:${Math.round((a.i / n) * 100)}%"></i></div>
+    <div class="vb-inhalt">
+      <div class="ab-thema">${esc(THEMA[f.thema]?.titel || "")} · ${esc(typBezeichnung(f))}</div>
+      <div class="ab-welle ${a.phase}" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="ab-frage">${esc(f.text)}</p>
+      ${f.typ === "auswahl" ? `<ol class="ab-optionen" type="A">${f.optionen.map((o, i) => `<li class="${zeigt && f.richtig.includes(i) ? "richtig" : ""}">${esc(o)}</li>`).join("")}</ol>` : ""}
+      ${a.phase === "pause" ? `<div class="ab-pause" style="--dauer:${abfragePause()}s"><span class="ab-ring"></span><b>Denk nach …</b><button class="knopf zweit" data-a="abfrageAufdecken">Lösung jetzt</button></div>` : ""}
+      ${zeigt ? `<div class="ab-loesung"><b>${kompaktInline(t.anzeigeLoesung)}</b>${t.anzeigeErkl ? `<p>${kompaktInline(t.anzeigeErkl)}</p>` : ""}</div>` : ""}
+      <p class="ab-tipp">🎧 Kopfhörer: <b>vor</b> = gewusst · <b>zurück</b> = nicht gewusst</p>
+      <div class="ab-tempo"><span>Denkpause</span><span class="segment">${[5, 8, 12, 20].map((s) => `<button data-a="abfragePauseSetzen" data-v="${s}" class="${abfragePause() === s ? "aktiv" : ""}">${s} s</button>`).join("")}</span></div>
+    </div>
+    <div class="vb-fuss ab-fuss">
+      <button class="knopf zweit ab-nein" data-a="abfrageWertung" data-v="nein">${ic("kreuz", "klein")} Nicht gewusst</button>
+      <button class="knopf ab-ja" data-a="abfrageWertung" data-v="ja">${ic("haken", "klein")} Gewusst</button>
+    </div></div>`;
+}
+
+// ======================= Kursraum (Dozierende) =======================
+const kursGeladen = {};
+function kursLaden(fach, erzwingen = false) {
+  if (!KR.kursVerfuegbar() || (!erzwingen && Date.now() - (kursGeladen[fach] || 0) < 5 * 60e3)) return;
+  kursGeladen[fach] = Date.now();
+  KR.liste(fach).then(() => render()).catch(() => {});
+}
+const kursEintragHtml = (e, kurz = false) => {
+  const datum = new Date(e.erstellt).toLocaleDateString("de-DE", { day: "numeric", month: "short" });
+  const kopf = `<div class="kr-kopf"><span class="kr-art kr-${e.art}">${KR.ARTEN[e.art]}</span><span class="sub">${datum}${e.autor ? " · " + esc(e.autor) : ""}</span></div><b class="kr-titel">${esc(e.titel)}</b>`;
+  const text = e.text ? `<div class="kr-text${kurz ? " kurz" : ""}">${KR.textHtml(e.text, esc)}</div>` : "";
+  const aktion = e.art === "link" && e.link ? `<a class="knopf zweit kr-knopf" href="${esc(e.link)}" target="_blank" rel="noopener">${ic("pfeil", "klein")} Öffnen</a>`
+    : e.art === "datei" ? `<button class="knopf zweit kr-knopf" data-a="kursDatei" data-v="${e.id}">${ic("export", "klein")} ${esc(e.datei_name || "Datei")} (${Math.max(1, Math.round((e.datei_groesse * 0.75) / 1024))} KB)</button>`
+    : e.art === "blatt" ? `<button class="knopf kr-knopf" data-a="kursBlatt" data-v="${e.id}">${ic("play", "klein")} ${(e.aufgaben || []).length} Aufgaben lösen</button>` : "";
+  return `<article class="kr-eintrag">${kopf}${text}${aktion}</article>`;
+};
+function kursKarte() {
+  if (!KR.kursVerfuegbar()) return "";
+  kursLaden(state.fach);
+  const l = KR.zwischenstand(state.fach)?.l || [];
+  if (!l.length) return "";
+  const neu = KR.neuSeit(l, Number(lies("bsr.kursGesehen." + state.fach, "0")));
+  return `<div class="gruppe"><div class="gruppe-titel">Aus dem Kurs${neu ? ` <span class="kr-neu">${neu} neu</span>` : ""}<button class="link" data-a="kursAlle">Alle</button></div>
+    <div class="kr-karte">${l.slice(0, 2).map((e) => kursEintragHtml(e, true)).join("")}</div></div>`;
+}
+function dozentInhalt() {
+  const d = state.doz;
+  if (!d?.pw) return `<div class="doz-login"><p>Der Kursraum ist für Lehrende: Hinweise, Links, Dateien und Aufgabenblätter, die alle Lernenden im jeweiligen Modul sehen. Ergebnisse von Aufgabenblättern kommen anonym als Klassenstatistik zurück.</p>
+    <label class="doz-feld"><span>Passwort für Dozierende</span><input type="password" id="dozPw" autocomplete="current-password" data-fokus="dozPw"></label>
+    <button class="knopf" data-a="dozAnmelden">${ic("schloss", "klein")} Anmelden</button>
+    ${KR.kursVerfuegbar() ? "" : `<p class="sub">Der Server ist in dieser Version nicht eingerichtet.</p>`}</div>`;
+  const f = d.form, module = MODULE.filter((m) => !m.bald), themen = themenFuer(f.fach);
+  return `<div class="doz">
+    <div class="gruppe"><div class="gruppe-titel">Neuer Eintrag</div><div class="doz-form">
+      <label class="doz-feld"><span>Modul</span><select data-doz="fach">${module.map((m) => `<option value="${m.id}"${m.id === f.fach ? " selected" : ""}>${esc(m.titel)}</option>`).join("")}</select></label>
+      <span class="segment doz-art">${Object.entries(KR.ARTEN).map(([a, t]) => `<button data-a="dozArt" data-v="${a}" class="${f.art === a ? "aktiv" : ""}">${t}</button>`).join("")}</span>
+      <label class="doz-feld"><span>Titel</span><input data-doz="titel" maxlength="120" value="${esc(f.titel || "")}" placeholder="${{ hinweis: "z. B. Klausurtermin verschoben", link: "z. B. Folien zur Vorlesung", datei: "z. B. Übungsblatt 5", blatt: "z. B. Wiederholung Privatkonten" }[f.art]}"></label>
+      <label class="doz-feld"><span>${f.art === "hinweis" ? "Text" : "Text (optional)"}</span><textarea data-doz="text" rows="4" maxlength="4000">${esc(f.text || "")}</textarea></label>
+      ${f.art === "link" ? `<label class="doz-feld"><span>Link (https://…)</span><input data-doz="link" inputmode="url" value="${esc(f.link || "")}"></label>` : ""}
+      ${f.art === "datei" ? `<label class="doz-feld"><span>Datei (PDF oder Bild, höchstens 4 MB)</span><input type="file" id="dozDatei" accept="application/pdf,image/*"></label>${f.datei_name ? `<div class="sub">Ausgewählt: ${esc(f.datei_name)}</div>` : ""}` : ""}
+      ${f.art === "blatt" ? `<label class="doz-feld"><span>Thema</span><select data-doz="thema"><option value="">Alle Themen des Moduls</option>${themen.map((t) => `<option value="${t.id}"${t.id === f.thema ? " selected" : ""}>${esc(t.titel)}</option>`).join("")}</select></label>
+        <label class="doz-feld"><span>Anzahl Aufgaben</span><select data-doz="anzahl">${[5, 10, 15, 20].map((n) => `<option${Number(f.anzahl) === n ? " selected" : ""}>${n}</option>`).join("")}</select></label>` : ""}
+      <label class="doz-feld"><span>Sichtbar bis (optional)</span><input type="date" data-doz="bis" value="${esc(f.bis || "")}"></label>
+      <label class="doz-feld"><span>Name (optional, z. B. „Fr. Müller“)</span><input data-doz="autor" maxlength="60" value="${esc(f.autor || "")}"></label>
+      <button class="knopf" data-a="dozSpeichern">${ic("plus", "klein")} Veröffentlichen</button>
+    </div></div>
+    <div class="gruppe"><div class="gruppe-titel">Einträge im Modul ${esc(MODUL[f.fach]?.kurz || "")}<button class="link" data-a="dozLaden">Aktualisieren</button></div>
+      ${(d.liste || []).length ? d.liste.map((e) => `<div class="doz-eintrag">${kursEintragHtml(e, true)}
+        <div class="doz-aktionen">${e.art === "blatt" ? `<button class="knopf zweit" data-a="dozStatistik" data-v="${e.id}">${ic("diagramm", "klein")} Klassenstatistik</button>` : ""}<button class="knopf zweit doz-weg" data-a="dozLoeschen" data-v="${e.id}">${ic("muell", "klein")} Löschen</button></div>
+        ${d.stat?.[e.id] ? dozStatistikHtml(e, d.stat[e.id]) : ""}</div>`).join("") : `<p class="sub">Noch keine Einträge in diesem Modul.</p>`}
+    </div>
+    <button class="link" data-a="dozAbmelden">Abmelden</button></div>`;
+}
+function dozStatistikHtml(e, st) {
+  if (!st.length) return `<p class="sub">Noch keine Ergebnisse eingegangen.</p>`;
+  const r = new Zufall(1);
+  return `<div class="doz-stat">${st.map((z) => { const v = ALLE.find((x) => x.id === z.aufgabe), n = z.richtig + z.falsch, q = n ? z.richtig / n : 0;
+    let titel = z.aufgabe; try { titel = v ? v.erzeugen(r).text.slice(0, 90) : z.aufgabe; } catch (_) { /* egal */ }
+    return `<div class="doz-stat-zeile"><span class="grow">${esc(titel)}${titel.length >= 90 ? " …" : ""}</span><span class="doz-balken" style="--q:${Math.round(q * 100)}%;--f:${farbe(q)}"></span><b>${Math.round(q * 100)} %</b><span class="sub">n=${n}</span></div>`; }).join("")}</div>`;
+}
+
+// „Wie sicher bist du?“ – Selbsteinschätzung vor dem Prüfen; Kalibrierung in localStorage bsr.kalibrierung
+const SICHER = [["sicher", "Sicher"], ["unsicher", "Unsicher"], ["geraten", "Geraten"]];
+const kalibrierung = () => { try { return JSON.parse(localStorage.getItem("bsr.kalibrierung") || "{}"); } catch (_) { return {}; } };
+function kalibrierungMerken(s, korrekt) { const k = kalibrierung(), e = (k[s] ||= [0, 0]); e[0] += korrekt ? 1 : 0; e[1] += 1; schreib("bsr.kalibrierung", JSON.stringify(k)); }
+function sicherheitsChips(x) {
+  const w = x.sicher?.[x.index];
+  return `<div class="sicher-chips" role="group" aria-label="Wie sicher bist du?"><span>Wie sicher bist du?</span>${SICHER.map(([v, t]) => `<button class="chip${w === v ? " aktiv" : ""}" data-a="sicherWahl" data-v="${v}">${t}</button>`).join("")}</div>`;
+}
+function kalibrierungsHinweis(s) {
+  const e = kalibrierung()[s]; if (!e || e[1] < 10) return "";
+  const q = e[0] / e[1], t = { sicher: "„sicher“", unsicher: "„unsicher“", geraten: "„geraten“" }[s];
+  return `<div class="kalibrierung">Wenn du ${t} sagst, liegst du zu <b>${Math.round(q * 100)} %</b> richtig${s === "sicher" && q < 0.8 ? " – Vorsicht vor Selbstüberschätzung." : s === "geraten" && q > 0.6 ? " – du weißt mehr, als du denkst." : "."}</div>`;
+}
+
 function auswertungInhalt(f, b) {
   let extra = "";
   if (f.typ === "zahl") {
@@ -2096,14 +2353,18 @@ function auswertungInhalt(f, b) {
   }
   if (f.typ === "buchung") {
     const l = b.buchung.loesung;
-    extra = `<div class="loesung"><div class="sub" style="margin-bottom:4px">Musterlösung</div>
+    extra = `${(b.denkfehler || []).map((d) => `<div class="denkfehler"><div class="df-kopf"><span class="df-radar" aria-hidden="true"><i></i></span><b>${esc(d.titel)}</b></div>
+      <p>${esc(d.text)}</p><details class="df-frage"><summary>${esc(d.frage)}</summary><p>${kompaktInline(d.antwort)}</p></details></div>`).join("")}
+      <div class="loesung"><div class="sub" style="margin-bottom:4px">Musterlösung</div>
       ${l.soll.map(([k, c]) => `<div class="loesung-zeile"><span>${esc(K(k).name)}</span><span>${G.text(c)}</span></div>`).join("")}
       ${l.haben.map(([k, c]) => `<div class="loesung-zeile haben"><span>an ${esc(K(k).name)}</span><span>${G.text(c)}</span></div>`).join("")}</div>
       ${!b.korrekt && b.buchung.fehlend.length ? `<div class="fehlt"><b>In deiner Lösung fehlt:</b><br>${b.buchung.fehlend.map(([sd, k, c]) => `• ${sd === "soll" ? "Soll" : "Haben"}: ${esc(K(k).kurz)} ${G.text(c)}`).join("<br>")}</div>` : ""}`;
   }
   if (f.typ === "offen" && b.auto) {
     const a = b.auto, haken = (ok) => `<span class="pruef-ic ${ok ? "ja" : "nein"}">${ok ? "✓" : "✗"}</span>`;
-    return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt ? "" : "nein"}">
+    const sw = state.sitzung?.sicher?.[state.sitzung.index];
+  if (sw) extra = kalibrierungsHinweis(sw) + extra;
+  return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt ? "" : "nein"}">
       <div class="urteil ${b.korrekt ? "ja" : "nein"}">${b.korrekt ? "✓ Richtig" : "✗ Noch nicht vollständig"}${b.korrigiert ? ` <span class="sub">(von dir korrigiert)</span>` : ""}</div>
       <div class="pruefung">
         ${a.normen.length ? a.normen.map((n) => `<div class="pruef-zeile">${haken(n.ok)}<span><b>Norm:</b> ${esc(n.label)}${n.ok ? "" : " – nicht zitiert"}</span></div>`).join("") : ""}
@@ -2506,6 +2767,13 @@ function sheetView() {
   } else if (sh.art === "level") {
     titel = "Level und Erfolge";
     inhalt = levelSeite(stat);
+  } else if (sh.art === "kurs") {
+    titel = "Aus dem Kurs";
+    const l = KR.zwischenstand(state.fach)?.l || [];
+    inhalt = l.length ? `<div class="kr-karte">${l.map((e) => kursEintragHtml(e)).join("")}</div>` : `<p class="sub">Noch keine Einträge.</p>`;
+  } else if (sh.art === "dozent") {
+    titel = "Kursraum für Dozierende";
+    inhalt = dozentInhalt();
   } else if (sh.art === "einstellungen") {
     titel = "Einstellungen";
     inhalt = `
@@ -2525,6 +2793,8 @@ function sheetView() {
         <div class="gruppe-fuss" style="margin:8px 4px 0">„Schnell“ verzichtet auf Glas-Unschärfe, bewegten Hintergrund und Dauer-Animationen – die App läuft dann auch auf älteren Geräten flüssig. „Automatisch“ misst beim Start, ob das Gerät ins Stocken kommt${state.leistung === "auto" ? ` (dieses Gerät: <b>${leistungSpar() ? "Schnell" : "Schön"}</b>)` : ""}. Gilt nur für dieses Gerät.</div></div>
       ${syncVerfuegbar() ? `<div class="gruppe"><div class="gruppe-titel">Mehrere Geräte</div><div class="liste"><button class="zeile" data-a="syncOeffnen"><span class="symbol">${ic("wechsel")}</span>
         <span class="grow"><b>Geräte synchronisieren</b><div class="sub">${esc(syncStatusText())}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
+      ${KR.kursVerfuegbar() ? `<div class="gruppe"><div class="gruppe-titel">Für Lehrende</div><div class="liste"><button class="zeile" data-a="dozOeffnen"><span class="symbol">${ic("schloss")}</span>
+        <span class="grow"><b>Kursraum für Dozierende</b><div class="sub">Hinweise, Dateien und Aufgabenblätter für alle – mit Passwort</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
       <div class="gruppe"><div class="gruppe-titel">Was ist neu?</div><div class="liste"><button class="zeile" data-a="neuigkeiten"><span class="symbol">${ic("sterne")}</span>
         <span class="grow"><b>Neuigkeiten</b><div class="sub">${esc(NEUIGKEITEN[0].titel)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>
       <div class="gruppe"><div class="gruppe-titel">Datensicherung</div><div class="liste">
@@ -2969,6 +3239,87 @@ const AKTIONEN = {
     state.ksim = { fach: state.fach, minuten, seed, teile: zusammenstellen(state.fach, minuten, seed), phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
     ksimSichern(); render(); scrollOben();
   },
+  denkfehlerUeben: (fam) => {
+    const ids = new Zufall().mischen(denkfehlerIds(fam, state.fach)).slice(0, 10);
+    if (!ids.length) { toast("Dazu gibt es in diesem Teil keine passenden Buchungssätze."); return; }
+    starte({ modus: "uebung", fach: state.fach, ids, titel: "Denkfehler: " + DF.FAMILIEN[fam] });
+  },
+  abfrageStart: () => {
+    hoerStopp();
+    const fragen = abfrageFragen(state.fach);
+    if (!fragen.length) { toast("Für dieses Modul gibt es gerade keine Fragen zum Vorlesen."); return; }
+    state.abfrage = { fach: state.fach, fragen, i: 0, phase: "frage", ja: 0, nein: 0 };
+    abfrageLauf();
+  },
+  abfrageAufdecken: () => { const a = state.abfrage; if (a && (a.phase === "frage" || a.phase === "pause")) { AB.neu(); abfrageLoesung(); } },
+  abfrageWertung: (v) => {
+    const a = state.abfrage; if (!a || a.phase === "fertig") return;
+    if (a.phase === "frage" || a.phase === "pause") { AKTIONEN.abfrageAufdecken(); return; } // erst die Lösung hören
+    const f = a.fragen[a.i], ok = v === "ja";
+    erfasse(f, ok); ok ? a.ja++ : a.nein++;
+    if (navigator.vibrate) navigator.vibrate(ok ? 20 : [30, 40, 30]);
+    a.i++; abfrageLauf();
+  },
+  abfragePauseSetzen: (v) => { schreib("bsr.abfragePause", v); render(); },
+  abfrageZu: () => { AB.stopp(); state.abfrage = null; render(); },
+  kursAlle: () => { schreib("bsr.kursGesehen." + state.fach, String(Date.now())); state.sheet = { art: "kurs" }; kursLaden(state.fach, true); render(); },
+  kursDatei: (id) => {
+    const w = window.open("", "_blank");
+    KR.datei(id).then((url) => { if (!url) throw new Error("leer"); fetch(url).then((r) => r.blob()).then((b) => { const u = URL.createObjectURL(b); if (w) w.location = u; else location.href = u; }); })
+      .catch(() => { w?.close(); toast("Die Datei konnte nicht geladen werden (offline?)."); });
+  },
+  kursBlatt: (id) => {
+    const e = (KR.zwischenstand(state.fach)?.l || []).find((x) => x.id === id); if (!e) return;
+    const ids = (e.aufgaben || []).filter((x) => ALLE.some((v) => v.id === x));
+    if (!ids.length) { toast("Dieses Aufgabenblatt passt nicht zu deiner App-Version – bitte aktualisieren."); return; }
+    starte({ modus: "uebung", fach: e.fach, ids, titel: e.titel, kursBlatt: e.id });
+  },
+  dozOeffnen: () => { state.doz ||= { pw: null, form: { fach: state.fach || "bsr", art: "hinweis", anzahl: 10 }, liste: [], stat: {} }; state.sheet = { art: "dozent" }; render(); },
+  dozAnmelden: async () => {
+    const pw = document.getElementById("dozPw")?.value || "";
+    if (!pw) return;
+    try { if (await KR.pruefen(pw)) { state.doz.pw = pw; render(); AKTIONEN.dozLaden(); } else toast("Passwort falsch."); }
+    catch (_) { toast("Server nicht erreichbar oder Kursraum noch nicht eingerichtet."); }
+  },
+  dozAbmelden: () => { state.doz = null; state.sheet = null; render(); },
+  dozArt: (v) => { state.doz.form.art = v; render(); },
+  dozLaden: async () => { const d = state.doz; if (!d?.pw) return; try { d.liste = await KR.liste(d.form.fach); render(); } catch (e) { toast(e.message); } },
+  dozSpeichern: async () => {
+    const d = state.doz, f = d.form;
+    if (!f.titel?.trim()) { toast("Bitte einen Titel eingeben."); return; }
+    const e = { fach: f.fach, art: f.art, titel: f.titel.trim(), text: f.text || "", autor: f.autor || "", bis: f.bis || "" };
+    if (f.art === "link") { if (!/^https:\/\//.test(f.link || "")) { toast("Der Link muss mit https:// beginnen."); return; } e.link = f.link; }
+    if (f.art === "datei") { if (!f.datei) { toast("Bitte eine Datei auswählen."); return; } e.datei = f.datei; e.datei_name = f.datei_name; }
+    if (f.art === "blatt") {
+      const pool = ALLE.filter((v) => vorlageIn(v, f.fach) && (!f.thema || v.thema === f.thema)).map((v) => v.id);
+      e.aufgaben = new Zufall().mischen(pool).slice(0, Number(f.anzahl) || 10);
+      if (!e.aufgaben.length) { toast("Zu diesem Thema gibt es keine Aufgaben."); return; }
+    }
+    if (f.art === "hinweis" && !e.text.trim()) { toast("Bitte einen Text eingeben."); return; }
+    try { await KR.speichern(d.pw, e); toast("Veröffentlicht – alle sehen es im Modul " + (MODUL[f.fach]?.kurz || "") + "."); d.form = { fach: f.fach, art: f.art, anzahl: f.anzahl, autor: f.autor }; AKTIONEN.dozLaden(); }
+    catch (err) { toast("Nicht gespeichert: " + err.message); }
+  },
+  dozLoeschen: async (id) => { if (!confirm("Eintrag für alle löschen?")) return; try { await KR.loeschen(state.doz.pw, id); AKTIONEN.dozLaden(); } catch (err) { toast(err.message); } },
+  dozStatistik: async (id) => { try { (state.doz.stat ||= {})[id] = await KR.statistik(state.doz.pw, id) || []; render(); } catch (err) { toast(err.message); } },
+  icsExport: () => {
+    const zeit = document.getElementById("icsZeit")?.value || "18:00"; schreib("bsr.icsZeit", zeit);
+    const ics = icsErzeugen(stat.termine, { name: (f) => terminModul(f)?.kurz || "", uhrzeit: zeit });
+    dateiSpeichern("Klausurtermine.ics", ics, "text/calendar");
+  },
+  sicherWahl: (v) => { const x = s(); if (!x) return; (x.sicher ||= [])[x.index] = x.sicher[x.index] === v ? null : v; render(); },
+  ksimFotoWeg: (v) => { const k = state.ksim, key = "ksim-foto-" + k.start, l = ksimFotos(k).filter((_, i) => i !== Number(v)); fotoCache[key] = l; ablageSpeichern(key, l).catch(() => {}); render(); },
+  ksimFotoGross: (v, el) => { el.closest("figure")?.classList.toggle("gross"); },
+  fortsetzen: (v) => {
+    if (v === "sitzung") { const x = sitzungGespeichert(); if (!x) return; state.sitzung = x; state.fach = x.fach || state.fach; render(); scrollOben(); }
+    else if (v === "ksim") AKTIONEN.ksimWeiter();
+    else if (v === "otest") AKTIONEN.otStart();
+  },
+  fortsetzenWeg: (v) => {
+    if (!confirm("Den angefangenen Stand verwerfen?")) return;
+    const schl = { sitzung: "bsr.sitzung", ksim: "bsr.ksim", otest: "bsr.otest2" }[v];
+    try { localStorage.removeItem(schl); } catch (_) { /* egal */ }
+    render();
+  },
   otStart: () => {
     const alt = otGespeichert();
     state.otest = alt && !alt.ende ? alt : otNeuerDurchgang();
@@ -3192,6 +3543,19 @@ const AKTIONEN = {
     stat.kompakt[v] = Date.now(); speichern(); // zuletzt geöffnet (Wiederholungshilfe, kein Abhaken)
     render();
   },
+  abdeckenModus: (v) => { const a = state.kompakt?.ab; if (!a) return; a.an = v === "abdecken"; a.frage = null; render(); },
+  abdeckenNeu: () => { const a = state.kompakt?.ab; if (!a) return; a.alt = Object.entries(a.wertung).filter(([, w]) => w === "nein").map(([i]) => Number(i)); Object.assign(a, { auf: [], wertung: {}, frage: null }); render(); },
+  lueckeAuf: (v) => {
+    const a = state.kompakt?.ab, i = Number(v); if (!a) return;
+    if (!a.auf.includes(i)) { a.auf.push(i); a.frage = i; } else a.frage = a.wertung[i] ? null : i;
+    render();
+  },
+  lueckeWertung: (v) => {
+    const a = state.kompakt?.ab; if (!a || a.frage == null) return;
+    a.wertung[a.frage] = v; a.frage = null; lueckenMerken();
+    if (a.auf.length === a.gesamt && Object.keys(a.wertung).length === a.gesamt) { const ja = Object.values(a.wertung).filter((w) => w === "ja").length; toast(`${ja} von ${a.gesamt} gewusst${ja === a.gesamt ? " – stark!" : " – die roten kommen beim nächsten Mal zuerst dran."}`); }
+    render();
+  },
   kompaktSitzung: (v) => {
     if (!KOMPAKT[v]) return;
     state.kompakt = { id: v, fach: state.fach === "bbf" && themaIn(v, "bbf") ? "bbf" : fachFuerThema(v), liste: false, ausSitzung: true };
@@ -3348,6 +3712,17 @@ app.addEventListener("change", async (e) => {
   if (e.target.id === "hgBildVorschau" && e.target.files?.[0]) { bildVorschauWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "hgBildDatei" && e.target.files?.[0]) { eigenesBildWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "profilName") { const n = e.target.value.trim().slice(0, 20); if (n !== meinName()) { stat.profil = { ...(stat.profil || {}), name: n, t: Date.now() }; speichern(); } return; }
+  if (e.target.id === "ksimFoto" && e.target.files?.length && state.ksim) {
+    const key = "ksim-foto-" + state.ksim.start, l = [...ksimFotos(state.ksim)];
+    for (const f of e.target.files) { try { l.push(await bildVerkleinern(f, 1800)); } catch (err) { toast(err.message); } }
+    fotoCache[key] = l; await ablageSpeichern(key, l).catch(() => toast("Speicher voll – Foto nur bis zum Schließen sichtbar.")); e.target.value = ""; render(); return;
+  }
+  if (e.target.id === "dozDatei" && e.target.files?.[0]) {
+    const file = e.target.files[0];
+    if (file.size > KR.MAX_DATEI) { toast("Die Datei ist größer als 4 MB."); e.target.value = ""; return; }
+    state.doz.form.datei = await KR.alsDataUrl(file); state.doz.form.datei_name = file.name; render(); return;
+  }
+  if (e.target.dataset?.doz && state.doz) { state.doz.form[e.target.dataset.doz] = e.target.value; if (e.target.tagName === "SELECT" && e.target.dataset.doz === "fach") { AKTIONEN.dozLaden(); } return; }
   if (e.target.id === "bImport" && e.target.files?.[0]) { backupLaden(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id !== "kImport" || !e.target.files?.[0]) return;
   const datei = e.target.files[0], gn = /\.goodnotes$/i.test(datei.name);

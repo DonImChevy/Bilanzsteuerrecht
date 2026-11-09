@@ -24,8 +24,10 @@ const gleicherTag = (a, b) => a != null && tagPlus(a, 0) === tagPlus(b, 0);
  * Am selben Tag schon beantwortet und jetzt richtig: Fach, Termin und „falsch“ bleiben – ein Fehler gilt erst als
  * behoben, wenn die Aufgabe an einem späteren Tag richtig gelöst wird.
  */
-export function planen(eintrag, korrekt, jetzt = Date.now()) {
+export function planen(eintrag, korrekt, jetzt = Date.now(), { geraten = false } = {}) {
   if (!korrekt) return { fach: 1, faellig: tagPlus(jetzt, INTERVALLE[1]), t: jetzt, falsch: true };
+  // Richtig, aber nach eigener Angabe geraten: nicht vorrücken, morgen wieder
+  if (geraten) return { ...(eintrag || {}), fach: Math.max(1, eintrag?.fach || 1), faellig: tagPlus(jetzt, INTERVALLE[1]), t: jetzt };
   if (eintrag?.fach && gleicherTag(eintrag.t, jetzt)) return { ...eintrag, t: jetzt };
   const fach = Math.min(FAECHER_MAX, (eintrag?.fach || 0) + 1);
   return { fach, faellig: tagPlus(jetzt, INTERVALLE[fach]), t: jetzt };

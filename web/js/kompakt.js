@@ -97,6 +97,12 @@ export function kompaktView(id, h) {
   const hoeren = info ? `<button class="hoer-start${an ? " an" : ""}" data-a="hoeren" data-v="${id}" aria-label="Überblick anhören">
       <span class="hs-welle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
       <span class="hs-text"><b>${an ? "Wird vorgelesen" : "Anhören"}</b><span>ca. ${info.min} Min. · ${info.profi ? "Sprecher Cedar" : "Gerätestimme, Normen ausgeschrieben"}</span></span></button>` : "";
+  const kern = abdecken(`<p class="km-satz" data-hoer="satz">${kompaktInline(k.satz)}</p>
+      ${k.zahlen?.length ? `<div class="km-zahlen">${k.zahlen.map(([w, b], i) => `<div data-hoer="zahlen-${i}"><b>${h.abdecken?.an ? `<mark class="km km-wert">${esc(w)}</mark>` : esc(w)}</b><span>${h.abdecken?.an ? kompaktInline(b).replace(/<\/?mark[^>]*>/g, "") : kompaktInline(b)}</span></div>`).join("")}</div>` : ""}
+      ${abschnitt("km-schema", "Prüfungsschema", k.schema?.length ? `<ol class="km-schritte">${k.schema.map((s, i) => `<li data-hoer="schema-${i}">${kompaktInline(s)}</li>`).join("")}</ol>` : "")}
+      ${abschnitt("km-kern", "Das Wichtigste", liste(k.punkte, "punkte"))}
+      ${abschnitt("km-fallen", "Typische Fehler", liste(k.fallen, "fallen"))}`, h.abdecken);
+  if (h.abdecken) h.abdecken.gesamt = (kern.match(/class="km-luecke/g) || []).length;
   return `<div class="vollbild kompakt" role="dialog" aria-label="Zusammenfassung ${esc(t.titel)}">
     <div class="vb-kopf"><button class="rund" data-a="kompaktZu" aria-label="Schließen">${h.ic("kreuz")}</button>
       <div class="mitte">Kompaktwissen</div><span class="km-zeit">${lesezeit(k)} Min.</span></div>
@@ -104,22 +110,47 @@ export function kompaktView(id, h) {
       <header class="km-kopf" data-hoer="kopf"><span class="km-icon">${t.icon}</span>
         <div><h2>${esc(t.titel)}</h2><div class="sub">${esc(t.unter)}</div></div></header>
       ${hoeren}
-      <p class="km-satz" data-hoer="satz">${kompaktInline(k.satz)}</p>
-      ${k.zahlen?.length ? `<div class="km-zahlen">${k.zahlen.map(([w, b], i) => `<div data-hoer="zahlen-${i}"><b>${esc(w)}</b><span>${kompaktInline(b)}</span></div>`).join("")}</div>` : ""}
-      ${abschnitt("km-schema", "Prüfungsschema", k.schema?.length ? `<ol class="km-schritte">${k.schema.map((s, i) => `<li data-hoer="schema-${i}">${kompaktInline(s)}</li>`).join("")}</ol>` : "")}
-      ${abschnitt("km-kern", "Das Wichtigste", liste(k.punkte, "punkte"))}
-      ${abschnitt("km-fallen", "Typische Fehler", liste(k.fallen, "fallen"))}
+      ${abdeckenLeiste(h.abdecken, h.ic)}
+      ${kern}
       ${abschnitt("km-beispiele", k.beispiele.length === 1 ? "Klausurbeispiel" : "Klausurbeispiele", k.beispiele.map((b, i) => beispielView(b, i, h.alsKarte ? `<div class="km-bsp-karte">${h.alsKarte("beispiel", `${id}|${i}`)}</div>` : "")).join(""))}
       <p class="km-hinweis" data-hoer="ende">Die Zusammenfassung gibt einen Überblick über die klausurrelevanten Punkte – sie ersetzt nicht das Skript. Paragrafen antippen, um den Gesetzestext zu lesen.</p>
     </div>
     <div class="hoer-leiste" id="hoerLeiste" data-thema="${id}" role="region" aria-label="Vorlesen" hidden></div>
     <div class="vb-fuss km-fuss">
-      ${h.ausSitzung
+      ${h.abdecken?.an && h.abdecken.frage != null ? `<div class="km-wertung" role="group" aria-label="Gewusst?"><span>Gewusst?</span>
+          <button class="knopf zweit km-nein" data-a="lueckeWertung" data-v="nein">${h.ic("kreuz", "klein")} Nicht gewusst</button>
+          <button class="knopf km-ja" data-a="lueckeWertung" data-v="ja">${h.ic("haken", "klein")} Gewusst</button></div>`
+      : h.ausSitzung
         ? `<button class="knopf" data-a="kompaktZu">${h.ic("zurueck", "klein")} Zurück zur Aufgabe</button>`
         : `<button class="knopf" data-a="kompaktUeben" data-v="${id}">${h.ic("play", "fill")} Jetzt üben</button>
            <div class="km-nav">${vor ? `<button class="knopf zweit" data-a="kompakt" data-v="${vor.id}" aria-label="Vorheriges Thema: ${esc(vor.titel)}">${h.ic("zurueck", "klein")}</button>` : "<span></span>"}
              ${nach ? `<button class="knopf zweit" data-a="kompakt" data-v="${nach.id}">${esc(nach.titel)} ${h.ic("pfeil", "klein")}</button>` : `<button class="knopf zweit" data-a="kompaktListe">Alle Themen</button>`}</div>`}
     </div></div>`;
+}
+
+/** Fettstellen, die als Lücke taugen: keine Überschriften-Labels („… :“) und nicht länger als 8 Wörter. */
+export const alsLuecke = (inner) => { const t = inner.replace(/<[^>]+>/g, "").trim(); return t.length > 0 && !/:$/.test(t) && t.split(/\s+/).length <= 8; };
+/** Abdecken: Textmarker-Stellen und Zahlenwerte werden zu Lücken (a = { an, auf: [i], wertung: {i: "ja"|"nein"}, alt: [i] }). */
+export function abdecken(html, a) {
+  if (!a?.an) return html;
+  let n = 0;
+  return html.replace(/<mark class="km( km-wert)?">([\s\S]*?)<\/mark>/g, (m, wert, inner) => {
+    if (!wert && !alsLuecke(inner)) return m;
+    const i = n++, auf = a.auf.includes(i), w = a.wertung[i];
+    return `<button class="km-luecke${auf ? " auf" : ""}${w ? " " + w : ""}${!auf && a.alt?.includes(i) ? " zuletzt" : ""}${a.frage === i ? " frage" : ""}" data-a="lueckeAuf" data-v="${i}" aria-label="${auf ? "Aufgedeckt" : "Lücke aufdecken"}"><span>${inner}</span></button>`;
+  });
+}
+/** Zahl der Lücken eines Themas (für die Anzeige „x von y“). */
+export const lueckenZahl = (html) => (abdecken(html, { an: true, auf: [], wertung: {} }).match(/class="km-luecke/g) || []).length;
+function abdeckenLeiste(a, ic) {
+  if (!a) return "";
+  const n = a.gesamt || 0, auf = a.auf.length, ja = Object.values(a.wertung).filter((w) => w === "ja").length, nein = Object.values(a.wertung).filter((w) => w === "nein").length;
+  return `<div class="km-abdecken${a.an ? " an" : ""}">
+    <span class="segment km-modus">${[["lesen", "Lesen"], ["abdecken", "Abdecken"]].map(([m, t]) => `<button data-a="abdeckenModus" data-v="${m}" class="${(m === "abdecken") === !!a.an ? "aktiv" : ""}">${t}</button>`).join("")}</span>
+    ${a.an ? `<span class="km-ab-stand"><b>${auf}/${n}</b> aufgedeckt${ja + nein ? ` · <span class="ja">${ja} gewusst</span> · <span class="nein">${nein} nicht</span>` : ""}</span>
+      <button class="km-ab-knopf" data-a="abdeckenNeu" aria-label="Alles wieder abdecken">${ic("wiederholen", "klein")}</button>`
+      : `<span class="km-ab-tipp">Textmarker abdecken und sich selbst abfragen${a.alt?.length ? ` · zuletzt ${a.alt.length} nicht gewusst` : ""}</span>`}
+  </div>`;
 }
 
 /** Bibliothek eines Moduls: Klausur-Fahrplan oben, darunter alle Zusammenfassungen (mit „zuletzt geöffnet“ als Wiederholungshilfe). */

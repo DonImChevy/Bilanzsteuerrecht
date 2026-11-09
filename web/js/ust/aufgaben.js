@@ -164,7 +164,7 @@ const ort = [
       { text: "Eine Yogalehrerin aus Hamburg gibt einer Privatperson in Paris live per Video-Stream Unterricht.", optionen: ["Paris – im Inland nicht steuerbar", "Hamburg – steuerbar", "Sitz des Streamingdienstes"], richtig: 0, erkl: "Unterrichtende Leistung per Streaming: Ort, an dem die Empfängerin wohnt (§ 3a Abs. 3 Nr. 3 S. 2 UStG) → Frankreich. Findet der Kurs vor Ort statt, gilt dagegen der Ort der Erbringung (S. 1).", normen: ["UStG 3a 3"] },
       { text: "Ein Gastwirt in Aachen bewirtet eine Ausflugsgruppe aus den Niederlanden in seinem Lokal.", optionen: ["Aachen – steuerbar", "Niederlande – nicht steuerbar", "Sitz des Reiseveranstalters"], richtig: 0, erkl: "Restaurationsleistung: Ort, wo sie tatsächlich erbracht wird (§ 3a Abs. 3 Nr. 3a Buchst. a UStG) → Aachen.", normen: ["UStG 3a 3"] },
       { text: "Eine Kfz-Werkstatt in Kiel repariert das Wohnmobil eines dänischen Rentners.", optionen: ["Kiel – steuerbar", "Dänemark – im Inland nicht steuerbar", "Ort der Zulassung"], richtig: 0, erkl: "Arbeiten an einem beweglichen Gegenstand für eine Privatperson: Ort der tatsächlichen Erbringung (§ 3a Abs. 3 Nr. 3a Buchst. b UStG) → Kiel.", normen: ["UStG 3a 3"] },
-      { text: "Dieselbe Kfz-Werkstatt in Kiel repariert den Lieferwagen eines dänischen Unternehmens für dessen Unternehmen.", optionen: ["Dänemark – im Inland nicht steuerbar", "Kiel – steuerbar", "Ort der Zulassung"], richtig: 0, erkl: "§ 3a Abs. 3 Nr. 3a Buchst. b UStG gilt nur für Nichtunternehmer. An Unternehmer: Sitz des Empfängers (§ 3a Abs. 2 S. 1 UStG) → Dänemark.", normen: ["UStG 3a 2", "UStG 3a 3"] },
+      { text: "Eine Kfz-Werkstatt in Kiel repariert den Lieferwagen eines dänischen Unternehmens für dessen Unternehmen.", optionen: ["Dänemark – im Inland nicht steuerbar", "Kiel – steuerbar", "Ort der Zulassung"], richtig: 0, erkl: "§ 3a Abs. 3 Nr. 3a Buchst. b UStG gilt nur für Nichtunternehmer. An Unternehmer: Sitz des Empfängers (§ 3a Abs. 2 S. 1 UStG) → Dänemark.", normen: ["UStG 3a 2", "UStG 3a 3"] },
       { text: "Die Messegesellschaft in Hannover verkauft einem französischen Unternehmer für dessen Unternehmen eine Eintrittskarte zur Industriemesse.", optionen: ["Hannover – steuerbar", "Frankreich – im Inland nicht steuerbar", "Sitz der Messegesellschaft"], richtig: 0, erkl: "Eintrittsberechtigung zu einer Messe an einen Unternehmer: Ort der Veranstaltung (§ 3a Abs. 3 Nr. 5 S. 1 UStG) → Hannover. Die Sonderregel geht § 3a Abs. 2 UStG vor.", normen: ["UStG 3a 3"] },
       { text: "Ein Busunternehmen aus Flensburg fährt eine Reisegruppe nach Kopenhagen: 40 km in Deutschland, 260 km in Dänemark.", optionen: ["Nur die 40 km in Deutschland sind steuerbar", "Die ganze Fahrt ist steuerbar", "Nichts ist steuerbar – Ziel im Ausland"], richtig: 0, erkl: "Personenbeförderung: Ort, wo sie bewirkt wird (§ 3b Abs. 1 S. 1 UStG); bei grenzüberschreitender Fahrt ist nur der inländische Teil steuerbar (§ 3b Abs. 1 S. 2 UStG).", normen: ["UStG 3b 1"] },
     ]),
@@ -275,6 +275,10 @@ const WAREN = [
   ["ein Glas Honig", 7, "natürlicher Honig, Anlage 2 lfd. Nr. 4"],
   ["ein Kochbuch", 7, "Bücher, Anlage 2 lfd. Nr. 49"],
 ];
+/** Realistische Preisspannen (€) für den Präsentkorb. */
+const PREIS = { "3 Flaschen Rotwein": [18, 45], "ein Paar Wollsocken": [8, 16], "eine Flasche Apfelsaft": [2, 5], "ein Weidenkorb": [8, 20], "eine Flasche Mineralwasser": [1, 3],
+  "eine Bio-Salami": [5, 12], "ein Hartkäse": [6, 15], "ein Päckchen Röstkaffee": [6, 12], "eine Packung Kekse": [2, 6], "eine Tageszeitung": [2, 4], "ein Glas Honig": [5, 12], "ein Kochbuch": [15, 30] };
+const preis = (r, w) => r.betrag(...(PREIS[w] || [3, 20]), 1);
 const bmg = [
   A("ust-bmg", "ust-bmg",
     "Was gehört zur Bemessungsgrundlage eines entgeltlichen Umsatzes, und wie wird die Umsatzsteuer ermittelt?",
@@ -306,9 +310,9 @@ const bmg = [
     };
   }),
   R("ust-korb", "ust-bmg", (r) => {
-    const posten = r.mischen(WAREN).slice(0, r.zahl(4, 6)).map(([w, s]) => [w, s, r.betrag(3, 30, 1)]);
-    if (!posten.some((p) => p[1] === 7)) posten[0] = ["ein Hartkäse", 7, posten[0][2]];
-    if (!posten.some((p) => p[1] === 19)) posten[1] = ["ein Weidenkorb", 19, posten[1][2]];
+    const posten = r.mischen(WAREN).slice(0, r.zahl(4, 6)).map(([w, s]) => [w, s, preis(r, w)]);
+    if (!posten.some((p) => p[1] === 7)) posten[0] = ["ein Hartkäse", 7, preis(r, "ein Hartkäse")];
+    if (!posten.some((p) => p[1] === 19)) posten[1] = ["ein Weidenkorb", 19, preis(r, "ein Weidenkorb")];
     const s19 = posten.filter((p) => p[1] === 19).reduce((a, p) => a + p[2], 0), s7 = posten.filter((p) => p[1] === 7).reduce((a, p) => a + p[2], 0);
     const u19 = ustAus(s19, 19), u7 = ustAus(s7, 7), ges = s19 + s7;
     return {

@@ -23,6 +23,9 @@ async function vorgang(art, ...werte) {
 export const bildLaden = () => vorgang("get", SCHLUESSEL).catch(() => null);
 export const bildSpeichern = (daten) => vorgang("put", daten, SCHLUESSEL);
 export const bildLoeschen = () => vorgang("delete", SCHLUESSEL).catch(() => null);
+/** Weitere Dateien (z. B. Fotos der Papierlösung einer Klausursimulation) unter eigenem Schlüssel. */
+export const ablageLaden = (key) => vorgang("get", key).catch(() => null);
+export const ablageSpeichern = (key, daten) => vorgang("put", daten, key);
 
 /** Bilddatei auf höchstens `max` Pixel Kantenlänge verkleinern → data-URL (JPEG). */
 export async function bildVerkleinern(datei, max = 1600) {
