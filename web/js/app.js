@@ -13,6 +13,7 @@ import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, lesezei
 import { SIM, startKarte as simStartKarte, simView, zusammenstellen, hoechstpunkte, punkte as simPunkte, note as simNote, restSekunden as simRest, uhrText as simUhr } from "./klausursim.js";
 import * as MK from "./meinekarten.js";
 import * as HS from "./handschrift.js";
+import * as OT from "./bilr/onlinetest.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, nachholen, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
@@ -335,6 +336,7 @@ const state = {
   hs: { art: "s", farbe: 0, mfarbe: 0 }, // Handschrift: Werkzeug (Stift, Textmarker, Radierer) und Farben
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
+  otest: null, // Generalprobe Online-Test Bilanzrecht (zeitlich begrenzt, Entwurf in localStorage bsr.otest)
   ksim: null, // Klausursimulation (begonnene liegt in localStorage bsr.ksim, „fortsetzen“ öffnet sie wieder)
   kompakt: null, // Kompaktwissen: {id: Thema | null (Übersicht), fach, liste: aus der Übersicht geöffnet, ausSitzung}
   pfad: null, // Lernpfad-Modus: {fach, block: null | {id, schritt, fehler, antwort, start, reihen}}
@@ -677,6 +679,28 @@ setInterval(() => {
   if (r === 0) { AKTIONEN.ksimAbgeben(true); toast("Zeit abgelaufen – die Klausur wurde abgegeben."); }
 }, 1000);
 
+// Generalprobe Online-Test (Bilanzrecht, nur an den Tagen aus OT.SICHTBAR)
+const otGespeichert = () => { try { return JSON.parse(localStorage.getItem("bsr.otest")); } catch (_) { return null; } };
+const otSichern = () => { if (state.otest) schreib("bsr.otest", JSON.stringify(state.otest)); };
+const otVerlauf = () => { try { return JSON.parse(localStorage.getItem("bsr.otest.verlauf")) || []; } catch (_) { return []; } };
+const otRest = () => (state.otest && !state.otest.ende ? Math.max(0, Math.round(OT.MINUTEN * 60 - (Date.now() - state.otest.start) / 1000)) : 0);
+const otGesehen = () => { try { return JSON.parse(localStorage.getItem("bsr.otest.gesehen")) || { d: 0, nrs: [] }; } catch (_) { return { d: 0, nrs: [] }; } };
+/** Neuer Durchgang: innerhalb einer Runde (OT.RUNDE Durchgänge) nur Aufgaben, die noch nicht dran waren. */
+function otNeuerDurchgang() {
+  const g = otGesehen(), ohne = g.d % OT.RUNDE === 0 ? [] : g.nrs;
+  const t = { seed: Math.floor(Math.random() * 2 ** 31), start: Date.now(), antworten: {}, pos: 0, d: g.d, ohne };
+  schreib("bsr.otest.gesehen", JSON.stringify({ d: g.d + 1, nrs: [...ohne, ...OT.fragenVon(t).map((f) => f.nr)] }));
+  return t;
+}
+const otKarte = () => (state.fach === "bsr" && OT.sichtbar() ? OT.startKarte({ ic, verlauf: otVerlauf(), laufend: otGespeichert() && !otGespeichert().ende, durchgang: otGesehen().d }) : "");
+setInterval(() => {
+  const t = state.otest;
+  if (!t || t.ende) return;
+  const r = otRest(), el = document.getElementById("otUhr");
+  if (el) { el.querySelector("span").textContent = uhr(r); el.classList.toggle("knapp", r < 300); }
+  if (r === 0) { AKTIONEN.otAbgeben(true); toast("Zeit abgelaufen – der Test wurde beendet."); }
+}, 1000);
+
 function scrollOben() {
   requestAnimationFrame(() => { const el = document.querySelector(".vb-inhalt"); if (el) el.scrollTop = 0; });
 }
@@ -731,6 +755,7 @@ function render() {
     html += state.pfad.block ? blockView(state.pfad.fach, state.pfad.block, hilfe) : kartenView(state.pfad.fach, hilfe);
   }
   if (state.kompakt) html += kompaktEbene();
+  if (state.otest) html += OT.testView(state.otest, { ic, esc, uhr: uhr(otRest()) });
   if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile, hs: state.hs, modus: lies("bsr.ksimModus", "text") });
   if (state.sheet) html += sheetView();
   if (state.hgVorschau && !state.sheet) html += vorschauLeiste();
@@ -754,7 +779,7 @@ function render() {
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
-  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.kompakt || state.ksim || state.sheet ? "hidden" : "";
+  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.kompakt || state.ksim || state.otest || state.sheet ? "hidden" : "";
   if (fokusId) {
     const el = document.querySelector(`[data-fokus="${fokusId}"]`);
     if (el) { el.focus(); if (pos && el.setSelectionRange) try { el.setSelectionRange(...pos); } catch (_) { /* egal */ } }
@@ -765,7 +790,7 @@ function render() {
 // Jede geöffnete Ebene (Unterseite, Übung, Rückschau, Lernkarten, Menü) bekommt einen Eintrag im Browserverlauf.
 // So schließt die Zurück-Geste (Android) bzw. Zurück-Taste die oberste Ebene, statt die App zu verlassen.
 let verlaufTiefe = 0, popIgnorieren = 0;
-const ansichtTiefe = () => (state.hgVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.ksim ? 1 : 0) + (state.sheet ? 1 : 0);
+const ansichtTiefe = () => (state.hgVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.ksim ? 1 : 0) + (state.otest ? 1 : 0) + (state.sheet ? 1 : 0);
 function verlaufAbgleichen() {
   const t = ansichtTiefe();
   while (verlaufTiefe < t) { verlaufTiefe += 1; history.pushState({ tiefe: verlaufTiefe }, ""); }
@@ -776,6 +801,7 @@ function ebeneZurueck() {
   if (state.sheet) AKTIONEN.sheetZu();
   else if (state.hgVorschau) AKTIONEN.vorschauEnde();
   else if (state.kompakt) AKTIONEN.kompaktZu();
+  else if (state.otest) AKTIONEN.otZu();
   else if (state.ksim) AKTIONEN.ksimZu();
   else if (state.deck) AKTIONEN.deckZu();
   else if (state.paare) AKTIONEN.paareZu();
@@ -1427,6 +1453,7 @@ function tabLernen() {
     </section>
     ${(() => { const e = termineDerRolle().find((x) => x.fach === state.fach); return e ? `<button class="countdown-chip" data-a="termine">${ic("kalender", "klein")} ${esc(e.titel || "Klausur")} ${countdownText(e.tage)} · ${new Date(e.datum + "T12:00").toLocaleDateString("de-DE")}</button>` : ""; })()}
     ${modusSchalter()}
+    ${otKarte()}
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     ${pfadKachel()}
     ${kompaktKachel()}
@@ -1549,6 +1576,7 @@ function tabKlausur() {
       : { 1: "Teil I: Buchführung mit Schwerpunkt Buchungssätze (ca. 60 %), dazu Rechnen und Theorie. Auswertung erst nach der Abgabe.",
           2: "Teil II: Bilanzierung und Bewertung – ca. 40 % Buchungssätze, dazu Berechnungen und Würdigung. Auswertung erst nach der Abgabe.",
           beide: "Wie die Semesterklausur: ca. 25 % Teil I (Buchführung) und 75 % Teil II (Bilanzierung und Bewertung). Auswertung erst nach der Abgabe." }[state.bilrTeil])}
+    ${otKarte()}
     ${SIM[state.fach] ? simStartKarte(state.fach, { ic, laufend: ksimGespeichert()?.phase === "laufend" }) : ""}
     ${modusSchalter()}
     ${KLAUSURPLAN[state.fach] ? `<button class="km-vorher" data-a="kompaktListe"><span class="km-vorher-icon">${ic("akte")}</span>
@@ -2942,6 +2970,31 @@ const AKTIONEN = {
     state.ksim = { fach: state.fach, minuten, seed, teile: zusammenstellen(state.fach, minuten, seed), phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
     ksimSichern(); render(); scrollOben();
   },
+  otStart: () => {
+    const alt = otGespeichert();
+    state.otest = alt && !alt.ende ? alt : otNeuerDurchgang();
+    otSichern(); render(); scrollOben();
+  },
+  otNeu: () => { state.otest = otNeuerDurchgang(); otSichern(); render(); scrollOben(); },
+  otWahl: (v) => {
+    const [i, j] = v.split("|").map(Number), t = state.otest, f = OT.fragenVon(t)[i];
+    if (f.typ === "mc") { const s = new Set(t.antworten[i] || []); s.has(j) ? s.delete(j) : s.add(j); t.antworten[i] = [...s].sort((a, b) => a - b); }
+    else t.antworten[i] = j;
+    otSichern(); render();
+  },
+  otGehe: (v) => { const n = OT.fragenVon(state.otest).length, i = Number(v); if (i < 0 || i >= n) return; state.otest.pos = i; otSichern(); render(); scrollOben(); },
+  otAbgeben: (automatisch) => {
+    const t = state.otest, fragen = OT.fragenVon(t), offen = fragen.filter((f, i) => !OT.beantwortet(f, t.antworten[i])).length;
+    if (automatisch !== true && !confirm(offen ? `Noch ${offen} ${offen === 1 ? "Frage" : "Fragen"} offen. Test trotzdem beenden?` : "Test beenden und auswerten?")) return;
+    t.ende = Date.now(); otSichern();
+    const max = OT.gesamtPunkte(fragen), p = OT.erreicht(fragen, t.antworten);
+    schreib("bsr.otest.verlauf", JSON.stringify([...otVerlauf(), { d: t.ende, p: Math.round((p / max) * 10000) / 100, punkte: p, max }].slice(-30)));
+    render(); scrollOben();
+  },
+  otZu: () => {
+    if (state.otest?.ende) { try { localStorage.removeItem("bsr.otest"); } catch (_) { /* egal */ } }
+    state.otest = null; render();
+  },
   ksimWeiter: () => { state.ksim = ksimGespeichert(); render(); },
   ksimModus: (v) => {
     const [id, m] = v.split("|"), k = state.ksim;
@@ -3221,6 +3274,16 @@ app.addEventListener("click", (e) => {
 });
 
 app.addEventListener("input", (e) => {
+  const ol = e.target.dataset?.otLuecke, oz = e.target.dataset?.otZahl;
+  if ((ol || oz != null) && state.otest) {
+    const t = state.otest;
+    if (ol) { const [i, feld] = ol.split("|"); (t.antworten[i] ||= {})[feld] = e.target.value; e.target.closest(".ot-gap")?.classList.toggle("voll", !!e.target.value); }
+    else t.antworten[oz] = e.target.value;
+    otSichern();
+    const f = OT.fragenVon(t), i = Number(ol ? ol.split("|")[0] : oz);
+    document.querySelector(`.ot-nr[data-v="${i}"]`)?.classList.toggle("fertig", OT.beantwortet(f[i], t.antworten[i]));
+    return;
+  }
   const kt = e.target.dataset?.ksimText, kz = e.target.dataset?.ksimZahl;
   if ((kt || kz) && state.ksim) {
     if (kt) (state.ksim.antworten ||= {})[kt] = e.target.value;

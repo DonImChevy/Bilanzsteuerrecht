@@ -1,6 +1,6 @@
 // Service Worker: speichert die komplette App für die Offline-Nutzung.
 // Bei jeder inhaltlichen Änderung VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = "bsr-v94";
+const VERSION = "bsr-v96";
 const DATEIEN = [
   "./",
   "./index.html",
@@ -19,6 +19,7 @@ const DATEIEN = [
   "./js/vorlesen.js",
   "./js/klausursim.js",
   "./js/bilr/klausur_sv.js",
+  "./js/bilr/onlinetest.js",
   "./js/hoeraudio.js",
   "./js/maskottchen.js",
   "./js/level.js",
