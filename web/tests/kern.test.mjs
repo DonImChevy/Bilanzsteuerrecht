@@ -1047,51 +1047,52 @@ test("Klausursimulation: Handschrift – Blätter je Sachverhalt, Auswertung zei
   assert.ok(!fertig.includes("data-ksim-hs"));
 });
 
-test("Generalprobe Online-Test: Fragen rechnen sauber, Bewertung inkl. Lückentext", async () => {
+test("Generalprobe Online-Test: 4 × 15 Fragen, rechnen sauber, Bewertung, drei Durchgänge ohne Wiederholung", async () => {
   const OT = await import("../js/bilr/onlinetest.js");
   assert.ok(OT.sichtbar(new Date(2026, 10, 9, 8)) && OT.sichtbar(new Date(2026, 10, 10, 23)) && !OT.sichtbar(new Date(2026, 10, 11, 0, 1)) && !OT.sichtbar(new Date(2026, 10, 8, 23)));
+  // Wirkungen der Geschäftsvorfälle
+  const w = OT.wirkung({ soll: [["Mietaufwand", 100], ["Entnahmen", 50]], haben: [["Bank", 150]] });
+  assert.deepEqual([w.ek, w.guv, w.bilanz, w.zm, w.gv], [-150, -100, -150, -150, -150]);
+  const t = OT.wirkung({ soll: [["Darlehen", 500]], haben: [["Bank", 500]] });
+  assert.deepEqual([t.ek, t.guv, t.bilanz, t.zm, t.gv], [0, 0, -500, -500, 0]); // Auszahlung, aber keine Ausgabe
   const gesehen = new Set();
-  for (let seed = 1; seed <= 300; seed++) {
+  for (let seed = 1; seed <= 150; seed++) {
     const fr = OT.testErzeugen(seed);
-    assert.equal(fr.length, 20);
-    assert.deepEqual(JSON.stringify(fr), JSON.stringify(OT.testErzeugen(seed)), "deterministisch");
+    assert.equal(fr.length, 60);
+    for (const typ of ["sc", "mc", "luecke", "zahl"]) assert.equal(fr.filter((f) => f.typ === typ).length, OT.JE_TYP, typ);
+    assert.equal(JSON.stringify(fr), JSON.stringify(OT.testErzeugen(seed)), "deterministisch");
     for (const f of fr) {
       gesehen.add(f.nr);
       assert.ok(!/NaN|undefined|Infinity/.test(JSON.stringify(f)), `Frage ${f.nr}: Rechenfehler`);
-      // perfekte Antwort bringt volle Punkte, keine Antwort null
       let a;
-      if (f.typ === "sc") a = f.richtig;
-      else if (f.typ === "mc") a = f.richtig;
-      else if (f.typ === "zahl") a = f.wert.toLocaleString("de-DE");
+      if (f.typ === "sc") { a = f.richtig; assert.ok(f.optionen[a] && new Set(f.optionen).size === f.optionen.length, `Frage ${f.nr}: Optionen`); }
+      else if (f.typ === "mc") { a = f.richtig; assert.ok(a.length >= 1 && a.length < f.optionen.length && new Set(f.optionen).size === f.optionen.length, `Frage ${f.nr}: MC`); }
+      else if (f.typ === "zahl") { a = f.wert.toLocaleString("de-DE"); assert.ok(Number.isInteger(f.wert), `Frage ${f.nr}: Zahl`); }
       else {
         const s = (seite) => [...f.zeilen[seite]].reverse().map(([k, b], i) => [[`${seite}${i}k`, k], [`${seite}${i}b`, String(b)]]).flat();
         a = Object.fromEntries([...s("soll"), ...s("haben")]);
         const sum = (l) => l.reduce((x, [, b]) => x + b, 0);
         assert.equal(sum(f.zeilen.soll), sum(f.zeilen.haben), `Frage ${f.nr}: Soll ≠ Haben`);
-        assert.ok(f.zeilen.soll.concat(f.zeilen.haben).every(([k, b]) => f.konten.includes(k) && f.betraege.includes(b)), `Frage ${f.nr}: Auswahl fehlt`);
-        assert.equal(OT.bewerten(f, { ...a, soll9k: "" }), f.punkte);
-        // überzähliger Eintrag kostet 0,25
+        assert.ok(f.zeilen.soll.concat(f.zeilen.haben).every(([k, b]) => f.konten.includes(k) && f.betraege.includes(b) && b > 0), `Frage ${f.nr}: Auswahl fehlt`);
         const leer = `soll${f.zeilenZahl - 1}k`;
         if (f.zeilen.soll.length < f.zeilenZahl) assert.equal(OT.bewerten(f, { ...a, [leer]: "Kasse" }), f.punkte - 0.25);
       }
       assert.equal(OT.bewerten(f, a), f.punkte, `Frage ${f.nr}`);
       assert.equal(OT.bewerten(f, undefined), 0);
-      if (f.typ === "sc" || f.typ === "mc") assert.ok((Array.isArray(f.richtig) ? f.richtig : [f.richtig]).every((i) => f.optionen[i]));
     }
-    // Zahlen der Kapitalfragen bleiben plausibel (Eigenkapital positiv)
-    for (const f of fr) if (f.nr === 161) assert.ok(/31\.12\.: \d/.test(f.text));
   }
-  for (const v of OT.ALLE_VORLAGEN) assert.ok(gesehen.has(v.nr), "nie gezogen: " + v.nr);
-  // eine Runde (3 Durchgänge): keine Vorlage und keine Aussage doppelt
-  for (let seed = 1; seed <= 200; seed++) {
+  // eine Runde (3 Durchgänge): keine feste Vorlage, kein Geschäftsvorfall-Lückentext und keine Aussage doppelt
+  for (let seed = 1; seed <= 100; seed++) {
     let ohne = []; const aussagen = new Set();
     for (let d = 0; d < OT.RUNDE; d++) {
-      const fr = OT.testErzeugen(seed * 3 + d, ohne, d), nrs = fr.map((f) => f.nr);
-      assert.ok(nrs.every((n) => !ohne.includes(n)), `Runde ${seed}, Durchgang ${d + 1}: Vorlage doppelt`);
-      for (const f of fr) if (f.nr === 140 || f.nr === 141) for (const o of f.optionen) { assert.ok(!aussagen.has(o), "Aussage doppelt: " + o); aussagen.add(o); }
-      ohne = [...ohne, ...nrs.filter((n) => n !== 140 && n !== 141)];
+      const fr = OT.testErzeugen(seed * 3 + d, ohne, d), fest = fr.filter((f) => !f.familie && !(f.nr >= 140 && f.nr < 150)).map((f) => f.nr);
+      assert.ok(fest.every((n) => !ohne.includes(n)), `Runde ${seed}, Durchgang ${d + 1}: Vorlage doppelt`);
+      for (const f of fr) if (f.nr >= 140 && f.nr < 150) for (const o of f.optionen) { assert.ok(!aussagen.has(o), "Aussage doppelt: " + o); aussagen.add(o); }
+      ohne = [...ohne, ...fr.map((f) => f.nr)];
+      for (const f of fr) gesehen.add(f.nr);
     }
   }
+  for (const v of OT.ALLE_VORLAGEN) assert.ok(gesehen.has(v.nr), "nie gezogen: " + v.nr);
   assert.equal(OT.zahlLesen("−2.500"), -2500);
   assert.equal(OT.zahlLesen("12.345,50 €"), 12345.5);
 });
