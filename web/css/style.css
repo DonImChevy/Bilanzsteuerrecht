@@ -2502,3 +2502,27 @@ button.ot-option:hover { background: color-mix(in srgb, var(--ot-blau) 7%, trans
 .fs-text b { font-size: 15px; }
 .fs-text .sub { font-size: 12.5px; color: var(--text2); }
 .fs-weg { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--glas); color: var(--text2); display: grid; place-items: center; }
+
+/* Kompaktwissen „Abdecken“: Textmarker als Lücken zum Selbstabfragen */
+.km-abdecken { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 14px; }
+.km-modus { flex: none; }
+.km-ab-tipp { font-size: 12.5px; color: var(--text3); flex: 1 1 160px; }
+.km-ab-stand { font-size: 13px; color: var(--text2); flex: 1 1 160px; font-variant-numeric: tabular-nums; }
+.km-ab-stand .ja { color: var(--ok); font-weight: 700; }
+.km-ab-stand .nein { color: var(--err); font-weight: 700; }
+.km-ab-knopf { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--glas); color: var(--text2); display: grid; place-items: center; }
+.km-luecke { position: relative; display: inline; padding: 0 3px; margin: 0 1px; border: 0; border-radius: 5px; font: inherit; color: inherit; cursor: pointer; text-align: left;
+  background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--m) 26%, var(--card)) 0 6px, color-mix(in srgb, var(--m) 18%, var(--card)) 6px 12px);
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--m) 45%, transparent); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.km-luecke > span { visibility: hidden; pointer-events: none; }
+.km-luecke.auf { background: color-mix(in srgb, var(--hs-m-gelb, #ffe066) 55%, transparent); box-shadow: none; }
+.km-luecke.auf > span { visibility: visible; pointer-events: auto; }
+.km-luecke.ja { background: color-mix(in srgb, var(--ok) 22%, transparent); box-shadow: inset 0 -2px 0 var(--ok); }
+.km-luecke.nein { background: color-mix(in srgb, var(--err) 18%, transparent); box-shadow: inset 0 -2px 0 var(--err); }
+.km-luecke.zuletzt { box-shadow: inset 0 -2px 0 var(--err), 0 0 0 1.5px color-mix(in srgb, var(--err) 55%, transparent); }
+.km-luecke.frage { outline: 2px solid var(--m); outline-offset: 1px; }
+.km-zahlen .km-luecke { display: inline-block; min-width: 4em; }
+.km-wertung { display: flex; align-items: center; gap: 8px; width: 100%; }
+.km-wertung > span { font-weight: 800; font-size: 14px; margin-right: auto; }
+.km-wertung .knopf { margin: 0; flex: 0 1 auto; padding-inline: 14px; }
+.km-wertung .km-ja { background: var(--ok); }

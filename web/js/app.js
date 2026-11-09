@@ -1538,12 +1538,20 @@ function modusSchalter() {
 /** Themen eines Moduls mit Zusammenfassung (bei BilR im gewählten Teil). */
 const kompaktThemen = (fach) => themenImTeil(fach).filter((t) => KOMPAKT[t.id]);
 
+// Abdecken: zuletzt nicht gewusste Lücken je Thema (nur auf dem Gerät, localStorage bsr.luecken)
+const lueckenAlt = () => { try { return JSON.parse(localStorage.getItem("bsr.luecken") || "{}"); } catch (_) { return {}; } };
+function lueckenMerken() {
+  const k = state.kompakt, a = k?.ab; if (!a) return;
+  const alle = lueckenAlt(); alle[k.id] = Object.entries(a.wertung).filter(([, w]) => w === "nein").map(([i]) => Number(i));
+  schreib("bsr.luecken", JSON.stringify(alle));
+}
 function kompaktEbene() {
   const { id, fach, ausSitzung } = state.kompakt;
   const themen = kompaktThemen(fach).length ? kompaktThemen(fach) : themenFuer(fach).filter((t) => KOMPAKT[t.id]);
   if (!id) return bibliothekView(fach, themen, { ic, gelesen: stat.kompakt });
   const i = themen.findIndex((t) => t.id === id);
-  return kompaktView(id, { ic, thema: THEMA[id], nachbarn: [themen[i - 1], themen[i + 1]], gelesen: stat.kompakt, ausSitzung, alsKarte: alsKarteKnopf });
+  state.kompakt.ab ||= { an: false, auf: [], wertung: {}, frage: null, alt: lueckenAlt()[id] || [] };
+  return kompaktView(id, { ic, thema: THEMA[id], nachbarn: [themen[i - 1], themen[i + 1]], gelesen: stat.kompakt, ausSitzung, alsKarte: alsKarteKnopf, abdecken: state.kompakt.ab });
 }
 
 /** Einstieg ins Kompaktwissen auf der Modulseite. */
@@ -3244,6 +3252,19 @@ const AKTIONEN = {
     const vorher = state.kompakt;
     state.kompakt = { id: v, fach: state.fach === "bbf" && themaIn(v, "bbf") ? "bbf" : fachFuerThema(v), liste: !!vorher?.liste || (vorher && !vorher.id), ausSitzung: false };
     stat.kompakt[v] = Date.now(); speichern(); // zuletzt geöffnet (Wiederholungshilfe, kein Abhaken)
+    render();
+  },
+  abdeckenModus: (v) => { const a = state.kompakt?.ab; if (!a) return; a.an = v === "abdecken"; a.frage = null; render(); },
+  abdeckenNeu: () => { const a = state.kompakt?.ab; if (!a) return; a.alt = Object.entries(a.wertung).filter(([, w]) => w === "nein").map(([i]) => Number(i)); Object.assign(a, { auf: [], wertung: {}, frage: null }); render(); },
+  lueckeAuf: (v) => {
+    const a = state.kompakt?.ab, i = Number(v); if (!a) return;
+    if (!a.auf.includes(i)) { a.auf.push(i); a.frage = i; } else a.frage = a.wertung[i] ? null : i;
+    render();
+  },
+  lueckeWertung: (v) => {
+    const a = state.kompakt?.ab; if (!a || a.frage == null) return;
+    a.wertung[a.frage] = v; a.frage = null; lueckenMerken();
+    if (a.auf.length === a.gesamt && Object.keys(a.wertung).length === a.gesamt) { const ja = Object.values(a.wertung).filter((w) => w === "ja").length; toast(`${ja} von ${a.gesamt} gewusst${ja === a.gesamt ? " – stark!" : " – die roten kommen beim nächsten Mal zuerst dran."}`); }
     render();
   },
   kompaktSitzung: (v) => {
