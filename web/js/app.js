@@ -680,25 +680,24 @@ setInterval(() => {
 }, 1000);
 
 // Generalprobe Online-Test (Bilanzrecht, nur an den Tagen aus OT.SICHTBAR)
-const otGespeichert = () => { try { return JSON.parse(localStorage.getItem("bsr.otest")); } catch (_) { return null; } };
-const otSichern = () => { if (state.otest) schreib("bsr.otest", JSON.stringify(state.otest)); };
+const otGespeichert = () => { try { return JSON.parse(localStorage.getItem("bsr.otest2")); } catch (_) { return null; } };
+const otSichern = () => { if (state.otest) schreib("bsr.otest2", JSON.stringify(state.otest)); };
 const otVerlauf = () => { try { return JSON.parse(localStorage.getItem("bsr.otest.verlauf")) || []; } catch (_) { return []; } };
-const otRest = () => (state.otest && !state.otest.ende ? Math.max(0, Math.round(OT.MINUTEN * 60 - (Date.now() - state.otest.start) / 1000)) : 0);
-const otGesehen = () => { try { return JSON.parse(localStorage.getItem("bsr.otest.gesehen")) || { d: 0, nrs: [] }; } catch (_) { return { d: 0, nrs: [] }; } };
+const otZeit = () => (state.otest && !state.otest.ende ? Math.max(0, Math.round((Date.now() - state.otest.start) / 1000)) : 0); // Stoppuhr, kein Zeitlimit
+const otGesehen = () => { try { return JSON.parse(localStorage.getItem("bsr.otest2.gesehen")) || { d: 0, nrs: [] }; } catch (_) { return { d: 0, nrs: [] }; } };
 /** Neuer Durchgang: innerhalb einer Runde (OT.RUNDE Durchgänge) nur Aufgaben, die noch nicht dran waren. */
 function otNeuerDurchgang() {
   const g = otGesehen(), ohne = g.d % OT.RUNDE === 0 ? [] : g.nrs;
   const t = { seed: Math.floor(Math.random() * 2 ** 31), start: Date.now(), antworten: {}, pos: 0, d: g.d, ohne };
-  schreib("bsr.otest.gesehen", JSON.stringify({ d: g.d + 1, nrs: [...ohne, ...OT.fragenVon(t).map((f) => f.nr)] }));
+  schreib("bsr.otest2.gesehen", JSON.stringify({ d: g.d + 1, nrs: [...ohne, ...OT.fragenVon(t).map((f) => f.nr)] }));
   return t;
 }
 const otKarte = () => (state.fach === "bsr" && OT.sichtbar() ? OT.startKarte({ ic, verlauf: otVerlauf(), laufend: otGespeichert() && !otGespeichert().ende, durchgang: otGesehen().d }) : "");
 setInterval(() => {
   const t = state.otest;
   if (!t || t.ende) return;
-  const r = otRest(), el = document.getElementById("otUhr");
-  if (el) { el.querySelector("span").textContent = uhr(r); el.classList.toggle("knapp", r < 300); }
-  if (r === 0) { AKTIONEN.otAbgeben(true); toast("Zeit abgelaufen – der Test wurde beendet."); }
+  const el = document.getElementById("otUhr");
+  if (el) el.querySelector("span").textContent = uhr(otZeit());
 }, 1000);
 
 function scrollOben() {
@@ -755,7 +754,7 @@ function render() {
     html += state.pfad.block ? blockView(state.pfad.fach, state.pfad.block, hilfe) : kartenView(state.pfad.fach, hilfe);
   }
   if (state.kompakt) html += kompaktEbene();
-  if (state.otest) html += OT.testView(state.otest, { ic, esc, uhr: uhr(otRest()) });
+  if (state.otest) html += OT.testView(state.otest, { ic, esc, uhr: uhr(otZeit()) });
   if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile, hs: state.hs, modus: lies("bsr.ksimModus", "text") });
   if (state.sheet) html += sheetView();
   if (state.hgVorschau && !state.sheet) html += vorschauLeiste();
@@ -2992,7 +2991,7 @@ const AKTIONEN = {
     render(); scrollOben();
   },
   otZu: () => {
-    if (state.otest?.ende) { try { localStorage.removeItem("bsr.otest"); } catch (_) { /* egal */ } }
+    if (state.otest?.ende) { try { localStorage.removeItem("bsr.otest2"); } catch (_) { /* egal */ } }
     state.otest = null; render();
   },
   ksimWeiter: () => { state.ksim = ksimGespeichert(); render(); },
