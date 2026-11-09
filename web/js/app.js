@@ -15,6 +15,7 @@ import * as MK from "./meinekarten.js";
 import * as HS from "./handschrift.js";
 import * as OT from "./bilr/onlinetest.js";
 import * as DF from "./denkfehler.js";
+import * as AB from "./abfrage.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, nachholen, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
@@ -795,6 +796,7 @@ function render() {
     html += state.pfad.block ? blockView(state.pfad.fach, state.pfad.block, hilfe) : kartenView(state.pfad.fach, hilfe);
   }
   if (state.kompakt) html += kompaktEbene();
+  if (state.abfrage) html += abfrageView();
   if (state.otest) html += OT.testView(state.otest, { ic, esc, uhr: uhr(otZeit()) });
   if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile, hs: state.hs, modus: lies("bsr.ksimModus", "text") });
   if (state.sheet) html += sheetView();
@@ -822,7 +824,7 @@ function render() {
   if (animVoll) app.querySelector(".vollbild")?.classList.add("anim");
   if (animSheet) app.querySelector(".sheet-hg")?.classList.add("anim");
   verlaufAbgleichen();
-  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.kompakt || state.ksim || state.otest || state.sheet ? "hidden" : "";
+  document.body.style.overflow = state.sitzung || state.deck || state.paare || state.pfad || state.kompakt || state.ksim || state.otest || state.abfrage || state.sheet ? "hidden" : "";
   if (fokusId) {
     const el = document.querySelector(`[data-fokus="${fokusId}"]`);
     if (el) { el.focus(); if (pos && el.setSelectionRange) try { el.setSelectionRange(...pos); } catch (_) { /* egal */ } }
@@ -833,7 +835,7 @@ function render() {
 // Jede geöffnete Ebene (Unterseite, Übung, Rückschau, Lernkarten, Menü) bekommt einen Eintrag im Browserverlauf.
 // So schließt die Zurück-Geste (Android) bzw. Zurück-Taste die oberste Ebene, statt die App zu verlassen.
 let verlaufTiefe = 0, popIgnorieren = 0;
-const ansichtTiefe = () => (state.hgVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.ksim ? 1 : 0) + (state.otest ? 1 : 0) + (state.sheet ? 1 : 0);
+const ansichtTiefe = () => (state.hgVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.ksim ? 1 : 0) + (state.otest ? 1 : 0) + (state.abfrage ? 1 : 0) + (state.sheet ? 1 : 0);
 function verlaufAbgleichen() {
   const t = ansichtTiefe();
   while (verlaufTiefe < t) { verlaufTiefe += 1; history.pushState({ tiefe: verlaufTiefe }, ""); }
@@ -844,6 +846,7 @@ function ebeneZurueck() {
   if (state.sheet) AKTIONEN.sheetZu();
   else if (state.hgVorschau) AKTIONEN.vorschauEnde();
   else if (state.kompakt) AKTIONEN.kompaktZu();
+  else if (state.abfrage) AKTIONEN.abfrageZu();
   else if (state.otest) AKTIONEN.otZu();
   else if (state.ksim) AKTIONEN.ksimZu();
   else if (state.deck) AKTIONEN.deckZu();
@@ -1447,6 +1450,8 @@ function tabLernen() {
     heute = `<div class="kachel breit"><span class="k-icon" style="background:var(--ok-weak);color:var(--ok)">${ic("haken")}</span>
       <span class="grow"><b>${n ? "Heute nichts zu wiederholen" : "Lernkartei startet mit deiner ersten Übung"}</b><div class="sub">${n ? `Nächste Wiederholung ${inTagen(n)}.` : "Jede Aufgabe kommt nach 1, 3, 7, 14 und 30 Tagen wieder."}</div></span></div>`;
   }
+  if (AB.abfrageMoeglich()) heute += `<button class="kachel breit abfrage-kachel" data-a="abfrageStart"><span class="k-icon">🎧</span>
+      <span class="grow"><b>Frag mich ab</b><div class="sub">${due.length ? `${due.length} fällige Wiederholungen` : "Gemischte Fragen"} zum Hören – Antwort per Kopfhörertaste</div></span><span class="rechts">${ic("pfeil", "klein")}</span></button>`;
   const mkFaellig = MK.faelligeKarten(meine(), state.fach).length;
   if (mkFaellig) heute += `<button class="kachel breit" data-a="meineLernen" data-v="faellig"><span class="k-icon">${ic("karten")}</span>
       <span class="grow"><b>${mkFaellig} ${mkFaellig === 1 ? "eigene Karteikarte" : "eigene Karteikarten"} fällig</b><div class="sub">Umdrehen, bewerten – dauert nur kurz</div></span><span class="rechts">${ic("pfeil")}</span></button>`;
@@ -2171,6 +2176,58 @@ let dfVorlagen = null;
 function denkfehlerIds(fam, fach) {
   if (!dfVorlagen) { const r = new Zufall(11); dfVorlagen = ALLE.map((v) => { try { const f = v.erzeugen(r); return f.typ === "buchung" ? [v, f.loesungen[0]] : null; } catch (_) { return null; } }).filter(Boolean); }
   return dfVorlagen.filter(([v, l]) => vorlageIn(v, fach) && imTeil(THEMA[v.thema], teilVon(fach)) && DF.provoziert(fam, l)).map(([v]) => v.id);
+}
+
+// „Frag mich ab“: Hör-Abfrage der Lernkartei (abfrage.js)
+const abfragePause = () => Number(lies("bsr.abfragePause", "8")) || 8;
+function abfrageFragen(fach) {
+  const r = new Zufall(), erzeuge = (id) => { const v = ALLE.find((x) => x.id === id); try { return v ? v.erzeugen(r) : null; } catch (_) { return null; } };
+  let l = faelligImTeil(fach).map(erzeuge).filter(AB.geeignet);
+  if (l.length < 10) l = [...l, ...r.mischen(idsImTeil(fach)).map(erzeuge).filter((f) => AB.geeignet(f) && !l.some((x) => x.id === f.id)).slice(0, 15 - l.length)];
+  return l.slice(0, 25);
+}
+async function abfrageLauf() {
+  const a = state.abfrage; if (!a) return;
+  const f = a.fragen[a.i]; if (!f) { a.phase = "fertig"; AB.stopp(); render(); AB.sprich(`Fertig. ${a.ja} von ${a.ja + a.nein} gewusst.`); return; }
+  const t = AB.teile(f), tok = AB.neu();
+  AB.tastenAn(() => AKTIONEN.abfrageWertung("ja"), () => AKTIONEN.abfrageWertung("nein"), `Frage ${a.i + 1} von ${a.fragen.length}`);
+  a.phase = "frage"; render();
+  const ok = await AB.sprich(t.frage);
+  if (!ok || tok !== AB.aktuell() || state.abfrage !== a || a.phase !== "frage") return;
+  a.phase = "pause"; render();
+  if (!(await AB.warte(abfragePause() * 1000)) || a.phase !== "pause") return;
+  abfrageLoesung();
+}
+async function abfrageLoesung() {
+  const a = state.abfrage; if (!a) return;
+  const t = AB.teile(a.fragen[a.i]);
+  a.phase = "loesung"; render();
+  await AB.sprich(t.loesung);
+  if (state.abfrage === a && a.phase === "loesung") { a.phase = "wertung"; render(); }
+}
+function abfrageView() {
+  const a = state.abfrage, f = a.fragen[a.i], t = f ? AB.teile(f) : null, n = a.fragen.length;
+  const kopf = `<div class="vb-kopf"><button class="rund" data-a="abfrageZu" aria-label="Beenden">${ic("kreuz")}</button><div class="mitte">Frag mich ab</div><span class="km-zeit">${Math.min(a.i + 1, n)}/${n}</span></div>`;
+  if (a.phase === "fertig" || !f) return `<div class="vollbild abfrage" role="dialog" aria-label="Abfrage">${kopf}<div class="vb-inhalt"><div class="ab-fertig">
+      ${taler(a.ja >= a.nein ? "jubeln" : "mut", { groesse: 90 })}<h2>${a.ja} von ${a.ja + a.nein} gewusst</h2><p class="sub">Alles ist in deiner Lernkartei verbucht – die nicht gewussten kommen morgen wieder.</p></div></div>
+      <div class="vb-fuss"><button class="knopf" data-a="abfrageZu">Fertig</button></div></div>`;
+  const zeigt = a.phase === "loesung" || a.phase === "wertung";
+  return `<div class="vollbild abfrage" role="dialog" aria-label="Abfrage">${kopf}
+    <div class="ab-fortschritt" aria-hidden="true"><i style="width:${Math.round((a.i / n) * 100)}%"></i></div>
+    <div class="vb-inhalt">
+      <div class="ab-thema">${esc(THEMA[f.thema]?.titel || "")} · ${esc(typBezeichnung(f))}</div>
+      <div class="ab-welle ${a.phase}" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+      <p class="ab-frage">${esc(f.text)}</p>
+      ${f.typ === "auswahl" ? `<ol class="ab-optionen" type="A">${f.optionen.map((o, i) => `<li class="${zeigt && f.richtig.includes(i) ? "richtig" : ""}">${esc(o)}</li>`).join("")}</ol>` : ""}
+      ${a.phase === "pause" ? `<div class="ab-pause" style="--dauer:${abfragePause()}s"><span class="ab-ring"></span><b>Denk nach …</b><button class="knopf zweit" data-a="abfrageAufdecken">Lösung jetzt</button></div>` : ""}
+      ${zeigt ? `<div class="ab-loesung"><b>${kompaktInline(t.anzeigeLoesung)}</b>${t.anzeigeErkl ? `<p>${kompaktInline(t.anzeigeErkl)}</p>` : ""}</div>` : ""}
+      <p class="ab-tipp">🎧 Kopfhörer: <b>vor</b> = gewusst · <b>zurück</b> = nicht gewusst</p>
+      <div class="ab-tempo"><span>Denkpause</span><span class="segment">${[5, 8, 12, 20].map((s) => `<button data-a="abfragePauseSetzen" data-v="${s}" class="${abfragePause() === s ? "aktiv" : ""}">${s} s</button>`).join("")}</span></div>
+    </div>
+    <div class="vb-fuss ab-fuss">
+      <button class="knopf zweit ab-nein" data-a="abfrageWertung" data-v="nein">${ic("kreuz", "klein")} Nicht gewusst</button>
+      <button class="knopf ab-ja" data-a="abfrageWertung" data-v="ja">${ic("haken", "klein")} Gewusst</button>
+    </div></div>`;
 }
 
 function auswertungInhalt(f, b) {
@@ -3060,6 +3117,24 @@ const AKTIONEN = {
     if (!ids.length) { toast("Dazu gibt es in diesem Teil keine passenden Buchungssätze."); return; }
     starte({ modus: "uebung", fach: state.fach, ids, titel: "Denkfehler: " + DF.FAMILIEN[fam] });
   },
+  abfrageStart: () => {
+    hoerStopp();
+    const fragen = abfrageFragen(state.fach);
+    if (!fragen.length) { toast("Für dieses Modul gibt es gerade keine Fragen zum Vorlesen."); return; }
+    state.abfrage = { fach: state.fach, fragen, i: 0, phase: "frage", ja: 0, nein: 0 };
+    abfrageLauf();
+  },
+  abfrageAufdecken: () => { const a = state.abfrage; if (a && (a.phase === "frage" || a.phase === "pause")) { AB.neu(); abfrageLoesung(); } },
+  abfrageWertung: (v) => {
+    const a = state.abfrage; if (!a || a.phase === "fertig") return;
+    if (a.phase === "frage" || a.phase === "pause") { AKTIONEN.abfrageAufdecken(); return; } // erst die Lösung hören
+    const f = a.fragen[a.i], ok = v === "ja";
+    erfasse(f, ok); ok ? a.ja++ : a.nein++;
+    if (navigator.vibrate) navigator.vibrate(ok ? 20 : [30, 40, 30]);
+    a.i++; abfrageLauf();
+  },
+  abfragePauseSetzen: (v) => { schreib("bsr.abfragePause", v); render(); },
+  abfrageZu: () => { AB.stopp(); state.abfrage = null; render(); },
   fortsetzen: (v) => {
     if (v === "sitzung") { const x = sitzungGespeichert(); if (!x) return; state.sitzung = x; state.fach = x.fach || state.fach; render(); scrollOben(); }
     else if (v === "ksim") AKTIONEN.ksimWeiter();

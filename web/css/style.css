@@ -2545,3 +2545,37 @@ button.ot-option:hover { background: color-mix(in srgb, var(--ot-blau) 7%, trans
 .df-zeile .grow { display: grid; }
 .df-zeile .sub { font-size: 12.5px; color: var(--text3); }
 .df-zeile .knopf.klein { margin: 0; padding: 8px 12px; font-size: 13px; width: auto; flex: none; }
+
+/* „Frag mich ab“ */
+.vollbild.abfrage { z-index: 26; }
+.abfrage .vb-inhalt { max-width: 640px; width: 100%; margin: 0 auto; padding: 10px 18px 30px; }
+.ab-fortschritt { height: 4px; margin: 0 16px; border-radius: 4px; background: var(--glas); overflow: hidden; }
+.ab-fortschritt i { display: block; height: 100%; background: var(--m); border-radius: 4px; transition: width .3s; }
+.ab-thema { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--m); margin: 10px 0 6px; }
+.ab-welle { display: flex; gap: 5px; height: 34px; align-items: center; margin: 4px 0 10px; }
+.ab-welle i { width: 5px; height: 30%; border-radius: 4px; background: var(--m); opacity: .35; }
+.ab-welle.frage i, .ab-welle.loesung i { opacity: 1; animation: ab-welle 1s ease-in-out infinite; }
+.ab-welle.loesung i { background: var(--ok); }
+.ab-welle i:nth-child(2) { animation-delay: .15s; } .ab-welle i:nth-child(3) { animation-delay: .3s; } .ab-welle i:nth-child(4) { animation-delay: .45s; } .ab-welle i:nth-child(5) { animation-delay: .6s; }
+@keyframes ab-welle { 50% { height: 100%; } }
+:root[data-bewegung="aus"] .ab-welle i { animation: none; height: 60%; }
+.ab-frage { font-size: 19px; line-height: 1.45; font-weight: 600; margin: 0 0 12px; }
+.ab-optionen { margin: 0 0 14px; padding-left: 22px; display: grid; gap: 6px; font-size: 15.5px; }
+.ab-optionen li { padding: 6px 8px; border-radius: 10px; }
+.ab-optionen li.richtig { background: color-mix(in srgb, var(--ok) 16%, transparent); font-weight: 700; }
+.ab-pause { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: var(--glas-stark); border: 1px solid var(--glas-rand); }
+.ab-pause .knopf { margin: 0 0 0 auto; width: auto; padding: 8px 12px; font-size: 13px; }
+.ab-ring { width: 28px; height: 28px; border-radius: 50%; background: conic-gradient(var(--m) var(--p, 0%), var(--glas) 0); animation: ab-ring var(--dauer) linear forwards; }
+@property --p { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@keyframes ab-ring { to { --p: 100%; } }
+.ab-loesung { padding: 14px; border-radius: 16px; background: color-mix(in srgb, var(--ok) 11%, var(--card)); border: 1px solid color-mix(in srgb, var(--ok) 35%, transparent); font-size: 15.5px; line-height: 1.45; }
+.ab-loesung p { margin: 6px 0 0; color: var(--text2); font-size: 14px; }
+.ab-tipp { font-size: 12.5px; color: var(--text3); margin: 16px 0 8px; }
+.ab-tempo { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text3); }
+.ab-fuss { display: flex; gap: 10px; }
+.ab-fuss .knopf { flex: 1; margin: 0; }
+.ab-fuss .ab-ja { background: var(--ok); }
+.ab-fertig { text-align: center; padding-top: 30px; }
+.ab-fertig h2 { margin: 12px 0 4px; }
+.abfrage-kachel .k-icon { font-size: 20px; }
+.ab-tempo .segment button { white-space: nowrap; padding-inline: 10px; }

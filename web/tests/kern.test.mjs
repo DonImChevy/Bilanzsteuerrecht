@@ -1120,3 +1120,15 @@ test("Denkfehler-Radar: verfälschte Musterlösungen lösen die passende Diagnos
   const l = { soll: [["privatentnahmen", 12000]], haben: [["bank", 12000]] };
   assert.equal(diagnose([{ seite: "soll", konto: "telefon", betrag: "120,00" }, { seite: "haben", konto: "bank", betrag: "120,00" }], l)[0].id, "privat-als-aufwand");
 });
+
+test("Frag mich ab: geeignete Aufgaben lassen sich vollständig vorlesen", async () => {
+  const AB = await import("../js/abfrage.js");
+  const r = new Zufall(3); let n = 0;
+  for (const v of ALLE) {
+    const f = v.erzeugen(r); if (!AB.geeignet(f)) continue; n++;
+    const t = AB.teile(f);
+    assert.ok(t.frage.length > 10 && t.loesung.length > 5, v.id);
+    assert.ok(!/§|Abs\\.|undefined|NaN/.test(t.frage + t.loesung), `${v.id}: ${t.loesung.slice(0, 80)}`);
+  }
+  assert.ok(n > 200, "geeignet: " + n);
+});
