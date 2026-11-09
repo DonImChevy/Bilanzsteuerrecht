@@ -1082,6 +1082,16 @@ test("Generalprobe Online-Test: Fragen rechnen sauber, Bewertung inkl. Lückente
     for (const f of fr) if (f.nr === 161) assert.ok(/31\.12\.: \d/.test(f.text));
   }
   for (const v of OT.ALLE_VORLAGEN) assert.ok(gesehen.has(v.nr), "nie gezogen: " + v.nr);
+  // eine Runde (3 Durchgänge): keine Vorlage und keine Aussage doppelt
+  for (let seed = 1; seed <= 200; seed++) {
+    let ohne = []; const aussagen = new Set();
+    for (let d = 0; d < OT.RUNDE; d++) {
+      const fr = OT.testErzeugen(seed * 3 + d, ohne, d), nrs = fr.map((f) => f.nr);
+      assert.ok(nrs.every((n) => !ohne.includes(n)), `Runde ${seed}, Durchgang ${d + 1}: Vorlage doppelt`);
+      for (const f of fr) if (f.nr === 140 || f.nr === 141) for (const o of f.optionen) { assert.ok(!aussagen.has(o), "Aussage doppelt: " + o); aussagen.add(o); }
+      ohne = [...ohne, ...nrs.filter((n) => n !== 140 && n !== 141)];
+    }
+  }
   assert.equal(OT.zahlLesen("−2.500"), -2500);
   assert.equal(OT.zahlLesen("12.345,50 €"), 12345.5);
 });

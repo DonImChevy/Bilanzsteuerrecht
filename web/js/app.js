@@ -684,7 +684,15 @@ const otGespeichert = () => { try { return JSON.parse(localStorage.getItem("bsr.
 const otSichern = () => { if (state.otest) schreib("bsr.otest", JSON.stringify(state.otest)); };
 const otVerlauf = () => { try { return JSON.parse(localStorage.getItem("bsr.otest.verlauf")) || []; } catch (_) { return []; } };
 const otRest = () => (state.otest && !state.otest.ende ? Math.max(0, Math.round(OT.MINUTEN * 60 - (Date.now() - state.otest.start) / 1000)) : 0);
-const otKarte = () => (state.fach === "bsr" && OT.sichtbar() ? OT.startKarte({ ic, verlauf: otVerlauf(), laufend: otGespeichert() && !otGespeichert().ende }) : "");
+const otGesehen = () => { try { return JSON.parse(localStorage.getItem("bsr.otest.gesehen")) || { d: 0, nrs: [] }; } catch (_) { return { d: 0, nrs: [] }; } };
+/** Neuer Durchgang: innerhalb einer Runde (OT.RUNDE Durchgänge) nur Aufgaben, die noch nicht dran waren. */
+function otNeuerDurchgang() {
+  const g = otGesehen(), ohne = g.d % OT.RUNDE === 0 ? [] : g.nrs;
+  const t = { seed: Math.floor(Math.random() * 2 ** 31), start: Date.now(), antworten: {}, pos: 0, d: g.d, ohne };
+  schreib("bsr.otest.gesehen", JSON.stringify({ d: g.d + 1, nrs: [...ohne, ...OT.fragenVon(t).map((f) => f.nr)] }));
+  return t;
+}
+const otKarte = () => (state.fach === "bsr" && OT.sichtbar() ? OT.startKarte({ ic, verlauf: otVerlauf(), laufend: otGespeichert() && !otGespeichert().ende, durchgang: otGesehen().d }) : "");
 setInterval(() => {
   const t = state.otest;
   if (!t || t.ende) return;
@@ -2964,19 +2972,19 @@ const AKTIONEN = {
   },
   otStart: () => {
     const alt = otGespeichert();
-    state.otest = alt && !alt.ende ? alt : { seed: Math.floor(Math.random() * 2 ** 31), start: Date.now(), antworten: {}, pos: 0 };
+    state.otest = alt && !alt.ende ? alt : otNeuerDurchgang();
     otSichern(); render(); scrollOben();
   },
-  otNeu: () => { state.otest = { seed: Math.floor(Math.random() * 2 ** 31), start: Date.now(), antworten: {}, pos: 0 }; otSichern(); render(); scrollOben(); },
+  otNeu: () => { state.otest = otNeuerDurchgang(); otSichern(); render(); scrollOben(); },
   otWahl: (v) => {
-    const [i, j] = v.split("|").map(Number), t = state.otest, f = OT.testErzeugen(t.seed)[i];
+    const [i, j] = v.split("|").map(Number), t = state.otest, f = OT.fragenVon(t)[i];
     if (f.typ === "mc") { const s = new Set(t.antworten[i] || []); s.has(j) ? s.delete(j) : s.add(j); t.antworten[i] = [...s].sort((a, b) => a - b); }
     else t.antworten[i] = j;
     otSichern(); render();
   },
-  otGehe: (v) => { const n = OT.testErzeugen(state.otest.seed).length, i = Number(v); if (i < 0 || i >= n) return; state.otest.pos = i; otSichern(); render(); scrollOben(); },
+  otGehe: (v) => { const n = OT.fragenVon(state.otest).length, i = Number(v); if (i < 0 || i >= n) return; state.otest.pos = i; otSichern(); render(); scrollOben(); },
   otAbgeben: (automatisch) => {
-    const t = state.otest, fragen = OT.testErzeugen(t.seed), offen = fragen.filter((f, i) => !OT.beantwortet(f, t.antworten[i])).length;
+    const t = state.otest, fragen = OT.fragenVon(t), offen = fragen.filter((f, i) => !OT.beantwortet(f, t.antworten[i])).length;
     if (automatisch !== true && !confirm(offen ? `Noch ${offen} ${offen === 1 ? "Frage" : "Fragen"} offen. Test trotzdem beenden?` : "Test beenden und auswerten?")) return;
     t.ende = Date.now(); otSichern();
     const max = OT.gesamtPunkte(fragen), p = OT.erreicht(fragen, t.antworten);
@@ -3272,7 +3280,7 @@ app.addEventListener("input", (e) => {
     if (ol) { const [i, feld] = ol.split("|"); (t.antworten[i] ||= {})[feld] = e.target.value; e.target.closest(".ot-gap")?.classList.toggle("voll", !!e.target.value); }
     else t.antworten[oz] = e.target.value;
     otSichern();
-    const f = OT.testErzeugen(t.seed), i = Number(ol ? ol.split("|")[0] : oz);
+    const f = OT.fragenVon(t), i = Number(ol ? ol.split("|")[0] : oz);
     document.querySelector(`.ot-nr[data-v="${i}"]`)?.classList.toggle("fertig", OT.beantwortet(f[i], t.antworten[i]));
     return;
   }

@@ -76,6 +76,12 @@ const RUECK = [
   { nr: 9, erzeugen: (r) => { const x = r.betrag(8000, 60000, 100); return { bs: BS([["GuV", x]], [["Eigenkapital", x]]),
     optionen: ["Ein Verlust wird auf das Eigenkapital übertragen.", "Der Gewinn wird auf das Eigenkapital übertragen.", "Das Eigenkapital wird über das SBK abgeschlossen.", "Der Unternehmer legt Geld in den Betrieb ein."],
     richtig: 1, erkl: "Ist im GuV-Konto die Habenseite (Erträge) größer, steht der Saldo im Soll: GuV an Eigenkapital = Gewinn erhöht das Eigenkapital." }; } },
+  { nr: 10, erzeugen: (r) => { const x = r.betrag(150, 2500, 10); return { bs: BS([["Kasse", x]], [["Forderungen aLuL", x]]),
+    optionen: ["Ein Kunde begleicht eine offene Rechnung bar.", "Ein Kunde kauft auf Ziel.", "Der Unternehmer legt privates Bargeld in die Kasse.", "Der Unternehmer begleicht eine Lieferantenrechnung bar."],
+    richtig: 0, erkl: "Kasse nimmt zu (Soll), die Forderung erlischt (Haben) – Aktivtausch." }; } },
+  { nr: 11, erzeugen: (r) => { const x = r.betrag(5000, 40000, 1000); return { bs: BS([["Bank", x]], [["Darlehen", x]]),
+    optionen: ["Ein betriebliches Darlehen wird getilgt.", "Ein Darlehen wird aufgenommen und dem Geschäftskonto gutgeschrieben.", "Die Bank schreibt Zinsen gut.", "Der Unternehmer überweist privates Geld auf das Geschäftskonto."],
+    richtig: 1, erkl: "Bank und Darlehen nehmen beide zu – Aktiv-Passiv-Mehrung: Auszahlung eines Darlehens." }; } },
 ];
 
 /** Einordnung eines Vorgangs in die acht Arten (Single Choice, Optionen wie im Online-Test). */
@@ -118,12 +124,12 @@ const ART_MC = [
 /** Lückentext-Buchungssätze (Auswahllisten für Konto und Betrag). */
 const LUECKE = [
   // laufende Buchungen, betrieblich
-  { nr: 60, gruppe: "lauf", erzeugen: (r) => { const x = r.betrag(400, 2500, 10); return { text: `Ein Unternehmer mietet eine Lagerhalle und überweist die Monatsmiete von ${euro(x)} € vom Geschäftskonto.`, zeilen: BS([["Mietaufwand", x]], [["Bank", x]]), erkl: "Mietaufwand (Aufwandskonto) im Soll, Bank im Haben." }; } },
+  { nr: 60, gruppe: "lauf", erzeugen: (r) => { const x = r.betrag(400, 2500, 10), o = r.wahl(["eine Lagerhalle", "eine Werkstatt", "Büroräume", "einen Ausstellungsraum"]); return { text: `Ein Unternehmer mietet ${o} und überweist die Monatsmiete von ${euro(x)} € vom Geschäftskonto.`, zeilen: BS([["Mietaufwand", x]], [["Bank", x]]), erkl: "Mietaufwand (Aufwandskonto) im Soll, Bank im Haben." }; } },
   { nr: 61, gruppe: "lauf", erzeugen: (r) => { const g = r.betrag(18000, 36000, 500), k = r.betrag(1000, 3000, 500), b = r.betrag(5000, 10000, 500);
     return { text: `Ein Unternehmer kauft einen Lieferwagen für ${euro(g)} €. Er zahlt ${euro(k)} € bar an, ${euro(b)} € überweist er vom Geschäftskonto, den Rest schuldet er dem Autohaus.`, zeilen: BS([["Fuhrpark", g]], [["Kasse", k], ["Bank", b], ["Verbindlichkeiten aLuL", g - k - b]]), erkl: "Zusammengesetzter Buchungssatz: Summe Soll = Summe Haben." }; } },
   { nr: 62, gruppe: "lauf", erzeugen: (r) => { const k = r.betrag(100, 800, 10), b = r.betrag(800, 4000, 10);
     return { text: `Ein Kunde begleicht seine offene Rechnung über ${euro(k + b)} €: ${euro(k)} € zahlt er bar, den Rest überweist er.`, zeilen: BS([["Kasse", k], ["Bank", b]], [["Forderungen aLuL", k + b]]), erkl: "Kasse und Bank nehmen zu (Soll), die Forderung erlischt (Haben) – Aktivtausch." }; } },
-  { nr: 63, gruppe: "lauf", erzeugen: (r) => { const x = r.betrag(150, 600, 10); return { text: `Ein Untermieter zahlt die Miete für einen Kellerraum des Betriebs von ${euro(x)} € bar.`, zeilen: BS([["Kasse", x]], [["Mieterträge", x]]), erkl: "Mieterträge (Ertragskonto) nehmen im Haben zu." }; } },
+  { nr: 63, gruppe: "lauf", erzeugen: (r) => { const x = r.betrag(150, 600, 10), o = r.wahl(["einen Kellerraum", "eine Garage", "einen Lagerplatz", "ein Büro"]); return { text: `Ein Untermieter zahlt die Miete für ${o} des Betriebs von ${euro(x)} € bar.`, zeilen: BS([["Kasse", x]], [["Mieterträge", x]]), erkl: "Mieterträge (Ertragskonto) nehmen im Haben zu." }; } },
   { nr: 64, gruppe: "lauf", erzeugen: (r) => { const k = r.betrag(200, 600, 10), b = r.betrag(1500, 3500, 10);
     return { text: `Der Lohn einer Mitarbeiterin von ${euro(k + b)} € wird zu ${euro(k)} € bar ausgezahlt, der Rest wird überwiesen.`, zeilen: BS([["Löhne", k + b]], [["Kasse", k], ["Bank", b]]), erkl: "Löhne sind Aufwand (Soll); Kasse und Bank nehmen ab (Haben)." }; } },
   { nr: 65, gruppe: "lauf", erzeugen: (r) => { const z = r.betrag(80, 400, 1), t = r.betrag(800, 2500, 100);
@@ -131,12 +137,12 @@ const LUECKE = [
   // privat veranlasst
   { nr: 70, gruppe: "privat", erzeugen: (r) => { const p = r.betrag(500, 1500, 100), b = r.betrag(2000, 5000, 100);
     return { text: `Ein Unternehmer begleicht eine Tilgungsrate für ein betriebliches Darlehen (${euro(p + b)} €) in Höhe von ${euro(p)} € vom privaten und in Höhe von ${euro(b)} € vom betrieblichen Bankkonto.`, zeilen: BS([["Darlehen", p + b]], [["Bank", b], ["Einlagen", p]]), erkl: "Die Schuld sinkt um die ganze Rate; der privat bezahlte Teil ist eine Einlage." }; } },
-  { nr: 71, gruppe: "privat", erzeugen: (r) => { const x = r.betrag(60, 250, 1); return { text: `Die Unternehmerin überweist die Stromrechnung ihrer Privatwohnung über ${euro(x)} € vom betrieblichen Bankkonto.`, zeilen: BS([["Entnahmen", x]], [["Bank", x]]), erkl: "Private Rechnung, betriebliches Geld: Entnahme – kein Aufwand." }; } },
+  { nr: 71, gruppe: "privat", erzeugen: (r) => { const x = r.betrag(60, 250, 1), o = r.wahl(["Stromrechnung", "Gasrechnung", "Internetrechnung", "Handwerkerrechnung"]); return { text: `Die Unternehmerin überweist die ${o} ihrer Privatwohnung über ${euro(x)} € vom betrieblichen Bankkonto.`, zeilen: BS([["Entnahmen", x]], [["Bank", x]]), erkl: "Private Rechnung, betriebliches Geld: Entnahme – kein Aufwand." }; } },
   { nr: 72, gruppe: "privat", erzeugen: (r) => { const x = r.betrag(300, 1200, 1); return { text: `Die Unternehmerin bezahlt die Versicherung für den betrieblichen Lieferwagen von ${euro(x)} € von ihrem privaten Bankkonto.`, zeilen: BS([["Kfz-Versicherung", x]], [["Einlagen", x]]), erkl: "Betrieblicher Aufwand, privates Geld: Gegenbuchung auf Einlagen." }; } },
-  { nr: 73, gruppe: "privat", erzeugen: (r) => { const x = r.betrag(300, 900, 50); return { text: `Ein Unternehmer bringt seinen bisher privat genutzten Schreibtisch dauerhaft in sein Büro ein. Der Wert (Teilwert) beträgt ${euro(x)} €.`, zeilen: BS([["BGA", x]], [["Einlagen", x]]), erkl: "Sacheinlage: BGA nimmt zu, Gegenkonto Einlagen." }; } },
+  { nr: 73, gruppe: "privat", erzeugen: (r) => { const x = r.betrag(300, 900, 50), o = r.wahl(["Schreibtisch", "Aktenschrank", "Drucker", "Bürostuhl"]); return { text: `Ein Unternehmer bringt seinen bisher privat genutzten ${o} dauerhaft in sein Büro ein. Der Wert (Teilwert) beträgt ${euro(x)} €.`, zeilen: BS([["BGA", x]], [["Einlagen", x]]), erkl: "Sacheinlage: BGA nimmt zu, Gegenkonto Einlagen." }; } },
   { nr: 74, gruppe: "privat", erzeugen: (r) => { const l = r.betrag(900, 2400, 50), w = r.betrag(600, 1400, 50);
     return { text: `Mit einer Überweisung vom Geschäftskonto über ${euro(l + w)} € bezahlt ein Unternehmer die Miete für sein Ladenlokal (${euro(l)} €) und die Miete seiner Privatwohnung (${euro(w)} €).`, zeilen: BS([["Mietaufwand", l], ["Entnahmen", w]], [["Bank", l + w]]), erkl: "Nur die Ladenmiete ist Aufwand; die private Miete ist eine Entnahme." }; } },
-  { nr: 75, gruppe: "privat", erzeugen: (r) => { const x = r.betrag(100, 600, 10); return { text: `Ein Unternehmer nimmt ${euro(x)} € aus der Ladenkasse für einen Wochenendausflug mit der Familie.`, zeilen: BS([["Entnahmen", x]], [["Kasse", x]]), erkl: "Bargeldentnahme: Entnahmen an Kasse." }; } },
+  { nr: 75, gruppe: "privat", erzeugen: (r) => { const x = r.betrag(100, 600, 10); return { text: `Ein Unternehmer nimmt ${euro(x)} € aus der Ladenkasse für ${r.wahl(["einen Wochenendausflug mit der Familie", "Geburtstagsgeschenke", "einen Restaurantbesuch mit Freunden", "neue Kleidung"])}.`, zeilen: BS([["Entnahmen", x]], [["Kasse", x]]), erkl: "Bargeldentnahme: Entnahmen an Kasse." }; } },
   // Eröffnung und Abschluss
   { nr: 80, gruppe: "abschluss", erzeugen: (r) => { const x = r.betrag(18000, 42000, 100); return { text: `Das Konto Löhne weist zum 31.12. einen Saldo von ${euro(x)} € aus. Buchen Sie den Abschluss des Kontos.`, zeilen: BS([["GuV", x]], [["Löhne", x]]), erkl: "Aufwandskonten werden über das GuV-Konto abgeschlossen; der Saldo steht im Haben des Aufwandskontos." }; } },
   { nr: 81, gruppe: "abschluss", erzeugen: (r) => { const x = r.betrag(200, 2000, 10); return { text: `Das Konto Zinserträge weist zum 31.12. einen Saldo von ${euro(x)} € aus. Buchen Sie den Abschluss des Kontos.`, zeilen: BS([["Zinserträge", x]], [["GuV", x]]), erkl: "Ertragskonten: Saldo im Soll, Gegenbuchung im Haben des GuV-Kontos." }; } },
@@ -168,32 +174,17 @@ const SEITE = [
 
 /** Aussagen zum Kontensystem (Multiple Choice, aus einem Pool gemischt). */
 const AUSSAGEN_KONTEN = [
-  ["Aktive Bestandskonten weisen den Anfangsbestand im Soll aus.", true],
-  ["Abgänge auf Passivkonten werden im Haben gebucht.", false],
-  ["Der Saldo wird auf der kleineren Kontoseite eingesetzt und gleicht das Konto aus.", true],
-  ["Das Schlussbilanzkonto enthält den Buchbestand (Sollbestand), das Inventar den tatsächlichen Bestand (Istbestand).", true],
-  ["Die Einrichtung eines Schlussbilanzkontos ist gesetzlich vorgeschrieben.", false],
-  ["Das Eröffnungsbilanzkonto ist das Spiegelbild der Eröffnungsbilanz.", true],
-  ["Bei einem zusammengesetzten Buchungssatz muss die Summe der Sollbeträge der Summe der Habenbeträge entsprechen.", true],
-  ["Ein Aktivtausch verändert die Bilanzsumme.", false],
-  ["Im Buchungssatz wird zuerst das Konto der Habenbuchung genannt.", false],
-  ["Belasten bedeutet, im Soll zu buchen.", true],
+  [["Aktive Bestandskonten weisen den Anfangsbestand im Soll aus.", true], ["Abgänge auf Passivkonten werden im Haben gebucht.", false], ["Der Saldo wird auf der kleineren Kontoseite eingesetzt und gleicht das Konto aus.", true], ["Ein Aktivtausch verändert die Bilanzsumme.", false], ["Belasten bedeutet, im Soll zu buchen.", true]],
+  [["Das Schlussbilanzkonto enthält den Buchbestand (Sollbestand), das Inventar den tatsächlichen Bestand (Istbestand).", true], ["Die Einrichtung eines Schlussbilanzkontos ist gesetzlich vorgeschrieben.", false], ["Das Eröffnungsbilanzkonto ist das Spiegelbild der Eröffnungsbilanz.", true], ["Das Eröffnungsbilanzkonto ist das Gegenkonto für die Abschlussbuchungen der Bestandskonten.", false], ["Gutschreiben bedeutet, im Haben zu buchen.", true]],
+  [["Bei einem zusammengesetzten Buchungssatz muss die Summe der Sollbeträge der Summe der Habenbeträge entsprechen.", true], ["Im Buchungssatz wird zuerst das Konto der Habenbuchung genannt.", false], ["Zugänge auf Aktivkonten werden im Haben gebucht.", false], ["Eine Aktiv-Passiv-Minderung verringert die Bilanzsumme.", true], ["Ein Passivtausch verändert das Eigenkapital.", false]],
 ];
 const AUSSAGEN_ERFOLG = [
-  ["Aufwands- und Ertragskonten sind Unterkonten des Eigenkapitals.", true],
-  ["Das GuV-Konto wird über das Eigenkapital abgeschlossen.", true],
-  ["Ertragskonten werden über das SBK abgeschlossen.", false],
-  ["Entnahmen mindern den Gewinn.", false],
-  ["Privatkonten werden über das GuV-Konto abgeschlossen.", false],
-  ["Ein Gewinn steht als Saldo auf der Sollseite des GuV-Kontos.", true],
-  ["Aufwendungen sind betrieblich veranlasste Minderungen des Betriebsvermögens.", true],
-  ["Die Tilgung eines betrieblichen Darlehens ist Aufwand.", false],
-  ["Einlagen erhöhen das Eigenkapital, aber nicht den Gewinn.", true],
-  ["Für Unterkonten gelten dieselben Buchungsregeln wie für das Hauptkonto.", true],
+  [["Aufwands- und Ertragskonten sind Unterkonten des Eigenkapitals.", true], ["Ertragskonten werden über das SBK abgeschlossen.", false], ["Entnahmen mindern den Gewinn.", false], ["Ein Gewinn steht als Saldo auf der Sollseite des GuV-Kontos.", true], ["Aufwendungen sind betrieblich veranlasste Minderungen des Betriebsvermögens.", true]],
+  [["Das GuV-Konto wird über das Eigenkapital abgeschlossen.", true], ["Privatkonten werden über das GuV-Konto abgeschlossen.", false], ["Die Tilgung eines betrieblichen Darlehens ist Aufwand.", false], ["Einlagen erhöhen das Eigenkapital, aber nicht den Gewinn.", true], ["Für Unterkonten gelten dieselben Buchungsregeln wie für das Hauptkonto.", true]],
+  [["Erträge sind betrieblich veranlasste Mehrungen des Betriebsvermögens.", true], ["Ein Verlust erhöht das Eigenkapital.", false], ["Das Konto Zinsaufwand wird über das GuV-Konto abgeschlossen.", true], ["Die Bezahlung einer privaten Rechnung vom Geschäftskonto ist Aufwand.", false], ["Beim Abschluss des Kontos Entnahmen steht der Saldo im Haben.", true]],
 ];
-const aussagen = (nr, pool, titel) => ({ nr, erzeugen: (r) => {
-  // 5 Aussagen, mindestens eine richtige und eine falsche
-  let w; do w = r.mischen(pool).slice(0, 5); while (w.every((a) => a[1]) || w.every((a) => !a[1]));
+const aussagen = (nr, gruppen, titel) => ({ nr, erzeugen: (r, d = 0) => {
+  const w = r.mischen(gruppen[d % gruppen.length]);
   return { text: `${titel} (mehrere Antworten möglich)`, optionen: w.map((a) => a[0]), richtig: w.flatMap((a, i) => (a[1] ? [i] : [])), erkl: "Falsch: " + w.filter((a) => !a[1]).map((a) => `„${a[0]}“`).join(" · ") }; } });
 const AUSSAGEN = [aussagen(140, AUSSAGEN_KONTEN, "Welche Aussagen zu Konten und Buchungssätzen sind richtig?"), aussagen(141, AUSSAGEN_ERFOLG, "Welche Aussagen zu Erfolgs- und Privatkonten sind richtig?")];
 
@@ -211,6 +202,12 @@ const ZAHL = [
   { nr: 163, erzeugen: (r) => { const l = r.betrag(20000, 40000, 100), m = r.betrag(8000, 15000, 100), z = r.betrag(300, 2000, 10), p = r.betrag(30000, 70000, 100), me = r.betrag(1000, 5000, 100), en = r.betrag(5000, 15000, 100), g = p + me - l - m - z;
     return { text: `Salden zum 31.12.: Löhne ${euro(l)} €, Mietaufwand ${euro(m)} €, Zinsaufwand ${euro(z)} €, Provisionserträge ${euro(p)} €, Mieterträge ${euro(me)} €, Entnahmen ${euro(en)} €. Welcher Saldo ergibt sich im GuV-Konto (Gewinn positiv, Verlust mit Minuszeichen) in €?`, wert: g,
       erkl: `Erträge ${euro(p + me)} − Aufwendungen ${euro(l + m + z)} = ${euro(g)} €. Die Entnahmen gehören nicht ins GuV-Konto.` }; } },
+  { nr: 164, erzeugen: (r) => { const bga = r.betrag(8000, 30000, 100), fp = r.betrag(15000, 45000, 500), bank = r.betrag(3000, 20000, 10), kasse = r.betrag(300, 2500, 10), dar = r.betrag(10000, 30000, 500), vb = r.betrag(2000, 12000, 10), ek = bga + fp + bank + kasse - dar - vb;
+    return { text: `Laut Inventar zum 31.12.: BGA ${euro(bga)} €, Fuhrpark ${euro(fp)} €, Bank ${euro(bank)} €, Kasse ${euro(kasse)} €, Darlehen ${euro(dar)} €, Verbindlichkeiten aLuL ${euro(vb)} €. Wie hoch ist das Eigenkapital (in €)?`, wert: ek,
+      erkl: `Bilanzgleichung: Eigenkapital = Vermögen ${euro(bga + fp + bank + kasse)} − Schulden ${euro(dar + vb)} = ${euro(ek)} €.` }; } },
+  { nr: 165, erzeugen: (r) => { const m = r.betrag(600, 2000, 10), z = r.betrag(30, 300, 1), en = r.betrag(300, 1500, 10), bga = r.betrag(1000, 5000, 100), t = r.betrag(1000, 4000, 100), ei = r.betrag(200, 2000, 100), d = -m + z - en + ei;
+    return { text: `Welche Auswirkung haben folgende Vorgänge insgesamt auf das Eigenkapital (Minderung mit Minuszeichen, in €)? Ladenmiete ${euro(m)} € per Bank · Zinsgutschrift ${euro(z)} € · Bargeldentnahme ${euro(en)} € · Kauf einer Regalanlage auf Ziel ${euro(bga)} € · Darlehenstilgung ${euro(t)} € per Bank · Einlage ${euro(ei)} € auf das Geschäftskonto`, wert: d,
+      erkl: `Nur Aufwand, Ertrag, Entnahme und Einlage ändern das Eigenkapital: −${euro(m)} + ${euro(z)} − ${euro(en)} + ${euro(ei)} = ${euro(d)} €. Kauf auf Ziel und Tilgung sind Aktiv-Passiv-Mehrung bzw. -Minderung.` }; } },
 ];
 
 // ---------- Zusammenstellung ----------
@@ -222,19 +219,30 @@ const PLAN = [
 ];
 export const ALLE_VORLAGEN = PLAN.flatMap(([pool, typ]) => pool.map((v) => ({ ...v, typ })));
 
-/** Fragen eines Durchlaufs (deterministisch aus dem Startwert). */
-export function testErzeugen(seed) {
-  const r = zufall(seed), fragen = [];
+/** Durchgänge je Runde, in denen keine Aufgabe doppelt vorkommt. */
+export const RUNDE = 3;
+/**
+ * Fragen eines Durchgangs (deterministisch aus Startwert, schon gezogenen Vorlagen `ohne` und Durchgang `d`).
+ * Noch nicht gezogene Vorlagen haben Vorrang – so bringen die Durchgänge einer Runde lauter verschiedene Aufgaben.
+ */
+export function testErzeugen(seed, ohne = [], d = 0) {
+  const r = zufall(seed), fragen = [], weg = new Set(ohne);
   for (const [pool, typ, n] of PLAN) {
-    // bei den Arten möglichst verschiedene Kategorien ziehen
-    let wahl = r.mischen(pool);
-    if (pool === ARTEN) { const ges = new Set(); wahl = wahl.filter((v) => !ges.has(v.gruppe) && ges.add(v.gruppe)); }
-    for (const v of wahl.slice(0, n)) fragen.push(frage(v, typ, zufall(seed * 7919 + v.nr)));
+    const gemischt = r.mischen(pool), wahl = [...gemischt.filter((v) => !weg.has(v.nr)), ...gemischt.filter((v) => weg.has(v.nr))];
+    let pick = [];
+    if (pool === ARTEN) { // möglichst verschiedene Arten
+      const ges = new Set();
+      for (const v of wahl) if (pick.length < n && !weg.has(v.nr) && !ges.has(v.gruppe)) { pick.push(v); ges.add(v.gruppe); }
+      for (const v of wahl) if (pick.length < n && !pick.includes(v)) pick.push(v);
+    } else pick = wahl.slice(0, n);
+    for (const v of pick) fragen.push(frage(v, typ, zufall(seed * 7919 + v.nr), d));
   }
   return r.mischen(fragen);
 }
-function frage(v, typ, r) {
-  const f = { nr: v.nr, id: 1066000 + v.nr * 7, typ, ...v.erzeugen(r) };
+/** Fragen eines gespeicherten Durchgangs. */
+export const fragenVon = (t) => testErzeugen(t.seed, t.ohne || [], t.d || 0);
+function frage(v, typ, r, d) {
+  const f = { nr: v.nr, id: 1066000 + v.nr * 7, typ, ...v.erzeugen(r, d) };
   if (f.text == null && f.bs) f.text = "";
   if (typ === "sc" && f.optionen.length === 4) { // Antwortreihenfolge mischen (die Achter-Liste und SBK/GuV/EK bleiben fest)
     const o = r.mischen(f.optionen.map((t, i) => [t, i])); f.richtig = o.findIndex(([, i]) => i === f.richtig); f.optionen = o.map(([t]) => t);
@@ -334,9 +342,9 @@ export function startKarte(h) {
   return `<section class="ot-karte">
     <div class="ot-karte-kopf"><span class="ot-ilias">Online-Lernstandstest</span><span class="ot-frist">${h.ic("kalender", "klein")} nur bis ${new Date(SICHTBAR.bis + "T12:00").toLocaleDateString("de-DE", { weekday: "long", day: "numeric", month: "numeric" })}</span></div>
     <b class="ot-karte-titel">Generalprobe für den Vortest</b>
-    <span class="sub">Schwerer als die Generalprobe der Hochschule: Bilanzveränderungen, Bestandskonten, Buchungssätze, EBK/SBK, Aufwands- und Ertragskonten, GuV-Abschluss und Privatkonten – 20 Fragen in ${MINUTEN} Minuten, jedes Mal neue Zahlen.</span>
+    <span class="sub">Schwerer als die Generalprobe der Hochschule: Bilanzveränderungen, Bestandskonten, Buchungssätze, EBK/SBK, Aufwands- und Ertragskonten, GuV-Abschluss und Privatkonten – 20 Fragen in ${MINUTEN} Minuten. ${RUNDE} Durchgänge mit lauter verschiedenen Aufgaben, jedes Mal neue Zahlen.</span>
     <div class="ot-karte-fuss">
-      <button class="knopf" data-a="otStart">${h.ic("play", "fill")} ${h.laufend ? "Test fortsetzen" : "Test starten"}</button>
+      <button class="knopf" data-a="otStart">${h.ic("play", "fill")} ${h.laufend ? "Test fortsetzen" : `Durchgang ${(h.durchgang % RUNDE) + 1} von ${RUNDE} starten`}</button>
       ${best != null ? `<span class="ot-best"><b>${pz(best)} %</b><span>bestes Ergebnis · ${v.length}×</span></span>` : ""}
     </div>
   </section>`;
@@ -344,8 +352,8 @@ export function startKarte(h) {
 
 /** Vollbild: Testdurchlauf bzw. Ergebnis. */
 export function testView(t, h) {
-  const fragen = testErzeugen(t.seed), n = fragen.length;
-  const kopf = (rechts) => `<div class="vb-kopf"><button class="rund" data-a="otZu" aria-label="Schließen">${h.ic("kreuz")}</button><div class="mitte">Generalprobe Bilanz</div>${rechts}</div>`;
+  const fragen = fragenVon(t), n = fragen.length;
+  const kopf = (rechts) => `<div class="vb-kopf"><button class="rund" data-a="otZu" aria-label="Schließen">${h.ic("kreuz")}</button><div class="mitte">Generalprobe Bilanz${t.d != null ? ` · ${(t.d % RUNDE) + 1}/${RUNDE}` : ""}</div>${rechts}</div>`;
   if (t.ende) {
     const max = gesamtPunkte(fragen), p = erreicht(fragen, t.antworten), q = max ? p / max : 0;
     return `<div class="vollbild ot" role="dialog" aria-label="Testergebnis">${kopf("")}
