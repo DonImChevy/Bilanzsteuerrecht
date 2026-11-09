@@ -1132,3 +1132,14 @@ test("Frag mich ab: geeignete Aufgaben lassen sich vollständig vorlesen", async
   }
   assert.ok(n > 200, "geeignet: " + n);
 });
+
+test("Kalender-Export: Klausurtermine und tägliche Erinnerung als gültige .ics-Datei", async () => {
+  const { icsErzeugen } = await import("../js/termine.js");
+  const jetzt = new Date(2026, 10, 9, 12).getTime();
+  const ics = icsErzeugen({ a: { fach: "bsr", titel: "Klausur", datum: "2026-11-18" }, b: { fach: "ao", datum: "2026-11-01" }, c: { fach: "ust", datum: "2026-12-01", x: 1 } }, { name: (f) => f.toUpperCase(), jetzt });
+  assert.match(ics, /^BEGIN:VCALENDAR\r\n/); assert.match(ics, /END:VCALENDAR\r\n$/);
+  assert.equal((ics.match(/BEGIN:VEVENT/g) || []).length, 2, "nur kommende, nicht gelöschte + Erinnerung");
+  assert.match(ics, /DTSTART;VALUE=DATE:20261118\r\nDTEND;VALUE=DATE:20261119/);
+  assert.match(ics, /RRULE:FREQ=DAILY;UNTIL=20261118T235959/);
+  assert.match(ics, /SUMMARY:Klausur BSR/);
+});

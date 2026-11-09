@@ -2613,3 +2613,17 @@ button.ot-option:hover { background: color-mix(in srgb, var(--ot-blau) 7%, trans
 .doz-stat-zeile .sub { font-size: 11px; color: var(--text3); }
 .doz-feld input, .doz-feld select, .doz-feld textarea { width: 100%; min-width: 0; box-sizing: border-box; }
 .doz-form, .doz { min-width: 0; }
+
+/* Punkte-Hebel */
+.hebel { display: grid; gap: 8px; }
+.hebel-zeile { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; padding: 12px 14px; border-radius: 18px; border: 1px solid var(--glas-rand); background: var(--glas-stark); box-shadow: var(--schatten); color: inherit; font: inherit; }
+.hebel-zeile .grow { display: grid; min-width: 0; }
+.hebel-zeile .sub { font-size: 12.5px; color: var(--text3); }
+.hebel-nr { flex: none; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: color-mix(in srgb, var(--m) 16%, transparent); color: var(--m); }
+.hebel-balken { flex: none; width: 54px; height: 8px; border-radius: 8px; background: linear-gradient(90deg, var(--m) var(--q), var(--glas-rand) 0); }
+
+/* Selbsteinschätzung vor dem Prüfen */
+.sicher-chips { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 4px 0 8px; font-size: 13px; color: var(--text2); }
+.sicher-chips > span { font-weight: 700; margin-right: 4px; }
+.sicher-chips .chip { padding: 6px 12px; font-size: 13px; }
+.kalibrierung { margin: 0 0 10px; padding: 8px 12px; border-radius: 12px; background: var(--glas); font-size: 13.5px; }

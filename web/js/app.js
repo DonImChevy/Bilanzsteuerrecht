@@ -29,7 +29,7 @@ import { taler, talerBuehne, TALER_SPRUECHE, talerOutfitSetzen } from "./maskott
 import { kasse, kaufbar, outfitVon, artikel, preisFuer, STANDARD, FARBWELTEN } from "./garderobe.js";
 import { bildLaden, bildSpeichern, bildVerkleinern } from "./bildspeicher.js";
 import { garderobeView, talerBetrag } from "./garderobeansicht.js";
-import { kommende, countdownText, proTag } from "./termine.js";
+import { kommende, countdownText, proTag, icsErzeugen } from "./termine.js";
 import { rueckblickView, statistikView, statistikStart } from "./statistikansicht.js";
 import { DUELL_ANZAHL, neuerSeed, duellLesen, duellLink, duellSieger, zeitText } from "./duell.js";
 import { eintragen, austragen, rangliste, gruppeSchreiben, doppelteEntfernen } from "./gruppe.js";
@@ -209,7 +209,9 @@ function erfasse(frage, korrekt) {
   z.b += 1;
   if (korrekt) z.r += 1;
   stat.proThema[frage.thema] = z;
-  if (korrekt !== null && korrekt !== undefined) stat.lern[frage.id] = planen(stat.lern[frage.id], korrekt);
+  const sicher = state.sitzung?.sicher?.[state.sitzung.index];
+  if (korrekt !== null && korrekt !== undefined) stat.lern[frage.id] = planen(stat.lern[frage.id], korrekt, Date.now(), { geraten: sicher === "geraten" });
+  if (sicher && (korrekt === true || korrekt === false)) kalibrierungMerken(sicher, korrekt);
   const heute = tagSchluessel();
   stat.tage[heute] = (stat.tage[heute] || 0) + 1;
   const tl = ((stat.log ||= {})[heute] ||= {}), alt = tl[frage.thema] || [0, 0];
@@ -1233,6 +1235,9 @@ function termineView() {
       ${e ? `<button class="knopf zweit" data-a="terminAbbrechen" style="flex:1">Abbrechen</button>` : ""}
       <button class="knopf" data-a="terminNeu" style="flex:2">${ic(e ? "haken" : "plus")} ${e ? "Speichern" : "Termin speichern"}</button></div>
       <div class="sub" style="margin:8px 4px 0">Fach nicht in der App? „Anderes Fach“ wählen und den Namen als Bezeichnung eintragen.</div></div>
+    ${alle.length ? `<div class="gruppe"><div class="gruppe-titel">In deinen Kalender</div><div class="liste">
+      <label class="zeile"><span class="grow">Tägliche Lernerinnerung um</span><input type="time" id="icsZeit" value="${esc(lies("bsr.icsZeit", "18:00"))}"></label>
+      <button class="zeile" data-a="icsExport"><span class="symbol">${ic("kalender")}</span><span class="grow"><b>Termine und Erinnerung exportieren</b><div class="sub">Kalender-Datei (.ics) – erinnert ohne Push, auch wenn die App zu ist</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
     <div class="gruppe-fuss" style="margin:8px 4px 20px">Termine werden mit dem Sync-Code auf deine anderen Geräte übertragen.</div>`;
 }
 
@@ -1619,6 +1624,17 @@ function lernkarteiView() {
 // ======================= Tab: Klausur =======================
 const klausurenFach = () => stat.klausuren.filter((k) => (k.fach || "bsr") === state.fach);
 
+/** Punkte-Hebel: welches Thema bringt in der nächsten Stunde die meisten Klausurpunkte? (Klausurschwerpunkt × Lücke) */
+function punkteHebel() {
+  const top = new Set(KLAUSURPLAN[state.fach]?.top || []);
+  const l = pruefImTeil(state.fach).map((t) => { const z = zaehler(t.id), q = z.b >= 3 ? quote(z) : 0.4; return { t, q, z, wert: (top.has(t.id) ? 2 : 1) * (1 - q) }; })
+    .sort((a, b) => b.wert - a.wert).slice(0, 3);
+  if (!l.length || l[0].wert <= 0.1) return "";
+  return `<div class="gruppe"><div class="gruppe-titel">Punkte-Hebel <span class="sub" style="text-transform:none;letter-spacing:0">– hier holst du die nächsten Punkte</span></div><div class="hebel">
+    ${l.map(({ t, q, z }, i) => `<button class="hebel-zeile" data-a="schnell" data-v="thema" data-t="${t.id}"><span class="hebel-nr">${i + 1}</span>
+      <span class="grow"><b>${esc(t.titel)}</b><span class="sub">${top.has(t.id) ? "Klausurschwerpunkt · " : ""}${z.b >= 3 ? `du ${Math.round(q * 100)} %` : "noch kaum geübt"}</span></span>
+      ${z.b >= 3 ? `<span class="hebel-balken" style="--q:${Math.round(q * 100)}%"></span>` : ""}${ic("pfeil", "klein")}</button>`).join("")}</div></div>`;
+}
 function tabKlausur() {
   const zeiten = [0, 30, 45, 60, 90];
   const ks = klausurenFach();
@@ -1640,6 +1656,7 @@ function tabKlausur() {
           2: "Teil II: Bilanzierung und Bewertung – ca. 40 % Buchungssätze, dazu Berechnungen und Würdigung. Auswertung erst nach der Abgabe.",
           beide: "Wie die Semesterklausur: ca. 25 % Teil I (Buchführung) und 75 % Teil II (Bilanzierung und Bewertung). Auswertung erst nach der Abgabe." }[state.bilrTeil])}
     ${otKarte()}
+    ${punkteHebel()}
     ${SIM[state.fach] ? simStartKarte(state.fach, { ic, laufend: ksimGespeichert()?.phase === "laufend" }) : ""}
     ${modusSchalter()}
     ${KLAUSURPLAN[state.fach] ? `<button class="km-vorher" data-a="kompaktListe"><span class="km-vorher-icon">${ic("akte")}</span>
@@ -2039,6 +2056,7 @@ function sitzungView() {
     feedback = `<div class="feedback" style="color:var(--text);font-size:16px"><span>Hast du es gewusst?<small>Ehrlich vergleichen – das steuert, wann die Frage wiederkommt.</small></span></div>`;
     fuss = `<button class="knopf rot" data-a="selbst" data-v="0">${ic("kreuz")} Nicht gewusst</button><button class="knopf gruen" data-a="selbst" data-v="1">${ic("haken")} Gewusst</button>`;
   } else if (!b) {
+    if (x.modus === "uebung" && !x.duell) feedback = sicherheitsChips(x);
     fuss = `<span class="fb-warte">${taler("warte", { groesse: 52 })}</span><button class="knopf" id="pruefen" data-a="pruefen" ${istLeer(f, aktAntwort()) ? "disabled" : ""}>Prüfen</button>`;
   } else {
     const ok = b.korrekt;
@@ -2295,6 +2313,20 @@ function dozStatistikHtml(e, st) {
     return `<div class="doz-stat-zeile"><span class="grow">${esc(titel)}${titel.length >= 90 ? " …" : ""}</span><span class="doz-balken" style="--q:${Math.round(q * 100)}%;--f:${farbe(q)}"></span><b>${Math.round(q * 100)} %</b><span class="sub">n=${n}</span></div>`; }).join("")}</div>`;
 }
 
+// „Wie sicher bist du?“ – Selbsteinschätzung vor dem Prüfen; Kalibrierung in localStorage bsr.kalibrierung
+const SICHER = [["sicher", "Sicher"], ["unsicher", "Unsicher"], ["geraten", "Geraten"]];
+const kalibrierung = () => { try { return JSON.parse(localStorage.getItem("bsr.kalibrierung") || "{}"); } catch (_) { return {}; } };
+function kalibrierungMerken(s, korrekt) { const k = kalibrierung(), e = (k[s] ||= [0, 0]); e[0] += korrekt ? 1 : 0; e[1] += 1; schreib("bsr.kalibrierung", JSON.stringify(k)); }
+function sicherheitsChips(x) {
+  const w = x.sicher?.[x.index];
+  return `<div class="sicher-chips" role="group" aria-label="Wie sicher bist du?"><span>Wie sicher bist du?</span>${SICHER.map(([v, t]) => `<button class="chip${w === v ? " aktiv" : ""}" data-a="sicherWahl" data-v="${v}">${t}</button>`).join("")}</div>`;
+}
+function kalibrierungsHinweis(s) {
+  const e = kalibrierung()[s]; if (!e || e[1] < 10) return "";
+  const q = e[0] / e[1], t = { sicher: "„sicher“", unsicher: "„unsicher“", geraten: "„geraten“" }[s];
+  return `<div class="kalibrierung">Wenn du ${t} sagst, liegst du zu <b>${Math.round(q * 100)} %</b> richtig${s === "sicher" && q < 0.8 ? " – Vorsicht vor Selbstüberschätzung." : s === "geraten" && q > 0.6 ? " – du weißt mehr, als du denkst." : "."}</div>`;
+}
+
 function auswertungInhalt(f, b) {
   let extra = "";
   if (f.typ === "zahl") {
@@ -2311,7 +2343,9 @@ function auswertungInhalt(f, b) {
   }
   if (f.typ === "offen" && b.auto) {
     const a = b.auto, haken = (ok) => `<span class="pruef-ic ${ok ? "ja" : "nein"}">${ok ? "✓" : "✗"}</span>`;
-    return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt ? "" : "nein"}">
+    const sw = state.sitzung?.sicher?.[state.sitzung.index];
+  if (sw) extra = kalibrierungsHinweis(sw) + extra;
+  return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt ? "" : "nein"}">
       <div class="urteil ${b.korrekt ? "ja" : "nein"}">${b.korrekt ? "✓ Richtig" : "✗ Noch nicht vollständig"}${b.korrigiert ? ` <span class="sub">(von dir korrigiert)</span>` : ""}</div>
       <div class="pruefung">
         ${a.normen.length ? a.normen.map((n) => `<div class="pruef-zeile">${haken(n.ok)}<span><b>Norm:</b> ${esc(n.label)}${n.ok ? "" : " – nicht zitiert"}</span></div>`).join("") : ""}
@@ -3248,6 +3282,12 @@ const AKTIONEN = {
   },
   dozLoeschen: async (id) => { if (!confirm("Eintrag für alle löschen?")) return; try { await KR.loeschen(state.doz.pw, id); AKTIONEN.dozLaden(); } catch (err) { toast(err.message); } },
   dozStatistik: async (id) => { try { (state.doz.stat ||= {})[id] = await KR.statistik(state.doz.pw, id) || []; render(); } catch (err) { toast(err.message); } },
+  icsExport: () => {
+    const zeit = document.getElementById("icsZeit")?.value || "18:00"; schreib("bsr.icsZeit", zeit);
+    const ics = icsErzeugen(stat.termine, { name: (f) => terminModul(f)?.kurz || "", uhrzeit: zeit });
+    dateiSpeichern("Klausurtermine.ics", ics, "text/calendar");
+  },
+  sicherWahl: (v) => { const x = s(); if (!x) return; (x.sicher ||= [])[x.index] = x.sicher[x.index] === v ? null : v; render(); },
   fortsetzen: (v) => {
     if (v === "sitzung") { const x = sitzungGespeichert(); if (!x) return; state.sitzung = x; state.fach = x.fach || state.fach; render(); scrollOben(); }
     else if (v === "ksim") AKTIONEN.ksimWeiter();
