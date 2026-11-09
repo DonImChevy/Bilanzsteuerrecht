@@ -336,6 +336,7 @@ const state = {
   hs: { art: "s", farbe: 0, mfarbe: 0 }, // Handschrift: Werkzeug (Stift, Textmarker, Radierer) und Farben
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
+  abfrage: null, // „Frag mich ab“: Hör-Abfrage der Lernkartei (abfrage.js)
   otest: null, // Generalprobe Online-Test Bilanzrecht (zeitlich begrenzt, Entwurf in localStorage bsr.otest)
   ksim: null, // Klausursimulation (begonnene liegt in localStorage bsr.ksim, „fortsetzen“ öffnet sie wieder)
   kompakt: null, // Kompaktwissen: {id: Thema | null (Übersicht), fach, liste: aus der Übersicht geöffnet, ausSitzung}
@@ -735,6 +736,43 @@ const TABS = () => [
   ["nachschlagen", "nachschlagen", buchungsFach(state.fach) ? "Nachschlagen" : "Normen"],
 ];
 
+// Laufende Übung/Klausur sichern: übersteht Neuladen und das Beenden der App durch iOS (localStorage bsr.sitzung)
+let sitzungLief = false;
+function sitzungSichern() {
+  const x = state.sitzung;
+  if (x && !x.beendet && !x.duell) { schreib("bsr.sitzung", JSON.stringify(x)); sitzungLief = true; }
+  else if (sitzungLief || x?.beendet) { try { localStorage.removeItem("bsr.sitzung"); } catch (_) { /* egal */ } sitzungLief = false; }
+}
+const sitzungGespeichert = () => { try { const x = JSON.parse(localStorage.getItem("bsr.sitzung") || "null"); return x && !x.beendet && Date.now() - x.start < 3 * 864e5 ? x : null; } catch (_) { return null; } };
+window.addEventListener("pagehide", () => sitzungSichern());
+
+// Bildschirm wach halten (Klausur, Klausursimulation, Generalprobe, Vorlesen/Abfrage, Handschrift)
+let wachSperre = null;
+async function wachHalten() {
+  const noetig = (state.sitzung && state.sitzung.modus === "klausur" && !state.sitzung.beendet) || state.ksim?.phase === "laufend" || (state.otest && !state.otest.ende) || state.abfrage || hoertGerade() || state.sheet?.art === "karteEdit";
+  try {
+    if (noetig && !wachSperre && "wakeLock" in navigator && document.visibilityState === "visible") { wachSperre = await navigator.wakeLock.request("screen"); wachSperre.addEventListener?.("release", () => { wachSperre = null; }); }
+    else if (!noetig && wachSperre) { await wachSperre.release(); wachSperre = null; }
+  } catch (_) { wachSperre = null; }
+}
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") wachHalten(); else sitzungSichern(); });
+
+/** Banner „Weitermachen“: unterbrochene Übung/Klausur, Klausursimulation oder Generalprobe. */
+function fortsetzenBanner() {
+  if (state.sitzung || state.ksim || state.otest) return "";
+  const l = [];
+  const x = sitzungGespeichert();
+  if (x) { const r = x.modus === "klausur" && x.minuten ? Math.max(0, x.minuten * 60 - Math.floor((Date.now() - x.start) / 1000)) : null;
+    l.push(["sitzung", sitzungTitel(x), `${x.antworten.filter((a, i) => x.bewertungen[i] || JSON.stringify(a) !== JSON.stringify(leereAntwort(x.fragen[i]))).length} von ${x.fragen.length} bearbeitet${r != null ? ` · noch ${uhr(r)}` : ""}`]); }
+  const k = ksimGespeichert();
+  if (k?.phase === "laufend") l.push(["ksim", `Klausursimulation ${k.minuten} Min.`, `noch ${simUhr(simRest(k))}`]);
+  const o = otGespeichert();
+  if (o && !o.ende && OT.sichtbar()) l.push(["otest", "Generalprobe Bilanz", `${Object.keys(o.antworten || {}).length} von 60 beantwortet`]);
+  return l.map(([v, titel, sub]) => `<div class="fortsetzen" role="status"><span class="fs-puls" aria-hidden="true"></span>
+    <button class="grow fs-text" data-a="fortsetzen" data-v="${v}"><b>${esc(titel)} läuft</b><span class="sub">${esc(sub)} – weitermachen</span></button>
+    <button class="fs-weg" data-a="fortsetzenWeg" data-v="${v}" aria-label="Verwerfen">${ic("kreuz", "klein")}</button></div>`).join("");
+}
+
 function render() {
   const aktiv = document.activeElement;
   const fokusId = aktiv && aktiv.dataset ? aktiv.dataset.fokus : null;
@@ -771,7 +809,10 @@ function render() {
   });
   if (scrollVoll.some(Boolean)) app.querySelectorAll(".vollbild .vb-inhalt").forEach((el, i) => { if (scrollVoll[i]) el.scrollTop = scrollVoll[i]; });
   if (scrollSheet) { const el = app.querySelector(".sheet .vb-inhalt"); if (el) el.scrollTop = scrollSheet; }
+  app.querySelectorAll(".heat").forEach((el) => { if (!el.dataset.gescrollt) { el.scrollLeft = el.scrollWidth; el.dataset.gescrollt = 1; } });
   handschriftAnbinden();
+  sitzungSichern();
+  wachHalten();
   // Vorlesen: läuft weiter, solange das Thema offen ist; Schließen oder ein anderes Thema beendet es
   if (hoertGerade() && !hoertGerade(state.kompakt?.id)) hoerStopp(); else leisteAktualisieren();
   offlineAnzeigen();
@@ -870,6 +911,7 @@ function tabStart() {
       </div>
       <div class="kopf-aktionen"><button class="icon-btn" data-a="einstellungen" aria-label="Einstellungen">${ic("einstellungen")}</button></div>
     </div>
+    ${fortsetzenBanner()}
     ${state.talerSpruch >= 0 ? `<div class="taler-blase" role="status">${esc(TALER_SPRUECHE[state.talerSpruch % TALER_SPRUECHE.length])}</div>` : ""}
     <section class="hero">
       <div class="oben">
@@ -1441,6 +1483,7 @@ function tabLernen() {
 
   return `
     ${modulLeiste()}
+    ${fortsetzenBanner()}
     <section class="modul-banner">
       <div class="reihe1"><span class="m-icon">${ic(m.icon, "gross")}</span>
         <div style="min-width:0"><h1>${m.titel}</h1><div class="unter">${esc(m.unter)}</div></div></div>
@@ -2968,6 +3011,17 @@ const AKTIONEN = {
     const seed = Math.floor(Math.random() * 1e9), minuten = Number(v);
     state.ksim = { fach: state.fach, minuten, seed, teile: zusammenstellen(state.fach, minuten, seed), phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
     ksimSichern(); render(); scrollOben();
+  },
+  fortsetzen: (v) => {
+    if (v === "sitzung") { const x = sitzungGespeichert(); if (!x) return; state.sitzung = x; state.fach = x.fach || state.fach; render(); scrollOben(); }
+    else if (v === "ksim") AKTIONEN.ksimWeiter();
+    else if (v === "otest") AKTIONEN.otStart();
+  },
+  fortsetzenWeg: (v) => {
+    if (!confirm("Den angefangenen Stand verwerfen?")) return;
+    const schl = { sitzung: "bsr.sitzung", ksim: "bsr.ksim", otest: "bsr.otest2" }[v];
+    try { localStorage.removeItem(schl); } catch (_) { /* egal */ }
+    render();
   },
   otStart: () => {
     const alt = otGespeichert();

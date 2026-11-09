@@ -2492,3 +2492,13 @@ button.ot-option:hover { background: color-mix(in srgb, var(--ot-blau) 7%, trans
   .ot-option { font-size: 15.5px; }
 }
 :root[data-leistung="spar"] .ot-karte::after { display: none; }
+
+/* Weitermachen-Banner (unterbrochene Übung, Klausur, Simulation, Generalprobe) */
+.fortsetzen { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; padding: 10px 10px 10px 14px; border-radius: 18px; background: color-mix(in srgb, var(--warn) 12%, var(--glas-stark)); border: 1px solid color-mix(in srgb, var(--warn) 35%, var(--glas-rand)); box-shadow: var(--schatten); }
+.fs-puls { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--warn); box-shadow: 0 0 0 0 color-mix(in srgb, var(--warn) 60%, transparent); animation: fs-puls 1.8s infinite; }
+@keyframes fs-puls { 70% { box-shadow: 0 0 0 9px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+:root[data-bewegung="aus"] .fs-puls, :root[data-leistung="spar"] .fs-puls { animation: none; }
+.fs-text { display: grid; text-align: left; background: none; border: 0; padding: 0; color: inherit; font: inherit; min-width: 0; }
+.fs-text b { font-size: 15px; }
+.fs-text .sub { font-size: 12.5px; color: var(--text2); }
+.fs-weg { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--glas); color: var(--text2); display: grid; place-items: center; }

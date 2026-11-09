@@ -256,7 +256,7 @@ const kauf = [
       { text: "Der Händler hat zweimal erfolglos versucht, den Tonausfall am Fernseher zu beheben.", richtig: 1, erkl: "Nacherfüllung gilt nach dem zweiten erfolglosen Versuch als fehlgeschlagen (§ 440 S. 2 BGB) → Rücktritt oder Minderung.", normen: ["BGB 440", "BGB 441 1"] },
       { text: "Beim Kauf eines Gebrauchtwagens weist der Verkäufer auf eine Delle in der Tür hin. K kauft trotzdem und will später mindern.", richtig: 2, erkl: "Kenntnis des Mangels bei Vertragsschluss schließt die Rechte aus (§ 442 Abs. 1 S. 1 BGB).", normen: ["BGB 442 1"] },
       { text: "K setzt dem Verkäufer eine Frist von zwei Wochen zur Reparatur seines E-Bikes; der Verkäufer reagiert nicht.", richtig: 1, erkl: "Fristablauf ohne Nacherfüllung → Rücktritt (§ 437 Nr. 2 BGB, § 323 Abs. 1 BGB) oder Minderung (§ 441 BGB).", normen: ["BGB 323 1", "BGB 441 1"] },
-      { text: "Privatverkäufer P verkauft unter Ausschluss jeder Gewährleistung sein Fahrrad; einen ihm bekannten Rahmenriss verschweigt er.", richtig: 0, erkl: "Haftungsausschluss gilt bei Arglist nicht (§ 444 BGB) – K hat seine Mängelrechte, zunächst Nacherfüllung; außerdem Anfechtung nach § 123 BGB möglich.", normen: ["BGB 444", "BGB 123 1"] },
+      { text: "Privatverkäufer P verkauft sein Fahrrad „wie besehen unter Ausschluss jeder Gewährleistung“. Später zeigt sich ein Rahmenriss, von dem P selbst nichts wusste.", richtig: 2, erkl: "Der Gewährleistungsausschluss ist wirksam: P hat den Mangel weder arglistig verschwiegen noch eine Garantie übernommen (§ 444 BGB). Hätte P den Riss gekannt und verschwiegen, könnte er sich auf den Ausschluss nicht berufen.", normen: ["BGB 444"] },
     ]),
 ];
 
