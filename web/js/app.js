@@ -16,6 +16,7 @@ import * as HS from "./handschrift.js";
 import * as OT from "./bilr/onlinetest.js";
 import * as DF from "./denkfehler.js";
 import * as AB from "./abfrage.js";
+import * as KR from "./kursraum.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, nachholen, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
@@ -195,6 +196,7 @@ const zaehler = (t) => stat.proThema[t] || { b: 0, r: 0 };
 const quote = (z) => (z.b ? z.r / z.b : 0);
 /** Bearbeitete Aufgabe zählen. Gibt die gewonnenen XP und die aktuelle Serie zurück (für die Rückmeldung). */
 function erfasse(frage, korrekt) {
+  if (state.sitzung?.kursBlatt && (korrekt === true || korrekt === false)) KR.melden(state.sitzung.kursBlatt, frage.id, korrekt); // anonym, nur Zähler
   const vorher = levelJetzt(), basisVorher = xpGesamt(stat).basis, heuteVorher = stat.tage[tagSchluessel()] || 0;
   if (korrekt === true || korrekt === false) {
     const l = (stat.lauf ||= { serie: 0, bs: 0 });
@@ -338,6 +340,7 @@ const state = {
   hs: { art: "s", farbe: 0, mfarbe: 0 }, // Handschrift: Werkzeug (Stift, Textmarker, Radierer) und Farben
   sheet: null, // {art: "konto"|"kontoDetail"|"norm"|"info"|"raster"|"einstellungen"|"willkommen"|"merksaetze"|"punktesammler"}
   deck: null,
+  doz: null, // Dozierenden-Bereich {pw, form, liste, stat} – Passwort nur im Speicher
   abfrage: null, // „Frag mich ab“: Hör-Abfrage der Lernkartei (abfrage.js)
   otest: null, // Generalprobe Online-Test Bilanzrecht (zeitlich begrenzt, Entwurf in localStorage bsr.otest)
   ksim: null, // Klausursimulation (begonnene liegt in localStorage bsr.ksim, „fortsetzen“ öffnet sie wieder)
@@ -1507,6 +1510,7 @@ function tabLernen() {
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     ${pfadKachel()}
     ${kompaktKachel()}
+    ${kursKarte()}
     ${denkfehlerKarte()}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
     <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien", ust: "Themen · Skript & Klausurtechnik" }[state.fach] || { 1: "Themen · Skript Teil I", 2: "Themen · Skript Teil II", beide: "Themen · Skript Teil I und II" }[state.bilrTeil]}<span class="sub" style="text-transform:none;letter-spacing:0">${themenImTeil(state.fach).length} Themen</span></div>
@@ -2230,6 +2234,67 @@ function abfrageView() {
     </div></div>`;
 }
 
+// ======================= Kursraum (Dozierende) =======================
+const kursGeladen = {};
+function kursLaden(fach, erzwingen = false) {
+  if (!KR.kursVerfuegbar() || (!erzwingen && Date.now() - (kursGeladen[fach] || 0) < 5 * 60e3)) return;
+  kursGeladen[fach] = Date.now();
+  KR.liste(fach).then(() => render()).catch(() => {});
+}
+const kursEintragHtml = (e, kurz = false) => {
+  const datum = new Date(e.erstellt).toLocaleDateString("de-DE", { day: "numeric", month: "short" });
+  const kopf = `<div class="kr-kopf"><span class="kr-art kr-${e.art}">${KR.ARTEN[e.art]}</span><span class="sub">${datum}${e.autor ? " · " + esc(e.autor) : ""}</span></div><b class="kr-titel">${esc(e.titel)}</b>`;
+  const text = e.text ? `<div class="kr-text${kurz ? " kurz" : ""}">${KR.textHtml(e.text, esc)}</div>` : "";
+  const aktion = e.art === "link" && e.link ? `<a class="knopf zweit kr-knopf" href="${esc(e.link)}" target="_blank" rel="noopener">${ic("pfeil", "klein")} Öffnen</a>`
+    : e.art === "datei" ? `<button class="knopf zweit kr-knopf" data-a="kursDatei" data-v="${e.id}">${ic("export", "klein")} ${esc(e.datei_name || "Datei")} (${Math.max(1, Math.round((e.datei_groesse * 0.75) / 1024))} KB)</button>`
+    : e.art === "blatt" ? `<button class="knopf kr-knopf" data-a="kursBlatt" data-v="${e.id}">${ic("play", "klein")} ${(e.aufgaben || []).length} Aufgaben lösen</button>` : "";
+  return `<article class="kr-eintrag">${kopf}${text}${aktion}</article>`;
+};
+function kursKarte() {
+  if (!KR.kursVerfuegbar()) return "";
+  kursLaden(state.fach);
+  const l = KR.zwischenstand(state.fach)?.l || [];
+  if (!l.length) return "";
+  const neu = KR.neuSeit(l, Number(lies("bsr.kursGesehen." + state.fach, "0")));
+  return `<div class="gruppe"><div class="gruppe-titel">Aus dem Kurs${neu ? ` <span class="kr-neu">${neu} neu</span>` : ""}<button class="link" data-a="kursAlle">Alle</button></div>
+    <div class="kr-karte">${l.slice(0, 2).map((e) => kursEintragHtml(e, true)).join("")}</div></div>`;
+}
+function dozentInhalt() {
+  const d = state.doz;
+  if (!d?.pw) return `<div class="doz-login"><p>Der Kursraum ist für Lehrende: Hinweise, Links, Dateien und Aufgabenblätter, die alle Lernenden im jeweiligen Modul sehen. Ergebnisse von Aufgabenblättern kommen anonym als Klassenstatistik zurück.</p>
+    <label class="doz-feld"><span>Passwort für Dozierende</span><input type="password" id="dozPw" autocomplete="current-password" data-fokus="dozPw"></label>
+    <button class="knopf" data-a="dozAnmelden">${ic("schloss", "klein")} Anmelden</button>
+    ${KR.kursVerfuegbar() ? "" : `<p class="sub">Der Server ist in dieser Version nicht eingerichtet.</p>`}</div>`;
+  const f = d.form, module = MODULE.filter((m) => !m.bald), themen = themenFuer(f.fach);
+  return `<div class="doz">
+    <div class="gruppe"><div class="gruppe-titel">Neuer Eintrag</div><div class="doz-form">
+      <label class="doz-feld"><span>Modul</span><select data-doz="fach">${module.map((m) => `<option value="${m.id}"${m.id === f.fach ? " selected" : ""}>${esc(m.titel)}</option>`).join("")}</select></label>
+      <span class="segment doz-art">${Object.entries(KR.ARTEN).map(([a, t]) => `<button data-a="dozArt" data-v="${a}" class="${f.art === a ? "aktiv" : ""}">${t}</button>`).join("")}</span>
+      <label class="doz-feld"><span>Titel</span><input data-doz="titel" maxlength="120" value="${esc(f.titel || "")}" placeholder="${{ hinweis: "z. B. Klausurtermin verschoben", link: "z. B. Folien zur Vorlesung", datei: "z. B. Übungsblatt 5", blatt: "z. B. Wiederholung Privatkonten" }[f.art]}"></label>
+      <label class="doz-feld"><span>${f.art === "hinweis" ? "Text" : "Text (optional)"}</span><textarea data-doz="text" rows="4" maxlength="4000">${esc(f.text || "")}</textarea></label>
+      ${f.art === "link" ? `<label class="doz-feld"><span>Link (https://…)</span><input data-doz="link" inputmode="url" value="${esc(f.link || "")}"></label>` : ""}
+      ${f.art === "datei" ? `<label class="doz-feld"><span>Datei (PDF oder Bild, höchstens 4 MB)</span><input type="file" id="dozDatei" accept="application/pdf,image/*"></label>${f.datei_name ? `<div class="sub">Ausgewählt: ${esc(f.datei_name)}</div>` : ""}` : ""}
+      ${f.art === "blatt" ? `<label class="doz-feld"><span>Thema</span><select data-doz="thema"><option value="">Alle Themen des Moduls</option>${themen.map((t) => `<option value="${t.id}"${t.id === f.thema ? " selected" : ""}>${esc(t.titel)}</option>`).join("")}</select></label>
+        <label class="doz-feld"><span>Anzahl Aufgaben</span><select data-doz="anzahl">${[5, 10, 15, 20].map((n) => `<option${Number(f.anzahl) === n ? " selected" : ""}>${n}</option>`).join("")}</select></label>` : ""}
+      <label class="doz-feld"><span>Sichtbar bis (optional)</span><input type="date" data-doz="bis" value="${esc(f.bis || "")}"></label>
+      <label class="doz-feld"><span>Name (optional, z. B. „Fr. Müller“)</span><input data-doz="autor" maxlength="60" value="${esc(f.autor || "")}"></label>
+      <button class="knopf" data-a="dozSpeichern">${ic("plus", "klein")} Veröffentlichen</button>
+    </div></div>
+    <div class="gruppe"><div class="gruppe-titel">Einträge im Modul ${esc(MODUL[f.fach]?.kurz || "")}<button class="link" data-a="dozLaden">Aktualisieren</button></div>
+      ${(d.liste || []).length ? d.liste.map((e) => `<div class="doz-eintrag">${kursEintragHtml(e, true)}
+        <div class="doz-aktionen">${e.art === "blatt" ? `<button class="knopf zweit" data-a="dozStatistik" data-v="${e.id}">${ic("diagramm", "klein")} Klassenstatistik</button>` : ""}<button class="knopf zweit doz-weg" data-a="dozLoeschen" data-v="${e.id}">${ic("muell", "klein")} Löschen</button></div>
+        ${d.stat?.[e.id] ? dozStatistikHtml(e, d.stat[e.id]) : ""}</div>`).join("") : `<p class="sub">Noch keine Einträge in diesem Modul.</p>`}
+    </div>
+    <button class="link" data-a="dozAbmelden">Abmelden</button></div>`;
+}
+function dozStatistikHtml(e, st) {
+  if (!st.length) return `<p class="sub">Noch keine Ergebnisse eingegangen.</p>`;
+  const r = new Zufall(1);
+  return `<div class="doz-stat">${st.map((z) => { const v = ALLE.find((x) => x.id === z.aufgabe), n = z.richtig + z.falsch, q = n ? z.richtig / n : 0;
+    let titel = z.aufgabe; try { titel = v ? v.erzeugen(r).text.slice(0, 90) : z.aufgabe; } catch (_) { /* egal */ }
+    return `<div class="doz-stat-zeile"><span class="grow">${esc(titel)}${titel.length >= 90 ? " …" : ""}</span><span class="doz-balken" style="--q:${Math.round(q * 100)}%;--f:${farbe(q)}"></span><b>${Math.round(q * 100)} %</b><span class="sub">n=${n}</span></div>`; }).join("")}</div>`;
+}
+
 function auswertungInhalt(f, b) {
   let extra = "";
   if (f.typ === "zahl") {
@@ -2649,6 +2714,13 @@ function sheetView() {
   } else if (sh.art === "level") {
     titel = "Level und Erfolge";
     inhalt = levelSeite(stat);
+  } else if (sh.art === "kurs") {
+    titel = "Aus dem Kurs";
+    const l = KR.zwischenstand(state.fach)?.l || [];
+    inhalt = l.length ? `<div class="kr-karte">${l.map((e) => kursEintragHtml(e)).join("")}</div>` : `<p class="sub">Noch keine Einträge.</p>`;
+  } else if (sh.art === "dozent") {
+    titel = "Kursraum für Dozierende";
+    inhalt = dozentInhalt();
   } else if (sh.art === "einstellungen") {
     titel = "Einstellungen";
     inhalt = `
@@ -2668,6 +2740,8 @@ function sheetView() {
         <div class="gruppe-fuss" style="margin:8px 4px 0">„Schnell“ verzichtet auf Glas-Unschärfe, bewegten Hintergrund und Dauer-Animationen – die App läuft dann auch auf älteren Geräten flüssig. „Automatisch“ misst beim Start, ob das Gerät ins Stocken kommt${state.leistung === "auto" ? ` (dieses Gerät: <b>${leistungSpar() ? "Schnell" : "Schön"}</b>)` : ""}. Gilt nur für dieses Gerät.</div></div>
       ${syncVerfuegbar() ? `<div class="gruppe"><div class="gruppe-titel">Mehrere Geräte</div><div class="liste"><button class="zeile" data-a="syncOeffnen"><span class="symbol">${ic("wechsel")}</span>
         <span class="grow"><b>Geräte synchronisieren</b><div class="sub">${esc(syncStatusText())}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
+      ${KR.kursVerfuegbar() ? `<div class="gruppe"><div class="gruppe-titel">Für Lehrende</div><div class="liste"><button class="zeile" data-a="dozOeffnen"><span class="symbol">${ic("schloss")}</span>
+        <span class="grow"><b>Kursraum für Dozierende</b><div class="sub">Hinweise, Dateien und Aufgabenblätter für alle – mit Passwort</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>` : ""}
       <div class="gruppe"><div class="gruppe-titel">Was ist neu?</div><div class="liste"><button class="zeile" data-a="neuigkeiten"><span class="symbol">${ic("sterne")}</span>
         <span class="grow"><b>Neuigkeiten</b><div class="sub">${esc(NEUIGKEITEN[0].titel)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button></div></div>
       <div class="gruppe"><div class="gruppe-titel">Datensicherung</div><div class="liste">
@@ -3135,6 +3209,45 @@ const AKTIONEN = {
   },
   abfragePauseSetzen: (v) => { schreib("bsr.abfragePause", v); render(); },
   abfrageZu: () => { AB.stopp(); state.abfrage = null; render(); },
+  kursAlle: () => { schreib("bsr.kursGesehen." + state.fach, String(Date.now())); state.sheet = { art: "kurs" }; kursLaden(state.fach, true); render(); },
+  kursDatei: (id) => {
+    const w = window.open("", "_blank");
+    KR.datei(id).then((url) => { if (!url) throw new Error("leer"); fetch(url).then((r) => r.blob()).then((b) => { const u = URL.createObjectURL(b); if (w) w.location = u; else location.href = u; }); })
+      .catch(() => { w?.close(); toast("Die Datei konnte nicht geladen werden (offline?)."); });
+  },
+  kursBlatt: (id) => {
+    const e = (KR.zwischenstand(state.fach)?.l || []).find((x) => x.id === id); if (!e) return;
+    const ids = (e.aufgaben || []).filter((x) => ALLE.some((v) => v.id === x));
+    if (!ids.length) { toast("Dieses Aufgabenblatt passt nicht zu deiner App-Version – bitte aktualisieren."); return; }
+    starte({ modus: "uebung", fach: e.fach, ids, titel: e.titel, kursBlatt: e.id });
+  },
+  dozOeffnen: () => { state.doz ||= { pw: null, form: { fach: state.fach || "bsr", art: "hinweis", anzahl: 10 }, liste: [], stat: {} }; state.sheet = { art: "dozent" }; render(); },
+  dozAnmelden: async () => {
+    const pw = document.getElementById("dozPw")?.value || "";
+    if (!pw) return;
+    try { if (await KR.pruefen(pw)) { state.doz.pw = pw; render(); AKTIONEN.dozLaden(); } else toast("Passwort falsch."); }
+    catch (_) { toast("Server nicht erreichbar oder Kursraum noch nicht eingerichtet."); }
+  },
+  dozAbmelden: () => { state.doz = null; state.sheet = null; render(); },
+  dozArt: (v) => { state.doz.form.art = v; render(); },
+  dozLaden: async () => { const d = state.doz; if (!d?.pw) return; try { d.liste = await KR.liste(d.form.fach); render(); } catch (e) { toast(e.message); } },
+  dozSpeichern: async () => {
+    const d = state.doz, f = d.form;
+    if (!f.titel?.trim()) { toast("Bitte einen Titel eingeben."); return; }
+    const e = { fach: f.fach, art: f.art, titel: f.titel.trim(), text: f.text || "", autor: f.autor || "", bis: f.bis || "" };
+    if (f.art === "link") { if (!/^https:\/\//.test(f.link || "")) { toast("Der Link muss mit https:// beginnen."); return; } e.link = f.link; }
+    if (f.art === "datei") { if (!f.datei) { toast("Bitte eine Datei auswählen."); return; } e.datei = f.datei; e.datei_name = f.datei_name; }
+    if (f.art === "blatt") {
+      const pool = ALLE.filter((v) => vorlageIn(v, f.fach) && (!f.thema || v.thema === f.thema)).map((v) => v.id);
+      e.aufgaben = new Zufall().mischen(pool).slice(0, Number(f.anzahl) || 10);
+      if (!e.aufgaben.length) { toast("Zu diesem Thema gibt es keine Aufgaben."); return; }
+    }
+    if (f.art === "hinweis" && !e.text.trim()) { toast("Bitte einen Text eingeben."); return; }
+    try { await KR.speichern(d.pw, e); toast("Veröffentlicht – alle sehen es im Modul " + (MODUL[f.fach]?.kurz || "") + "."); d.form = { fach: f.fach, art: f.art, anzahl: f.anzahl, autor: f.autor }; AKTIONEN.dozLaden(); }
+    catch (err) { toast("Nicht gespeichert: " + err.message); }
+  },
+  dozLoeschen: async (id) => { if (!confirm("Eintrag für alle löschen?")) return; try { await KR.loeschen(state.doz.pw, id); AKTIONEN.dozLaden(); } catch (err) { toast(err.message); } },
+  dozStatistik: async (id) => { try { (state.doz.stat ||= {})[id] = await KR.statistik(state.doz.pw, id) || []; render(); } catch (err) { toast(err.message); } },
   fortsetzen: (v) => {
     if (v === "sitzung") { const x = sitzungGespeichert(); if (!x) return; state.sitzung = x; state.fach = x.fach || state.fach; render(); scrollOben(); }
     else if (v === "ksim") AKTIONEN.ksimWeiter();
@@ -3538,6 +3651,12 @@ app.addEventListener("change", async (e) => {
   if (e.target.id === "hgBildVorschau" && e.target.files?.[0]) { bildVorschauWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "hgBildDatei" && e.target.files?.[0]) { eigenesBildWaehlen(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id === "profilName") { const n = e.target.value.trim().slice(0, 20); if (n !== meinName()) { stat.profil = { ...(stat.profil || {}), name: n, t: Date.now() }; speichern(); } return; }
+  if (e.target.id === "dozDatei" && e.target.files?.[0]) {
+    const file = e.target.files[0];
+    if (file.size > KR.MAX_DATEI) { toast("Die Datei ist größer als 4 MB."); e.target.value = ""; return; }
+    state.doz.form.datei = await KR.alsDataUrl(file); state.doz.form.datei_name = file.name; render(); return;
+  }
+  if (e.target.dataset?.doz && state.doz) { state.doz.form[e.target.dataset.doz] = e.target.value; if (e.target.tagName === "SELECT" && e.target.dataset.doz === "fach") { AKTIONEN.dozLaden(); } return; }
   if (e.target.id === "bImport" && e.target.files?.[0]) { backupLaden(e.target.files[0]); e.target.value = ""; return; }
   if (e.target.id !== "kImport" || !e.target.files?.[0]) return;
   const datei = e.target.files[0], gn = /\.goodnotes$/i.test(datei.name);
