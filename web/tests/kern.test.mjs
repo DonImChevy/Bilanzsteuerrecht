@@ -1096,3 +1096,27 @@ test("Generalprobe Online-Test: 4 × 15 Fragen, rechnen sauber, Bewertung, drei 
   assert.equal(OT.zahlLesen("−2.500"), -2500);
   assert.equal(OT.zahlLesen("12.345,50 €"), 12345.5);
 });
+
+test("Denkfehler-Radar: verfälschte Musterlösungen lösen die passende Diagnose aus, richtige keine", async () => {
+  const { diagnose } = await import("../js/denkfehler.js");
+  const G = await import("../js/geld.js");
+  const zeilen = (l, tausch = false) => [...l.soll.map(([k, c]) => ({ seite: tausch ? "haben" : "soll", konto: k, betrag: G.text(c) })), ...l.haben.map(([k, c]) => ({ seite: tausch ? "soll" : "haben", konto: k, betrag: G.text(c) }))];
+  const r = new Zufall(7); let seiten = 0, brutto = 0, geprueft = 0;
+  for (const v of ALLE) {
+    const f = v.erzeugen(r); if (f.typ !== "buchung") continue;
+    const l = f.loesungen[0]; geprueft++;
+    assert.deepEqual(diagnose(zeilen(l), l), [], `${v.id}: Musterlösung ohne Diagnose`);
+    const d = diagnose(zeilen(l, true), l);
+    if (JSON.stringify([...l.soll].sort()) !== JSON.stringify([...l.haben].sort())) { assert.equal(d[0]?.id, "seiten", `${v.id}: vertauscht`); seiten++; }
+    // Brutto statt netto: Vorsteuer weglassen und auf das erste andere Sollkonto schlagen
+    const vst = l.soll.find(([k]) => k === "vorsteuer"), anderes = l.soll.find(([k]) => k !== "vorsteuer");
+    if (vst && anderes && l.soll.filter(([k]) => k === anderes[0]).length === 1) {
+      const fal = { soll: l.soll.filter(([k]) => k !== "vorsteuer").map(([k, c]) => [k, k === anderes[0] ? c + vst[1] : c]), haben: l.haben };
+      assert.ok(diagnose(zeilen(fal), l).some((x) => x.id === "brutto"), `${v.id}: brutto`); brutto++;
+    }
+  }
+  assert.ok(geprueft > 50 && seiten > 50 && brutto > 5, `${geprueft}/${seiten}/${brutto}`);
+  // Privat als Aufwand
+  const l = { soll: [["privatentnahmen", 12000]], haben: [["bank", 12000]] };
+  assert.equal(diagnose([{ seite: "soll", konto: "telefon", betrag: "120,00" }, { seite: "haben", konto: "bank", betrag: "120,00" }], l)[0].id, "privat-als-aufwand");
+});

@@ -14,6 +14,7 @@ import { SIM, startKarte as simStartKarte, simView, zusammenstellen, hoechstpunk
 import * as MK from "./meinekarten.js";
 import * as HS from "./handschrift.js";
 import * as OT from "./bilr/onlinetest.js";
+import * as DF from "./denkfehler.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, nachholen, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
@@ -551,6 +552,7 @@ const aktFrage = () => s().fragen[s().index];
 const aktAntwort = () => s().antworten[s().index];
 
 function sitzungTitel(x) {
+  if (x.titel) return x.titel;
   if (x.modus === "klausur") return "Klausur " + MODUL[x.fach || "bsr"].kurz;
   if (x.duell) return "Duell " + MODUL[x.fach || "bsr"].kurz;
   if (x.wiederholung) return "Wiederholung";
@@ -583,6 +585,7 @@ function pruefen() {
   if (istLeer(aktFrage(), aktAntwort())) return;
   const b = bewerte(aktFrage(), aktAntwort());
   x.bewertungen[x.index] = b;
+  denkfehlerMerken(aktFrage(), b);
   Object.assign(b, erfasse(aktFrage(), b.korrekt));
   if (navigator.vibrate) navigator.vibrate(b.korrekt ? 20 : [30, 40, 30]);
   render();
@@ -1499,6 +1502,7 @@ function tabLernen() {
     <div class="gruppe"><div class="gruppe-titel">Heute</div><div class="kachel-grid">${heute}</div></div>
     ${pfadKachel()}
     ${kompaktKachel()}
+    ${denkfehlerKarte()}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
     <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien", ust: "Themen · Skript & Klausurtechnik" }[state.fach] || { 1: "Themen · Skript Teil I", 2: "Themen · Skript Teil II", beide: "Themen · Skript Teil I und II" }[state.bilrTeil]}<span class="sub" style="text-transform:none;letter-spacing:0">${themenImTeil(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
@@ -2140,6 +2144,35 @@ function auswertungView(f, b) {
   const link = KOMPAKT[f.thema] ? `<button class="km-link" data-a="kompaktSitzung" data-v="${f.thema}">${ic("akte", "klein")}<span><b>Überblick: ${esc(THEMA[f.thema].titel)}</b><span class="sub">Das Wichtigste in ${lesezeit(KOMPAKT[f.thema])} Min. – danach geht es hier weiter</span></span></button>` : "";
   return html.replace(/<\/div><\/div>\s*$/, `${karte}${link}</div></div>`);
 }
+// Denkfehler-Radar: Häufigkeit je Fehlerfamilie (nur auf dem Gerät, localStorage bsr.denkfehler)
+const denkfehlerStand = () => { try { return JSON.parse(localStorage.getItem("bsr.denkfehler") || "{}"); } catch (_) { return {}; } };
+function denkfehlerMerken(f, b) {
+  if (f.typ !== "buchung") return;
+  const st = denkfehlerStand(), heute = tagSchluessel(), fach = state.sitzung?.fach || state.fach;
+  for (const d of b.denkfehler || []) { const fam = DF.FAMILIE(d.id), e = (st[fam] ||= { n: 0, ok: [], fach }); e.n += 1; e.letzt = heute; e.ok = []; e.fach = fach; delete e.behoben; }
+  if (b.korrekt) for (const [fam, e] of Object.entries(st)) {
+    if (e.behoben || !DF.provoziert(fam, b.buchung.loesung)) continue;
+    if (!e.ok.includes(heute) && heute !== e.letzt) e.ok.push(heute);
+    if (e.ok.length >= 3) { e.behoben = heute; toast(`Denkfehler „${DF.FAMILIEN[fam]}“ an 3 Tagen vermieden – abgehakt!`); }
+  }
+  schreib("bsr.denkfehler", JSON.stringify(st));
+}
+/** Karte „Deine Denkfehler“ auf der Modulseite (nur Buchführungsmodule). */
+function denkfehlerKarte() {
+  if (!buchungsFach(state.fach)) return "";
+  const l = Object.entries(denkfehlerStand()).filter(([, e]) => !e.behoben && e.n > 0 && (!e.fach || buchungsFach(e.fach))).sort((a, b) => b[1].n - a[1].n).slice(0, 3);
+  if (!l.length) return "";
+  return `<div class="gruppe"><div class="gruppe-titel">Deine Denkfehler</div><div class="df-karte">
+    ${l.map(([fam, e]) => `<div class="df-zeile"><span class="df-radar klein" aria-hidden="true"><i></i></span><span class="grow"><b>${esc(DF.FAMILIEN[fam] || fam)}</b><span class="sub">${e.n}× · ${e.ok.length}/3 Tage vermieden</span></span>
+      <button class="knopf zweit klein" data-a="denkfehlerUeben" data-v="${fam}">Gezielt üben</button></div>`).join("")}
+  </div></div>`;
+}
+let dfVorlagen = null;
+function denkfehlerIds(fam, fach) {
+  if (!dfVorlagen) { const r = new Zufall(11); dfVorlagen = ALLE.map((v) => { try { const f = v.erzeugen(r); return f.typ === "buchung" ? [v, f.loesungen[0]] : null; } catch (_) { return null; } }).filter(Boolean); }
+  return dfVorlagen.filter(([v, l]) => vorlageIn(v, fach) && imTeil(THEMA[v.thema], teilVon(fach)) && DF.provoziert(fam, l)).map(([v]) => v.id);
+}
+
 function auswertungInhalt(f, b) {
   let extra = "";
   if (f.typ === "zahl") {
@@ -2147,7 +2180,9 @@ function auswertungInhalt(f, b) {
   }
   if (f.typ === "buchung") {
     const l = b.buchung.loesung;
-    extra = `<div class="loesung"><div class="sub" style="margin-bottom:4px">Musterlösung</div>
+    extra = `${(b.denkfehler || []).map((d) => `<div class="denkfehler"><div class="df-kopf"><span class="df-radar" aria-hidden="true"><i></i></span><b>${esc(d.titel)}</b></div>
+      <p>${esc(d.text)}</p><details class="df-frage"><summary>${esc(d.frage)}</summary><p>${kompaktInline(d.antwort)}</p></details></div>`).join("")}
+      <div class="loesung"><div class="sub" style="margin-bottom:4px">Musterlösung</div>
       ${l.soll.map(([k, c]) => `<div class="loesung-zeile"><span>${esc(K(k).name)}</span><span>${G.text(c)}</span></div>`).join("")}
       ${l.haben.map(([k, c]) => `<div class="loesung-zeile haben"><span>an ${esc(K(k).name)}</span><span>${G.text(c)}</span></div>`).join("")}</div>
       ${!b.korrekt && b.buchung.fehlend.length ? `<div class="fehlt"><b>In deiner Lösung fehlt:</b><br>${b.buchung.fehlend.map(([sd, k, c]) => `• ${sd === "soll" ? "Soll" : "Haben"}: ${esc(K(k).kurz)} ${G.text(c)}`).join("<br>")}</div>` : ""}`;
@@ -3019,6 +3054,11 @@ const AKTIONEN = {
     const seed = Math.floor(Math.random() * 1e9), minuten = Number(v);
     state.ksim = { fach: state.fach, minuten, seed, teile: zusammenstellen(state.fach, minuten, seed), phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
     ksimSichern(); render(); scrollOben();
+  },
+  denkfehlerUeben: (fam) => {
+    const ids = new Zufall().mischen(denkfehlerIds(fam, state.fach)).slice(0, 10);
+    if (!ids.length) { toast("Dazu gibt es in diesem Teil keine passenden Buchungssätze."); return; }
+    starte({ modus: "uebung", fach: state.fach, ids, titel: "Denkfehler: " + DF.FAMILIEN[fam] });
   },
   fortsetzen: (v) => {
     if (v === "sitzung") { const x = sitzungGespeichert(); if (!x) return; state.sitzung = x; state.fach = x.fach || state.fach; render(); scrollOben(); }

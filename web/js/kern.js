@@ -1,6 +1,7 @@
 import { K } from "./konten.js";
 import * as G from "./geld.js";
 import { pruefeOffen } from "./offen.js";
+import { diagnose } from "./denkfehler.js";
 
 export const THEMEN = [
   { id: "buchfuehrungspflicht", titel: "Buchführungspflicht", unter: "§§ 238, 241a HGB, §§ 140, 141 AO", icon: "📕", fach: "bsr", teil: 1 },
@@ -294,7 +295,7 @@ export function istLeer(frage, antwort) {
 export function bewerte(frage, antwort) {
   if (frage.typ === "buchung") {
     const b = pruefeBuchung(antwort.zeilen || [], frage.loesungen);
-    return { korrekt: b.korrekt, buchung: b };
+    return { korrekt: b.korrekt, buchung: b, denkfehler: b.korrekt ? [] : diagnose(antwort.zeilen || [], b.loesung) };
   }
   if (frage.typ === "auswahl") {
     const g = [...(antwort.gewaehlt || [])].sort();
