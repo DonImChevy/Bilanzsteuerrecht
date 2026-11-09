@@ -1046,3 +1046,42 @@ test("Klausursimulation: Handschrift – Blätter je Sachverhalt, Auswertung zei
   assert.equal((fertig.match(/ks-hs-bild/g) || []).length, 1, "nur das beschriebene Blatt erscheint");
   assert.ok(!fertig.includes("data-ksim-hs"));
 });
+
+test("Generalprobe Online-Test: Fragen rechnen sauber, Bewertung inkl. Lückentext", async () => {
+  const OT = await import("../js/bilr/onlinetest.js");
+  assert.ok(OT.sichtbar(new Date(2026, 10, 9, 8)) && OT.sichtbar(new Date(2026, 10, 10, 23)) && !OT.sichtbar(new Date(2026, 10, 11, 0, 1)) && !OT.sichtbar(new Date(2026, 10, 8, 23)));
+  const gesehen = new Set();
+  for (let seed = 1; seed <= 300; seed++) {
+    const fr = OT.testErzeugen(seed);
+    assert.equal(fr.length, 20);
+    assert.deepEqual(JSON.stringify(fr), JSON.stringify(OT.testErzeugen(seed)), "deterministisch");
+    for (const f of fr) {
+      gesehen.add(f.nr);
+      assert.ok(!/NaN|undefined|Infinity/.test(JSON.stringify(f)), `Frage ${f.nr}: Rechenfehler`);
+      // perfekte Antwort bringt volle Punkte, keine Antwort null
+      let a;
+      if (f.typ === "sc") a = f.richtig;
+      else if (f.typ === "mc") a = f.richtig;
+      else if (f.typ === "zahl") a = f.wert.toLocaleString("de-DE");
+      else {
+        const s = (seite) => [...f.zeilen[seite]].reverse().map(([k, b], i) => [[`${seite}${i}k`, k], [`${seite}${i}b`, String(b)]]).flat();
+        a = Object.fromEntries([...s("soll"), ...s("haben")]);
+        const sum = (l) => l.reduce((x, [, b]) => x + b, 0);
+        assert.equal(sum(f.zeilen.soll), sum(f.zeilen.haben), `Frage ${f.nr}: Soll ≠ Haben`);
+        assert.ok(f.zeilen.soll.concat(f.zeilen.haben).every(([k, b]) => f.konten.includes(k) && f.betraege.includes(b)), `Frage ${f.nr}: Auswahl fehlt`);
+        assert.equal(OT.bewerten(f, { ...a, soll9k: "" }), f.punkte);
+        // überzähliger Eintrag kostet 0,25
+        const leer = `soll${f.zeilenZahl - 1}k`;
+        if (f.zeilen.soll.length < f.zeilenZahl) assert.equal(OT.bewerten(f, { ...a, [leer]: "Kasse" }), f.punkte - 0.25);
+      }
+      assert.equal(OT.bewerten(f, a), f.punkte, `Frage ${f.nr}`);
+      assert.equal(OT.bewerten(f, undefined), 0);
+      if (f.typ === "sc" || f.typ === "mc") assert.ok((Array.isArray(f.richtig) ? f.richtig : [f.richtig]).every((i) => f.optionen[i]));
+    }
+    // Zahlen der Kapitalfragen bleiben plausibel (Eigenkapital positiv)
+    for (const f of fr) if (f.nr === 161) assert.ok(/31\.12\.: \d/.test(f.text));
+  }
+  for (const v of OT.ALLE_VORLAGEN) assert.ok(gesehen.has(v.nr), "nie gezogen: " + v.nr);
+  assert.equal(OT.zahlLesen("−2.500"), -2500);
+  assert.equal(OT.zahlLesen("12.345,50 €"), 12345.5);
+});
