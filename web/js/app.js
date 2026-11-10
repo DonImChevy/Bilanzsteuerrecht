@@ -16,6 +16,7 @@ import * as HS from "./handschrift.js";
 import * as OT from "./bilr/onlinetest.js";
 import * as DF from "./denkfehler.js";
 import * as AB from "./abfrage.js";
+const ABFRAGE_AN = false; // „Frag mich ab“ vorerst ausgeblendet
 import * as KR from "./kursraum.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
@@ -1477,7 +1478,8 @@ function tabLernen() {
     heute = `<div class="kachel breit"><span class="k-icon" style="background:var(--ok-weak);color:var(--ok)">${ic("haken")}</span>
       <span class="grow"><b>${n ? "Heute nichts zu wiederholen" : "Lernkartei startet mit deiner ersten Übung"}</b><div class="sub">${n ? `Nächste Wiederholung ${inTagen(n)}.` : "Jede Aufgabe kommt nach 1, 3, 7, 14 und 30 Tagen wieder."}</div></span></div>`;
   }
-  if (AB.abfrageMoeglich()) heute += `<button class="kachel breit abfrage-kachel" data-a="abfrageStart"><span class="k-icon">🎧</span>
+  // „Frag mich ab“ vorerst ausgeblendet (Code bleibt, Einschalten: ABFRAGE_AN = true)
+  if (ABFRAGE_AN && AB.abfrageMoeglich()) heute += `<button class="kachel breit abfrage-kachel" data-a="abfrageStart"><span class="k-icon">🎧</span>
       <span class="grow"><b>Frag mich ab</b><div class="sub">${due.length ? `${due.length} fällige Wiederholungen` : "Gemischte Fragen"} zum Hören – Antwort per Kopfhörertaste</div></span><span class="rechts">${ic("pfeil", "klein")}</span></button>`;
   const mkFaellig = MK.faelligeKarten(meine(), state.fach).length;
   if (mkFaellig) heute += `<button class="kachel breit" data-a="meineLernen" data-v="faellig"><span class="k-icon">${ic("karten")}</span>
