@@ -2163,9 +2163,10 @@ function auswahlView(f, antwort, zeige, lock) {
       const an = antwort.gewaehlt.includes(i);
       let kl = an ? "an" : "", zeichen = an ? ic("haken") : "";
       if (zeige) {
-        if (f.richtig.includes(i)) { kl = an ? "richtig" : "richtig verpasst"; zeichen = ic("haken"); } else if (an) { kl = "falsch"; zeichen = ic("kreuz"); } else { kl = ""; zeichen = ""; }
+        if (f.richtig.includes(i)) { kl = an ? "richtig" : "verpasst"; zeichen = an ? ic("haken") : ""; } else if (an) { kl = "falsch"; zeichen = ic("kreuz"); } else { kl = ""; zeichen = ""; }
       }
-      return `<button class="option ${mehr ? "mehr" : ""} ${kl}" data-a="option" data-v="${i}" ${lock ? "disabled" : ""}><span class="kreis">${zeichen}</span><span>${esc(o)}</span>${!lock && i < 9 ? `<span class="taste">${i + 1}</span>` : ""}</button>`;
+      const marke = zeige && f.richtig.includes(i) && !an ? `<span class="opt-marke">Fehlt – war richtig</span>` : zeige && an && !f.richtig.includes(i) ? `<span class="opt-marke falsch">Falsch angekreuzt</span>` : "";
+      return `<button class="option ${mehr ? "mehr" : ""} ${kl}" data-a="option" data-v="${i}" ${lock ? "disabled" : ""}><span class="kreis">${zeichen}</span><span class="opt-text">${esc(o)}${marke}</span>${!lock && i < 9 ? `<span class="taste">${i + 1}</span>` : ""}</button>`;
     }).join("")}
   </div></div>`;
 }
