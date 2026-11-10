@@ -442,7 +442,9 @@ function lueckeView(f, a, i, h, fertig) {
 }
 function zahlView(f, a, i, h, fertig) {
   if (fertig) return `<div class="ot-zahl-fest"><span>Ihre Eingabe</span><b>${a ? h.esc(a) : "—"}</b> €</div>`;
-  return `<label class="ot-zahl"><input type="text" inputmode="decimal" autocomplete="off" data-ot-zahl="${i}" data-fokus="ot${i}" value="${h.esc(a || "")}" placeholder="0"><span>€</span></label>`;
+  // Die Zahlentastatur am Handy hat kein Minus – darum ein eigener Vorzeichen-Knopf (Verlust = negativer Wert)
+  return `<div class="ot-zahl"><button type="button" class="ot-vz" data-a="otVorzeichen" data-v="${i}" aria-label="Vorzeichen wechseln (Minus)">±</button><input type="text" inputmode="decimal" autocomplete="off" data-ot-zahl="${i}" data-fokus="ot${i}" value="${h.esc(a || "")}" placeholder="0" aria-label="Ergebnis in Euro"><span>€</span></div>
+    <div class="ot-zahl-tipp">Negativer Wert (z. B. Verlust)? Mit <b>±</b> ein Minus davorsetzen.</div>`;
 }
 const antwortView = (f, a, i, h, fertig) => f.typ === "luecke" ? lueckeView(f, a, i, h, fertig) : f.typ === "zahl" ? zahlView(f, a, i, h, fertig) : wahlListe(f, a, i, h, fertig);
 

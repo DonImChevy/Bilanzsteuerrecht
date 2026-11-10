@@ -3381,6 +3381,14 @@ const AKTIONEN = {
     otSichern(); render(); scrollOben();
   },
   otNeu: () => { state.otest = otNeuerDurchgang(); otSichern(); render(); scrollOben(); },
+  otVorzeichen: (v) => {
+    const t = state.otest; if (!t || t.ende) return;
+    const alt = String(t.antworten[v] ?? "").trim();
+    t.antworten[v] = /^[-−–]/.test(alt) ? alt.slice(1).trim() : "-" + alt;
+    otSichern();
+    render();
+    const feld = document.querySelector(`[data-ot-zahl="${v}"]`); if (feld) { feld.focus(); const n = feld.value.length; try { feld.setSelectionRange(n, n); } catch (_) { /* egal */ } }
+  },
   otWahl: (v) => {
     const [i, j] = v.split("|").map(Number), t = state.otest, f = OT.fragenVon(t)[i];
     if (f.typ === "mc") { const s = new Set(t.antworten[i] || []); s.has(j) ? s.delete(j) : s.add(j); t.antworten[i] = [...s].sort((a, b) => a - b); }
