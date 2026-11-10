@@ -2648,3 +2648,24 @@ button.ot-option:hover { background: color-mix(in srgb, var(--ot-blau) 7%, trans
 .opt-text { display: grid; gap: 4px; }
 .opt-marke { justify-self: start; font-size: 11.5px; font-weight: 800; letter-spacing: .02em; padding: 2px 8px; border-radius: 99px; color: var(--ok); background: color-mix(in srgb, var(--ok) 14%, transparent); }
 .opt-marke.falsch { color: var(--err); background: color-mix(in srgb, var(--err) 12%, transparent); }
+
+/* Suche: Direkt-Antworten, Normvorschau, Modul-Chips, Vorschläge */
+.antwort-karten { display: grid; gap: 10px; margin: 12px 0 4px; }
+.antwort-karte { display: grid; grid-template-columns: auto 1fr; grid-template-areas: "wert text" "wert thema"; gap: 2px 14px; align-items: center; text-align: left; width: 100%; padding: 14px 16px; border-radius: 20px; border: 1px solid color-mix(in srgb, var(--m) 30%, var(--glas-rand)); background: linear-gradient(135deg, color-mix(in srgb, var(--m) 14%, var(--glas-stark)), var(--glas-stark)); box-shadow: var(--schatten); color: inherit; font: inherit; }
+.ak-wert { grid-area: wert; font-size: 24px; font-weight: 900; letter-spacing: -.02em; color: var(--m); white-space: nowrap; max-width: 46vw; overflow: hidden; text-overflow: ellipsis; }
+.ak-text { grid-area: text; font-size: 14.5px; font-weight: 700; line-height: 1.35; }
+.ak-text mark.km, .ak-wert mark.km { background: none; color: inherit; padding: 0; }
+.ak-thema { grid-area: thema; font-size: 12px; color: var(--text3); font-weight: 600; }
+.norm-vorschau { display: grid; gap: 6px; width: 100%; text-align: left; margin: 12px 0 4px; padding: 14px 16px; border-radius: 18px; border: 1px solid var(--glas-rand); border-left: 4px solid var(--m); background: var(--glas-stark); box-shadow: var(--schatten); color: inherit; font: inherit; }
+.nv-kopf { font-size: 15px; }
+.nv-text { font-family: ui-serif, Georgia, serif; font-size: 14.5px; line-height: 1.5; color: var(--text2); }
+.nv-mehr { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; color: var(--m); }
+.such-chips { display: flex; gap: 6px; overflow-x: auto; padding: 12px 2px 2px; scrollbar-width: none; }
+.such-chips::-webkit-scrollbar { display: none; }
+.such-chips .chip { flex: none; }
+.such-chips .chip.aktiv { background: var(--mc, var(--m)); border-color: var(--mc, var(--m)); color: #fff; }
+.such-vorschlag { margin-top: 12px; padding: 14px; border-radius: 18px; background: var(--glas-stark); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.sv-kopf { display: flex; align-items: center; justify-content: space-between; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); margin: 2px 0 8px; }
+.sv-kopf .link { text-transform: none; letter-spacing: 0; }
+.sv-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.sv-tipp { font-size: 12.5px; color: var(--text3); line-height: 1.45; }

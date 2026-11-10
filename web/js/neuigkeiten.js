@@ -5,11 +5,21 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-suche",
+    datum: "2026-11-10",
+    klein: true,
+    titel: "Schlauere Suche",
+    punkte: [
+      ["suche", "Direkt-Antworten", "„GWG Grenze“ oder „Verspätungszuschlag Höhe“ zeigt die Zahl sofort oben – mit Fundstelle."],
+      ["akte", "Paragrafen und Fragen", "„15 UStG“ zeigt den Wortlaut direkt im Treffer; Fragen wie „Was ist ein Verwaltungsakt?“ funktionieren auch."],
+      ["haken", "Filter und Verlauf", "Treffer nach Modul filtern, zuletzt Gesuchtes per Antippen wiederholen."],
+    ],
+  },
+  {
     id: "2026-11-lernen-neu",
     datum: "2026-11-09",
-    titel: "Abfragen, Abdecken, Denkfehler – und der Kursraum",
+    titel: "Abdecken, Denkfehler – und der Kursraum",
     punkte: [
-      ["play", "Frag mich ab", "Deine fälligen Wiederholungen zum Hören: Taler liest die Frage vor, du denkst nach, dann kommt die Lösung. Bewerten per Knopf oder Kopfhörertaste – vor = gewusst, zurück = nicht gewusst.", "tab", "start"],
       ["karten", "Kompaktwissen abdecken", "Schalte im Überblick auf „Abdecken“: Textmarker und Zahlen werden zu Lücken. Erst überlegen, dann aufdecken – die nicht gewussten kommen beim nächsten Mal zuerst."],
       ["ziel", "Denkfehler-Radar", "Bei einer falschen Buchung sagt dir die App, welcher Denkfehler dahintersteckt – brutto statt netto, Soll und Haben vertauscht, Privates als Aufwand … – und übt ihn gezielt mit dir."],
       ["akte", "Kursraum", "Lehrende können Hinweise, Dateien und Aufgabenblätter direkt ins Modul stellen. Du findest sie unter „Aus dem Kurs“."],
