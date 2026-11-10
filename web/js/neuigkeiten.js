@@ -5,6 +5,17 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-suche",
+    datum: "2026-11-10",
+    klein: true,
+    titel: "Schlauere Suche",
+    punkte: [
+      ["suche", "Direkt-Antworten", "„GWG Grenze“ oder „Verspätungszuschlag Höhe“ zeigt die Zahl sofort oben – mit Fundstelle."],
+      ["akte", "Paragrafen und Fragen", "„15 UStG“ zeigt den Wortlaut direkt im Treffer; Fragen wie „Was ist ein Verwaltungsakt?“ funktionieren auch."],
+      ["haken", "Filter und Verlauf", "Treffer nach Modul filtern, zuletzt Gesuchtes per Antippen wiederholen."],
+    ],
+  },
+  {
     id: "2026-11-lernen-neu",
     datum: "2026-11-09",
     titel: "Abdecken, Denkfehler – und der Kursraum",

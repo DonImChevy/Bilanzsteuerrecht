@@ -18,6 +18,7 @@ import * as DF from "./denkfehler.js";
 import * as AB from "./abfrage.js";
 const ABFRAGE_AN = false; // „Frag mich ab“ vorerst ausgeblendet
 import * as KR from "./kursraum.js";
+import { norma, STOPP, stamm, zitatAus, seltenheit } from "./suche.js";
 import { goodnotesLesen } from "./goodnotes.js";
 import { PFADE, pfadSpeicherSetzen, pfadSchluessel, pfadStand, blockStarten, kartenView, blockView, auswerten, schritte, sterneFuer, sterneSpeichern } from "./lernpfad.js";
 import { planen, faellige, naechste, nachholen, INTERVALLE, FAECHER_MAX } from "./wiederholung.js";
@@ -333,6 +334,7 @@ const state = {
   hinweisWeg: lies("bsr.hinweisWeg", "") === "1",
   tab: "start",
   suche: "",
+  suchFach: null, // Suche: Filter auf ein Modul (Chips)
   themenFilter: "",
   normSuche: "",
   kontoSuche: "",
@@ -1280,7 +1282,6 @@ function installHinweis() {
 
 // ---------- Suche ----------
 let INDEX = null;
-const norma = (t) => String(t).toLowerCase().replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue").replace(/ß/g, "ss").replace(/(\w)-(\w)/g, "$1$2").replace(/[.,;:!?()„“"'§]/g, " ").replace(/\s+/g, " ");
 // Aufgaben-Teil des Suchverzeichnisses: wird nach dem Start in kleinen Häppchen im Leerlauf aufgebaut,
 // damit die erste Suche nicht stockt (auf älteren Geräten über eine Sekunde)
 const SUCH_R = new Zufall(1), SUCH_AUFGABEN = [];
@@ -1316,6 +1317,8 @@ function suchIndex() {
     normen: NORMEN.map((n) => ({ n, label: n.g === "GG" ? (n.nr === "Präambel" ? "Präambel GG" : `Art. ${n.nr} GG`) : `§ ${n.nr} ${n.g}`,
       such: norma(`${n.g === "GG" ? "art" : "§"} ${n.nr} ${n.g} ${n.titel} ${n.abs.map((a) => a.text).join(" ")}`) })),
     konten: Object.values(KONTEN).map((k) => ({ k, kopf: norma(k.name), such: norma(`${k.name} ${k.kurz} ${k.artName} ${k.hinweis || ""}`) })),
+    // Direkt-Antworten: Zahlen und Grenzen aus dem Kompaktwissen („GWG Grenze“ → 800 €)
+    zahlen: Object.entries(KOMPAKT).flatMap(([id, k]) => (k.zahlen || []).map(([w, b]) => ({ t: THEMA[id], w, b, kopf: norma(`${b} ${w}`), such: norma(`${b} ${w} ${THEMA[id].titel}`) }))),
     module: MODULE.map((m) => ({ m, such: norma(`${m.titel} ${m.kurz} ${m.unter}`) })),
   };
   return INDEX;
@@ -1354,7 +1357,6 @@ const SYNONYME = [
   ["skonto", "skonti"], ["buchungssatz", "buchungssaetze"], ["jobticket", "job ticket", "deutschlandticket", "fahrkarte", "3 nr 15"],
   ["home office", "homeoffice", "heimarbeit"], ["arbeitszimmer", "buero zuhause"], ["kfz", "pkw", "auto", "fahrzeug"],
 ];
-const STOPP = new Set(["der", "die", "das", "den", "dem", "des", "ein", "eine", "einer", "und", "oder", "von", "zu", "zum", "zur", "im", "in", "mit", "bei", "fuer", "wie", "was", "ist", "to"]);
 const SYN = SYNONYME.map((g) => g.map((x) => norma(x).replace(/\s+/g, " ").trim()));
 /** Suchbegriffe: Phrasen aus SYNONYME zuerst (längste zuerst), dann einzelne Wörter – jeder Begriff mit seinen Alternativen. */
 function suchBegriffe(q) {
@@ -1363,7 +1365,11 @@ function suchBegriffe(q) {
   const phrasen = SYN.flatMap((g) => g.filter((x) => x.includes(" ")).map((x) => [x, g])).sort((a, b) => b[0].length - a[0].length);
   for (const [ph, g] of phrasen) if (rest.includes(` ${ph} `)) { begriffe.push(g); rest = rest.replace(` ${ph} `, " "); }
   const woerter = rest.trim().split(/\s+/).filter(Boolean), inhalt = woerter.filter((w) => !STOPP.has(w));
-  for (const w of inhalt.length || begriffe.length ? inhalt : woerter) begriffe.push(SYN.find((g) => g.includes(w)) || [w]);
+  for (const w of inhalt.length || begriffe.length ? inhalt : woerter) {
+    const g = SYN.find((x) => x.includes(w) || x.includes(stamm(w)));
+    const st = stamm(w);
+    begriffe.push(g ? [...new Set([...g, w])] : st !== w ? [w, st] : [w]);
+  }
   return begriffe;
 }
 const TESTS = new Map();
@@ -1373,8 +1379,12 @@ function testVon(a) {
   return TESTS.get(a);
 }
 const trifft = (such, a) => (a.length <= 3 ? testVon(a).test(such) : such.includes(a));
-/** Treffergüte: je Begriff 2 Punkte, wenn er am Wortanfang steht, sonst 1; steht er im Titel, 3 Punkte mehr. */
-const guete = (x, begriffe) => begriffe.reduce((s, alt) => s + (alt.some((a) => testVon(a).test(x.such)) ? 2 : 1) + (x.kopf && alt.some((a) => trifft(x.kopf, a)) ? 3 : 0), 0);
+/**
+ * Treffergüte: je Begriff 2 Punkte am Wortanfang, sonst 1 – gewichtet nach Seltenheit (seltene Begriffe zählen mehr);
+ * steht er im Titel, 3 Punkte mehr; steht die ganze Eingabe als Wortfolge im Text, 4 Punkte extra.
+ */
+const guete = (x, begriffe, gewichte = [], phrase = "") => begriffe.reduce((s, alt, i) => s + (gewichte[i] || 1) * ((alt.some((a) => testVon(a).test(x.such)) ? 2 : 1) + (x.kopf && alt.some((a) => trifft(x.kopf, a)) ? 3 : 0)), 0)
+  + (phrase && x.such.includes(phrase) ? 4 : 0);
 /** Tippfehler: Wörter aus dem Index mit Abstand 1 (ab 5 Zeichen) bzw. 2 (ab 9 Zeichen). */
 let WORTSCHATZ = null;
 function abstand(a, b, max) {
@@ -1398,6 +1408,16 @@ function aehnlich(w) {
   const max = w.length >= 9 ? 2 : 1;
   return WORTSCHATZ.filter((t) => t !== w && abstand(w, t, max) <= max).slice(0, 8);
 }
+/** Zuletzt gesucht (nur auf dem Gerät) und Beispiele – erscheinen beim Antippen des leeren Suchfelds. */
+const suchVerlauf = () => { try { return JSON.parse(localStorage.getItem("bsr.suchVerlauf") || "[]"); } catch (_) { return []; } };
+function suchMerken(q) { q = String(q || "").trim(); if (q.length < 2) return; schreib("bsr.suchVerlauf", JSON.stringify([q, ...suchVerlauf().filter((x) => x.toLowerCase() !== q.toLowerCase())].slice(0, 8))); }
+function suchVorschlaege() {
+  const v = suchVerlauf(), beispiele = (state.rolle === "ausbildung" ? ["Skonto buchen", "GWG Grenze", "AfA", "Privatentnahme", "Vorsteuer", "SBK"] : ["GWG Grenze", "Was ist ein Verwaltungsakt", "§ 15 UStG", "B2B", "Verspätungszuschlag", "Art. 63", "Rückstellungen"]).filter((b) => !v.includes(b));
+  const chip = (q) => `<button class="chip" data-a="sucheSetzen" data-v="${esc(q)}">${esc(q)}</button>`;
+  return `<div class="such-vorschlag">${v.length ? `<div class="sv-kopf"><span>Zuletzt gesucht</span><button class="link" data-a="suchVerlaufWeg">Löschen</button></div><div class="sv-chips">${v.map(chip).join("")}</div>` : ""}
+    <div class="sv-kopf"><span>Probier mal</span></div><div class="sv-chips">${beispiele.slice(0, 6).map(chip).join("")}</div>
+    <div class="sv-tipp">Du kannst auch Fragen stellen („Wann gilt die Vier-Tages-Fiktion?“) oder Paragrafen eintippen („15 UStG“).</div></div>`;
+}
 function suchErgebnisse(q) {
   let begriffe = suchBegriffe(q);
   const I0 = suchIndex(), alle = [...I0.themen, ...I0.kompakt, ...I0.aufgaben, ...I0.normen, ...I0.konten, ...I0.pfad];
@@ -1409,11 +1429,23 @@ function suchErgebnisse(q) {
   }
   const hl = [...new Set([...q.toLowerCase().trim().split(/\s+/), ...begriffe.flat()])].filter((w) => w.length > 1 && !STOPP.has(w)).sort((a, b) => b.length - a.length);
   const passt = (x) => begriffe.every((alt) => alt.some((a) => trifft(x.such, a)));
-  const beste = (liste, n) => liste.filter(passt).map((x) => [guete(x, begriffe), x]).sort((a, b) => b[0] - a[0]).slice(0, n).map((e) => e[1]);
+  // Seltenheit je Begriff über alle Inhalte; die ganze Eingabe als Wortfolge (ab zwei Wörtern)
+  const gewichte = begriffe.map((alt) => seltenheit(alle.filter((x) => alt.some((a) => trifft(x.such, a))).length, alle.length));
+  const qn = norma(q).trim(), phrase = qn.includes(" ") ? qn : "";
   const I = suchIndex();
+  // Modulfilter (Chips über den Treffern)
+  const filter = state.suchFach;
+  const imFilter = (themaId) => !filter || fachFuerThema(themaId) === filter;
+  const beste = (liste, n) => liste.filter(passt).map((x) => [guete(x, begriffe, gewichte, phrase), x]).sort((a, b) => b[0] - a[0]).slice(0, n).map((e) => e[1]);
   // Nur Inhalte der gewählten Rolle (Studium bzw. Ausbildung); gemeinsame Buchführungsthemen zählen bei Azubis zu BilBf
   const rolle = state.rolle || "studium";
-  const inRolle = (themaId) => rolleVon(MODUL[fachFuerThema(themaId)]) === rolle;
+  const basisRolle = (themaId) => rolleVon(MODUL[fachFuerThema(themaId)]) === rolle;
+  // Module, in denen etwas gefunden wurde (für die Filter-Chips)
+  const faecher = new Set();
+  for (const x of I.aufgaben) if (basisRolle(x.v.thema) && passt(x)) faecher.add(fachFuerThema(x.v.thema));
+  for (const x of [...I.kompakt, ...I.themen]) if (basisRolle(x.t.id) && passt(x)) faecher.add(fachFuerThema(x.t.id));
+  if (filter && !faecher.has(filter)) { state.suchFach = null; return suchErgebnisse(q); }
+  const inRolle = (themaId) => basisRolle(themaId) && imFilter(themaId);
   // Themen: Treffer im Titel, dazu die Themen, in deren Aufgaben und Zusammenfassungen der Begriff vorkommt (meiste Fundstellen zuerst)
   const fundstellen = new Map();
   for (const x of I.aufgaben) if (inRolle(x.v.thema) && passt(x)) fundstellen.set(x.v.thema, (fundstellen.get(x.v.thema) || 0) + 1);
@@ -1423,7 +1455,7 @@ function suchErgebnisse(q) {
     .filter((x) => x && !MODUL[x.t.fach].bald && !direkt.includes(x))].slice(0, 6);
   const aufgaben = beste(I.aufgaben.filter((x) => !MODUL[THEMA[x.v.thema].fach].bald && inRolle(x.v.thema) && !NICHT_IN[fachFuerThema(x.v.thema)]?.has(x.v.id)), 8);
   // Normzitat wie „Art. 63“ oder „§ 12 BWahlG“: passende Vorschrift zuerst, Normen-Gruppe nach oben
-  const zitat = /^\s*(art\.?|§)\s*(\d+[a-z]?)\s*([a-z]*)/i.exec(q);
+  const z = zitatAus(q), zitat = z && [null, z.art, z.nr, z.gesetz];
   let normen = beste(I.normen, 6);
   if (zitat) {
     const [, art, nr, gesetz] = zitat;
@@ -1431,13 +1463,29 @@ function suchErgebnisse(q) {
       && (!gesetz || x.n.g.toLowerCase().startsWith(gesetz.toLowerCase())));
     normen = [...exakt, ...normen.filter((x) => !exakt.includes(x))].slice(0, 6);
   }
-  const konten = beste(I.konten, 6);
+  const konten = filter && !buchungsFach(filter) ? [] : beste(I.konten, 6);
+  // Direkt-Antworten: Fragewörter nach einer Größe („Höhe“, „Grenze“, „wie viel“) müssen nicht im Text stehen
+  const GROESSE = new Set(["hoehe", "grenze", "betrag", "wieviel", "viel", "prozent", "satz", "frist", "dauer", "wert", "summe", "zahl", "zahlen", "lange", "hoch"]);
+  const kern = begriffe.filter((alt) => !alt.some((a) => GROESSE.has(a)));
+  const antworten = zitat || !kern.length ? [] : I.zahlen.filter((x) => !MODUL[x.t.fach].bald && inRolle(x.t.id) && kern.every((alt) => alt.some((a) => trifft(x.such, a))))
+    .map((x) => [guete(x, kern, [], phrase), x]).sort((a, b) => b[0] - a[0]).slice(0, 3).map((e) => e[1]);
   const kompakt = beste(I.kompakt.filter((x) => !MODUL[x.t.fach].bald && inRolle(x.t.id)), 4);
-  const module = I.module.filter((x) => passt(x) && rolleVon(x.m) === rolle);
-  const pfad = beste(I.pfad.filter((x) => MODUL[x.fach] && !MODUL[x.fach].bald && rolleVon(MODUL[x.fach]) === rolle), 4);
+  const module = filter ? [] : I.module.filter((x) => passt(x) && rolleVon(x.m) === rolle);
+  const pfad = beste(I.pfad.filter((x) => MODUL[x.fach] && !MODUL[x.fach].bald && rolleVon(MODUL[x.fach]) === rolle && (!filter || x.fach === filter)), 4);
   // art färbt die Überschrift: Zusammenfassungen als Textmarker, Lernpfad in seinen eigenen Farben
   const gruppe = (titel, inhalt, art = "") => `<div class="treffer-gruppe treffer${art ? " tg-" + art : ""}"><div class="gruppe-titel">${art ? `<span class="tg-chip">${ic(art === "kompakt" ? "akte" : "lernen", "klein")}${titel}</span>` : titel}</div><div class="liste">${inhalt}</div></div>`;
   let html = "";
+  // Direkt-Antwort oben: Zahlen und Grenzen aus dem Kompaktwissen, bei Normzitaten der Wortlaut
+  const ohneLinks = (h) => h.replace(/<span class="km-norm"[^>]*>(.*?)<\/span>/g, "$1");
+  if (antworten.length) html += `<div class="antwort-karten">${antworten.map((x) => `<button class="antwort-karte" data-a="kompakt" data-v="${x.t.id}">
+    <span class="ak-wert">${ohneLinks(kompaktInline(x.w))}</span><span class="ak-text">${ohneLinks(kompaktInline(x.b))}</span><span class="ak-thema">${x.t.icon} ${esc(x.t.titel)} · ${MODUL[fachFuerThema(x.t.id)].kurz}</span></button>`).join("")}</div>`;
+  if (zitat && normen[0] && normen[0].n.nr.toLowerCase() === zitat[2].toLowerCase()) {
+    const { n, label } = normen[0], text = n.abs.map((a) => a.text).join(" ").replace(/\s+/g, " ");
+    html += `<button class="norm-vorschau" data-a="normDetail" data-v="${n.g} ${n.nr}"><span class="nv-kopf"><b>${esc(label)}</b>${n.titel ? ` · ${esc(n.titel)}` : ""}</span>
+      <span class="nv-text">${esc(text.slice(0, 320))}${text.length > 320 ? " …" : ""}</span><span class="nv-mehr">Ganzen Wortlaut lesen ${ic("pfeil", "klein")}</span></button>`;
+  }
+  // Filter nach Modul, sobald Treffer aus mehreren Modulen kommen
+  const chips = faecher.size > 1 || filter ? `<div class="such-chips" data-quer="suchChips"><button class="chip ${!filter ? "aktiv" : ""}" data-a="suchFach" data-v="">Alle</button>${MODULE.filter((m) => faecher.has(m.id)).map((m) => `<button class="chip ${filter === m.id ? "aktiv" : ""}" data-a="suchFach" data-v="${m.id}" style="--mc:${m.farbe}">${esc(m.kurz)}</button>`).join("")}</div>` : "";
   // Reihenfolge: Zusammenfassungen, Lernpfad, dann der Rest
   if (kompakt.length) html += gruppe("Zusammenfassungen", kompakt.map(({ t, k }) => `<button class="zeile" data-a="kompakt" data-v="${t.id}">
     <span class="thema-icon">${t.icon}</span><span class="grow"><div>${markiere(t.titel, hl)}</div><div class="sub" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${markiere(kompaktText(k), hl, true)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""), "kompakt");
@@ -1458,6 +1506,7 @@ function suchErgebnisse(q) {
   if (!zitat) html += normHtml;
   if (konten.length) html += gruppe("Konten", konten.map(({ k }) => `<button class="zeile" data-a="kontoDetail" data-v="${k.id}">
     <span class="grow">${markiere(k.name, hl)}</span><span class="badge art-${k.art}">${k.artKurz}</span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join(""));
+  if (html) html = chips + html;
   if (html && korrigiert) html = `<div class="sub" style="margin:0 4px 8px">Keine genauen Treffer – ähnliche Schreibweisen:</div>` + html;
   return html || `<div class="leer-zustand">${ic("suche")}<div><b>Nichts gefunden</b></div><div class="sub">Versuch es mit einem anderen Begriff, z. B. „Skonto“, „B2B“, „AfA“ oder „Art. 63“.</div></div>`;
 }
@@ -2974,7 +3023,10 @@ const AKTIONEN = {
   design: (v) => { state.design = v; einstellungMerken("design", v); render(); },
   hinweisWeg: () => { state.hinweisWeg = true; schreib("bsr.hinweisWeg", "1"); render(); },
   zuModulen: () => document.querySelector(".modul-grid")?.scrollIntoView({ behavior: "smooth", block: "start" }),
-  sucheLeeren: () => { state.suche = ""; render(); document.getElementById("homeSuche")?.focus(); },
+  sucheLeeren: () => { state.suche = ""; state.suchFach = null; render(); document.getElementById("homeSuche")?.focus(); },
+  suchFach: (v) => { state.suchFach = v || null; const el = document.getElementById("sucheErgebnis"); if (el) el.innerHTML = suchErgebnisse(state.suche); },
+  sucheSetzen: (v) => { state.suche = v; state.suchFach = null; suchMerken(v); render(); },
+  suchVerlaufWeg: () => { schreib("bsr.suchVerlauf", "[]"); const el = document.getElementById("sucheErgebnis"); if (el) el.innerHTML = suchVorschlaege(); },
   bilrAnsicht: (v) => { state.bilrAnsicht = v === "gesetze" ? "gesetze" : "konten"; render(); },
   bilrTeil: (v) => {
     state.bilrTeil = ["1", "2"].includes(v) ? v : "beide";
@@ -3633,12 +3685,17 @@ const AKTIONEN = {
 app.addEventListener("click", (e) => {
   const el = e.target.closest("[data-a]");
   if (!el || el.disabled) return;
+  // Suche: angetippten Treffer als „zuletzt gesucht“ merken
+  if (state.suche.trim() && el.closest("#sucheErgebnis") && !["suchFach", "sucheSetzen", "suchVerlaufWeg"].includes(el.dataset.a)) suchMerken(state.suche);
   // Klick ins Sheet selbst soll den Hintergrund-Handler nicht auslösen
   if (el.dataset.a === "sheetZu" && el.classList.contains("sheet-hg") && e.target.closest("[data-stop]")) return;
   const f = AKTIONEN[el.dataset.a];
   if (f) f(el.dataset.v, el);
 });
 
+// Leeres Suchfeld antippen: Verlauf und Vorschläge zeigen
+app.addEventListener("focusin", (e) => { if (e.target.id === "homeSuche" && !e.target.value.trim()) { const el = document.getElementById("sucheErgebnis"); if (el) el.innerHTML = suchVorschlaege(); } });
+app.addEventListener("focusout", (e) => { if (e.target.id === "homeSuche") setTimeout(() => { const i = document.getElementById("homeSuche"), el = document.getElementById("sucheErgebnis"); if (el && i && !i.value.trim() && document.activeElement !== i) el.innerHTML = ""; }, 250); });
 app.addEventListener("input", (e) => {
   const ol = e.target.dataset?.otLuecke, oz = e.target.dataset?.otZahl;
   if ((ol || oz != null) && state.otest) {
@@ -3676,7 +3733,7 @@ app.addEventListener("input", (e) => {
   } else if (t.id === "homeSuche") {
     state.suche = t.value;
     const leer = !t.value.trim();
-    document.getElementById("sucheErgebnis").innerHTML = leer ? "" : suchErgebnisse(t.value);
+    document.getElementById("sucheErgebnis").innerHTML = leer ? suchVorschlaege() : suchErgebnisse(t.value);
     document.getElementById("startRest").classList.toggle("versteckt", !leer);
     document.querySelector(".suchfeld .leeren")?.classList.toggle("versteckt", !t.value);
   } else if (t.id === "themenFilter") {

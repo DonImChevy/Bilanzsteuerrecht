@@ -1143,3 +1143,17 @@ test("Kalender-Export: Klausurtermine und tägliche Erinnerung als gültige .ics
   assert.match(ics, /RRULE:FREQ=DAILY;UNTIL=20261118T235959/);
   assert.match(ics, /SUMMARY:Klausur BSR/);
 });
+
+test("Suche: Fragewörter, Wortstämme und Normzitate ohne §", async () => {
+  const S = await import("../js/suche.js");
+  assert.equal(S.stamm("rueckstellungen"), "rueckstellung");
+  assert.equal(S.stamm("abschreibungen"), "abschreibung");
+  assert.equal(S.stamm("steuerpflichtigen"), "steuerpflichtig");
+  assert.equal(S.stamm("afa"), "afa");
+  assert.ok(["was", "ist", "wann", "welche", "gilt"].every((w) => S.STOPP.has(w)));
+  assert.deepEqual(S.zitatAus("15 ustg"), { art: "§", nr: "15", gesetz: "ustg" });
+  assert.deepEqual(S.zitatAus("§ 6 Abs. 2 EStG"), { art: "§", nr: "6", gesetz: "estg" });
+  assert.deepEqual(S.zitatAus("Art. 63"), { art: "art", nr: "63", gesetz: "" });
+  assert.equal(S.zitatAus("2026"), null);
+  assert.ok(S.seltenheit(1, 1000) > S.seltenheit(500, 1000));
+});
