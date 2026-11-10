@@ -2448,6 +2448,10 @@ button.ot-option:hover { background: color-mix(in srgb, var(--ot-blau) 7%, trans
 .ot-zahl input { flex: 1; min-width: 0; font: inherit; font-size: 20px; font-variant-numeric: tabular-nums; text-align: right; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--ot-linie); background: var(--ot-papier); color: var(--ot-tinte); }
 .ot-zahl input:focus-visible { outline: 3px solid color-mix(in srgb, var(--ot-blau) 35%, transparent); border-color: var(--ot-blau); }
 .ot-zahl span { font-size: 18px; color: var(--ot-grau); }
+.ot-zahl { max-width: 330px; }
+.ot-vz { flex: none; width: 46px; height: 46px; border-radius: 6px; border: 1px solid var(--ot-linie); background: color-mix(in srgb, var(--ot-blau) 10%, transparent); color: var(--ot-blau); font: inherit; font-size: 22px; font-weight: 800; cursor: pointer; }
+.ot-vz:active { transform: translateY(1px); }
+.ot-zahl-tipp { margin-top: 6px; font-size: 13px; color: var(--ot-grau); }
 .ot-zahl-fest { display: flex; align-items: baseline; gap: 8px; font-size: 18px; }
 .ot-zahl-fest span { font-size: 13px; color: var(--ot-grau); font-weight: 700; }
 .ot-hinweis { font-size: 12.5px; color: var(--text3); margin: 10px 4px 0; line-height: 1.45; }
