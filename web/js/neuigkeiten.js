@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-schaubilder",
+    datum: "2026-11-11",
+    titel: "Schaubilder zum Kompaktwissen",
+    punkte: [
+      ["karten", "Regeln auf einen Blick", "In vielen Überblicken gibt es jetzt türkise Knöpfe „Schaubild: …“ – z. B. Tausch, Kommission, Vermittlungsausschuss, Fristen am Zeitstrahl oder die vier Bilanzveränderungen.", "kompakt", "ust-leistung"],
+      ["ziel", "Antippen statt lesen", "Die Grafiken öffnen sich nur auf Knopfdruck und werden beim Anhören nicht mit vorgelesen. Normzitate darin sind antippbar."],
+    ],
+  },
+  {
     id: "2026-11-suche",
     datum: "2026-11-10",
     klein: true,

@@ -9,6 +9,7 @@ import { PUNKTESAMMLER } from "./est/punkte.js";
 import { PAARE } from "./paare.js";
 import { gliederungView } from "./bilr/gliederung.js";
 import { r2View } from "./est/r2.js";
+import * as SB from "./schaubilder.js";
 import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, lesezeit, kompaktInline, zuletztText, loesungZeile } from "./kompakt.js";
 import { SIM, startKarte as simStartKarte, simView, zusammenstellen, hoechstpunkte, punkte as simPunkte, note as simNote, restSekunden as simRest, uhrText as simUhr } from "./klausursim.js";
 import * as MK from "./meinekarten.js";
@@ -2740,6 +2741,10 @@ function sheetView() {
       ${schema ? gliederungView() : ""}
       <div class="mk-norm-fuss">${alsKarteKnopf("norm", sh.ref)}</div>
       <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: ${r2 ? "Amtliches Einkommensteuer-Handbuch des BMF (esth.bundesfinanzministerium.de), Ausgabe 2025" : "www.gesetze-im-internet.de"}</div>`;
+  } else if (sh.art === "schaubild") {
+    const sb = SB.schaubilderVon(sh.id)[sh.i];
+    titel = sb ? sb.titel : "Schaubild";
+    inhalt = SB.schaubildBlatt(sh.id, sh.i, kompaktInline);
   } else if (sh.art === "karteEdit") {
     titel = sh.e.id ? "Karte bearbeiten" : "Neue Karte"; links = sh.zurueck ? "Zurück" : "Abbrechen";
     inhalt = karteEditView(sh);
@@ -3087,6 +3092,8 @@ const AKTIONEN = {
   korrigieren: () => korrigieren(s().review ?? s().index),
   selbstReview: (v) => selbstBewerten(s().review, v === "1"),
   normDetail: (v) => { state.sheet = { art: "norm", ref: v }; render(); },
+  // Schaubild zum Kompaktwissen (wird nicht vorgelesen)
+  schaubild: (v) => { const [id, i] = String(v).split("|"); state.sheet = { art: "schaubild", id, i: Number(i) || 0 }; render(); document.querySelector(".sheet .vb-inhalt")?.scrollTo(0, 0); },
   review: (v) => { s().review = Number(v); render(); scrollOben(); },
   reviewZurueck: () => { s().review = null; render(); },
   reviewNav: (v) => { s().review += Number(v); render(); scrollOben(); },

@@ -1157,3 +1157,28 @@ test("Suche: Fragewörter, Wortstämme und Normzitate ohne §", async () => {
   assert.equal(S.zitatAus("2026"), null);
   assert.ok(S.seltenheit(1, 1000) > S.seltenheit(500, 1000));
 });
+
+test("Schaubilder: gültige Themen, Knoten und Darstellung ohne Fehler", async () => {
+  const S = await import("../js/schaubilder.js");
+  const { KOMPAKT } = await import("../js/kompakt.js");
+  let n = 0;
+  for (const [id, liste] of Object.entries(S.SCHAUBILDER)) {
+    assert.ok(THEMA[id], `Schaubild für unbekanntes Thema ${id}`);
+    assert.ok(liste.length > 0, id);
+    liste.forEach((s, i) => {
+      assert.ok(s.knopf && s.titel && s.art, `${id}#${i}: knopf, titel, art`);
+      if (s.art === "fluss") {
+        const ids = new Set(s.knoten.map((k) => k.id));
+        for (const p of s.pfeile || []) assert.ok(ids.has(p.von) && ids.has(p.nach), `${id}#${i}: Pfeil ${p.von} → ${p.nach}`);
+        for (const k of s.knoten) assert.ok(k.x >= 0 && k.x <= (s.w || 360) && k.y >= 0 && k.y <= (s.h || 240), `${id}#${i}: Knoten ${k.id} außerhalb`);
+      }
+      const html = S.schaubildBlatt(id, i, (t) => t);
+      assert.ok(html.length > 100 && !/undefined|NaN/.test(html), `${id}#${i}: Darstellung`);
+      n++;
+    });
+    // nicht Teil des Vorlesens: keine data-hoer-Markierung, nicht in den Daten des Kompaktwissens
+    assert.ok(!S.schaubildKnoepfe(id).includes("data-hoer"), `${id}: Schaubild-Knopf wird vorgelesen`);
+    assert.ok(!("schaubilder" in KOMPAKT[id]), id);
+  }
+  assert.ok(n >= 60, `nur ${n} Schaubilder`);
+});
