@@ -725,7 +725,8 @@ function otNeuerDurchgang() {
   schreib("bsr.otest2.gesehen", JSON.stringify({ d: g.d + 1, nrs: [...ohne, ...OT.fragenVon(t).map((f) => f.nr)] }));
   return t;
 }
-const otKarte = () => (state.fach === "bsr" && OT.sichtbar() ? OT.startKarte({ ic, verlauf: otVerlauf(), laufend: otGespeichert() && !otGespeichert().ende, durchgang: otGesehen().d }) : "");
+const OT_AN = false; // Generalprobe nach dem Lernstandstest abgeschaltet (Code bleibt, Einschalten: true + SICHTBAR anpassen)
+const otKarte = () => (OT_AN && state.fach === "bsr" && OT.sichtbar() ? OT.startKarte({ ic, verlauf: otVerlauf(), laufend: otGespeichert() && !otGespeichert().ende, durchgang: otGesehen().d }) : "");
 setInterval(() => {
   const t = state.otest;
   if (!t || t.ende) return;
@@ -799,7 +800,7 @@ function fortsetzenBanner() {
   const k = ksimGespeichert();
   if (k?.phase === "laufend") l.push(["ksim", `Klausursimulation ${k.minuten} Min.`, `noch ${simUhr(simRest(k))}`]);
   const o = otGespeichert();
-  if (o && !o.ende && OT.sichtbar()) l.push(["otest", "Generalprobe Bilanz", `${Object.keys(o.antworten || {}).length} von 60 beantwortet`]);
+  if (OT_AN && o && !o.ende && OT.sichtbar()) l.push(["otest", "Generalprobe Bilanz", `${Object.keys(o.antworten || {}).length} von 60 beantwortet`]);
   return l.map(([v, titel, sub]) => `<div class="fortsetzen" role="status"><span class="fs-puls" aria-hidden="true"></span>
     <button class="grow fs-text" data-a="fortsetzen" data-v="${v}"><b>${esc(titel)} läuft</b><span class="sub">${esc(sub)} – weitermachen</span></button>
     <button class="fs-weg" data-a="fortsetzenWeg" data-v="${v}" aria-label="Verwerfen">${ic("kreuz", "klein")}</button></div>`).join("");
