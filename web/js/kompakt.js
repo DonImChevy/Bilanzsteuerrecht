@@ -31,6 +31,7 @@ export function kompaktText(k) {
 export const lesezeit = (k) => Math.max(1, Math.round(kompaktText(k).split(/\s+/).length / 170));
 
 import { hoerSegmente, hoerInfo, vorlesenMoeglich, hoertGerade, offlineMoeglich } from "./vorlesen.js";
+import { schaubildKnoepfe } from "./schaubilder.js";
 
 const dauerText = (min) => min < 90 ? `${min} Min.` : `${String(Math.round(min / 6) / 10).replace(".", ",")} Std.`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -111,6 +112,7 @@ export function kompaktView(id, h) {
         <div><h2>${esc(t.titel)}</h2><div class="sub">${esc(t.unter)}</div></div></header>
       ${hoeren}
       ${abdeckenLeiste(h.abdecken, h.ic)}
+      ${schaubildKnoepfe(id)}
       ${kern}
       ${abschnitt("km-beispiele", k.beispiele.length === 1 ? "Klausurbeispiel" : "Klausurbeispiele", k.beispiele.map((b, i) => beispielView(b, i, h.alsKarte ? `<div class="km-bsp-karte">${h.alsKarte("beispiel", `${id}|${i}`)}</div>` : "")).join(""))}
       <p class="km-hinweis" data-hoer="ende">Die Zusammenfassung gibt einen Überblick über die klausurrelevanten Punkte – sie ersetzt nicht das Skript. Paragrafen antippen, um den Gesetzestext zu lesen.</p>
