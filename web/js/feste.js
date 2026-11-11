@@ -650,7 +650,7 @@ export const FESTE = [
   // ----- Feste Rechen- und Buchungsaufgaben -----
   fest(zahl("ib-zinsschuld", "inventurBilanz",
     "Ein Existenzgründerdarlehen über 20.000 € (2,5 % p.a.) wurde am 01.06.01 ausgezahlt. Die Zinsen sind halbjährlich nachträglich zum 01.12./01.06. fällig und wurden bis zum 01.12.01 vertragsgemäß bezahlt. Welche Zinsschuld (sonstige Verbindlichkeit) ist zum 31.12.01 im Inventar anzusetzen?",
-    4167, "Zinsen für Dezember 01: 20.000 € × 2,5 % ÷ 12 = 41,67 €.", { quelle: "Übung Inventar (Jeanspassage Boss)" })),
+    4167, "Die Zinsen für das erste Halbjahr (01.06.–30.11.01: 20.000 € × 2,5 % × 6/12 = 250 €) waren am 01.12.01 fällig und sind bezahlt. Offen ist am 31.12.01 nur der Monat Dezember – er wird erst am 01.06.02 mit dem nächsten Halbjahr gezahlt: 20.000 € × 2,5 % × 1/12 = 41,67 € sonstige Verbindlichkeit.", { quelle: "Übung Inventar (Jeanspassage Boss)" })),
   fest(zahl("ib-reinvermoegen", "inventurBilanz",
     "Tabakwarenhändler Albers: Gebäude 120.000 €, Fuhrpark 13.000 €, BGA 30.000 €, Waren 57.000 €, Forderungen 19.000 €, Bank 24.000 €, Kasse 30.000 €; Darlehensschulden 30.000 €, Bankschulden 12.000 €, Verbindlichkeiten L.u.L. 53.000 €. Wie hoch ist das Reinvermögen (Eigenkapital)?",
     E(198000), "Vermögen 293.000 € ./. Schulden 95.000 € = Reinvermögen 198.000 €.", { quelle: "Übung Inventar – Bilanz (Albers)" })),
