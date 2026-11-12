@@ -12,7 +12,7 @@ import { r2View } from "./est/r2.js";
 import * as SB from "./schaubilder.js";
 import { satz, satzZeile, typografie } from "./satz.js";
 import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, lesezeit, kompaktInline, zuletztText, loesungZeile } from "./kompakt.js";
-import { SIM, startKarte as simStartKarte, simView, neueSim, zusammenstellen, hoechstpunkte, punkte as simPunkte, note as simNote, restSekunden as simRest, uhrText as simUhr, auswahlSetzen as simAuswahl } from "./klausursim.js";
+import { SIM, startKarte as simStartKarte, simView, neueSim, hoechstpunkte, punkte as simPunkte, note as simNote, restSekunden as simRest, uhrText as simUhr, auswahlSetzen as simAuswahl } from "./klausursim.js";
 import * as MK from "./meinekarten.js";
 import * as HS from "./handschrift.js";
 import * as OT from "./bilr/onlinetest.js";
@@ -3310,7 +3310,9 @@ const AKTIONEN = {
   ksimNeu: (v) => {
     const alt = ksimGespeichert();
     if (alt && alt.phase === "laufend" && !confirm("Es gibt eine begonnene Klausur. Neue Klausur beginnen und die alte verwerfen?")) return;
-    state.ksim = neueSim(state.fach, v, Math.floor(Math.random() * 1e9));
+    const neu = neueSim(state.fach, v, Math.floor(Math.random() * 1e9));
+    if (!neu) return;
+    state.ksim = neu;
     ksimSichern(); render(); scrollOben();
   },
   denkfehlerUeben: (fam) => {

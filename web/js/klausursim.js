@@ -1,7 +1,7 @@
-// Klausursimulation: echte Klausurlänge (60 / 90 / 180 Minuten), zusammengestellt aus Einzelsachverhalten mit empfohlener
-// Bearbeitungszeit, Deckblatt wie in der Prüfung, Bearbeitung mit Uhr (Entwurf wird laufend auf dem Gerät gespeichert),
+// Klausursimulation: feste Probeklausuren A/B/C je Fach aus Einzelsachverhalten mit empfohlener
+// Bearbeitungszeit (ganz oder in Teilen), Deckblatt wie in der Prüfung, Bearbeitung mit Uhr (Entwurf wird laufend auf dem Gerät gespeichert),
 // nach der Abgabe Musterlösung und Bewertungsbogen zum Abhaken → Punkte und Note (0–15 Punkte, Tabelle wie StBAPO-Bögen).
-// Rein bis auf die Ansichten: zusammenstellen(), note() und die Bausteine sind getestet.
+// Rein bis auf die Ansichten: neueSim(), auswahlSetzen(), note() und die Bausteine sind getestet.
 import { Zufall } from "./kern.js";
 import { SV_BSR, VORBEMERKUNGEN as VB_BSR } from "./bilr/klausur_sv.js";
 import { SV_UST, KLAUSUREN_UST, VORBEMERKUNGEN_UST } from "./ust/klausuren.js";
@@ -9,28 +9,26 @@ import { SV_PR, KLAUSUREN_PR, VORBEMERKUNGEN_PR } from "./pr/klausuren.js";
 import { SV_BBF, KLAUSUREN_BBF, VORBEMERKUNGEN_BBF } from "./bilr/bbf_klausuren.js";
 import { SV_OER, KLAUSUREN_OER, VORBEMERKUNGEN_OER } from "./oer/klausuren.js";
 import * as HS from "./handschrift.js";
+import { STICHWORTE } from "./klausur_stichworte.js";
 
-export const DAUERN = [60, 90, 180];
 export const SIM = {
   bsr: {
     titel: "Bilanzsteuerrecht und betriebliches Rechnungswesen",
     hilfsmittel: ["EStG, EStDV, HGB, UStG (Textausgaben)", "EStR/EStH (amtliches Handbuch)", "Nicht programmierbarer Taschenrechner"],
     vorbemerkungen: VB_BSR,
-    pool: SV_BSR,
-    // Teil I je nach Dauer (Buchführung), Teil II füllt den Rest (Bilanzierung und Bewertung)
-    teil1: { 60: [["bsr-k-guv"], ["bsr-k-lohn"]], 90: [["bsr-k-lohn", "bsr-k-guv"], ["bsr-k-lohn"]], 180: [["bsr-k-waren"]] },
-    pflicht: { 180: ["bsr-k-grundstueck"] },
+    pool: SV_BSR, nurFest: true,
     teilNamen: { 1: "Teil I · Buchführung", 2: "Teil II · Bilanzierung und Bewertung" },
     // Feste Probeklausuren wie die Semesterklausuren 01/2025 und 01/2026: gleiche Sachverhalte und Zahlen bei jedem Start (fester Startwert)
     klausuren: [
       { id: "bsr-a", kurz: "A", seed: 2026101, minuten: 180, titel: "Warenkonten, Grundstückserwerb, Firmenwagen, Damnum, RAP, Rückstellung",
         teile: ["bsr-k-waren", "bsr-k-grundstueck", "bsr-k-firmenwagen", "bsr-k-darlehen", "bsr-k-rap", "bsr-k-rueckstellung"] },
-      { id: "bsr-b", kurz: "B", seed: 2026202, minuten: 180, titel: "Lohn und GuV-Kennzahlen, Grundstück, Wareneinkauf, GWG, Anzahlung, Darlehen",
+      { id: "bsr-b", kurz: "B", seed: 2026202, minuten: 180, titel: "Lohn und GuV-Kennzahlen, Grundstück, Wareneinkauf, GWG, Anzahlung, Darlehen, Umtausch, Entnahme",
         teile: ["bsr-k-lohn", "bsr-k-guv", "bsr-k-grundstueck", "bsr-k-wareneinlage", "bsr-k-gwg", "bsr-k-anzahlung", "bsr-k-darlehen", "bsr-k-umtausch", "bsr-k-entnahme"] },
       { id: "bsr-c", kurz: "C", seed: 2026303, minuten: 180, titel: "Warenkonten und Lohn, Firmenwagen, Darlehen, GWG, Anzahlung, RAP, Umtausch, Rückstellung",
         teile: ["bsr-k-waren", "bsr-k-lohn", "bsr-k-firmenwagen", "bsr-k-darlehen", "bsr-k-gwg", "bsr-k-anzahlung", "bsr-k-rap", "bsr-k-umtausch", "bsr-k-rueckstellung"] },
     ],
     feldHinweis: "Würdigung, Berechnungen, Buchungssätze mit GuV/BVV",
+    startText: "Drei vollständige Klausuren à 180 Minuten wie die Semesterklausur: Teil I Buchführung, Teil II Bilanzierung und Bewertung mit Würdigung, Buchungssätzen und Gewinnauswirkung. Danach Musterlösung und Selbstkontrollbogen mit Erwartungshorizont und Note.",
   },
 };
 SIM.ust = {
@@ -66,12 +64,11 @@ SIM.pr = {
 
 /** Feste Klausur eines Fachs (id z. B. "ust-a") oder undefined. */
 export const klausurDaten = (fach, id) => SIM[fach]?.klausuren?.find((x) => x.id === id);
-/** Neue Simulation anlegen: Dauer (Zahl) = gemischte Sachverhalte, "k:<id>" = feste Klausur. */
+/** Neue Simulation einer festen Klausur anlegen ("k:<id>"); unbekannte Klausur → null. */
 export function neueSim(fach, v, seed) {
   const fest = String(v).startsWith("k:") ? klausurDaten(fach, String(v).slice(2)) : null;
-  if (fest) return { fach, minuten: fest.minuten, seed: fest.seed ?? seed, klausur: fest.id, teile: [...fest.teile], phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
-  const minuten = Number(v);
-  return { fach, minuten, seed, teile: zusammenstellen(fach, minuten, seed), phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
+  if (!fest) return null;
+  return { fach, minuten: fest.minuten, seed: fest.seed ?? seed, klausur: fest.id, teile: [...fest.teile], phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
 }
 export const simFaecher = () => Object.keys(SIM);
 
@@ -80,32 +77,11 @@ const STUFEN = [[96, 15], [91, 14], [87, 13], [82, 12], [78, 11], [73, 10], [68,
 export const note = (prozent) => STUFEN.find(([ab]) => prozent >= ab)[1];
 export const noteText = (n) => (n >= 14 ? "sehr gut" : n >= 11 ? "gut" : n >= 8 ? "befriedigend" : n >= 5 ? "ausreichend" : n >= 2 ? "mangelhaft" : "ungenügend");
 
-/** Sachverhalte wählen, deren empfohlene Zeiten genau die Dauer ergeben (Teil I zuerst). */
-export function zusammenstellen(fach, minuten, seed) {
-  const d = SIM[fach], r = new Zufall(seed), nachId = Object.fromEntries(d.pool.map((s) => [s.id, s]));
-  const t1 = r.wahl(d.teil1[minuten]).map((id) => nachId[id]);
-  const pflicht = (d.pflicht[minuten] || []).map((id) => nachId[id]);
-  let rest = minuten - t1.reduce((n, s) => n + s.min, 0) - pflicht.reduce((n, s) => n + s.min, 0);
-  const kandidaten = r.mischen(d.pool.filter((s) => s.teil === 2 && !pflicht.includes(s) && s.min <= rest));
-  const wahl = [];
-  const suche = (i, offen) => {
-    if (offen === 0) return true;
-    for (let j = i; j < kandidaten.length; j++) {
-      if (kandidaten[j].min > offen) continue;
-      wahl.push(kandidaten[j]);
-      if (suche(j + 1, offen - kandidaten[j].min)) return true;
-      wahl.pop();
-    }
-    return false;
-  };
-  suche(0, rest);
-  return [...t1, ...pflicht, ...wahl].map((s) => s.id);
-}
-
 /** Inhalt eines Sachverhalts (deterministisch aus Startwert und Position). */
 export function inhalt(fach, id, seed, i) {
   const s = SIM[fach].pool.find((x) => x.id === id);
-  return { ...s, ...s.erzeugen(new Zufall(seed * 31 + i * 7 + 1)) };
+  const x = s.erzeugen(new Zufall(seed * 31 + i * 7 + 1)), stw = STICHWORTE[id] || [];
+  return { ...s, ...x, bewertung: x.bewertung.map(([p, t, erw], j) => [p, t, erw, stw[j] || ""]) };
 }
 /** Ausgewählte Teile als [id, Position] – Position bleibt die der vollständigen Klausur (gleiche Zahlen bei Teilauswahl). */
 export const gewaehlt = (k) => k.teile.map((id, i) => [id, i]).filter(([, i]) => !(k.ohne || []).includes(i));
@@ -137,12 +113,10 @@ export function startKarte(fach, h) {
   if (!d) return "";
   const esc = h.esc || ((t) => String(t));
   const fest = (d.klausuren || []).map((x) => `<button class="ks-fest" data-a="ksimNeu" data-v="k:${x.id}"><b>${esc(x.kurz)}</b><span>${esc(x.titel)}</span><i>${x.minuten} Min. · ${x.teile.length} Aufgaben · ${String(festPunkte(fach, x)).replace(".", ",")} P.</i></button>`).join("");
-  const dauern = d.nurFest ? "" : `${fest ? `<span class="ks-feste-titel">Gemischt nach Dauer</span>` : ""}<div class="ks-dauern">${DAUERN.map((m) => `<button class="ks-dauer" data-a="ksimNeu" data-v="${m}"><b>${m}</b><span>Minuten</span><i>${m === 180 ? "Hauptklausur" : m === 90 ? "halbe Klausur" : "Kurzklausur"}</i></button>`).join("")}</div>`;
   return `<section class="ks-start">
     <div class="ks-start-kopf"><span class="ks-stempel">Prüfungsamt</span><b>Klausur simulieren</b>
-      <span class="sub">${d.startText || "Wie die Semesterklausur: Deckblatt, Einzelsachverhalte mit empfohlener Bearbeitungszeit, Würdigung, Buchungssätze und Gewinnauswirkung. Danach Musterlösung und Bewertungsbogen mit Note."}</span></div>
+      <span class="sub">${d.startText || ""}</span></div>
     ${fest ? `<span class="ks-feste-titel">Vollständige Probeklausuren</span><div class="ks-feste">${fest}</div>` : ""}
-    ${dauern}
     ${h.laufend ? `<button class="knopf zweit" data-a="ksimWeiter">${h.ic("play", "klein")} Begonnene Klausur fortsetzen</button>` : ""}
   </section>`;
 }
@@ -212,7 +186,7 @@ export function simView(k, h) {
     const id = s.id, zahlen = s.zahlen || [];
     const ueberschrift = !tn ? "" : i === 0 && s.teil === 1 ? `<h2 class="ks-teil">${tn[1]}</h2>` : i === teilGrenze ? `<h2 class="ks-teil">${tn[2]}</h2>` : "";
     const eigene = k.antworten?.[id] || "";
-    const bogen = s.bewertung.map(([p, t, erw], j) => `<label class="ks-haken"><input type="checkbox" data-a="ksimHaken" data-v="${id}|${j}" ${k.haken?.[id]?.[j] ? "checked" : ""}><span>${h.esc(t)}${erw ? `<small class="ks-erw">Erwartet: ${h.inline(erw)}</small>` : ""}</span><b>${String(p).replace(".", ",")}</b></label>`).join("");
+    const bogen = s.bewertung.map(([p, t, erw, stw], j) => `<label class="ks-haken"><input type="checkbox" data-a="ksimHaken" data-v="${id}|${j}" ${k.haken?.[id]?.[j] ? "checked" : ""}><span>${h.esc(t)}${erw ? `<small class="ks-erw">Erwartet: ${h.inline(erw)}</small>` : ""}${stw ? `<small class="ks-stw"><span>Stichworte</span>${stw.split(" · ").map((w) => `<i>${h.inline(w)}</i>`).join("")}</small>` : ""}</span><b>${String(p).replace(".", ",")}</b></label>`).join("");
     const erreichtSv = s.bewertung.reduce((a, [p], j) => a + (k.haken?.[id]?.[j] ? p : 0), 0), maxSv = s.bewertung.reduce((a, [p]) => a + p, 0);
     return `${ueberschrift}<article class="ks-blatt ks-sv" id="ks-${id}">
       <header class="ks-sv-kopf"><span class="ks-nr">${d.svName || "Sachverhalt"} ${s.nr}</span><h3>${h.esc(s.titel)}</h3><span class="ks-min">ca. ${s.min} Min. · ${String(maxSv).replace(".", ",")} P.</span>

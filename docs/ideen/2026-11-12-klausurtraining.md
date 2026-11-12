@@ -39,6 +39,4 @@ Handschrift lässt sich nicht automatisch korrigieren. Der Bogen ersetzt den Kor
 ## Ideen für später
 
 - **Bogen-Lerngruppe:** Lösung als Foto mit der Lerngruppe teilen, die anderen haken den Bogen ab (Durchschnitt = Note).
-- **„Erwartet“ auch für die gemischte BilR-Simulation:** Die gewürfelten BilR-Sachverhalte haben präzise Merkmale, aber noch keine Erwartungszeile; nachrüsten.
 - **AO und ESt:** Sobald echte Klausuren vorliegen, Probeklausuren nach demselben Muster ergänzen.
-- **Teilklausuren:** einzelne Aufgabenteile (z. B. nur ÖR-Teil E) als 50-Minuten-Training startbar machen.

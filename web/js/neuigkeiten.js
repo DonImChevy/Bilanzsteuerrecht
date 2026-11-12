@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-stichworte",
+    datum: "2026-11-12",
+    titel: "Stichworte im Selbstkontrollbogen",
+    klein: true,
+    punkte: [
+      ["haken", "Stichworte je Bewertungspunkt", "Unter jedem Punkt im Selbstkontrollbogen stehen jetzt die Formulierungen, die in deiner Lösung vorkommen müssen – Definitionen, Tatbestandsmerkmale und Begründung, nicht nur die Paragrafen.", "tab", "klausur"],
+    ],
+  },
+  {
     id: "2026-11-teilklausuren",
     datum: "2026-11-12",
     titel: "Probeklausuren in Teilen",

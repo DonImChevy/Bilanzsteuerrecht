@@ -2310,12 +2310,6 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 .ks-start-kopf b { font-size: 18px; font-weight: 800; letter-spacing: -0.2px; }
 .ks-start-kopf .sub { font-size: 13px; line-height: 1.45; }
 .ks-stempel { justify-self: start; font-size: 10.5px; font-weight: 900; letter-spacing: 1.2px; text-transform: uppercase; color: var(--err); padding: 2px 8px; border: 1.5px solid currentColor; border-radius: 6px; transform: rotate(-2deg); }
-.ks-dauern { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.ks-dauer { display: grid; justify-items: center; gap: 1px; padding: 12px 6px; border-radius: 16px; background: var(--card); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); color: var(--text); }
-.ks-dauer b { font-size: 26px; font-weight: 900; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.1; }
-.ks-dauer span { font-size: 12px; font-weight: 700; color: var(--text2); }
-.ks-dauer i { font-style: normal; font-size: 11px; color: var(--text3); }
-.ks-dauer:active { transform: scale(0.97); }
 .vollbild.ksim { z-index: 26; }
 .ksim .vb-inhalt { max-width: 760px; width: 100%; margin: 0 auto; padding: 8px 16px 40px; }
 .ks-blatt { position: relative; margin: 0 0 18px; padding: 18px 18px 18px 22px; border-radius: 18px; background: var(--card); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
@@ -2980,3 +2974,8 @@ h1, h2, h3, .tk-text b, .kachel b, .ks-deckblatt h2 { text-wrap: balance; }
 .ks-wahl input { width: 18px; height: 18px; accent-color: var(--m); flex: none; }
 .ks-plan li.aus { background: transparent; box-shadow: inset 0 0 0 1px var(--glas-linie); }
 .ks-plan li.aus span, .ks-plan li.aus b { color: var(--text3); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--text3) 60%, transparent); }
+
+/* Selbstkontrollbogen: Stichworte je Merkmal */
+.ks-stw { display: flex; flex-wrap: wrap; gap: 4px 5px; margin-top: 6px; font-size: 12px; line-height: 1.35; }
+.ks-stw > span { flex-basis: 100%; font-size: 10.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; color: var(--text3); }
+.ks-stw i { font-style: normal; padding: 2px 7px; border-radius: 7px; color: var(--text); background: color-mix(in srgb, var(--m) 9%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--m) 18%, transparent); }
