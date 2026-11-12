@@ -12,7 +12,7 @@ import { r2View } from "./est/r2.js";
 import * as SB from "./schaubilder.js";
 import { satz, satzZeile, typografie } from "./satz.js";
 import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, lesezeit, kompaktInline, zuletztText, loesungZeile } from "./kompakt.js";
-import { SIM, startKarte as simStartKarte, simView, zusammenstellen, hoechstpunkte, punkte as simPunkte, note as simNote, restSekunden as simRest, uhrText as simUhr } from "./klausursim.js";
+import { SIM, startKarte as simStartKarte, simView, neueSim, zusammenstellen, hoechstpunkte, punkte as simPunkte, note as simNote, restSekunden as simRest, uhrText as simUhr } from "./klausursim.js";
 import * as MK from "./meinekarten.js";
 import * as HS from "./handschrift.js";
 import * as OT from "./bilr/onlinetest.js";
@@ -1731,7 +1731,7 @@ function tabKlausur() {
           beide: "Wie die Semesterklausur: ca. 25 % Teil I (Buchführung) und 75 % Teil II (Bilanzierung und Bewertung). Auswertung erst nach der Abgabe." }[state.bilrTeil])}
     ${otKarte()}
     ${punkteHebel()}
-    ${SIM[state.fach] ? simStartKarte(state.fach, { ic, laufend: ksimGespeichert()?.phase === "laufend" }) : ""}
+    ${SIM[state.fach] ? simStartKarte(state.fach, { ic, esc, laufend: ksimGespeichert()?.phase === "laufend" }) : ""}
     ${modusSchalter()}
     ${KLAUSURPLAN[state.fach] ? `<button class="km-vorher" data-a="kompaktListe"><span class="km-vorher-icon">${ic("akte")}</span>
       <span class="grow"><b>Vor der Klausur</b><span class="sub">Aufbau, Schwerpunkte und alle Zusammenfassungen zum Wiederholen</span></span>${ic("pfeil", "klein")}</button>` : ""}
@@ -3310,8 +3310,7 @@ const AKTIONEN = {
   ksimNeu: (v) => {
     const alt = ksimGespeichert();
     if (alt && alt.phase === "laufend" && !confirm("Es gibt eine begonnene Klausur. Neue Klausur beginnen und die alte verwerfen?")) return;
-    const seed = Math.floor(Math.random() * 1e9), minuten = Number(v);
-    state.ksim = { fach: state.fach, minuten, seed, teile: zusammenstellen(state.fach, minuten, seed), phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
+    state.ksim = neueSim(state.fach, v, Math.floor(Math.random() * 1e9));
     ksimSichern(); render(); scrollOben();
   },
   denkfehlerUeben: (fam) => {
@@ -3455,7 +3454,7 @@ const AKTIONEN = {
   },
   ksimSpeichern: () => {
     const k = state.ksim, max = hoechstpunkte(k.fach, k), p = simPunkte(k.fach, k);
-    const eintrag = { datum: k.start, richtig: p, gesamt: max, sek: Math.round((k.ende - k.start) / 1000), fach: k.fach, sim: k.minuten, note: simNote(max ? (p / max) * 100 : 0) };
+    const eintrag = { datum: k.start, richtig: p, gesamt: max, sek: Math.round((k.ende - k.start) / 1000), fach: k.fach, sim: k.minuten, ...(k.klausur ? { probe: k.klausur } : {}), note: simNote(max ? (p / max) * 100 : 0) };
     const i = stat.klausuren.findIndex((x) => x.datum === k.start);
     if (i >= 0) stat.klausuren[i] = eintrag; else stat.klausuren.push(eintrag);
     k.gespeichert = true; speichern(); ksimSichern();
