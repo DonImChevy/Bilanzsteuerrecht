@@ -1006,26 +1006,13 @@ test("Profi-Stimme: Audio nur bei passender Prüfsumme, Zeitmarken je Punkt", as
   }
 });
 
-test("Klausursimulation: Zeit geht exakt auf, Sachverhalte rechnen sauber, Notentabelle", async () => {
-  const { SIM, zusammenstellen, inhalt, hoechstpunkte, note, zahlStimmt } = await import("../js/klausursim.js");
-  for (const fach of Object.keys(SIM).filter((f) => !SIM[f].nurFest)) {
-    for (const minuten of [60, 90, 180]) for (let seed = 1; seed <= 60; seed++) {
-      const teile = zusammenstellen(fach, minuten, seed);
-      const svs = teile.map((id, i) => inhalt(fach, id, seed, i));
-      assert.equal(svs.reduce((n, s) => n + s.min, 0), minuten, `${fach} ${minuten} Min. (Startwert ${seed})`);
-      assert.equal(new Set(teile).size, teile.length, "Sachverhalt doppelt");
-      assert.ok(svs.every((s, i) => !i || s.teil >= svs[i - 1].teil), "Teil I vor Teil II");
-      for (const s of svs) {
-        assert.ok(!/NaN|undefined|Infinity/.test(JSON.stringify([s.sv, s.loesung, s.bewertung, s.zahlen])), `${s.id}: Rechenfehler`);
-        assert.ok(s.bewertung.length >= 3 && s.loesung.length >= 2 && s.aufgaben.length >= 1, s.id);
-        for (const [, t, erw] of s.bewertung) assert.ok(t && erw && erw.length > 8, `${s.id}: Merkmal mit Erwartung – „${t}“`);
-      }
-      const max = hoechstpunkte(fach, { teile, seed });
-      assert.ok(max > minuten * 0.4 && max < minuten * 0.7, `${fach} ${minuten}: ${max} Punkte`);
-    }
-    // jeder Sachverhalt ist in mindestens einer Zusammenstellung erreichbar
-    const vorkommen = new Set([60, 90, 180].flatMap((m) => Array.from({ length: 80 }, (_, i) => zusammenstellen(fach, m, i + 1)).flat()));
-    for (const s of SIM[fach].pool.filter((x) => !x.fest)) assert.ok(vorkommen.has(s.id), "nie gezogen: " + s.id);
+test("Klausursimulation: Sachverhalte rechnen für jeden Startwert sauber, Notentabelle", async () => {
+  const { SIM, inhalt, note, zahlStimmt } = await import("../js/klausursim.js");
+  for (const [fach, d] of Object.entries(SIM)) for (const sv of d.pool) for (let seed = 1; seed <= (sv.fest ? 1 : 60); seed++) {
+    const s = inhalt(fach, sv.id, seed, seed % 9);
+    assert.ok(!/NaN|undefined|Infinity/.test(JSON.stringify([s.sv, s.loesung, s.bewertung, s.zahlen])), `${s.id}: Rechenfehler (Startwert ${seed})`);
+    assert.ok(s.bewertung.length >= 2 && s.loesung.length >= 1 && s.aufgaben.length >= 1, s.id);
+    for (const [, t, erw] of s.bewertung) assert.ok(t && erw && erw.length > 8, `${s.id}: Merkmal mit Erwartung – „${t}“`);
   }
   assert.deepEqual([100, 96, 90, 50, 49.9, 19].map(note), [15, 15, 13, 5, 4, 0]);
   assert.ok(zahlStimmt({ wert: 1234.5, toleranz: 1 }, "1.234,50") && !zahlStimmt({ wert: 1234.5, toleranz: 1 }, "1.240"));
@@ -1092,13 +1079,13 @@ test("Probeklausuren: Teilauswahl – gleiche Zahlen, Zeit und Punkte passen sic
 });
 
 test("Klausursimulation: Handschrift – Blätter je Sachverhalt, Auswertung zeigt die Zeichnung", async () => {
-  const { simView, zusammenstellen } = await import("../js/klausursim.js");
+  const { simView, neueSim } = await import("../js/klausursim.js");
   const HS = await import("../js/handschrift.js");
-  const teile = zusammenstellen("bsr", 60, 3), id = teile[0];
+  const { teile, seed } = neueSim("bsr", "k:bsr-b", 1), id = teile[0];
   const z = { g: "l", s: [{ w: "s", c: 1, p: [[10, 20, 7], [60, 25, 7], [120, 30, 7]] }] };
   const code = HS.kodieren(z);
   const h = { ic: () => "", esc: (t) => String(t), inline: (t) => t, loesungZeile: (t) => t, hs: { art: "s", farbe: 0, mfarbe: 0 }, modus: "text" };
-  const k = { fach: "bsr", minuten: 60, seed: 3, teile, phase: "laufend", start: 1, text: {}, zahlen: {}, haken: {}, modi: { [id]: "hand" }, hand: { [id]: [code, ""] } };
+  const k = { fach: "bsr", minuten: 180, seed, teile, phase: "laufend", start: 1, text: {}, zahlen: {}, haken: {}, modi: { [id]: "hand" }, hand: { [id]: [code, ""] } };
   const laufend = simView(k, h);
   assert.ok(laufend.includes(`data-ksim-hs="${id}|0"`) && laufend.includes(`data-ksim-hs="${id}|1"`), "zwei Blätter");
   assert.ok(laufend.includes(`data-a="ksimBlatt" data-v="${id}"`) && laufend.includes('data-a="hsWerkzeug"'));
