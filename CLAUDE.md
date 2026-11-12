@@ -15,7 +15,7 @@ Deploy über GitHub Pages (`.github/workflows/pages.yml`). Antworten an den Nutz
   Liegt nichts vor `origin/main`, ist der letzte PR gemergt → neuen PR anlegen (sonst den offenen aktualisieren). Kein Force-Push.
 - **Bei jeder Änderung an `web/`:** `VERSION` in `web/sw.js` erhöhen (`bsr-vNN`), neue Dateien in dessen `DATEIEN`-Liste aufnehmen.
   **Neuigkeiten:** Bei jeder für Nutzer sichtbaren Neuerung oben in `web/js/neuigkeiten.js` einen Eintrag anfügen (neue `id`, Datum, kurze Punkte mit Icon und ggf. Aktion zum Öffnen) – er erscheint beim ersten Start nach dem Update einmal (Einstellungen → Neuigkeiten zeigt alle). **Nur neue Funktionen und große Updates poppen auf;** kleine Verbesserungen an bestehenden Funktionen mit `klein: true` markieren (dann nur in der Liste). Reine Feinschliffe (Farbe, Größe, Abstand an Bestehendem) bekommen gar keinen Eintrag.
-  Nach dem Deploy die App zweimal schließen/öffnen, damit das Update lädt.
+  Updates: Die App fragt beim Start und bei jeder Rückkehr (`visibilitychange`, höchstens alle 2 Min.) `reg.update()` ab; übernimmt ein neuer Service Worker (`controllerchange`), lädt sie neu, sobald nichts läuft (`nichtsLaeuft()`). Einstellungen zeigen die SW-Version (Nachricht `version`) und „Nach Update suchen“ (`AKTIONEN.updateSuchen`).
 - **Ideen und Härtetest:** Projekt-Agent `innovations-scout` (`.claude/agents/innovations-scout.md`) testet die App gründlich und liefert einen Bericht mit priorisierten, umsetzbaren Ideen (ändert selbst keinen Code). Aufrufen, wenn der Nutzer neue Ideen oder einen Härtetest will.
 - Prüfen vor dem Push:
   - `node --test web/tests/kern.test.mjs`

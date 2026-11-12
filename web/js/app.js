@@ -1542,7 +1542,7 @@ function tabLernen() {
   const schnell = state.fach === "oer"
     ? kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "75 % der Klausur") +
       kachel("uebertragung", "diagramm", "Übertragung", "Grafiken auswerten · 25 %") +
-      kachel("alles", "mischen", "Gemischt", "Quer durch das Skript") + paareKachel
+      kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") + paareKachel
     : state.fach === "est"
     ? `<button class="kachel" data-a="punktesammler"><span class="k-icon">${ic("ziel")}</span><span class="k-text"><b>Punkte sammeln</b><span class="sub">Klausursätze zum Auswendiglernen</span></span></button>` +
       kachel("rechnen", "tkonto", "Rechnen", "Tarif, WK, Entfernungspauschale") +
@@ -1591,7 +1591,7 @@ function tabLernen() {
     ${kursKarte()}
     ${denkfehlerKarte()}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
-    <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien", ust: "Themen · Skript & Klausurtechnik" }[state.fach] || { 1: "Themen · Skript Teil I", 2: "Themen · Skript Teil II", beide: "Themen · Skript Teil I und II" }[state.bilrTeil]}<span class="sub" style="text-transform:none;letter-spacing:0">${themenImTeil(state.fach).length} Themen</span></div>
+    <div class="gruppe"><div class="gruppe-titel">${state.fach === "bsr" ? { 1: "Themen · Teil I", 2: "Themen · Teil II", beide: "Themen · Teil I und II" }[state.bilrTeil] : "Themen"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenImTeil(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
       <div id="themenListe">${themenListe()}</div></div>
     ${lernkarteiView()}`;
@@ -1675,8 +1675,8 @@ function pfadKachel() {
 /** Bilanzrecht: Teil I (bis Dezember), Teil II oder beide wie in der Klausur. */
 function teilSchalter() {
   const m = [["1", "Teil I"], ["2", "Teil II"], ["beide", "Beide"]];
-  const fuss = { 1: "Teil I – Buchführung: Buchführungspflicht, Inventur und Bilanz, Konten, Warenverkehr, Umsatzsteuer, Abschluss, Kalkulation (Skript Teil I).", 2: "Teil II – Bilanzierung und Bewertung: Zurechnung, Anschaffungskosten, Grundstücke, AfA und GWG, Teilwert, Rechnungsabgrenzung, Entnahmen und Einlagen (Skript Teil II).", beide: "Beide Teile – wie in der Semesterklausur: Klausur mit ca. 25 % Teil I und 75 % Teil II." }[state.bilrTeil];
-  return `<div class="gruppe"><div class="gruppe-titel">Skript</div><div class="modus-karte"><div class="segment">${m.map(([id, t]) =>
+  const fuss = { 1: "Teil I – Buchführung: Buchführungspflicht, Inventur und Bilanz, Konten, Warenverkehr, Umsatzsteuer, Abschluss, Kalkulation.", 2: "Teil II – Bilanzierung und Bewertung: Zurechnung, Anschaffungskosten, Grundstücke, AfA und GWG, Teilwert, Rechnungsabgrenzung, Entnahmen und Einlagen.", beide: "Beide Teile – wie in der Semesterklausur: Klausur mit ca. 25 % Teil I und 75 % Teil II." }[state.bilrTeil];
+  return `<div class="gruppe"><div class="gruppe-titel">Stoff</div><div class="modus-karte"><div class="segment">${m.map(([id, t]) =>
     `<button data-a="bilrTeil" data-v="${id}" class="${state.bilrTeil === id ? "aktiv" : ""}">${t}</button>`).join("")}</div>
     <div class="gruppe-fuss">${fuss}</div></div></div>`;
 }
@@ -2873,7 +2873,8 @@ function sheetView() {
         ].map(([i, t]) => `<div class="zeile"><span style="font-size:20px">${i}</span><span class="grow" style="font-size:14.5px">${t}</span></div>`).join("")}
       </div></div>
       <div class="gruppe"><div class="gruppe-titel">Hinweis</div><div class="liste"><div class="zeile"><span class="grow sub">Finanzwirt-Trainer – inoffizielle, private Lernhilfe für das Grundstudium I zum Diplom-Finanzwirt (Bilanzrecht Teil I und II, Einkommensteuer, Umsatzsteuer, Öffentliches Recht) und für die Ausbildung FTA I (Buchführung und Bilanzwesen). Aufgaben, Fälle und Zusammenfassungen sind selbst formuliert und orientieren sich am Lehrstoff; Rechtsstand 2026. Gesetzestexte von gesetze-im-internet.de (u. a. EStG Stand 15.10.2026, UStG 29.06.2026, HGB 04.02.2026, GG 22.03.2025, BWahlG 03.07.2026). Ohne Gewähr – maßgeblich sind Gesetz und Lehrveranstaltung. Fehler gefunden? Nach jeder Aufgabe über „Hinweis“ melden.</span></div>
-        <div class="zeile"><span class="grow">Version</span><span class="sub">${VERSION}</span></div></div></div>
+        <div class="zeile"><span class="grow">Version</span><span class="sub">${swVersion || VERSION}</span></div>
+        <button class="zeile" data-a="updateSuchen" style="justify-content:center;color:var(--accent);font-weight:600">Nach Update suchen</button></div></div>
       <div class="liste" style="margin-bottom:24px"><button class="zeile" data-a="willkommenZeigen" style="justify-content:center;color:var(--accent);font-weight:600">Einführung erneut anzeigen</button>
         <button class="zeile" data-a="reset" style="justify-content:center;color:var(--err);font-weight:600">Gesamten Fortschritt löschen</button></div>`;
   } else if (sh.art === "willkommen") {
@@ -2983,6 +2984,15 @@ function fachSetzen(v) {
 }
 
 const AKTIONEN = {
+  updateSuchen() {
+    if (!swReg) { toast("Updates gibt es nur in der installierten App."); return; }
+    const vorher = swVersion;
+    toast("Suche nach Updates …");
+    nachUpdateSuchen(true).then(() => setTimeout(() => {
+      if (swReg.installing || swReg.waiting || updateWartet) { state.sheet = null; render(); toast("Update gefunden – App wird gleich neu geladen."); if (updateWartet) updateAnwenden(); else setTimeout(() => location.reload(), 10000); }
+      else toast(`Du hast die neueste Version${vorher ? ` (${vorher})` : ""}.`);
+    }, 1500));
+  },
   rolle: (v) => {
     state.rolle = v === "ausbildung" ? "ausbildung" : "studium";
     einstellungMerken("rolle", state.rolle);
@@ -3945,16 +3955,34 @@ syncBeimStart();
 leistungMessen();
 suchIndexVorbereiten();
 
+// Updates: Die Home-Bildschirm-App wird beim Zurückholen aus dem Hintergrund nicht neu geladen und sucht dann
+// von selbst nicht nach Updates. Deshalb beim Start und bei jeder Rückkehr (höchstens alle 2 Min.) nachsehen.
+// Übernimmt eine neue Version (skipWaiting + clients.claim), lädt die App neu, sobald gerade nichts läuft.
+let swReg = null, swVersion = "", updateWartet = false, letzteSuche = 0;
+const nichtsLaeuft = () => !state.sitzung && !state.deck && !state.sheet && !(state.ksim && state.ksim.phase === "laufend") && !(state.otest && !state.otest.ende);
+function updateAnwenden() {
+  if (!updateWartet) return;
+  if (nichtsLaeuft()) { sitzungSichern(); location.reload(); } else toast("Neue Version bereit – wird nach dieser Übung geladen.");
+}
+function nachUpdateSuchen(sofort) {
+  if (!swReg || (!sofort && Date.now() - letzteSuche < 120000)) return Promise.resolve();
+  letzteSuche = Date.now();
+  return swReg.update().catch(() => {});
+}
 if ("serviceWorker" in navigator) {
+  const hatteSteuerung = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("message", (e) => { if (e.data?.version) swVersion = e.data.version; });
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    navigator.serviceWorker.controller?.postMessage("version");
+    if (hatteSteuerung) { updateWartet = true; updateAnwenden(); }
+  });
+  navigator.serviceWorker.controller?.postMessage("version");
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js").then((reg) => {
-      reg.addEventListener("updatefound", () => {
-        const neu = reg.installing;
-        neu?.addEventListener("statechange", () => {
-          if (neu.state === "installed" && navigator.serviceWorker.controller) toast("Update geladen – beim nächsten Start aktiv.");
-        });
-      });
-    }).catch(() => {});
+    navigator.serviceWorker.register("./sw.js").then((reg) => { swReg = reg; nachUpdateSuchen(true); }).catch(() => {});
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState !== "visible") return;
+    if (updateWartet) updateAnwenden(); else nachUpdateSuchen(false);
   });
 }
 
