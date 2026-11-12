@@ -6,6 +6,7 @@ import { Zufall } from "./kern.js";
 import { SV_BSR, VORBEMERKUNGEN as VB_BSR } from "./bilr/klausur_sv.js";
 import { SV_UST, KLAUSUREN_UST, VORBEMERKUNGEN_UST } from "./ust/klausuren.js";
 import { SV_PR, KLAUSUREN_PR, VORBEMERKUNGEN_PR } from "./pr/klausuren.js";
+import { SV_BBF, KLAUSUREN_BBF, VORBEMERKUNGEN_BBF } from "./bilr/bbf_klausuren.js";
 import * as HS from "./handschrift.js";
 
 export const DAUERN = [60, 90, 180];
@@ -28,6 +29,14 @@ SIM.ust = {
   vorbemerkungen: VORBEMERKUNGEN_UST, pool: SV_UST, klausuren: KLAUSUREN_UST,
   feldHinweis: "Urteilsstil: Leistung, Ort, Steuerbarkeit, Steuerpflicht/Satz, BMG, USt, Entstehung, Vorsteuer – jeweils mit Norm",
   startText: "Drei vollständige Klausuren à 180 Minuten wie in der Semesterklausur: Vorspann, sechs Aufgaben, Würdigung im Urteilsstil. Danach Musterlösung und Selbstkontrollbogen mit Erwartungshorizont und Note.",
+};
+SIM.bbf = {
+  titel: "Buchführung und Bilanzwesen", amt: "Semesterklausur Buchführung und Bilanzwesen – FTA I", nurFest: true,
+  hilfsmittel: ["Wichtige Steuergesetze, Wichtige Wirtschaftsgesetze", "Einkommensteuer-Handbuch", "Nicht programmierbarer Taschenrechner"],
+  vorbemerkungen: VORBEMERKUNGEN_BBF, pool: SV_BBF, klausuren: KLAUSUREN_BBF, svName: "Aufgabe",
+  teilNamen: { 1: "Teil I/II · Wissensfragen und Einordnung", 2: "Teil III · Buchführungstechnik" },
+  feldHinweis: "Buchungssätze mit Nummer und Datum, AfA-Berechnung, vorbereitende Abschlussbuchungen, GuV-Konto, SBK, Gewinn",
+  startText: "Drei vollständige Klausuren à 90 Minuten wie die Semesterklausur der Ausbildung: Wissensfragen, Einordnung von Geschäftsvorfällen und ein kompletter Monatsabschluss bis zu GuV, Schlussbilanzkonto und Gewinn. Danach Musterlösung und Selbstkontrollbogen (45 Punkte).",
 };
 SIM.pr = {
   titel: "Privatrecht", amt: "Hauptklausur Privatrecht – Grundstudium I", nurFest: true,
@@ -156,9 +165,9 @@ export function simView(k, h) {
       <dl class="ks-daten"><dt>Bearbeitungszeit</dt><dd>${k.minuten} Minuten</dd>
         ${tn ? `<dt>Empfohlene Zeiteinteilung</dt><dd>${[1, 2].filter((t) => zuMin(t)).map((t) => `${tn[t].split(" · ")[0]}: ${zuMin(t)} Min.`).join(" · ")}</dd>` : ""}
         <dt>Hilfsmittel</dt><dd>${d.hilfsmittel.map(h.esc).join("<br>")}</dd>
-        <dt>Umfang</dt><dd>${svs.length} Sachverhalte, ${hoechstpunkte(k.fach, k)} Punkte</dd></dl>
+        <dt>Umfang</dt><dd>${svs.length} ${d.svName ? d.svName + "n" : "Sachverhalte"}, ${hoechstpunkte(k.fach, k)} Punkte</dd></dl>
       <h3>Zeiteinteilung</h3>
-      <ol class="ks-plan">${svs.map((s, i) => `<li><span>${tn && tn[s.teil] ? tn[s.teil].split(" · ")[0] + " · " : ""}${h.esc(s.titel)}</span><b>ca. ${s.min} Min.</b></li>`).join("")}</ol>
+      <ol class="ks-plan">${svs.map((s, i) => `<li><span>${tn && tn[s.teil] && !/^Teil /.test(s.titel) ? tn[s.teil].split(" · ")[0] + " · " : ""}${h.esc(s.titel)}</span><b>ca. ${s.min} Min.</b></li>`).join("")}</ol>
       <h3>Bearbeitungshinweise</h3>
       <ul class="ks-hinweise">${tn ? `<li>Die Teile ${tn[1].split(" · ")[0].replace("Teil ", "")} und ${tn[2].split(" · ")[0].replace("Teil ", "")} sind unabhängig voneinander zu bearbeiten.</li>` : ""}<li>Offenbare Unrichtigkeiten oder fehlende Angaben im Sachverhalt: kurz vermerken, wie Sie ergänzt haben.</li><li>Je Sachverhalt tippen oder mit Stift bzw. Finger auf Blättern schreiben („Schreiben“). Ihre Eingaben werden laufend auf diesem Gerät gespeichert. Nach Ablauf der Zeit wird automatisch abgegeben.</li></ul>
       <h3>Allgemeine Vorbemerkungen</h3>
