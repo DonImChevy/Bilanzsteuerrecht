@@ -18,7 +18,7 @@
   --card2: #f1f2f7;
   --text: #11131f;
   --text2: #5c6178;
-  --text3: #9ba1b5;
+  --text3: #676d84;
   --line: #e7e9f0;
   --ok: #12a150;
   --err: #e5484d;
@@ -41,7 +41,7 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --m: var(--m-dunkel);
-    --bg: #0b0d14; --card: #161924; --card2: #1f2331; --text: #eef0f7; --text2: #a4aabd; --text3: #6a7086; --line: #272c3a;
+    --bg: #0b0d14; --card: #161924; --card2: #1f2331; --text: #eef0f7; --text2: #a4aabd; --text3: #8b91a7; --line: #272c3a;
     --ok: #34c77b; --err: #ff6b70; --warn: #fbb040;
     --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset; --shadow-gross: 0 10px 30px rgba(0, 0, 0, 0.5);
     color-scheme: dark;
@@ -49,7 +49,7 @@
 }
 :root[data-theme="dark"] {
   --m: var(--m-dunkel);
-  --bg: #0b0d14; --card: #161924; --card2: #1f2331; --text: #eef0f7; --text2: #a4aabd; --text3: #6a7086; --line: #272c3a;
+  --bg: #0b0d14; --card: #161924; --card2: #1f2331; --text: #eef0f7; --text2: #a4aabd; --text3: #8b91a7; --line: #272c3a;
   --ok: #34c77b; --err: #ff6b70; --warn: #fbb040;
   --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset; --shadow-gross: 0 10px 30px rgba(0, 0, 0, 0.5);
   color-scheme: dark;
@@ -2108,37 +2108,37 @@ mark.km { color: inherit; font-weight: 700; padding: 0 2px; border-radius: 3px; 
 /* ======================= Farbwelten (data-farbwelt auf <html>) ======================= */
 /* Pastellrosa: zarte Flächen, warme Beerentöne für Text */
 :root[data-farbwelt="rosa"] {
-  --bg: #fff0f6; --card: #fffafd; --card2: #fdeef5; --text: #3d1f2e; --text2: #8b5a72; --text3: #c49bb0; --line: #f6dae7;
+  --bg: #fff0f6; --card: #fffafd; --card2: #fdeef5; --text: #3d1f2e; --text2: #8b5a72; --text3: #925e78; --line: #f6dae7;
   --glas: rgba(255, 248, 252, 0.74); --glas-stark: rgba(255, 250, 253, 0.88); --glas-rand: rgba(255, 255, 255, 0.95); --glas-linie: rgba(160, 60, 110, 0.08);
   --schatten: 0 1px 1px rgba(120, 30, 70, 0.03), 0 8px 24px -6px rgba(219, 39, 119, 0.14), 0 2px 6px -2px rgba(219, 39, 119, 0.07);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"])[data-farbwelt="rosa"] {
-    --bg: #1a0d15; --card: #26131e; --card2: rgba(255, 220, 238, 0.07); --text: #fde8f2; --text2: #d9abc2; --text3: #9c6b84; --line: rgba(255, 200, 225, 0.1);
+    --bg: #1a0d15; --card: #26131e; --card2: rgba(255, 220, 238, 0.07); --text: #fde8f2; --text2: #d9abc2; --text3: #b88aa1; --line: rgba(255, 200, 225, 0.1);
     --glas: rgba(52, 24, 40, 0.62); --glas-stark: rgba(60, 28, 46, 0.86); --glas-rand: rgba(255, 210, 232, 0.1); --glas-linie: rgba(255, 210, 232, 0.08);
     --schatten: 0 1px 0 rgba(255, 220, 238, 0.05) inset, 0 12px 30px -10px rgba(0, 0, 0, 0.6);
   }
 }
 :root[data-theme="dark"][data-farbwelt="rosa"] {
-  --bg: #1a0d15; --card: #26131e; --card2: rgba(255, 220, 238, 0.07); --text: #fde8f2; --text2: #d9abc2; --text3: #9c6b84; --line: rgba(255, 200, 225, 0.1);
+  --bg: #1a0d15; --card: #26131e; --card2: rgba(255, 220, 238, 0.07); --text: #fde8f2; --text2: #d9abc2; --text3: #b88aa1; --line: rgba(255, 200, 225, 0.1);
   --glas: rgba(52, 24, 40, 0.62); --glas-stark: rgba(60, 28, 46, 0.86); --glas-rand: rgba(255, 210, 232, 0.1); --glas-linie: rgba(255, 210, 232, 0.08);
   --schatten: 0 1px 0 rgba(255, 220, 238, 0.05) inset, 0 12px 30px -10px rgba(0, 0, 0, 0.6);
 }
 /* Salbei: ruhiges Graugrün */
 :root[data-farbwelt="salbei"] {
-  --bg: #eef4f0; --card: #fbfdfc; --card2: #e8f1ec; --text: #13241c; --text2: #4f6b5d; --text3: #93ab9e; --line: #dbe8e0;
+  --bg: #eef4f0; --card: #fbfdfc; --card2: #e8f1ec; --text: #13241c; --text2: #4f6b5d; --text3: #587264; --line: #dbe8e0;
   --glas: rgba(250, 253, 251, 0.74); --glas-stark: rgba(252, 254, 253, 0.88); --glas-rand: rgba(255, 255, 255, 0.92); --glas-linie: rgba(20, 60, 40, 0.07);
   --schatten: 0 1px 1px rgba(20, 50, 35, 0.03), 0 8px 24px -6px rgba(30, 90, 60, 0.13), 0 2px 6px -2px rgba(30, 90, 60, 0.06);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"])[data-farbwelt="salbei"] {
-    --bg: #07110c; --card: #10201a; --card2: rgba(210, 240, 225, 0.06); --text: #e6f2eb; --text2: #9fbcae; --text3: #62806f; --line: rgba(200, 240, 220, 0.09);
+    --bg: #07110c; --card: #10201a; --card2: rgba(210, 240, 225, 0.06); --text: #e6f2eb; --text2: #9fbcae; --text3: #86a595; --line: rgba(200, 240, 220, 0.09);
     --glas: rgba(18, 36, 28, 0.62); --glas-stark: rgba(22, 42, 33, 0.86); --glas-rand: rgba(210, 240, 225, 0.09); --glas-linie: rgba(210, 240, 225, 0.07);
     --schatten: 0 1px 0 rgba(210, 240, 225, 0.04) inset, 0 12px 30px -10px rgba(0, 0, 0, 0.6);
   }
 }
 :root[data-theme="dark"][data-farbwelt="salbei"] {
-  --bg: #07110c; --card: #10201a; --card2: rgba(210, 240, 225, 0.06); --text: #e6f2eb; --text2: #9fbcae; --text3: #62806f; --line: rgba(200, 240, 220, 0.09);
+  --bg: #07110c; --card: #10201a; --card2: rgba(210, 240, 225, 0.06); --text: #e6f2eb; --text2: #9fbcae; --text3: #86a595; --line: rgba(200, 240, 220, 0.09);
   --glas: rgba(18, 36, 28, 0.62); --glas-stark: rgba(22, 42, 33, 0.86); --glas-rand: rgba(210, 240, 225, 0.09); --glas-linie: rgba(210, 240, 225, 0.07);
   --schatten: 0 1px 0 rgba(210, 240, 225, 0.04) inset, 0 12px 30px -10px rgba(0, 0, 0, 0.6);
 }
@@ -2882,3 +2882,35 @@ button.ot-option:hover { background: color-mix(in srgb, var(--ot-blau) 7%, trans
 .ts-r.summe > .ts-op { border-top-color: transparent; }
 .aufgabe .text .ts > * + * { margin-top: 0.8em; }
 .opt-text, .loesung b { font-variant-numeric: tabular-nums; }
+
+/* =====================================================================
+   Feinschliff 11/2026 – Reparaturen aus dem Audit (docs/ideen/2026-11-12-feinschliff.md)
+   ===================================================================== */
+/* Trefferflächen: kleine Bedienelemente bekommen mindestens 44 × 44 px Tippfläche, ohne sich optisch zu verändern */
+:where(.hinweis-box .zu, .titel-link, .hero .wert-pille.knopf-pille, .als-karte, .tk-lesen, .vb-kopf .link, .vb-kopf .rund, .icon-btn,
+.sicher-chips .chip, .zurueck-link, .start-anpassen) { position: relative; } /* :where = bestehende Positionierung gewinnt */
+.hinweis-box .zu::after, .titel-link::after, .hero .wert-pille.knopf-pille::after, .als-karte::after, .tk-lesen::after, .vb-kopf .link::after,
+.vb-kopf .rund::after, .icon-btn::after, .sicher-chips .chip::after, .zurueck-link::after, .start-anpassen::after, .kachel-zusatz::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%);
+}
+.hinweis-box .zu { display: grid; place-items: center; min-width: 28px; min-height: 28px; margin: -4px -6px 0 auto; }
+.segment button { min-height: 44px; }
+
+/* Tastaturfokus (iPad mit Tastatur, Rechner): ein einheitlicher Ring in der Modulfarbe */
+:is(.knopf, .chip, .zeile, .kachel, .modul-kachel, .option, .icon-btn, .segment button, .tk-lesen, .als-karte, .zurueck-link, .vb-kopf button,
+  .tabbar button, .wert-pille, .titel-link, .start-anpassen, .sb-knopf, .hinweis-box .zu):focus-visible {
+  outline: 2.5px solid var(--m); outline-offset: 2px;
+}
+.pfad :is(button):focus-visible { outline-color: #fbbf24; }
+
+/* Lange Fachwörter umbrechen statt herausragen */
+.stapel b, .tk-text b, .m-titel, .kachel b, .zeile .grow, .pfad .pf-label b { hyphens: auto; -webkit-hyphens: auto; }
+
+/* Sparmodus: auch der wandernde Glanz auf Hero und Modul-Banner ruht */
+:root[data-leistung="spar"] .hero::before, :root[data-leistung="spar"] .modul-banner::before { animation: none; display: none; }
+.sb-knopf { min-height: 44px; }
+:where(.stepper button, .vb-kopf .schalter.klein) { position: relative; }
+.stepper button::after, .vb-kopf .schalter.klein::after { content: ""; position: absolute; left: 50%; top: 50%; width: max(100%, 44px); height: max(100%, 44px); transform: translate(-50%, -50%); }
+/* Statusfarben als Text: zur Schriftfarbe hin abdunkeln bzw. aufhellen, damit sie lesbar bleiben (≥ 4,5 : 1) */
+.modul-kachel .m-unten.erledigt { color: color-mix(in srgb, var(--ok) 70%, var(--text)); }
+.t-art { color: color-mix(in srgb, var(--k) 78%, var(--text)); }

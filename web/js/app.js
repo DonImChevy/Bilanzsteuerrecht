@@ -365,6 +365,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const farbklasse = (q) => (q >= 0.8 ? "gut" : q >= 0.5 ? "mittel" : "schlecht");
 const farbe = (q) => (q >= 0.8 ? "var(--ok)" : q >= 0.5 ? "var(--warn)" : "var(--err)");
 const zahlText = (n) => n.toLocaleString("de-DE");
+const aufgabenN = (n, f = (x) => Number(x).toLocaleString("de-DE")) => `${f(n)} ${Number(n) === 1 ? "Aufgabe" : "Aufgaben"}`; // „1 Aufgabe“, „2 Aufgaben“
 
 // ======================= Einstellungen (werden mit dem Sync-Code abgeglichen) =======================
 const EINSTELLUNGEN = ["ziel", "design", "teil", "oerModus2", "bewegungAus", "rolle", "startLayout", "farbwelt", "gesetzFarben"];
@@ -955,13 +956,13 @@ function tabStart() {
         <div class="grow"><h2>${titel}</h2><div class="zeile-klein">${text}</div>
           <div class="werte">
             <span class="wert-pille"><span class="${tageSerie ? "flamme-an" : ""}">${ic("flamme")}</span>${tageSerie} ${tageSerie === 1 ? "Tag" : "Tage"} in Folge</span>
-            <button class="wert-pille knopf-pille" data-a="garderobe" aria-label="Garderobe öffnen – ${meineKasse().guthaben} Taler">${talerBetrag(meineKasse().guthaben)} Garderobe</button>
+            <button class="wert-pille knopf-pille" data-a="garderobe" aria-label="Garderobe öffnen – ${meineKasse().guthaben} Taler">${talerBetrag(meineKasse().guthaben)} Taler</button>
           </div></div>
       </div>
       ${levelZeile(stat)}
       ${knopf}
     </section>
-    <div class="suchfeld">${ic("suche")}<input type="search" id="homeSuche" data-fokus="homeSuche" placeholder="Stichwort, Abkürzung oder §, z. B. B2B, AfA" autocomplete="off" enterkeyhint="search" value="${esc(state.suche)}">
+    <div class="suchfeld">${ic("suche")}<input type="search" id="homeSuche" data-fokus="homeSuche" placeholder="Suchen: Stichwort, § oder Kürzel" aria-label="Suche nach Stichwort, Abkürzung oder Paragraf, z. B. B2B, AfA, § 15 UStG" autocomplete="off" enterkeyhint="search" value="${esc(state.suche)}">
       <button class="leeren ${state.suche ? "" : "versteckt"}" data-a="sucheLeeren" aria-label="Suche leeren">${ic("kreuz", "klein")}</button></div>
     <div id="sucheErgebnis">${state.suche.trim() ? suchErgebnisse(state.suche) : ""}</div>
     <div id="startRest" class="${state.suche.trim() ? "versteckt" : ""}">
@@ -978,7 +979,7 @@ const START_BEREICHE = {
         ${rollenSchalter()}
         <div class="modul-grid">${moduleDerRolle(state.rolle || "studium").map(modulKachel).join("")}</div></div>` },
   klausuren: { name: "Klausur-Countdown", text: "Tage bis zur nächsten Klausur", html: () => countdownBereich() },
-  woche: { name: "Diese Woche", text: "Aufgaben der letzten sieben Tage", html: () => `<div class="gruppe"><div class="gruppe-titel">Diese Woche <span class="sub" style="text-transform:none;letter-spacing:0">${zahlText(woche(stat.tage).reduce((a, t) => a + t.n, 0))} Aufgaben</span></div>
+  woche: { name: "Diese Woche", text: "Aufgaben der letzten sieben Tage", html: () => `<div class="gruppe"><div class="gruppe-titel">Diese Woche <span class="sub" style="text-transform:none;letter-spacing:0">${aufgabenN(woche(stat.tage).reduce((a, t) => a + t.n, 0))}</span></div>
         <div class="liste">${wocheView()}</div></div>` },
   statistik: { name: "Rückblick und Statistik", text: "Wochen- und Monatsrückblick, Diagramme", html: () => statistikBereich() },
   gemeinsam: { name: "Gemeinsam lernen", text: "Lerngruppe, Rangliste und Duell", html: () => gemeinsamBereich() },
@@ -1186,14 +1187,14 @@ function modulKachel(m) {
   const due = faelligVon(m.id).length, begonnen = ids.some((id) => stat.lern[id]);
   const p = Math.round((gelernt / ids.length) * 100);
   const unten = due
-    ? `<button class="m-unten faellig" data-a="wiederholen" data-v="${m.id}" aria-label="${due} Aufgaben heute wiederholen"><span class="grow"><b>${due}</b> heute fällig</span>${ic("pfeil", "klein")}</button>`
+    ? `<button class="m-unten faellig" data-a="wiederholen" data-v="${m.id}" aria-label="${aufgabenN(due)} heute wiederholen"><span class="grow"><b>${due}</b> heute fällig</span>${ic("pfeil", "klein")}</button>`
     : begonnen
     ? `<div class="m-unten erledigt">${ic("haken", "klein")} Heute erledigt</div>`
     : `<div class="m-unten leer">Noch nicht begonnen</div>`;
   return `<div class="modul-kachel geteilt" style="--mc:${m.farbe}">
     <button class="m-oben" data-a="modul" data-v="${m.id}">
       <span class="m-icon">${ic(m.icon)}</span>
-      <span><div class="m-titel">${m.titel}</div><div class="m-unter">${m.kurz} · ${ids.length} Aufgaben</div></span>
+      <span><div class="m-titel">${m.titel}</div><div class="m-unter">${m.kurz} · ${aufgabenN(ids.length)}</div></span>
       <span class="m-fuss"><span class="balken"><span style="width:${Math.max(p, begonnen ? 3 : 0)}%"></span></span><span>${p} %</span></span></button>
     ${unten}</div>`;
 }
@@ -1608,7 +1609,7 @@ function themenListe() {
     return `<div class="themen-karte${z.b ? "" : " frisch"}" style="--farbe:${z.b ? farbe(q2) : "var(--m)"};--i:${Math.min(i, 12)}">
       <span class="tk-icon">${t.icon}<i>${i + 1}</i></span>
       <span class="tk-text"><button class="tk-haupt" data-a="thema" data-v="${t.id}"><b>${esc(t.titel)}</b></button><span class="sub">${esc(t.unter)}</span>
-        <span class="tk-fuss"><span class="tk-balken"><span style="width:${z.b ? Math.max(p, 4) : 0}%"></span></span><span class="tk-n">${n} Aufgaben</span></span></span>
+        <span class="tk-fuss"><span class="tk-balken"><span style="width:${z.b ? Math.max(p, 4) : 0}%"></span></span><span class="tk-n">${aufgabenN(n)}</span></span></span>
       <span class="tk-rechts">${status}${lesen}</span></div>`;
   }).join("")}</div>`;
 }
@@ -1690,7 +1691,7 @@ function lernkarteiView() {
   return `<div class="gruppe"><div class="gruppe-titel">Lernkartei · Langzeitgedächtnis</div><div class="liste"><div style="padding:16px">
     <div class="kartei">${n.slice(1).map((k, i) => `<div class="kartei-fach"><div class="kartei-saeule"><span style="height:${Math.round((k / max) * 100)}%"></span></div>
       <b class="mono">${k}</b><div class="sub">Fach ${i + 1}</div><div class="sub" style="font-size:11.5px">${INTERVALLE[i + 1]} ${INTERVALLE[i + 1] === 1 ? "Tag" : "Tage"}</div></div>`).join("")}</div>
-    <div class="sub" style="margin-top:10px">${n[0]} von ${ids.length} Aufgaben noch nie beantwortet · ${faelligImTeil(state.fach).length} heute fällig</div></div></div>
+    <div class="sub" style="margin-top:10px">${n[0]} von ${aufgabenN(ids.length)} noch nie beantwortet · ${faelligImTeil(state.fach).length} heute fällig</div></div></div>
     <div class="gruppe-fuss">Richtig → ein Fach weiter, längere Pause. Falsch → zurück in Fach 1, morgen wieder dran. Ab Fach 3 gilt eine Aufgabe als gefestigt.</div></div>`;
 }
 
@@ -2090,7 +2091,7 @@ function normBlock(refs, kontext = "") {
 
 // ======================= Render: Sitzung =======================
 const LOB = ["Richtig!", "Sehr gut!", "Genau so!", "Stark!", "Perfekt!"];
-const TROST = ["Nicht ganz.", "Knapp daneben.", "Noch nicht ganz."];
+const TROST = ["Nicht ganz.", "Diesmal nicht.", "Noch nicht ganz."];
 
 function sitzungView() {
   const x = s();
@@ -2339,7 +2340,7 @@ const kursEintragHtml = (e, kurz = false) => {
   const text = e.text ? `<div class="kr-text${kurz ? " kurz" : ""}">${KR.textHtml(e.text, esc)}</div>` : "";
   const aktion = e.art === "link" && e.link ? `<a class="knopf zweit kr-knopf" href="${esc(e.link)}" target="_blank" rel="noopener">${ic("pfeil", "klein")} Öffnen</a>`
     : e.art === "datei" ? `<button class="knopf zweit kr-knopf" data-a="kursDatei" data-v="${e.id}">${ic("export", "klein")} ${esc(e.datei_name || "Datei")} (${Math.max(1, Math.round((e.datei_groesse * 0.75) / 1024))} KB)</button>`
-    : e.art === "blatt" ? `<button class="knopf kr-knopf" data-a="kursBlatt" data-v="${e.id}">${ic("play", "klein")} ${(e.aufgaben || []).length} Aufgaben lösen</button>` : "";
+    : e.art === "blatt" ? `<button class="knopf kr-knopf" data-a="kursBlatt" data-v="${e.id}">${ic("play", "klein")} ${aufgabenN((e.aufgaben || []).length)} lösen</button>` : "";
   return `<article class="kr-eintrag">${kopf}${text}${aktion}</article>`;
 };
 function kursKarte() {
