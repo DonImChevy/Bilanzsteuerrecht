@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-teilklausuren",
+    datum: "2026-11-12",
+    titel: "Probeklausuren in Teilen",
+    punkte: [
+      ["ziel", "Einzelne Teile üben", "Auf dem Deckblatt wählst du alle Aufgaben oder nur einzelne (z. B. nur Teil II) – Zeit, Punkte und Note passen sich an, die Zahlen bleiben dieselben.", "tab", "klausur"],
+      ["haken", "Erwartungshorizont überall", "Auch die gemischten Bilanzrecht-Klausuren zeigen jetzt zu jedem Bewertungspunkt, was genau erwartet wird – mit Beträgen und Normen."],
+    ],
+  },
+  {
     id: "2026-11-probeklausuren",
     datum: "2026-11-12",
     titel: "Probeklausuren mit Selbstkontrollbogen",
@@ -12,7 +21,6 @@ export const NEUIGKEITEN = [
       ["klausur", "Drei Klausuren je Fach", "Für Bilanzrecht, BilBf, Umsatzsteuer, Privatrecht und Öffentliches Recht gibt es jetzt je drei vollständige Probeklausuren im Aufbau der echten Prüfung – mit Deckblatt, Uhr und Vorspann.", "tab", "klausur"],
       ["stift", "Mit der Hand schreiben", "Löse auf Papier oder direkt mit dem Stift im Klausurblatt. Fotos deiner Blätter erscheinen neben der Musterlösung."],
       ["haken", "Selbstkontrollbogen", "Nach der Abgabe hakst du jedes Merkmal ab, das deine Lösung enthält – zu jedem Punkt steht, was genau erwartet wird. Die Note rechnet mit."],
-      ["ziel", "Einzelne Teile üben", "Auf dem Deckblatt wählst du alle Aufgaben oder nur einzelne (z. B. nur Teil II) – Zeit, Punkte und Note passen sich an, die Zahlen bleiben dieselben."],
     ],
   },
   {
