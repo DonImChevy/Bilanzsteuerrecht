@@ -21,6 +21,15 @@ export const SIM = {
     teil1: { 60: [["bsr-k-guv"], ["bsr-k-lohn"]], 90: [["bsr-k-lohn", "bsr-k-guv"], ["bsr-k-lohn"]], 180: [["bsr-k-waren"]] },
     pflicht: { 180: ["bsr-k-grundstueck"] },
     teilNamen: { 1: "Teil I · Buchführung", 2: "Teil II · Bilanzierung und Bewertung" },
+    // Feste Probeklausuren wie die Semesterklausuren 01/2025 und 01/2026: gleiche Sachverhalte und Zahlen bei jedem Start (fester Startwert)
+    klausuren: [
+      { id: "bsr-a", kurz: "A", seed: 2026101, minuten: 180, titel: "Warenkonten, Grundstückserwerb, Firmenwagen, Damnum, RAP, Rückstellung",
+        teile: ["bsr-k-waren", "bsr-k-grundstueck", "bsr-k-firmenwagen", "bsr-k-darlehen", "bsr-k-rap", "bsr-k-rueckstellung"] },
+      { id: "bsr-b", kurz: "B", seed: 2026202, minuten: 180, titel: "Lohn und GuV-Kennzahlen, Grundstück, Wareneinkauf, GWG, Anzahlung, Darlehen",
+        teile: ["bsr-k-lohn", "bsr-k-guv", "bsr-k-grundstueck", "bsr-k-wareneinlage", "bsr-k-gwg", "bsr-k-anzahlung", "bsr-k-darlehen", "bsr-k-umtausch", "bsr-k-entnahme"] },
+      { id: "bsr-c", kurz: "C", seed: 2026303, minuten: 180, titel: "Warenkonten und Lohn, Firmenwagen, Darlehen, GWG, Anzahlung, RAP, Umtausch, Rückstellung",
+        teile: ["bsr-k-waren", "bsr-k-lohn", "bsr-k-firmenwagen", "bsr-k-darlehen", "bsr-k-gwg", "bsr-k-anzahlung", "bsr-k-rap", "bsr-k-umtausch", "bsr-k-rueckstellung"] },
+    ],
     feldHinweis: "Würdigung, Berechnungen, Buchungssätze mit GuV/BVV",
   },
 };
@@ -60,7 +69,7 @@ export const klausurDaten = (fach, id) => SIM[fach]?.klausuren?.find((x) => x.id
 /** Neue Simulation anlegen: Dauer (Zahl) = gemischte Sachverhalte, "k:<id>" = feste Klausur. */
 export function neueSim(fach, v, seed) {
   const fest = String(v).startsWith("k:") ? klausurDaten(fach, String(v).slice(2)) : null;
-  if (fest) return { fach, minuten: fest.minuten, seed, klausur: fest.id, teile: [...fest.teile], phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
+  if (fest) return { fach, minuten: fest.minuten, seed: fest.seed ?? seed, klausur: fest.id, teile: [...fest.teile], phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
   const minuten = Number(v);
   return { fach, minuten, seed, teile: zusammenstellen(fach, minuten, seed), phase: "deckblatt", antworten: {}, zahlen: {}, haken: {} };
 }
@@ -100,7 +109,7 @@ export function inhalt(fach, id, seed, i) {
 }
 export const hoechstpunkte = (fach, k) => k.teile.reduce((n, id, i) => n + inhalt(fach, id, k.seed, i).bewertung.reduce((a, [p]) => a + p, 0), 0);
 /** Höchstpunktzahl einer festen Klausur. */
-export const festPunkte = (fach, x) => hoechstpunkte(fach, { teile: x.teile, seed: 1 });
+export const festPunkte = (fach, x) => hoechstpunkte(fach, { teile: x.teile, seed: x.seed ?? 1 });
 export function punkte(fach, k) {
   return k.teile.reduce((n, id, i) => n + inhalt(fach, id, k.seed, i).bewertung.reduce((a, [p], j) => a + (k.haken?.[id]?.[j] ? p : 0), 0), 0);
 }
