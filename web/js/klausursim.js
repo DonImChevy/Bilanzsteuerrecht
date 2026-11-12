@@ -107,11 +107,21 @@ export function inhalt(fach, id, seed, i) {
   const s = SIM[fach].pool.find((x) => x.id === id);
   return { ...s, ...s.erzeugen(new Zufall(seed * 31 + i * 7 + 1)) };
 }
-export const hoechstpunkte = (fach, k) => k.teile.reduce((n, id, i) => n + inhalt(fach, id, k.seed, i).bewertung.reduce((a, [p]) => a + p, 0), 0);
+/** Ausgewählte Teile als [id, Position] – Position bleibt die der vollständigen Klausur (gleiche Zahlen bei Teilauswahl). */
+export const gewaehlt = (k) => k.teile.map((id, i) => [id, i]).filter(([, i]) => !(k.ohne || []).includes(i));
+/** Teilauswahl setzen: ohne = Positionen, die nicht bearbeitet werden; Bearbeitungszeit = Summe der gewählten Teile. */
+export function auswahlSetzen(k, ohne) {
+  const raus = [...new Set(ohne.map(Number))].filter((i) => i >= 0 && i < k.teile.length).sort((a, b) => a - b);
+  if (raus.length >= k.teile.length) return false;
+  k.ohne = raus;
+  k.minuten = gewaehlt(k).reduce((n, [id, i]) => n + inhalt(k.fach, id, k.seed, i).min, 0);
+  return true;
+}
+export const hoechstpunkte = (fach, k) => gewaehlt(k).reduce((n, [id, i]) => n + inhalt(fach, id, k.seed, i).bewertung.reduce((a, [p]) => a + p, 0), 0);
 /** Höchstpunktzahl einer festen Klausur. */
 export const festPunkte = (fach, x) => hoechstpunkte(fach, { teile: x.teile, seed: x.seed ?? 1 });
 export function punkte(fach, k) {
-  return k.teile.reduce((n, id, i) => n + inhalt(fach, id, k.seed, i).bewertung.reduce((a, [p], j) => a + (k.haken?.[id]?.[j] ? p : 0), 0), 0);
+  return gewaehlt(k).reduce((n, [id, i]) => n + inhalt(fach, id, k.seed, i).bewertung.reduce((a, [p], j) => a + (k.haken?.[id]?.[j] ? p : 0), 0), 0);
 }
 const zahlLesen = (t) => Number(String(t || "").replace(/[^\d,.-]/g, "").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", "."));
 export const zahlStimmt = (z, eingabe) => eingabe !== undefined && eingabe !== "" && Math.abs(zahlLesen(eingabe) - z.wert) <= z.toleranz;
@@ -169,7 +179,7 @@ function blaetter(k, id, h, lesen = false) {
 const absatz = (t, h) => String(t).split("\n").map((z) => `<p>${h.inline(z)}</p>`).join("");
 
 export function simView(k, h) {
-  const d = SIM[k.fach], svs = k.teile.map((id, i) => inhalt(k.fach, id, k.seed, i)), fest = klausurDaten(k.fach, k.klausur), tn = d.teilNamen;
+  const d = SIM[k.fach], alle = k.teile.map((id, i) => ({ ...inhalt(k.fach, id, k.seed, i), nr: i + 1 })), svs = alle.filter((s) => !(k.ohne || []).includes(s.nr - 1)), fest = klausurDaten(k.fach, k.klausur), tn = d.teilNamen;
   const teilGrenze = svs.findIndex((s) => s.teil === 2);
   const zuMin = (t) => svs.filter((s) => s.teil === t).reduce((n, s) => n + s.min, 0);
   const kopfZeile = (titel, rechts = "") => `<div class="vb-kopf"><button class="rund" data-a="ksimZu" aria-label="Schließen">${h.ic("kreuz")}</button><div class="mitte">${titel}</div>${rechts}</div>`;
@@ -177,16 +187,18 @@ export function simView(k, h) {
   if (k.phase === "deckblatt") {
     return `<div class="vollbild ksim" role="dialog" aria-label="Klausur – Deckblatt">${kopfZeile("Klausur")}
     <div class="vb-inhalt"><article class="ks-blatt ks-deckblatt">
-      <div class="ks-amt">${fest ? `Probeklausur ${h.esc(fest.kurz)}` : "Simulation"} · ${h.esc(d.amt || "Semesterklausur Grundstudium I")}</div>
+      <div class="ks-amt">${fest ? `Probeklausur ${h.esc(fest.kurz)}` : "Simulation"}${svs.length < alle.length ? " (Auswahl)" : ""} · ${h.esc(d.amt || "Semesterklausur Grundstudium I")}</div>
       <h2>${h.esc(d.titel)}</h2>${fest ? `<p class="ks-unter">${h.esc(fest.titel)}</p>` : ""}
       <dl class="ks-daten"><dt>Bearbeitungszeit</dt><dd>${k.minuten} Minuten</dd>
         ${tn ? `<dt>Empfohlene Zeiteinteilung</dt><dd>${[1, 2].filter((t) => zuMin(t)).map((t) => `${tn[t].split(" · ")[0]}: ${zuMin(t)} Min.`).join(" · ")}</dd>` : ""}
         <dt>Hilfsmittel</dt><dd>${d.hilfsmittel.map(h.esc).join("<br>")}</dd>
         <dt>Umfang</dt><dd>${svs.length} ${d.svName ? d.svName + "n" : "Sachverhalte"}, ${hoechstpunkte(k.fach, k)} Punkte</dd></dl>
       <h3>Zeiteinteilung</h3>
-      <ol class="ks-plan">${svs.map((s, i) => `<li><span>${tn && tn[s.teil] && !/^Teil /.test(s.titel) ? tn[s.teil].split(" · ")[0] + " · " : ""}${h.esc(s.titel)}</span><b>ca. ${s.min} Min.</b></li>`).join("")}</ol>
+      ${alle.length > 1 ? `<div class="ks-wahl-kopf"><span>Alles schreiben oder nur einzelne ${h.esc(d.svName ? d.svName + "n" : "Sachverhalte")} – Zeit und Punkte passen sich an.</span>
+        <div class="ks-wahl-knoepfe"><button class="chip${svs.length === alle.length ? " aktiv" : ""}" data-a="ksimTeilWahl" data-v="alle">Alle</button>${tn ? [1, 2].filter((t) => alle.some((s) => s.teil === t) && alle.some((s) => s.teil !== t)).map((t) => `<button class="chip${svs.length < alle.length && svs.every((s) => s.teil === t) && svs.length === alle.filter((s) => s.teil === t).length ? " aktiv" : ""}" data-a="ksimTeilWahl" data-v="${t}">Nur ${h.esc(tn[t].split(" · ")[0])}</button>`).join("") : ""}</div></div>` : ""}
+      <ol class="ks-plan${alle.length > 1 ? " waehlbar" : ""}">${alle.map((s) => { const an = svs.includes(s); return `<li class="${an ? "" : "aus"}">${alle.length > 1 ? `<label class="ks-wahl"><input type="checkbox" data-a="ksimTeil" data-v="${s.nr - 1}" ${an ? "checked" : ""} aria-label="${h.esc(s.titel)} bearbeiten">` : ""}<span>${tn && tn[s.teil] && !/^Teil /.test(s.titel) ? tn[s.teil].split(" · ")[0] + " · " : ""}${h.esc(s.titel)}</span><b>ca. ${s.min} Min.</b>${alle.length > 1 ? "</label>" : ""}</li>`; }).join("")}</ol>
       <h3>Bearbeitungshinweise</h3>
-      <ul class="ks-hinweise">${tn ? `<li>Die Teile ${tn[1].split(" · ")[0].replace("Teil ", "")} und ${tn[2].split(" · ")[0].replace("Teil ", "")} sind unabhängig voneinander zu bearbeiten.</li>` : ""}<li>Offenbare Unrichtigkeiten oder fehlende Angaben im Sachverhalt: kurz vermerken, wie Sie ergänzt haben.</li><li>Je Sachverhalt tippen oder mit Stift bzw. Finger auf Blättern schreiben („Schreiben“). Ihre Eingaben werden laufend auf diesem Gerät gespeichert. Nach Ablauf der Zeit wird automatisch abgegeben.</li></ul>
+      <ul class="ks-hinweise">${tn && svs.some((s) => s.teil === 1) && svs.some((s) => s.teil === 2) ? `<li>Die Teile ${tn[1].split(" · ")[0].replace("Teil ", "")} und ${tn[2].split(" · ")[0].replace("Teil ", "")} sind unabhängig voneinander zu bearbeiten.</li>` : ""}<li>Offenbare Unrichtigkeiten oder fehlende Angaben im Sachverhalt: kurz vermerken, wie Sie ergänzt haben.</li><li>Je Sachverhalt tippen oder mit Stift bzw. Finger auf Blättern schreiben („Schreiben“). Ihre Eingaben werden laufend auf diesem Gerät gespeichert. Nach Ablauf der Zeit wird automatisch abgegeben.</li></ul>
       <h3>Allgemeine Vorbemerkungen</h3>
       <ul class="ks-hinweise">${[...(d.vorbemerkungen || []), ...(fest?.vorbemerkungen || [])].map((v) => `<li>${h.inline(v)}</li>`).join("")}</ul>
     </article></div>
@@ -203,7 +215,7 @@ export function simView(k, h) {
     const bogen = s.bewertung.map(([p, t, erw], j) => `<label class="ks-haken"><input type="checkbox" data-a="ksimHaken" data-v="${id}|${j}" ${k.haken?.[id]?.[j] ? "checked" : ""}><span>${h.esc(t)}${erw ? `<small class="ks-erw">Erwartet: ${h.inline(erw)}</small>` : ""}</span><b>${String(p).replace(".", ",")}</b></label>`).join("");
     const erreichtSv = s.bewertung.reduce((a, [p], j) => a + (k.haken?.[id]?.[j] ? p : 0), 0), maxSv = s.bewertung.reduce((a, [p]) => a + p, 0);
     return `${ueberschrift}<article class="ks-blatt ks-sv" id="ks-${id}">
-      <header class="ks-sv-kopf"><span class="ks-nr">${d.svName || "Sachverhalt"} ${i + 1}</span><h3>${h.esc(s.titel)}</h3><span class="ks-min">ca. ${s.min} Min. · ${String(maxSv).replace(".", ",")} P.</span>
+      <header class="ks-sv-kopf"><span class="ks-nr">${d.svName || "Sachverhalt"} ${s.nr}</span><h3>${h.esc(s.titel)}</h3><span class="ks-min">ca. ${s.min} Min. · ${String(maxSv).replace(".", ",")} P.</span>
         ${zeitwaechter(k, id, s.min)}</header>
       <div class="ks-text">${absatz(s.sv, h)}</div>
       <div class="ks-aufgaben"><b>Aufgaben</b><ol>${s.aufgaben.map((a) => `<li>${h.inline(a)}</li>`).join("")}</ol></div>

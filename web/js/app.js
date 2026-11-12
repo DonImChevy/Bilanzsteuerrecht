@@ -12,7 +12,7 @@ import { r2View } from "./est/r2.js";
 import * as SB from "./schaubilder.js";
 import { satz, satzZeile, typografie } from "./satz.js";
 import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, lesezeit, kompaktInline, zuletztText, loesungZeile } from "./kompakt.js";
-import { SIM, startKarte as simStartKarte, simView, neueSim, zusammenstellen, hoechstpunkte, punkte as simPunkte, note as simNote, restSekunden as simRest, uhrText as simUhr } from "./klausursim.js";
+import { SIM, startKarte as simStartKarte, simView, neueSim, zusammenstellen, hoechstpunkte, punkte as simPunkte, note as simNote, restSekunden as simRest, uhrText as simUhr, auswahlSetzen as simAuswahl } from "./klausursim.js";
 import * as MK from "./meinekarten.js";
 import * as HS from "./handschrift.js";
 import * as OT from "./bilr/onlinetest.js";
@@ -3441,6 +3441,20 @@ const AKTIONEN = {
     if (!z.s.length || !confirm(`Blatt ${Number(j) + 1} leeren?`)) return;
     (z._rueck ||= []).push(z.s.slice()); z.s = []; ksimZeichnungSichern(id, j); render();
   },
+  ksimTeil: (v) => {
+    const k = state.ksim;
+    if (k?.phase !== "deckblatt") return;
+    const i = Number(v), ohne = new Set(k.ohne || []);
+    ohne.has(i) ? ohne.delete(i) : ohne.add(i);
+    if (!simAuswahl(k, [...ohne])) toast("Mindestens eine Aufgabe muss dabei sein.");
+    ksimSichern(); render();
+  },
+  ksimTeilWahl: (v) => {
+    const k = state.ksim;
+    if (k?.phase !== "deckblatt") return;
+    simAuswahl(k, v === "alle" ? [] : k.teile.map((id, i) => [i, SIM[k.fach].pool.find((s) => s.id === id)?.teil]).filter(([, t]) => String(t) !== v).map(([i]) => i));
+    ksimSichern(); render();
+  },
   ksimBeginnen: () => { Object.assign(state.ksim, { phase: "laufend", start: Date.now() }); ksimSichern(); render(); scrollOben(); },
   ksimAbgeben: (automatisch) => {
     const k = state.ksim;
@@ -3454,7 +3468,7 @@ const AKTIONEN = {
   },
   ksimSpeichern: () => {
     const k = state.ksim, max = hoechstpunkte(k.fach, k), p = simPunkte(k.fach, k);
-    const eintrag = { datum: k.start, richtig: p, gesamt: max, sek: Math.round((k.ende - k.start) / 1000), fach: k.fach, sim: k.minuten, ...(k.klausur ? { probe: k.klausur } : {}), note: simNote(max ? (p / max) * 100 : 0) };
+    const eintrag = { datum: k.start, richtig: p, gesamt: max, sek: Math.round((k.ende - k.start) / 1000), fach: k.fach, sim: k.minuten, ...(k.klausur ? { probe: k.klausur } : {}), ...(k.ohne?.length ? { auswahl: true } : {}), note: simNote(max ? (p / max) * 100 : 0) };
     const i = stat.klausuren.findIndex((x) => x.datum === k.start);
     if (i >= 0) stat.klausuren[i] = eintrag; else stat.klausuren.push(eintrag);
     k.gespeichert = true; speichern(); ksimSichern();
