@@ -5,6 +5,7 @@
 import { Zufall } from "./kern.js";
 import { SV_BSR, VORBEMERKUNGEN as VB_BSR } from "./bilr/klausur_sv.js";
 import { SV_UST, KLAUSUREN_UST, VORBEMERKUNGEN_UST } from "./ust/klausuren.js";
+import { SV_PR, KLAUSUREN_PR, VORBEMERKUNGEN_PR } from "./pr/klausuren.js";
 import * as HS from "./handschrift.js";
 
 export const DAUERN = [60, 90, 180];
@@ -27,6 +28,14 @@ SIM.ust = {
   vorbemerkungen: VORBEMERKUNGEN_UST, pool: SV_UST, klausuren: KLAUSUREN_UST,
   feldHinweis: "Urteilsstil: Leistung, Ort, Steuerbarkeit, Steuerpflicht/Satz, BMG, USt, Entstehung, Vorsteuer – jeweils mit Norm",
   startText: "Drei vollständige Klausuren à 180 Minuten wie in der Semesterklausur: Vorspann, sechs Aufgaben, Würdigung im Urteilsstil. Danach Musterlösung und Selbstkontrollbogen mit Erwartungshorizont und Note.",
+};
+SIM.pr = {
+  titel: "Privatrecht", amt: "Hauptklausur Privatrecht – Grundstudium I", nurFest: true,
+  hilfsmittel: ["BGB, HGB (Textausgaben)", "Teil A ohne Hilfsmittel bearbeiten"],
+  vorbemerkungen: VORBEMERKUNGEN_PR, pool: SV_PR, klausuren: KLAUSUREN_PR,
+  teilNamen: { 1: "Teil A · Allgemeine Fragen", 2: "Teil B · Sachverhaltsbearbeitung" }, svName: "Aufgabe",
+  feldHinweis: "Teil A in ganzen Sätzen; Teil B im Gutachtenstil: Obersatz – Definition – Subsumtion – Ergebnis",
+  startText: "Drei vollständige Klausuren à 120 Minuten wie die Hauptklausur: Teil A allgemeine Fragen, Teil B Fälle im Gutachtenstil. Danach Musterlösung und Selbstkontrollbogen (70 Punkte) mit Erwartungshorizont und Note.",
 };
 
 /** Feste Klausur eines Fachs (id z. B. "ust-a") oder undefined. */
@@ -151,7 +160,7 @@ export function simView(k, h) {
       <h3>Zeiteinteilung</h3>
       <ol class="ks-plan">${svs.map((s, i) => `<li><span>${tn && tn[s.teil] ? tn[s.teil].split(" · ")[0] + " · " : ""}${h.esc(s.titel)}</span><b>ca. ${s.min} Min.</b></li>`).join("")}</ol>
       <h3>Bearbeitungshinweise</h3>
-      <ul class="ks-hinweise">${tn ? "<li>Die Teile I und II sind unabhängig voneinander zu bearbeiten.</li>" : ""}<li>Offenbare Unrichtigkeiten oder fehlende Angaben im Sachverhalt: kurz vermerken, wie Sie ergänzt haben.</li><li>Je Sachverhalt tippen oder mit Stift bzw. Finger auf Blättern schreiben („Schreiben“). Ihre Eingaben werden laufend auf diesem Gerät gespeichert. Nach Ablauf der Zeit wird automatisch abgegeben.</li></ul>
+      <ul class="ks-hinweise">${tn ? `<li>Die Teile ${tn[1].split(" · ")[0].replace("Teil ", "")} und ${tn[2].split(" · ")[0].replace("Teil ", "")} sind unabhängig voneinander zu bearbeiten.</li>` : ""}<li>Offenbare Unrichtigkeiten oder fehlende Angaben im Sachverhalt: kurz vermerken, wie Sie ergänzt haben.</li><li>Je Sachverhalt tippen oder mit Stift bzw. Finger auf Blättern schreiben („Schreiben“). Ihre Eingaben werden laufend auf diesem Gerät gespeichert. Nach Ablauf der Zeit wird automatisch abgegeben.</li></ul>
       <h3>Allgemeine Vorbemerkungen</h3>
       <ul class="ks-hinweise">${[...(d.vorbemerkungen || []), ...(fest?.vorbemerkungen || [])].map((v) => `<li>${h.inline(v)}</li>`).join("")}</ul>
     </article></div>
@@ -168,7 +177,7 @@ export function simView(k, h) {
     const bogen = s.bewertung.map(([p, t, erw], j) => `<label class="ks-haken"><input type="checkbox" data-a="ksimHaken" data-v="${id}|${j}" ${k.haken?.[id]?.[j] ? "checked" : ""}><span>${h.esc(t)}${erw ? `<small class="ks-erw">Erwartet: ${h.inline(erw)}</small>` : ""}</span><b>${String(p).replace(".", ",")}</b></label>`).join("");
     const erreichtSv = s.bewertung.reduce((a, [p], j) => a + (k.haken?.[id]?.[j] ? p : 0), 0), maxSv = s.bewertung.reduce((a, [p]) => a + p, 0);
     return `${ueberschrift}<article class="ks-blatt ks-sv" id="ks-${id}">
-      <header class="ks-sv-kopf"><span class="ks-nr">Sachverhalt ${i + 1}</span><h3>${h.esc(s.titel)}</h3><span class="ks-min">ca. ${s.min} Min. · ${String(maxSv).replace(".", ",")} P.</span>
+      <header class="ks-sv-kopf"><span class="ks-nr">${d.svName || "Sachverhalt"} ${i + 1}</span><h3>${h.esc(s.titel)}</h3><span class="ks-min">ca. ${s.min} Min. · ${String(maxSv).replace(".", ",")} P.</span>
         ${zeitwaechter(k, id, s.min)}</header>
       <div class="ks-text">${absatz(s.sv, h)}</div>
       <div class="ks-aufgaben"><b>Aufgaben</b><ol>${s.aufgaben.map((a) => `<li>${h.inline(a)}</li>`).join("")}</ol></div>
