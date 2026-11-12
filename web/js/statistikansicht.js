@@ -6,6 +6,7 @@ import { taler } from "./maskottchen.js";
 import { muenze } from "./levelansicht.js";
 import { RAENGE, REIHEN } from "./level.js";
 import { zeitraum, auswerten, veraenderung, heatmap, wochenTrend, wochentage, tageszeiten, rekorde } from "./statistik.js";
+const aufgabenN = (n, f = (x) => Number(x).toLocaleString("de-DE")) => `${f(n)} ${Number(n) === 1 ? "Aufgabe" : "Aufgaben"}`; // „1 Aufgabe“, „2 Aufgaben“
 
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const zahl = (n) => Math.round(n).toLocaleString("de-DE");
@@ -39,13 +40,13 @@ export function rueckblickView(stat, opt, h) {
   const beste = a.tage.reduce((m, t, i) => (t.n > (a.tage[m]?.n || 0) ? i : m), -1);
   const balken = saeulen(a.tage.map((t) => t.n), {
     beschrift: (i) => (monat ? ((i + 1) % 7 === 1 ? String(i + 1) : "") : WT[i]),
-    tip: (i) => `${datumKurz(z.tage[i])}: ${a.tage[i].n} Aufgaben`, hervor: beste, klasse: monat ? "dicht" : "",
+    tip: (i) => `${datumKurz(z.tage[i])}: ${aufgabenN(a.tage[i].n)}`, hervor: beste, klasse: monat ? "dicht" : "",
   });
   const top = a.themen.slice(0, 5), topMax = Math.max(1, ...top.map((t) => t.b));
   const satz = !a.aufgaben ? (opt.versatz === 0 ? "Noch nichts gelernt in diesem Zeitraum – eine kleine Runde reicht für den Anfang." : "In diesem Zeitraum hast du nicht gelernt.")
-    : v.aufgaben && a.aufgaben > v.aufgaben ? `${zahl(a.aufgaben - v.aufgaben)} Aufgaben mehr als ${monat ? "im Vormonat" : "in der Vorwoche"} – stark!`
+    : v.aufgaben && a.aufgaben > v.aufgaben ? `${aufgabenN(a.aufgaben - v.aufgaben, zahl)} mehr als ${monat ? "im Vormonat" : "in der Vorwoche"} – stark!`
     : v.aufgaben && a.aufgaben < v.aufgaben ? `Etwas weniger als ${monat ? "im Vormonat" : "in der Vorwoche"} – dranbleiben lohnt sich.`
-    : `${zahl(a.aufgaben)} Aufgaben an ${a.lerntage} ${a.lerntage === 1 ? "Tag" : "Tagen"}.`;
+    : `${aufgabenN(a.aufgaben, zahl)} an ${a.lerntage} ${a.lerntage === 1 ? "Tag" : "Tagen"}.`;
   const erfolge = a.erfolge.length ? `<div class="gruppe"><div class="gruppe-titel">Freigeschaltet</div><div class="rb-erfolge">${a.erfolge.map((e) => {
     const r = REIHEN.find((x) => x.id === e.reihe);
     return `<div class="rb-erfolg">${muenze(e.reihe ? RANG_STUFE(e.stufe) : "gold", ic(e.icon || r?.icon), { groesse: 40 })}<span><b>${esc(e.titel)}</b><small>${esc(e.text)}</small></span></div>`;
@@ -63,7 +64,7 @@ export function rueckblickView(stat, opt, h) {
       ${kachel(`${a.lerntage}<small>/${n}</small>`, "Lerntage")}
     </div>
     <div class="gruppe"><div class="gruppe-titel">Aufgaben je Tag</div><div class="diagramm-karte">${balken}
-      ${a.besterTag ? `<div class="dk-fuss">Bester Tag: <b>${datumKurz(a.besterTag.k)}</b> mit ${a.besterTag.n} Aufgaben</div>` : ""}</div></div>
+      ${a.besterTag ? `<div class="dk-fuss">Bester Tag: <b>${datumKurz(a.besterTag.k)}</b> mit ${aufgabenN(a.besterTag.n)}</div>` : ""}</div></div>
     ${top.length ? `<div class="gruppe"><div class="gruppe-titel">Meistgeübte Themen</div><div class="diagramm-karte"><ul class="hbalken">${top.map((t) => `<li>
       <span class="hb-name"><i class="hb-punkt" style="--mc:${h.modulFarbe(h.themaFach(t.id))}"></i>${esc(h.themaTitel(t.id))}<small>${esc(h.modulKurz(h.themaFach(t.id)))}</small></span>
       <span class="hb-spur"><span style="width:${(t.b / topMax) * 100}%"></span></span><span class="hb-wert">${t.b}<small>${pz(t.q)} richtig</small></span></li>`).join("")}</ul></div></div>` : ""}
@@ -80,14 +81,14 @@ export function statistikView(stat, h) {
   const heat = `<div class="heat" role="img" aria-label="Lernkalender der letzten 26 Wochen">
     <div class="heat-monate">${monatWechsel.map((m) => `<span>${m}</span>`).join("")}</div>
     <div class="heat-feld"><div class="heat-wt">${WT.map((w, i) => `<span>${i % 2 === 0 ? w : ""}</span>`).join("")}</div>
-      <div class="heat-raster">${hm.map((w) => `<div class="heat-woche">${w.map((t) => `<span class="heat-tag s${stufe(t.n)}${t.zukunft ? " zukunft" : ""}" tabindex="${t.zukunft ? -1 : 0}" data-tip="${datumKurz(t.k)}: ${t.n} Aufgaben"></span>`).join("")}</div>`).join("")}</div></div>
+      <div class="heat-raster">${hm.map((w) => `<div class="heat-woche">${w.map((t) => `<span class="heat-tag s${stufe(t.n)}${t.zukunft ? " zukunft" : ""}" tabindex="${t.zukunft ? -1 : 0}" data-tip="${datumKurz(t.k)}: ${aufgabenN(t.n)}"></span>`).join("")}</div>`).join("")}</div></div>
     <div class="heat-legende">weniger ${[0, 1, 2, 3, 4].map((s) => `<span class="heat-tag s${s}"></span>`).join("")} mehr</div></div>`;
   const tr = wochenTrend(stat, 12);
-  const trend = saeulen(tr.map((w) => w.n), { beschrift: (i) => (i % 3 === 0 || i === 11 ? new Date(tr[i].von + "T12:00").toLocaleDateString("de-DE", { day: "numeric", month: "numeric" }) : ""), tip: (i) => `Woche ab ${datumKurz(tr[i].von)}: ${tr[i].n} Aufgaben`, hervor: 11 });
+  const trend = saeulen(tr.map((w) => w.n), { beschrift: (i) => (i % 3 === 0 || i === 11 ? new Date(tr[i].von + "T12:00").toLocaleDateString("de-DE", { day: "numeric", month: "numeric" }) : ""), tip: (i) => `Woche ab ${datumKurz(tr[i].von)}: ${aufgabenN(tr[i].n)}`, hervor: 11 });
   const tz = tageszeiten(stat), tzMax = tz.indexOf(Math.max(...tz));
-  const zeit = saeulen(tz, { beschrift: (i) => (i % 6 === 0 ? `${i} Uhr` : ""), tip: (i) => `${i}–${i + 1} Uhr: ${tz[i]} Aufgaben`, hervor: tz[tzMax] ? tzMax : -1, hoehe: 90, klasse: "dicht" });
+  const zeit = saeulen(tz, { beschrift: (i) => (i % 6 === 0 ? `${i} Uhr` : ""), tip: (i) => `${i}–${i + 1} Uhr: ${aufgabenN(tz[i])}`, hervor: tz[tzMax] ? tzMax : -1, hoehe: 90, klasse: "dicht" });
   const wt = wochentage(stat), wtMax = wt.indexOf(Math.max(...wt));
-  const tage = saeulen(wt, { beschrift: (i) => WT[i], tip: (i) => `${WT[i]}: ${wt[i]} Aufgaben`, hervor: wt[wtMax] ? wtMax : -1, hoehe: 90 });
+  const tage = saeulen(wt, { beschrift: (i) => WT[i], tip: (i) => `${WT[i]}: ${aufgabenN(wt[i])}`, hervor: wt[wtMax] ? wtMax : -1, hoehe: 90 });
   const mod = h.module.map((m) => {
     const z = h.summeFach(m.id);
     return { ...m, b: z.b, q: z.b ? z.r / z.b : 0 };
@@ -109,7 +110,7 @@ export function statistikView(stat, h) {
       <div class="dk-fuss">${tz[tzMax] ? `Am liebsten lernst du zwischen <b>${tzMax} und ${tzMax + 1} Uhr</b>.` : "Die Tageszeit wird seit dem letzten Update erfasst."}</div>
       <div class="dk-trenner"></div>${tage}${wt[wtMax] ? `<div class="dk-fuss">Dein stärkster Wochentag: <b>${["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"][wtMax]}</b>.</div>` : ""}</div></div>
     ${mod.length ? `<div class="gruppe"><div class="gruppe-titel">Trefferquote je Modul</div><div class="diagramm-karte"><ul class="hbalken">${mod.map((m) => `<li>
-      <span class="hb-name"><i class="hb-punkt" style="--mc:${m.farbe}"></i>${esc(m.kurz)}<small>${zahl(m.b)} Aufgaben</small></span>
+      <span class="hb-name"><i class="hb-punkt" style="--mc:${m.farbe}"></i>${esc(m.kurz)}<small>${aufgabenN(m.b, zahl)}</small></span>
       <span class="hb-spur skala"><span style="width:${m.q * 100}%"></span></span><span class="hb-wert">${pz(m.q)}</span></li>`).join("")}</ul></div></div>` : ""}
     ${karteiSumme ? `<div class="gruppe"><div class="gruppe-titel">Lernkartei</div><div class="diagramm-karte">
       <div class="stapelbalken" role="img" aria-label="${kartei.map((n, i) => `Fach ${i}: ${n}`).join(", ")}">${kartei.map((n, i) => n ? `<span class="sb-teil f${i}" style="flex:${n}" tabindex="0" data-tip="Fach ${i}: ${n} Aufgabentypen"></span>` : "").join("")}</div>
@@ -129,9 +130,9 @@ export function statistikStart(stat) {
   const tr = wochenTrend(stat, 8), diese = tr[7].n, letzte = tr[6].n, d = veraenderung(diese, letzte);
   return `<div class="gruppe"><div class="gruppe-titel">Rückblick und Statistik</div>
     <div class="stat-start">
-      <button class="ss-haupt" data-a="rueckblick" data-v="woche"><span class="ss-text"><b>${zahl(diese)} Aufgaben diese Woche</b>
+      <button class="ss-haupt" data-a="rueckblick" data-v="woche"><span class="ss-text"><b>${aufgabenN(diese, zahl)} diese Woche</b>
         <span class="sub">${d == null ? "Wochenrückblick ansehen" : `${d >= 0 ? "▲" : "▼"} ${Math.abs(d)} % zur Vorwoche`}</span></span>
-        ${saeulen(tr.map((w) => w.n), { hoehe: 44, hervor: 7, tip: (i) => `${tr[i].n} Aufgaben`, klasse: "mini" })}</button>
+        ${saeulen(tr.map((w) => w.n), { hoehe: 44, hervor: 7, tip: (i) => `${aufgabenN(tr[i].n)}`, klasse: "mini" })}</button>
       <div class="ss-knoepfe"><button data-a="rueckblick" data-v="monat">${ic("kalender", "klein")} Monat</button><button data-a="statistik">${ic("diagramm", "klein")} Statistik</button></div>
     </div></div>`;
 }
