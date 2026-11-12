@@ -1542,7 +1542,7 @@ function tabLernen() {
   const schnell = state.fach === "oer"
     ? kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "75 % der Klausur") +
       kachel("uebertragung", "diagramm", "Übertragung", "Grafiken auswerten · 25 %") +
-      kachel("alles", "mischen", "Gemischt", "Quer durch das Skript") + paareKachel
+      kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") + paareKachel
     : state.fach === "est"
     ? `<button class="kachel" data-a="punktesammler"><span class="k-icon">${ic("ziel")}</span><span class="k-text"><b>Punkte sammeln</b><span class="sub">Klausursätze zum Auswendiglernen</span></span></button>` +
       kachel("rechnen", "tkonto", "Rechnen", "Tarif, WK, Entfernungspauschale") +
@@ -1591,7 +1591,7 @@ function tabLernen() {
     ${kursKarte()}
     ${denkfehlerKarte()}
     <div class="gruppe"><div class="gruppe-titel">Schnellstart</div><div class="kachel-grid">${schnell}${schwachKachel}</div></div>
-    <div class="gruppe"><div class="gruppe-titel">${{ oer: "Themen · Skript Kapitel 1–2", est: "Themen · Skripte & Folien", ust: "Themen · Skript & Klausurtechnik" }[state.fach] || { 1: "Themen · Skript Teil I", 2: "Themen · Skript Teil II", beide: "Themen · Skript Teil I und II" }[state.bilrTeil]}<span class="sub" style="text-transform:none;letter-spacing:0">${themenImTeil(state.fach).length} Themen</span></div>
+    <div class="gruppe"><div class="gruppe-titel">${state.fach === "bsr" ? { 1: "Themen · Teil I", 2: "Themen · Teil II", beide: "Themen · Teil I und II" }[state.bilrTeil] : "Themen"}<span class="sub" style="text-transform:none;letter-spacing:0">${themenImTeil(state.fach).length} Themen</span></div>
       <div class="filter-suche"><input type="search" id="themenFilter" data-fokus="themenFilter" placeholder="Thema filtern …" autocomplete="off" value="${esc(state.themenFilter)}"></div>
       <div id="themenListe">${themenListe()}</div></div>
     ${lernkarteiView()}`;
@@ -1675,8 +1675,8 @@ function pfadKachel() {
 /** Bilanzrecht: Teil I (bis Dezember), Teil II oder beide wie in der Klausur. */
 function teilSchalter() {
   const m = [["1", "Teil I"], ["2", "Teil II"], ["beide", "Beide"]];
-  const fuss = { 1: "Teil I – Buchführung: Buchführungspflicht, Inventur und Bilanz, Konten, Warenverkehr, Umsatzsteuer, Abschluss, Kalkulation (Skript Teil I).", 2: "Teil II – Bilanzierung und Bewertung: Zurechnung, Anschaffungskosten, Grundstücke, AfA und GWG, Teilwert, Rechnungsabgrenzung, Entnahmen und Einlagen (Skript Teil II).", beide: "Beide Teile – wie in der Semesterklausur: Klausur mit ca. 25 % Teil I und 75 % Teil II." }[state.bilrTeil];
-  return `<div class="gruppe"><div class="gruppe-titel">Skript</div><div class="modus-karte"><div class="segment">${m.map(([id, t]) =>
+  const fuss = { 1: "Teil I – Buchführung: Buchführungspflicht, Inventur und Bilanz, Konten, Warenverkehr, Umsatzsteuer, Abschluss, Kalkulation.", 2: "Teil II – Bilanzierung und Bewertung: Zurechnung, Anschaffungskosten, Grundstücke, AfA und GWG, Teilwert, Rechnungsabgrenzung, Entnahmen und Einlagen.", beide: "Beide Teile – wie in der Semesterklausur: Klausur mit ca. 25 % Teil I und 75 % Teil II." }[state.bilrTeil];
+  return `<div class="gruppe"><div class="gruppe-titel">Stoff</div><div class="modus-karte"><div class="segment">${m.map(([id, t]) =>
     `<button data-a="bilrTeil" data-v="${id}" class="${state.bilrTeil === id ? "aktiv" : ""}">${t}</button>`).join("")}</div>
     <div class="gruppe-fuss">${fuss}</div></div></div>`;
 }
