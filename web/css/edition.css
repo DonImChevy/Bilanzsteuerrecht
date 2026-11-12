@@ -305,3 +305,62 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .stat-kachel .lbl { font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; }
 .willkommen h2 { font-family: var(--serif); font-size: 34px; font-weight: 500; letter-spacing: -0.5px; line-height: 1.1; }
 .willkommen .logo { border-radius: 50%; background: var(--leinen); box-shadow: inset 0 0 0 1px rgba(236, 217, 160, 0.6), inset 0 0 0 5px var(--leinen), inset 0 0 0 6px rgba(236, 217, 160, 0.35), 0 24px 34px -22px #000; color: var(--blattgold); }
+
+/* =====================================================================
+   Das Menü als Buchseite: Schnellstart und „Heute“ sind eine Menükarte (Zeilen auf einem Blatt),
+   die Themen ein Inhaltsverzeichnis mit Kapitelziffern, Umschalter sind Registerreiter mit Goldlinie.
+   ===================================================================== */
+/* Menükarte */
+.kachel-grid { grid-template-columns: minmax(0, 1fr); gap: 0; overflow: hidden; background: var(--glas); border: 1px solid var(--glas-rand); border-radius: var(--r-karte); box-shadow: var(--schatten); }
+.kachel-grid .kachel { position: relative; flex-direction: row; align-items: center; gap: 16px; width: 100%; min-height: 70px; padding: 15px 18px; background: none; border: 0; border-radius: 0; box-shadow: none; transition: background 0.2s; }
+.kachel-grid button.kachel { padding-right: 46px; }
+.kachel-grid > * + .kachel, .kachel-grid > * + .kachel-huelle > .kachel { border-top: 1px solid var(--glas-linie); }
+.kachel-grid button.kachel::after { content: ""; position: absolute; right: 20px; top: 50%; width: 7px; height: 7px; margin-top: -4px; border-top: 1.5px solid var(--gold-ton); border-right: 1.5px solid var(--gold-ton); transform: rotate(45deg); transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+.kachel-grid .kachel:active { transform: none; background: var(--gold-hauch); }
+@media (hover: hover) { .kachel-grid .kachel:hover { transform: none; box-shadow: none; background: var(--gold-hauch); } .kachel-grid button.kachel:hover::after { transform: translateX(3px) rotate(45deg); } }
+.kachel-grid .kachel .k-icon { width: 26px; height: 26px; border-radius: 0; background: none !important; box-shadow: none; }
+.kachel-grid .kachel .k-icon .ic { width: 24px; height: 24px; stroke-width: 1.5; }
+.kachel-grid .kachel .k-text, .kachel-grid .kachel .grow { flex: 1; min-width: 0; gap: 2px; }
+.kachel-grid .kachel b { font-family: var(--serif); font-size: 18.5px; font-weight: 500; letter-spacing: -0.1px; line-height: 1.18; }
+.kachel-grid .kachel .sub { font-size: 13px; line-height: 1.35; }
+.kachel-grid .kachel.betont { background: var(--gold-hauch); box-shadow: none; }
+.kachel-grid .kachel-huelle > .kachel { padding-right: 92px; }
+.kachel-zusatz { top: 50%; right: 42px; margin-top: -18px; border-radius: 50%; background: none; box-shadow: inset 0 0 0 1px var(--glas-rand); }
+
+/* Inhaltsverzeichnis */
+.themen-karten { grid-template-columns: minmax(0, 1fr); gap: 0; padding: 2px 18px; background: var(--glas); border: 1px solid var(--glas-rand); border-radius: var(--r-karte); box-shadow: var(--schatten); }
+.themen-karte { align-items: flex-start; gap: 4px 14px; padding: 20px 0 18px; background: none; border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
+.themen-karte + .themen-karte { border-top: 1px solid var(--glas-linie); }
+.themen-karte::before { display: none; }
+.themen-karte:active { transform: none; }
+@media (hover: hover) { .themen-karte:hover { transform: none; box-shadow: none; } .themen-karte:hover .tk-haupt b { color: var(--accent); } }
+.tk-icon { width: 34px; height: auto; border-radius: 0; background: none; box-shadow: none; font-size: 0; place-items: start; }
+.tk-icon i { position: static; min-width: 0; height: auto; padding: 0; display: block; background: none; box-shadow: none; border-radius: 0; font-family: var(--serif); font-size: 30px; font-weight: 500; line-height: 0.95; letter-spacing: -0.5px; color: var(--gold-ton); font-variant-numeric: lining-nums; }
+.tk-text { gap: 4px; }
+.tk-text b { font-family: var(--serif); font-size: 19.5px; font-weight: 500; letter-spacing: -0.15px; line-height: 1.16; transition: color 0.2s; }
+.tk-text .sub { font-size: 13px; }
+.tk-fuss { margin-top: 9px; gap: 12px; }
+.tk-balken { height: 2px; }
+.tk-n { font-size: 10.5px; font-weight: 600; letter-spacing: 0.9px; text-transform: uppercase; color: var(--text3); }
+.tk-status { min-width: 0; padding: 0; box-shadow: none; background: none; font-family: var(--serif); font-size: 19px; font-weight: 500; text-align: right; }
+.tk-status.neu { background: none; color: var(--gold-ton); font-family: "Inter", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.6px; }
+.tk-lesen { min-height: 34px; padding: 6px 0 6px 8px; border-radius: 0; box-shadow: none; background: none; font-size: 13px; font-weight: 600; text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--m) 45%, transparent); text-underline-offset: 4px; text-decoration-thickness: 1px; }
+.tk-lesen .ic { display: none; }
+.tk-lesen:active { background: none; box-shadow: none; transform: none; color: var(--text); }
+.filter-suche input { background: transparent; box-shadow: none; border: 0; border-bottom: 1px solid var(--glas-rand); border-radius: 0; padding-left: 30px; }
+.filter-suche::before { left: 4px; }
+.filter-suche input:focus { box-shadow: none; border-bottom-color: var(--m); }
+.filter-suche { margin-bottom: 16px; }
+
+/* Registerreiter statt Schaltkästen */
+.modus-karte { background: none; border: 0; box-shadow: none; padding: 0; border-radius: 0; }
+.modus-karte .gruppe-fuss { margin: 12px 2px 0; }
+.segment { background: none; padding: 0; gap: 0; border-radius: 0; box-shadow: inset 0 -1px 0 var(--glas-rand); }
+.segment button { border-radius: 0; padding: 12px 6px 13px; font-weight: 600; color: var(--text3); box-shadow: none; transition: color 0.2s, box-shadow 0.25s; }
+.segment button.aktiv { background: none; color: var(--text); box-shadow: inset 0 -2px 0 var(--gold-ton); }
+
+/* Kompaktwissen-Zeile */
+.kk-text b { font-family: var(--serif); font-size: 21px; font-weight: 500; letter-spacing: -0.2px; }
+.kk-pfeil { color: var(--gold-ton); }
+.kk-weiter { background: none; font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 15.5px; padding: 12px 18px 14px; }
+.kk-haupt { padding: 18px; }
