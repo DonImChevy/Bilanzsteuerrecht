@@ -1,3 +1,10 @@
+/* Schrift: Inter (variabel, Gewicht und optische Größe; SIL Open Font License, web/fonts/Inter-OFL.txt).
+   Nur der lateinische Zeichenbereich – fehlende Zeichen (Pfeile, Brüche) kommen aus der Systemschrift. */
+@font-face {
+  font-family: "Inter"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("../fonts/inter-latin-var.woff2") format("woff2-variations"), url("../fonts/inter-latin-var.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 /* =====================================================================
    Design-System
    --m = Akzentfarbe des aktiven Moduls (per JS gesetzt, hell/dunkel)
@@ -51,7 +58,8 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; height: 100%; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI Variable", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  font-optical-sizing: auto; font-feature-settings: "cv05", "cv08", "ss03";
   background: var(--bg);
   color: var(--text);
   font-size: 16px;
@@ -313,7 +321,7 @@ button.zeile:active, button.karte-btn:active { background: var(--card2); }
 .aufgabe { background: var(--card); border-radius: var(--radius); padding: 16px 18px; box-shadow: var(--shadow); }
 .aufgabe .meta { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12.5px; color: var(--text2); margin-bottom: 10px; font-weight: 600; }
 .aufgabe .meta .typ { background: var(--accent-weak); color: var(--accent); padding: 3px 10px; border-radius: 99px; font-weight: 700; white-space: nowrap; }
-.aufgabe .text { white-space: pre-line; font-size: 17px; line-height: 1.5; font-weight: 500; }
+.aufgabe .text { font-size: 17px; line-height: 1.5; font-weight: 500; letter-spacing: -0.005em; }
 .nr { font-size: 13px; color: var(--text2); margin-top: 6px; margin-bottom: 10px; padding: 0 4px; font-weight: 600; }
 
 .bz { display: flex; align-items: center; gap: 8px; padding: 8px 10px 8px 14px; min-height: 54px; position: relative; }
@@ -360,7 +368,7 @@ button.zeile:active, button.karte-btn:active { background: var(--card2); }
 .auswertung.nein { border-top-color: var(--err); }
 .auswertung .urteil { font-weight: 800; font-size: 18px; margin-bottom: 8px; }
 .auswertung .urteil.ja { color: var(--ok); } .auswertung .urteil.nein { color: var(--err); }
-.auswertung .erkl { white-space: pre-line; line-height: 1.5; }
+.auswertung .erkl { line-height: 1.55; }
 .auswertung .quelle { font-size: 13px; color: var(--text2); margin-top: 10px; }
 .loesung-zeile { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; font-variant-numeric: tabular-nums; }
 .loesung-zeile.haben { padding-left: 22px; }
@@ -2840,3 +2848,37 @@ button.ot-option:hover { background: color-mix(in srgb, var(--ot-blau) 7%, trans
 .sb-tk-t li { margin-top: 4px; line-height: 1.3; padding: 2px 4px; border-radius: 6px; }
 .sb-tk-t li.farbig { background: color-mix(in srgb, var(--f) 16%, transparent); font-weight: 700; }
 .sb-tk-u { margin-top: 6px; font-size: 11.5px; color: var(--sb-text2); text-align: center; }
+
+
+/* ============================================================================================
+   Textsatz in Aufgaben, Lösungen und Erläuterungen (satz.js)
+   ============================================================================================ */
+.ts { font-variant-numeric: tabular-nums; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
+.ts > * + * { margin-top: 0.7em; }
+.ts p { margin: 0; text-wrap: pretty; }
+.ts-etikett { font-weight: 700; color: var(--text); }
+.ts-liste { list-style: none; margin: 0; padding: 0; }
+.ts-liste > li { position: relative; padding-left: 1.15em; }
+.ts-liste > li + li { margin-top: 0.35em; }
+.ts-liste > li::before { content: ""; position: absolute; left: 0.2em; top: 0.62em; width: 0.38em; height: 0.38em; border-radius: 50%; background: var(--m); }
+.ts-unter { margin-top: 0.3em; }
+.ts-unter > li { padding-left: 1em; }
+.ts-unter > li::before { top: 0.72em; width: 0.55em; height: 2px; border-radius: 1px; background: var(--text3); }
+.ts-num { list-style: none; margin: 0; padding: 0; counter-reset: none; }
+.ts-num > li { display: flex; gap: 0.6em; align-items: flex-start; }
+.ts-num > li + li { margin-top: 0.6em; }
+.ts-marke { flex: none; min-width: 1.6em; height: 1.6em; padding: 0 0.35em; margin-top: 0.02em; border-radius: 0.5em; display: inline-grid; place-items: center;
+  font-size: 0.8em; font-weight: 800; color: var(--m); background: color-mix(in srgb, var(--m) 13%, transparent); }
+.ts-ni { flex: 1; min-width: 0; }
+.ts-ni > * + * { margin-top: 0.4em; }
+.ts-rechnung { display: grid; grid-template-columns: 1.2em minmax(0, 1fr) auto; column-gap: 0.5em; row-gap: 0.15em; padding: 0.55em 0.75em; border-radius: 12px;
+  background: color-mix(in srgb, var(--m) 6%, transparent); border: 1px solid color-mix(in srgb, var(--m) 16%, transparent); }
+.ts-r { display: contents; }
+.ts-op { grid-column: 1; font-weight: 800; color: var(--m); text-align: center; }
+.ts-rt { grid-column: 2; }
+.ts-rt.ts-breit { grid-column: 2 / 4; }
+.ts-rb { grid-column: 3; text-align: right; white-space: nowrap; font-weight: 600; }
+.ts-r.summe > span { border-top: 1.5px solid color-mix(in srgb, var(--text) 35%, transparent); padding-top: 0.15em; margin-top: 0.15em; font-weight: 700; }
+.ts-r.summe > .ts-op { border-top-color: transparent; }
+.aufgabe .text .ts > * + * { margin-top: 0.8em; }
+.opt-text, .loesung b { font-variant-numeric: tabular-nums; }

@@ -32,6 +32,7 @@ export const lesezeit = (k) => Math.max(1, Math.round(kompaktText(k).split(/\s+/
 
 import { hoerSegmente, hoerInfo, vorlesenMoeglich, hoertGerade, offlineMoeglich } from "./vorlesen.js";
 import { schaubildKnoepfe } from "./schaubilder.js";
+import { typografie } from "./satz.js";
 
 const dauerText = (min) => min < 90 ? `${min} Min.` : `${String(Math.round(min / 6) / 10).replace(".", ",")} Std.`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -39,7 +40,7 @@ const ZITAT = /(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:HGB|AO|
 
 /** Fließtext: **fett** wird zum Textmarker, Normzitate werden antippbar (öffnen den Gesetzestext). */
 export function kompaktInline(text) {
-  const h = normenVerlinken(esc(text));
+  const h = normenVerlinken(esc(typografie(text)));
   // Zahl und Einheit nicht trennen („3 %“, „1.500 €“)
   return h.replace(/(\d) (%|€)/g, "$1&nbsp;$2").replace(/\*\*(.+?)\*\*/g, '<mark class="km">$1</mark>');
 }
