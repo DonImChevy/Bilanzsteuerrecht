@@ -2914,3 +2914,34 @@ button.ot-option:hover { background: color-mix(in srgb, var(--ot-blau) 7%, trans
 /* Statusfarben als Text: zur Schriftfarbe hin abdunkeln bzw. aufhellen, damit sie lesbar bleiben (≥ 4,5 : 1) */
 .modul-kachel .m-unten.erledigt { color: color-mix(in srgb, var(--ok) 70%, var(--text)); }
 .t-art { color: color-mix(in srgb, var(--k) 78%, var(--text)); }
+
+/* ---------- Feinschliff Phase 3: Layout und Satz ---------- */
+/* Überschriften ausgewogen umbrechen, Fließtext ohne einzelnes Schlusswort */
+h1, h2, h3, .tk-text b, .kachel b, .ks-deckblatt h2 { text-wrap: balance; }
+.ts p, .km-inhalt p, .km-liste li, .feedback small, .gruppe-fuss, .hinweis-box { text-wrap: pretty; }
+
+/* Gruppentitel mit Zusatz: Zusatz rutscht bei Platzmangel in die nächste Zeile statt zu quetschen */
+.gruppe-titel { flex-wrap: wrap; row-gap: 2px; }
+.gruppe-titel > .sub { margin-left: auto; }
+
+/* „Wie sicher bist du?“: Frage über einer gleichmäßigen Dreierreihe */
+@media (max-width: 520px) {
+  .sicher-chips { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .sicher-chips > span { grid-column: 1 / -1; margin: 0 2px 2px; }
+  .sicher-chips .chip { justify-content: center; min-height: 36px; }
+}
+
+/* Klausur-Deckblatt auf dem Telefon: Angaben untereinander statt zweispaltig */
+@media (max-width: 480px) {
+  .ks-daten { grid-template-columns: 1fr; gap: 2px; }
+  .ks-daten dt { margin-top: 10px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.6px; }
+  .ks-daten dt:first-child { margin-top: 0; }
+}
+
+/* Themenkarten auf schmalen Telefonen: etwas kompakter, damit lange Titel Platz haben */
+@media (max-width: 400px) {
+  .themen-karte { gap: 11px; padding-right: 11px; }
+  .tk-icon { width: 44px; height: 44px; border-radius: 14px; font-size: 21px; }
+  .tk-text b { font-size: 16px; }
+  .tk-lesen { padding-inline: 10px; }
+}

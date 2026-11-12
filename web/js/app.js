@@ -1935,7 +1935,7 @@ function tabKarten() {
   return `
     ${seitenKopf("Karteikarten", "Eigene Karten und fertige Lernkarten – Vorderseite lesen, umdrehen, ehrlich bewerten.")}
     ${meineKartenBereich()}
-    <div class="gruppe-titel" style="margin-top:22px">Fertige Lernkarten <span class="sub" style="text-transform:none;letter-spacing:0">${buchungsFach(state.fach) ? "Merksätze, Definitionen, Fristen" : "Frage – Musterantwort"}</span></div>
+    <div class="gruppe-titel" style="margin-top:22px">Fertige Lernkarten</div><div class="gruppe-fuss" style="margin:-4px 4px 10px">${buchungsFach(state.fach) ? "Merksätze, Definitionen und Fristen zum Umdrehen" : "Frage vorne, Musterantwort hinten"}</div>
     ${state.fach === "bsr" ? teilSchalter() : ""}
     <div class="kachel-grid">
       <button class="kachel" data-a="deck" data-v="alle"><span class="k-icon">${ic("mischen")}</span><span class="k-text"><b>Alle mischen</b><span class="sub">${LERNKARTEN.length} Karten</span></span></button>
