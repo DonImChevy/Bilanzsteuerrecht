@@ -10,6 +10,8 @@ export const GESETZE = [
   { id: "gg", name: "GG", titel: "Grundgesetz", standard: "rot" },
   { id: "bgb", name: "BGB", titel: "Bürgerliches Gesetzbuch", standard: "violett" },
   { id: "gobt", name: "GOBT", titel: "Geschäftsordnung des Bundestages", standard: "petrol" },
+  { id: "erbstg", name: "ErbStG", titel: "Erbschaftsteuergesetz", standard: "himmel" },
+  { id: "bewg", name: "BewG", titel: "Bewertungsgesetz", standard: "oliv" },
   { id: "vo", name: "VO", titel: "Verordnungen (EStDV, LStDV, UStDV)", standard: "grau" },
 ];
 

@@ -98,6 +98,15 @@ AUSWAHL_PR = {
     "GmbHG": {"2": None, "5": None, "6": None, "7": None, "11": None, "13": None, "15": None, "35": None, "60": None},
     "AO": {"39": None, "40": None, "41": None, "44": None, "47": None, "93": None, "226": None, "228": None, "232": None},
 }
+# Bewertungsrecht und Erbschaftsteuer (Aufruf mit --bew → web/js/bewr/normen.js, Export NORMEN_BEW)
+AUSWAHL_BEW = {
+    "ErbStG": {"1": None, "2": None, "3": ["1"], "7": ["1"], "9": ["1"], "10": ["1", "5", "6", "6a", "6b", "8"], "11": None,
+               "12": ["1", "2", "3", "7"], "13": ["1|1,4a,4b,4c,10,14", "2"], "13a": ["1", "2", "10"], "13b": ["1", "2", "4", "6", "7"],
+               "13d": None, "15": ["1"], "16": ["1", "2"], "17": ["1", "2"], "19": None, "20": ["1"], "22": None},
+    "BewG": {"1": None, "2": None, "9": None, "10": None, "11": ["1", "2"], "12": ["1"], "31": None, "121": None,
+             "151": ["1"], "157": ["1", "3"], "176": None, "177": None, "178": None, "179": None, "180": None, "181": None,
+             "182": None, "183": None, "184": None, "185": None, "186": None, "187": None, "188": None, "198": None},
+}
 # Paragrafen ohne amtliche Überschrift: Titel des Abschnitts
 TITEL = {("EStG", "20"): "Einkünfte aus Kapitalvermögen", ("EStG", "10"): "Sonderausgaben", ("EStG", "3"): "Steuerfreie Einnahmen", ("EStG", "11"): "Vereinnahmung und Verausgabung",
          ("EStG", "12"): "Nicht abzugsfähige Ausgaben", ("EStG", "9b"): "Umsatzsteuerrechtlicher Vorsteuerabzug",
@@ -134,7 +143,7 @@ TITEL_KORREKTUR = {("AO", "103"): "Auskunftsverweigerungsrecht bei Gefahr der Ve
                    ("AO", "20"): "Steuern vom Einkommen und Vermögen der Körperschaften, Personenvereinigungen, Vermögensmassen"}
 START = {"HGB": "§1\n(1) Kaufmann im Sinne", "AO": "§ 1 Anwendungsbereich", "EStG": "§ 1 Steuerpflicht",
          "UStG": "§ 1 Steuerbare Umsätze", "LStDV": "§ 1 Arbeitnehmer, Arbeitgeber",
-         "BGB": "§ 1 Beginn der Rechtsfähigkeit", "VwZG": "§ 1 Anwendungsbereich", "GmbHG": "§ 1 Zweck; Gründerzahl"}
+         "BGB": "§ 1 Beginn der Rechtsfähigkeit", "ErbStG": "§ 1 Steuerpflichtige Vorgänge", "BewG": "§ 1 Geltungsbereich", "VwZG": "§ 1 Anwendungsbereich", "GmbHG": "§ 1 Zweck; Gründerzahl"}
 STAND = {}
 
 
@@ -143,8 +152,14 @@ def schluessel(nr):
     return (int(m.group(1)), m.group(2))
 
 
-def gesetz(datei, start):
+# Überschriften, die im PDF an einer Fußnotenzeile hängen
+ROH_KORREKTUR = {"ErbStG": [(r" (§ 2 Persönliche Steuerpflicht)\n", r"\n\1\n")]}
+
+
+def gesetz(datei, start, g=""):
     roh = open(datei, encoding="utf-8").read()
+    for muster, ersatz in ROH_KORREKTUR.get(g, []):
+        roh = re.sub(muster, ersatz, roh)
     m = re.search(r"zuletzt\s+durch\s+(.*?)\s+geändert\s+worden\s+ist", roh, re.S)
     STAND[datei] = re.sub(r"\s+", " ", m.group(1)) if m else ""
     # Erste Fundstelle, auf die Normtext folgt (überspringt die Inhaltsübersicht)
@@ -225,6 +240,20 @@ def estg_19_tabelle(roh):
             "Zuschlag zum Versorgungsfreibetrag in Euro\n" + "\n".join(zeilen))
 
 
+def erbstg_19_tabelle(roh):
+    """Steuersatztabelle § 19 Abs. 1 ErbStG als Zeilen „Wert | I | II | III“ – jede Zeile wird im Gesetzestext nachgewiesen."""
+    i = roh.index("Prozentsatz in der Steuerklasse"); tab = re.sub(r"\s+", " ", roh[i:i + 600])
+    zeilen, pos = [], 0
+    for wert, *saetze in [("75 000", 7, 15, 30), ("300 000", 11, 20, 30), ("600 000", 15, 25, 30), ("6 000 000", 19, 30, 30),
+                          ("13 000 000", 23, 35, 50), ("26 000 000", 27, 40, 50), ("über 26 000 000", 30, 43, 50)]:
+        m = re.compile(r"\s+".join([re.escape(wert), *map(str, saetze)]) + r"\b").search(tab, pos)
+        if not m:
+            raise SystemExit(f"§ 19 ErbStG: Zeile {wert} nicht gefunden")
+        pos = m.end(); zeilen.append(" | ".join([wert, *map(str, saetze)]))
+    return ("Wert des steuerpflichtigen Erwerbs (§ 10) bis einschließlich … Euro | Steuerklasse I (%) | Steuerklasse II (%) | Steuerklasse III (%)\n"
+            + "\n".join(zeilen))
+
+
 def nummern(text, auswahl):
     """Behält aus einer Aufzählung (1. … 2. …) nur die Einleitung und die gewählten Nummern.
     Eine neu beginnende Zählung (1. nach 4.) ist eine Aufzählung innerhalb der Nummer und bleibt bei ihr,
@@ -286,13 +315,15 @@ def main():
         AUSWAHL, name, args = AUSWAHL_UST, "NORMEN_UST", args[1:]
     if args[0] == "--ao":
         AUSWAHL, name, args = AUSWAHL_AO, "NORMEN_AO", args[1:]
+    if args[0] == "--bew":
+        AUSWAHL, name, args = AUSWAHL_BEW, "NORMEN_BEW", args[1:]
     if args[0] == "--pr":
         AUSWAHL, name, args = AUSWAHL_PR, "NORMEN_PR", args[1:]
     ziel, *quellen = args
     aus, staende = [], []
     for q in quellen:
         g, datei = q.split("=", 1)
-        normen = gesetz(datei, START[g])
+        normen = gesetz(datei, START[g], g)
         staende.append(f"{g}: zuletzt geändert durch {STAND[datei]}")
         for nr, filter_ in AUSWAHL[g].items():
             if nr not in normen:
@@ -305,6 +336,11 @@ def main():
                 for a in abs_:
                     a["text"] = re.sub(r"(zu entnehmen:) .*?Jahr des Versorgungsbeginns (Bemessungsgrundlage für den)",
                                        lambda m: f"{m.group(1)}\n{tabelle}\n{m.group(2)}", a["text"], flags=re.S)
+            if (g, nr) == ("ErbStG", "19"):
+                tabelle = erbstg_19_tabelle(open(datei, encoding="utf-8").read())
+                for a in abs_:
+                    if a["abs"] == "1":
+                        a["text"] = "Die Erbschaftsteuer wird nach folgenden Prozentsätzen erhoben:\n" + tabelle
             titel = TITEL_KORREKTUR.get((g, nr)) or titel or TITEL.get((g, nr), "")
             for muster, ersatz in TEXT_KORREKTUR.get((g, nr), []):
                 for a in abs_:
@@ -313,7 +349,7 @@ def main():
     for n in aus:
         for a in n["abs"]:
             a["text"] = a["text"].replace("\u200b", "")
-    if name == "NORMEN_PR":
+    if name in ("NORMEN_PR", "NORMEN_BEW"):
         # Am Ende des letzten Absatzes hängen im PDF oft Gliederungsüberschriften, Fußnoten oder weggefallene Paragrafen
         for n in aus:
             if not n["abs"]:

@@ -103,6 +103,21 @@ export const THEMEN = [
   { id: "pr-verjaehrung", titel: "Verjährung", unter: "Regelmäßige Verjährung, Hemmung, Neubeginn · §§ 194–218 BGB", icon: "⌛", fach: "pr" },
   { id: "pr-kauf", titel: "Kaufvertrag & Mängelrechte", unter: "Pflichten, Sachmangel, Gefahrübergang, Mängelrechte · §§ 433–479 BGB", icon: "🛒", fach: "pr" },
   { id: "pr-sachenrecht", titel: "Sachenrecht", unter: "Besitz, Eigentumserwerb, gutgläubiger Erwerb, Grundstücke · §§ 854, 873, 925, 929 ff. BGB", icon: "🏠", fach: "pr" },
+  // Bewertungsrecht und Vermögensbesteuerung (GS I bis zur Klausur: Erbschaftsteuer, allgemeines Bewertungsrecht, Grundbesitz bis § 198 BewG)
+  { id: "bew-vorgaenge", titel: "Steuerpflichtige Vorgänge", unter: "Erwerb von Todes wegen, Schenkung, Bereicherung · §§ 1, 3, 7 ErbStG", icon: "🎁", fach: "bewr" },
+  { id: "bew-pflicht", titel: "Persönliche Steuerpflicht", unter: "Inländer, Fünfjahresfrist, Inlandsvermögen · § 2 ErbStG, § 121 BewG", icon: "🌍", fach: "bewr" },
+  { id: "bew-stichtag", titel: "Entstehung und Bewertungsstichtag", unter: "Tod, Ausführung der Schenkung, Pflichtteil · §§ 9, 11 ErbStG", icon: "📅", fach: "bewr" },
+  { id: "bew-erwerb", titel: "Steuerpflichtiger Erwerb", unter: "Bereicherung, Nachlassverbindlichkeiten, Schuldenabzug · §§ 10, 12 ErbStG", icon: "🧮", fach: "bewr" },
+  { id: "bew-klassen", titel: "Steuerklassen und Freibeträge", unter: "Steuerklassen, persönliche und Versorgungsfreibeträge · §§ 15–17 ErbStG", icon: "👪", fach: "bewr" },
+  { id: "bew-befreiungen", titel: "Hausrat, Rückfall, Gelegenheitsgeschenke", unter: "Sachliche Steuerbefreiungen · § 13 Abs. 1 Nr. 1, 10, 14 ErbStG", icon: "🛋️", fach: "bewr" },
+  { id: "bew-familienheim", titel: "Familienheim", unter: "Schenkung an Ehegatten, Erwerb von Todes wegen, 200-m²-Grenze · § 13 Abs. 1 Nr. 4a–4c ErbStG", icon: "🏡", fach: "bewr" },
+  { id: "bew-wohnraum", titel: "Vermieteter Wohnraum", unter: "90-%-Ansatz, Aufteilung nach Flächen, Schuldenkürzung · § 13d, § 10 Abs. 6 ErbStG", icon: "🏢", fach: "bewr" },
+  { id: "bew-betrieb", titel: "Betriebsvermögen und Anteile", unter: "Verwaltungsvermögen, Regel- und Optionsverschonung, Abzugsbetrag · §§ 13a, 13b ErbStG", icon: "🏭", fach: "bewr" },
+  { id: "bew-steuer", titel: "Steuerberechnung und Steuerschuldner", unter: "Steuersätze, Härteausgleich, Kleinbetrag · §§ 19, 20, 22 ErbStG", icon: "💶", fach: "bewr" },
+  { id: "bew-allgemein", titel: "Allgemeines Bewertungsrecht", unter: "Wirtschaftliche Einheit, gemeiner Wert, Teilwert, Nennwert · §§ 2, 9–12 BewG", icon: "📐", fach: "bewr" },
+  { id: "bew-grundbesitz", titel: "Grundbesitzwert und unbebaute Grundstücke", unter: "Gesonderte Feststellung, Bodenrichtwert · §§ 151, 157, 176–179 BewG", icon: "🗺️", fach: "bewr" },
+  { id: "bew-bebaut", titel: "Bebaute Grundstücke und Verfahren", unter: "Grundstücksarten, Verfahrenswahl, Vergleichswertverfahren · §§ 180–183 BewG", icon: "🏘️", fach: "bewr" },
+  { id: "bew-ertragswert", titel: "Ertragswertverfahren und § 198 BewG", unter: "Rohertrag, Bewirtschaftungskosten, Liegenschaftszins, Vervielfältiger, niedrigerer gemeiner Wert · §§ 184–188, 198 BewG", icon: "📈", fach: "bewr" },
 ];
 export const THEMA = Object.fromEntries(THEMEN.map((t) => [t.id, t]));
 
@@ -114,6 +129,7 @@ export const FAECHER = {
   ust: { id: "ust", titel: "Umsatzsteuer", kurz: "USt" },
   ao: { id: "ao", titel: "Abgabenordnung", kurz: "AO" },
   pr: { id: "pr", titel: "Privatrecht", kurz: "PrivR" },
+  bewr: { id: "bewr", titel: "Bewertungsrecht", kurz: "BewR" },
 };
 /**
  * BilBf (Ausbildung FTA I) nutzt die Buchführungsthemen aus Bilanzrecht Teil I mit – in der Reihenfolge des Lehrplans,

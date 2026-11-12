@@ -1,6 +1,6 @@
 // Service Worker: speichert die komplette App für die Offline-Nutzung.
 // Bei jeder inhaltlichen Änderung VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = "bsr-v122";
+const VERSION = "bsr-v124";
 const DATEIEN = [
   "./",
   "./index.html",
@@ -17,9 +17,18 @@ const DATEIEN = [
   "./js/meinekarten.js",
   "./js/handschrift.js",
   "./js/vorlesen.js",
-  "./js/klausursim.js", "./js/klausur_stichworte.js",
+  "./js/klausursim.js", "./js/klausur_stichworte.js", "./js/klausur_teilpunkte.js",
   "./js/ust/klausuren.js",
   "./js/pr/klausuren.js",
+  "./js/bewr/normen.js",
+  "./js/bewr/rechnen.js",
+  "./js/bewr/aufgaben.js",
+  "./js/bewr/aufgaben2.js",
+  "./js/bewr/kompakt.js",
+  "./js/bewr/beispiele.js",
+  "./js/bewr/pfad.js",
+  "./js/bewr/paare.js",
+  "./js/bewr/klausuren.js",
   "./js/bilr/bbf_klausuren.js",
   "./js/oer/klausuren.js",
   "./js/bilr/klausur_sv.js",

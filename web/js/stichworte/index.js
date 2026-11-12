@@ -8,6 +8,7 @@ import { SW_EST } from "./est.js";
 import { SW_UST } from "../ust/aufgaben.js";
 import { SW_AO } from "../ao/aufgaben.js";
 import { SW_PR } from "../pr/aufgaben.js";
+import { SW_BEWR } from "../bewr/aufgaben.js";
 import { SW_BSR_TEIL2 } from "../bilr/teil2.js";
 
-export const STICHWORTE = { ...SW_OER_SKRIPT, ...SW_OER_FRAGEN_A, ...SW_OER_FRAGEN_B, ...SW_EST, ...SW_BSR_TEIL2, ...SW_UST, ...SW_AO, ...SW_PR };
+export const STICHWORTE = { ...SW_OER_SKRIPT, ...SW_OER_FRAGEN_A, ...SW_OER_FRAGEN_B, ...SW_EST, ...SW_BSR_TEIL2, ...SW_UST, ...SW_AO, ...SW_PR, ...SW_BEWR };
