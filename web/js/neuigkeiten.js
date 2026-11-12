@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-edition",
+    datum: "2026-11-12",
+    titel: "Neues Design: die Edition",
+    punkte: [
+      ["sterne", "Wie ein gebundenes Gesetzeswerk", "Jedes Modul ist ein Band in Leinen mit Goldprägung, Titel und große Zahlen stehen in einer klassischen Buchschrift, Karten sind Papier statt Milchglas. Inhalte und Funktionen sind unverändert."],
+      ["mond", "Dunkel als Bühne, hell als Papier", "Beide Ansichten sind neu gestaltet; Farbwelten, Hintergründe und der Sparmodus funktionieren weiter.", "einstellungen"],
+    ],
+  },
+  {
     id: "2026-11-teilpunkte",
     datum: "2026-11-12",
     titel: "Teilpunkte im Selbstkontrollbogen",

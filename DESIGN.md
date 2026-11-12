@@ -1,6 +1,6 @@
 ---
 name: Finanzwirt-Trainer
-description: Lern-App zum Diplom-Finanzwirt (GS I) und FTA I – Glas, Leuchten und 3D-Knöpfe in der Farbe des Moduls.
+description: Lern-App zum Diplom-Finanzwirt (GS I) und FTA I – „Edition“, das Gesetzeswerk als Prachtausgabe in Leinen, Papier und Goldprägung.
 colors:
   akzent-start: "#4f46e5"
   akzent-start-dunkel: "#8b8cf8"
@@ -84,88 +84,48 @@ components:
     padding: "7px 12px"
 ---
 
-# Design System: Finanzwirt-Trainer
+# Design System: Finanzwirt-Trainer – „Edition“
 
 ## Overview
 
-Eine ruhige, helle Lernoberfläche aus **Glaskarten** über einem weichen, langsam treibenden **Leuchten in der Farbe des Moduls**. Jedes Fach hat seine eigene Farbe (`--m`); die Startseite ist Indigo. Primäre Aktionen sind **3D-Knöpfe mit Lippe** (sie „drücken sich ein“), Überschriften tragen einen Verlauf in die Modulfarbe. Das Maskottchen **Taler** (Münze mit Brille) gibt der App ein Gesicht.
+Die App ist eine **Prachtausgabe**: Jedes Modul ist ein Band in **Leinen** (Modulfarbe, abgedunkelt, mit feinem Gewebe) mit **Goldprägung** (Rahmenlinie, Ziffern, Embleme). Inhalte liegen auf **Papier** mit Haarlinien – kein Milchglas, kein Leuchten, keine Verläufe als Schmuck. Titel und große Zahlen stehen in **Bodoni Moda**, alles Lesbare und Bedienbare in **Inter**. Dunkel („Lesesaal bei Nacht“) ist die Bühne, hell („Papier“) gleichwertig.
 
-Die Gestaltung transportiert Fachinhalt: T-Konten mit Soll- und Haben-Seite, Mini-Bilanzen, Rechenwege mit Rechenzeichen und Betrag rechts, Normzitate als antippbare Verweise, Gesetzesfarben als Buchrücken. Der Lernpfad hat bewusst eine eigene Welt (Amber/Pink/Violett, `.pfad`/`.pf-*`).
-
-Hell und dunkel sind gleichwertig. Bewegung ist abschaltbar (`data-bewegung`), teure Effekte entfallen im Sparmodus (`data-leistung="spar"`).
+Die Schicht liegt in `web/css/edition.css` über `style.css` (oben Werte, darunter Bausteine). Der Lernpfad (`.pfad`/`.pf-*`) behält seine eigene Welt. Farbwelten, App-Hintergründe, `data-bewegung` und `data-leistung="spar"` gelten weiter.
 
 ## Colors
 
-Alle Farben laufen über CSS-Variablen in `web/css/style.css`; feste Hex-Werte nur in den Variablen selbst.
-
-### Primary
-- **Modulfarbe `--m`** (per JS aus `web/js/module.js` gesetzt, je hell/dunkel): Bilanzrecht Indigo `#4f46e5`, ÖR Rose `#e11d48`, ESt Smaragd `#059669`, USt Bernstein `#d97706`, BilBf Petrol `#0e7490`, AO Violett `#7c3aed`, Privatrecht Fuchsia `#c026d3`. Abgeleitet: `--m-licht`, `--m-tief`, `--accent-weak` (12 %).
-
-### Neutral
-- Hintergrund `--bg` `#eef0f8` / dunkel `#070814`; Glas `--glas` (72 % Weiß / dunkles Blaugrau 62 %), Rand `--glas-rand`, Linie `--glas-linie`.
-- Text `--text`, `--text2` (sekundär), `--text3` (Hinweise, Chevrons).
-
-### Status
-- Richtig `--ok`, Falsch `--err`, Warnung `--warn`, Gold `--gold` (Taler, Belohnungen). Je mit `-weak`-Fläche.
-
-### Named Rules
-- **Farbe heißt Fach.** Die Akzentfarbe zeigt immer, in welchem Modul man ist.
-- **Kontenarten haben feste Farben** (`.art-aktiv` Blau, `.art-passiv` Violett, `.art-aufwand` Rot, `.art-ertrag` Grün …) – sie tragen Bedeutung.
-- **Gesetze haben Buchrücken-Farben** (`--gz-*`, vom Nutzer anpassbar).
+- Grund/Papier: `--bg` `#f3f0e9` / dunkel `#0d0c0e`; Flächen `--glas` (deckend) `#fffdf8` / `#17151a`; Rand `--glas-rand` (goldgetönte Haarlinie).
+- Text: `--text` `#1b1814` / `#f3eee3`, `--text2`, `--text3`.
+- Gold: `--gold-ton` (Schrift, Rauten), `--gold-linie` (Haarlinien), `--folie` (Flächen wie Fortschritt), auf Leinen `--blattgold` und `--elfenbein`.
+- Leinen: `--leinen`, `--leinen-tief` aus `--m-hell`; Gewebe `--gewebe`; Knöpfe `--knopf`.
+- **Farbe heißt Fach** bleibt: Modulfarbe `--m` für Akzente, als Leinen für Einbände. Kontenarten und Gesetzesfarben unverändert.
 
 ## Typography
 
-Inter variabel (`web/fonts/inter-latin-var.woff2`), `font-feature-settings: "cv05","cv08","ss03"`, Beträge mit `tabular-nums`.
+- `--serif` Bodoni Moda (variabel, `web/fonts/bodoni-moda-latin-var*.woff2`, OFL): `h1.titel`, Hero, Modul-Banner, Band-Titel, Sheet-Titel, Kernsatz im Kompaktwissen, Deckblatt, Kartenfrage, Kennzahlen. Gewicht 500, nie unter 15 px.
+- Inter für Fließtext, Aufgaben, Lösungen, Normen, Knöpfe. Gruppen-Titel: Versalien 11,5 px mit goldener Raute und Haarlinie.
 
-### Hierarchy
-- Titel 32 px / 800 / −0,9 px, Verlauf Text → Modulfarbe.
-- Gruppen-Titel 12 px / 700 / Versalien / 1,1 px, mit leuchtendem Punkt in der Modulfarbe.
-- Karten-Titel 16,5 px / 750.
-- Fließtext 16 px / 1,42; Nebentext 13–13,5 px in `--text2`.
-- Aufgaben- und Lösungstext über den Textsatz `satz.js` (`.ts`): Absätze, Listen, Nummerierungen, Rechenwege (`.ts-rechnung`), Etiketten.
+## Shapes, Depth, Motion
 
-## Layout
-
-Einspaltig, max. 760 px, Rand 16 px plus Safe Areas, unten Platz für die schwebende Tab-Leiste. Gruppen mit 22 px Abstand; Karten-Raster mit 10 px Lücke; Kacheln im Zweier-Raster.
-
-## Elevation & Depth
-
-Glasflächen mit `backdrop-filter: blur(16px) saturate(160%)`, Schatten `--schatten`, angehoben `--schatten-hoch` (getönt in der Modulfarbe). Hero und Modul-Banner: mehrschichtiger Verlauf mit Lichtkante und wanderndem Glanz.
-
-## Shapes
-
-Radien: 12 px (Symbole), 16 px (Knöpfe), 18–22 px (Listen, Karten), 28 px (Hero), Pillen 99 px.
+- Radien klein und buchartig: 10/14/18 px, Bände 6/12 px (Rücken links), Pillen nur für die Navigation.
+- Tiefe über weiche, neutrale Schatten und Lichtkanten; keine farbigen Halos.
+- Ein inszenierter Moment: Licht wandert einmal über die Goldprägung von Hero/Banner; Bände gleiten gestaffelt herein. Sonst ruhiges Einblenden (`cubic-bezier(0.16,1,0.3,1)`).
 
 ## Components
 
-### Buttons
-`.knopf`: volle Breite, Verlauf `--m-licht` → `--fill` → `--m-tief`, 5-px-Lippe, beim Drücken 4 px nach unten. Varianten `.zweit` (Glas mit Rand), `.gruen`, `.rot`, `.orange`. `.icon-btn` 40 px rund aus Glas.
-
-### Chips
-`.chip` als Glas-Pille, aktiv mit Verlauf in der Modulfarbe; `.pille` und `.badge` für Status.
-
-### Cards / Containers
-`.liste` (Glas, Zeilen mit Haarlinie), `.kachel` (Glas, drückbar, `.betont` mit Akzentrand), `.themen-karte` (Farbleiste links, Icon mit Nummer, Fortschrittsbalken, Knopf „Überblick“), `.hinweis-box`.
-
-### Inputs / Fields
-Glas-Eingaben (`.suchfeld input`, `.zahl-eingabe`, `.offen-eingabe`); Buchungssatz-Eingabe als Soll/Haben-Zeilen.
-
-### Navigation
-Schwebende Tab-Leiste unten (Übersicht, Klausur, Karten, Normen), Sheets von unten für Einstellungen, Normen, Schaubilder, Garderobe.
-
-### Taler (Signature Component)
-SVG-Münze mit Brille, Stimmungen `hallo`/`jubeln`/`mut`, Outfit aus der Garderobe, Farben `--taler-*`; Bewegung nur einmal je Anlass.
+- **Einband** (`.hero`, `.modul-banner`): Leinen, Goldrahmen als `outline`, Serifentitel, Kennzahlen mit Haarlinien getrennt.
+- **Band** (`.modul-kachel`): Leinenrücken links, Rahmen, Emblem im Goldkreis, Bauchbinde für „heute fällig“.
+- **Knopf** (`.knopf`): gefärbtes Leinen mit Lichtkante, drückt 1 px; `.zweit` als Haarlinien-Knopf; im Hero elfenbeinfarben.
+- **Papierkarten** (`.liste`, `.kachel`, `.themen-karte`, `.option`, `.aufgabe`): deckend, Haarlinie, Symbole als Kreis mit Linie.
+- **Menükarte** (`.kachel-grid`): Zeilen auf einem Blatt – Liniensymbol, Serifentitel, Goldpfeil; keine Kachelraster.
+- **Inhaltsverzeichnis** (`.themen-karten`): Kapitelziffer in Gold, Serifentitel, Haarlinien-Fortschritt, „Überblick“ als unterstrichener Verweis.
+- **Registerreiter** (`.segment`): Text mit Goldlinie unter dem aktiven Reiter, kein Kasten.
+- **Navigation** (`.tabbar`): Lackleiste mit Goldkante, aktiv in Leinen.
 
 ## Do's and Don'ts
 
-### Do:
-- Farben nur über Variablen; jede Änderung hell **und** dunkel prüfen, auch mit Farbwelten und Hintergründen.
-- Neue Listen als einzelne Glaskarten; Fachinhalt sichtbar machen (Soll/Haben, Bilanzseiten).
-- Bewegung unter `data-bewegung`, teure Effekte unter `data-leistung="spar"` abschalten.
+- Farben nur über Variablen; hell **und** dunkel sowie Farbwelten prüfen.
+- Kein `backdrop-filter`, keine Leucht-Schatten, kein Verlaufstext, keine 3D-„Gummi“-Knöpfe.
+- Serifenschrift nur für Titel und Zahlen, nie für Aufgaben- oder Gesetzestext.
+- `.pfad`/`.pf-*` nicht anfassen; Fachinhalt nie für die Optik umschreiben.
 - Touch-Ziele ≥ 44 px, Kontrast WCAG AA.
-
-### Don't:
-- `.pfad`/`.pf-*` mit App-Styles treffen.
-- Fachinhalt (Aufgaben, Lösungen, Normtexte) für die Optik umschreiben.
-- Belohnungsanimationen in Klausur oder Klausursimulation.
-- Schrift wechseln oder neue Abhängigkeiten einführen.
