@@ -1018,6 +1018,7 @@ test("Klausursimulation: Zeit geht exakt auf, Sachverhalte rechnen sauber, Noten
       for (const s of svs) {
         assert.ok(!/NaN|undefined|Infinity/.test(JSON.stringify([s.sv, s.loesung, s.bewertung, s.zahlen])), `${s.id}: Rechenfehler`);
         assert.ok(s.bewertung.length >= 3 && s.loesung.length >= 2 && s.aufgaben.length >= 1, s.id);
+        for (const [, t, erw] of s.bewertung) assert.ok(t && erw && erw.length > 8, `${s.id}: Merkmal mit Erwartung – „${t}“`);
       }
       const max = hoechstpunkte(fach, { teile, seed });
       assert.ok(max > minuten * 0.4 && max < minuten * 0.7, `${fach} ${minuten}: ${max} Punkte`);
@@ -1047,7 +1048,7 @@ test("Probeklausuren: vollständig, Zeit und Punkte stimmen, jeder Merkmal-Punkt
         assert.ok(s.bewertung.length >= 2 && s.loesung.length >= 1 && s.aufgaben.length >= 1, s.id);
         for (const [p, t, erw] of s.bewertung) {
           assert.ok(p > 0 && Number.isInteger(p * 2), `${s.id}: Punkte in halben Schritten (${p})`);
-          if (s.fest) assert.ok(t && erw && erw.length > 8, `${s.id}: Merkmal mit Erwartung – „${t}“`);
+          assert.ok(t && erw && erw.length > 8, `${s.id}: Merkmal mit Erwartung – „${t}“`);
         }
         for (const z of s.zahlen || []) assert.ok(zahlStimmt(z, String(z.wert).replace(".", ",")), `${s.id}: Kontrollzahl ${z.frage}`);
       }
@@ -1057,6 +1058,37 @@ test("Probeklausuren: vollständig, Zeit und Punkte stimmen, jeder Merkmal-Punkt
     }
     for (const s of d.pool.filter((p) => p.fest)) assert.ok(benutzt.has(s.id), `${fach}: Aufgabe ${s.id} in keiner Probeklausur`);
   }
+});
+
+test("Probeklausuren: Teilauswahl – gleiche Zahlen, Zeit und Punkte passen sich an", async () => {
+  const { SIM, neueSim, inhalt, gewaehlt, auswahlSetzen, hoechstpunkte, punkte, simView } = await import("../js/klausursim.js");
+  for (const [fach, d] of Object.entries(SIM)) for (const x of d.klausuren || []) {
+    const k = neueSim(fach, "k:" + x.id, 1), voll = hoechstpunkte(fach, k);
+    const svs = k.teile.map((id, i) => inhalt(fach, id, k.seed, i));
+    assert.ok(auswahlSetzen(k, [0]), x.id);
+    assert.equal(gewaehlt(k).length, k.teile.length - 1);
+    assert.equal(k.minuten, x.minuten - svs[0].min, `${x.id}: Zeit ohne Teil 1`);
+    const p0 = svs[0].bewertung.reduce((a, [p]) => a + p, 0);
+    assert.equal(hoechstpunkte(fach, k), voll - p0, `${x.id}: Punkte ohne Teil 1`);
+    // gleiche Zahlen wie in der vollständigen Klausur
+    const [id1, i1] = gewaehlt(k)[0];
+    assert.deepEqual(inhalt(fach, id1, k.seed, i1).sv, svs[1].sv);
+    k.haken = { [svs[0].id]: { 0: true } };
+    assert.equal(punkte(fach, k), 0, "abgewählter Teil zählt nicht");
+    assert.ok(!auswahlSetzen(k, k.teile.map((_, i) => i)), "mindestens ein Teil bleibt");
+    auswahlSetzen(k, []);
+    assert.equal(k.minuten, x.minuten);
+  }
+  const h = { ic: () => "", esc: (t) => String(t), inline: (t) => t, loesungZeile: (t) => t, hs: { art: "s", farbe: 0, mfarbe: 0 }, modus: "text" };
+  const k = neueSim("ust", "k:ust-a", 1);
+  auswahlSetzen(k, [1, 2]);
+  const deck = simView(k, h);
+  assert.equal((deck.match(/data-a="ksimTeil"/g) || []).length, k.teile.length, "alle Teile wählbar");
+  assert.ok(deck.includes("(Auswahl)") && deck.includes(`${k.minuten} Minuten`));
+  const lauf = simView({ ...k, phase: "laufend", start: Date.now() }, h);
+  assert.equal((lauf.match(/class="ks-blatt ks-sv"/g) || []).length, k.teile.length - 2);
+  assert.ok(!lauf.includes(`id="ks-${k.teile[1]}"`), "abgewählter Teil fehlt");
+  assert.ok(lauf.includes(">Sachverhalt 4<") && !lauf.includes(">Sachverhalt 2<"), "Nummern wie in der vollständigen Klausur");
 });
 
 test("Klausursimulation: Handschrift – Blätter je Sachverhalt, Auswertung zeigt die Zeichnung", async () => {
