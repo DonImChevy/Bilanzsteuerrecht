@@ -9,6 +9,7 @@ import { PFAD_BSR1, PFAD_BSR2 } from "./bilr/pfad.js";
 import { PFAD_BBF } from "./bilr/bbf_pfad.js";
 import * as G from "./geld.js";
 import { normenVerlinken } from "./kompakt.js";
+import { typografie } from "./satz.js";
 import { taler, talerBuehne } from "./maskottchen.js";
 
 // Schlüssel = Modul; Bilanzrecht je nach Auswahl Teil I (bsr1), Teil II (bsr2) oder beide (bsr).
@@ -60,7 +61,7 @@ export function auswerten(q, eingabe) {
 
 // ------------------------------------------------------------------ Ansichten
 // Normzitate, deren Text in der App steht, öffnen beim Antippen den Gesetzestext
-const fett = (t, esc) => normenVerlinken(esc(t)).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+const fett = (t, esc) => normenVerlinken(esc(typografie(t))).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
 function textHtml(t, esc) {
   const zeilen = t.split("\n"), out = [];
   let liste = [];
@@ -168,7 +169,7 @@ export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken =
     if (q.art === "wahl") {
       feld = `<div class="pf-optionen">${z.reihen[qi].map((oi, pos) => {
         const cls = !a ? "" : oi === q.richtig ? " richtig" : Number(a.eingabe) === oi ? " falsch" : " aus";
-        return `<button class="pf-option${cls}" data-a="pfadWahl" data-v="${oi}" ${a ? "disabled" : ""} style="--i:${pos}"><span class="pf-buchst">${buchst[pos]}</span>${esc(q.optionen[oi])}</button>`;
+        return `<button class="pf-option${cls}" data-a="pfadWahl" data-v="${oi}" ${a ? "disabled" : ""} style="--i:${pos}"><span class="pf-buchst">${buchst[pos]}</span>${esc(typografie(q.optionen[oi]))}</button>`;
       }).join("")}</div>`;
     } else {
       feld = `<div class="pf-zahl${a ? (a.ok ? " richtig" : " falsch") : ""}"><input id="pfadZahl" inputmode="decimal" autocomplete="off" placeholder="0,00" value="${a ? esc(a.eingabe) : ""}" ${a ? "disabled" : ""}><span>${q.einheit || "€"}</span></div>
@@ -177,7 +178,7 @@ export function blockView(fach, z, { esc, ic, normLabel, konfetti, karteMerken =
     // Taler-Show nur beim ersten Zeichnen der Antwort auf diese Frage; danach ruhiger Endzustand
     const show = a && z.talerShow !== qi;
     if (a) z.talerShow = qi;
-    inhalt = `<div class="pf-frage"><div class="pf-tag frage"><span>?</span>Frage ${qi + 1} von ${b.fragen.length}</div><h2>${esc(q.frage)}</h2>${feld}
+    inhalt = `<div class="pf-frage"><div class="pf-tag frage"><span>?</span>Frage ${qi + 1} von ${b.fragen.length}</div><h2>${esc(typografie(q.frage))}</h2>${feld}
       ${a ? `<div class="pf-erkl ${a.ok ? "ok" : "err"}${show ? " nach-show" : ""}"><b>${a.ok ? "Richtig!" : "Nicht ganz."}</b> ${fett(q.erkl, esc)}</div>` : ""}</div>`;
     const warte = `<span class="fb-warte">${taler("warte", { groesse: 52 })}</span>`;
     fuss = a ? `<div class="pf-reihe pf-taler-reihe">${talerBuehne(a.ok, { ruhig: !show })}<button class="pf-los ${a.ok ? "ok" : "err"}" data-a="pfadWeiter">${qi + 1 === b.fragen.length ? "Abschließen" : "Nächste Frage"} ${ic("pfeil")}</button></div>`

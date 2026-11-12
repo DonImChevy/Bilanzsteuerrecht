@@ -5,6 +5,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-textsatz",
+    datum: "2026-11-12",
+    klein: true,
+    titel: "Aufgaben sauber gesetzt",
+    punkte: [
+      ["stift", "Neue Schrift", "Die App nutzt jetzt durchgehend die Schrift Inter – auf allen Geräten gleich und gut lesbar."],
+      ["karten", "Aufgeräumte Lösungen", "Rechenwege Zeile für Zeile mit Rechenzeichen, Aufzählungen und Nummerierungen als echte Listen, einheitliche Abkürzungen – und Paragrafen in Lösungen sind antippbar."],
+    ],
+  },
+  {
     id: "2026-11-schaubilder",
     datum: "2026-11-11",
     titel: "Schaubilder zum Kompaktwissen",

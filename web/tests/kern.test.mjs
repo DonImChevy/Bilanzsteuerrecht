@@ -1182,3 +1182,24 @@ test("Schaubilder: gültige Themen, Knoten und Darstellung ohne Fehler", async (
   }
   assert.ok(n >= 60, `nur ${n} Schaubilder`);
 });
+
+test("Textsatz: Typografie, Listen, Nummerierung, Rechenweg – für alle Aufgaben ohne Textverlust", async () => {
+  const S = await import("../js/satz.js");
+  assert.equal(S.typografie("Kauf i.H.v. 500 € , z.B. bar"), "Kauf i. H. v. 500 €, z. B. bar");
+  assert.equal(S.typografie("AB + Zugänge ./. Endbestand"), "AB + Zugänge − Endbestand");
+  assert.equal(S.typografie("§ 2 Abs.1 S.1"), "§ 2 Abs. 1 S. 1");
+  assert.equal(S.typografie("26.500 € - 4.500 €"), "26.500 € − 4.500 €");
+  const h = S.satz("Vorspann: Text\n1. Erstens\n• a\n  – a1\n2. Zweitens\n\nA: 100 €\n+ B: 50 €\n= C: 150 €");
+  assert.match(h, /ts-etikett">Vorspann:/); assert.match(h, /<ol class="ts-num">/); assert.match(h, /ts-unter/); assert.match(h, /ts-r summe/);
+  const { ALLE } = await import("../js/katalog.js");
+  const bz = (x) => (x.match(/[A-Za-zÄÖÜäöüß]/g) || []).length;
+  for (const v of ALLE) {
+    const f = v.erzeugen(new Zufall(3));
+    for (const k of ["text", "antwort", "erklaerung"]) {
+      if (typeof f[k] !== "string") continue;
+      const out = S.satz(f[k]), offen = (out.match(/<(div|p|ul|ol|li|span|b)\b/g) || []).length, zu = (out.match(/<\/(div|p|ul|ol|li|span|b)>/g) || []).length;
+      assert.equal(offen, zu, `${v.id}/${k}: Tags`);
+      assert.ok(bz(out.replace(/<[^>]+>/g, "")) >= bz(f[k]) - 6, `${v.id}/${k}: Text verloren`);
+    }
+  }
+});

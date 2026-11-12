@@ -10,6 +10,7 @@ import { PAARE } from "./paare.js";
 import { gliederungView } from "./bilr/gliederung.js";
 import { r2View } from "./est/r2.js";
 import * as SB from "./schaubilder.js";
+import { satz, satzZeile, typografie } from "./satz.js";
 import { KOMPAKT, KLAUSURPLAN, kompaktView, bibliothekView, kompaktText, lesezeit, kompaktInline, zuletztText, loesungZeile } from "./kompakt.js";
 import { SIM, startKarte as simStartKarte, simView, zusammenstellen, hoechstpunkte, punkte as simPunkte, note as simNote, restSekunden as simRest, uhrText as simUhr } from "./klausursim.js";
 import * as MK from "./meinekarten.js";
@@ -2162,7 +2163,7 @@ function frageView(f, antwort, b, gesperrt, aufgedeckt = false) {
   const zeigeAuswertung = b || (f.typ === "offen" && (aufgedeckt || gesperrt));
   return `
     <div class="aufgabe"><div class="meta"><span>${THEMA[f.thema].icon} ${esc(THEMA[f.thema].titel)}</span><span class="typ">${f.uebertragung ? "Übertragung · " : ""}${typBezeichnung(f)}</span></div>
-      <div class="text">${esc(f.text)}</div>
+      <div class="text">${satz(f.text)}</div>
       ${f.grafik ? `<div class="grafik-box">${f.grafik}</div>` : ""}</div>
     ${eingabe}
     ${zeigeAuswertung ? auswertungView(f, b || { korrekt: null, offen: true }) : ""}`;
@@ -2219,7 +2220,7 @@ function auswahlView(f, antwort, zeige, lock) {
         if (f.richtig.includes(i)) { kl = an ? "richtig" : "verpasst"; zeichen = an ? ic("haken") : ""; } else if (an) { kl = "falsch"; zeichen = ic("kreuz"); } else { kl = ""; zeichen = ""; }
       }
       const marke = zeige && f.richtig.includes(i) && !an ? `<span class="opt-marke">Fehlt – war richtig</span>` : zeige && an && !f.richtig.includes(i) ? `<span class="opt-marke falsch">Falsch angekreuzt</span>` : "";
-      return `<button class="option ${mehr ? "mehr" : ""} ${kl}" data-a="option" data-v="${i}" ${lock ? "disabled" : ""}><span class="kreis">${zeichen}</span><span class="opt-text">${esc(o)}${marke}</span>${!lock && i < 9 ? `<span class="taste">${i + 1}</span>` : ""}</button>`;
+      return `<button class="option ${mehr ? "mehr" : ""} ${kl}" data-a="option" data-v="${i}" ${lock ? "disabled" : ""}><span class="kreis">${zeichen}</span><span class="opt-text">${satzZeile(o)}${marke}</span>${!lock && i < 9 ? `<span class="taste">${i + 1}</span>` : ""}</button>`;
     }).join("")}
   </div></div>`;
 }
@@ -2403,12 +2404,12 @@ function kalibrierungsHinweis(s) {
 function auswertungInhalt(f, b) {
   let extra = "";
   if (f.typ === "zahl") {
-    extra = `${b.lesbar === false ? `<div class="sub">Deine Eingabe konnte nicht als Zahl gelesen werden.</div>` : ""}<div class="loesung"><b>Lösung: ${esc(loesungText(f))}</b></div>`;
+    extra = `${b.lesbar === false ? `<div class="sub">Deine Eingabe konnte nicht als Zahl gelesen werden.</div>` : ""}<div class="loesung"><b>Lösung: ${satzZeile(loesungText(f))}</b></div>`;
   }
   if (f.typ === "buchung") {
     const l = b.buchung.loesung;
     extra = `${(b.denkfehler || []).map((d) => `<div class="denkfehler"><div class="df-kopf"><span class="df-radar" aria-hidden="true"><i></i></span><b>${esc(d.titel)}</b></div>
-      <p>${esc(d.text)}</p><details class="df-frage"><summary>${esc(d.frage)}</summary><p>${kompaktInline(d.antwort)}</p></details></div>`).join("")}
+      <p>${satzZeile(d.text)}</p><details class="df-frage"><summary>${esc(d.frage)}</summary><p>${kompaktInline(d.antwort)}</p></details></div>`).join("")}
       <div class="loesung"><div class="sub" style="margin-bottom:4px">Musterlösung</div>
       ${l.soll.map(([k, c]) => `<div class="loesung-zeile"><span>${esc(K(k).name)}</span><span>${G.text(c)}</span></div>`).join("")}
       ${l.haben.map(([k, c]) => `<div class="loesung-zeile haben"><span>an ${esc(K(k).name)}</span><span>${G.text(c)}</span></div>`).join("")}</div>
@@ -2426,8 +2427,8 @@ function auswertungInhalt(f, b) {
         <div class="pruef-chips">${a.stichworte.map((w) => `<span class="pruef-chip ${w.ok ? "ja" : "nein"}">${w.ok ? "✓" : "✗"} ${esc(w.wort)}</span>`).join("")}</div>
       </div>
       ${erlKopf("Musterantwort")}
-      <div class="erkl muster">${esc(f.antwort)}</div>
-      ${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}
+      <div class="erkl muster">${satz(f.antwort, kompaktInline)}</div>
+      ${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${satz(f.erklaerung, kompaktInline)}</div>` : ""}
       ${normBlock(f.normen, [f.text, f.antwort, f.erklaerung, f.quelle, f.zusatzZitate].join(" "))}
       ${!b.korrigiert && (s()?.beendet || s()?.modus !== "klausur") ? `<div class="gruppe-fuss" style="margin:10px 0 0">Die Prüfung achtet nur auf Norm und Schlüsselbegriffe. ${b.korrekt ? "Doch etwas Wesentliches vergessen?" : "Inhaltlich trotzdem richtig?"}
         <button class="link" data-a="korrigieren">${b.korrekt ? "Als „nicht gewusst“ werten" : "Als „gewusst“ werten"}</button></div>` : ""}
@@ -2438,8 +2439,8 @@ function auswertungInhalt(f, b) {
     return `<div class="gruppe" id="auswertung"><div class="auswertung ${b.korrekt === false ? "nein" : b.korrekt === null ? "neutral" : ""}">
       ${urteil}
       ${erlKopf("Musterantwort")}
-      <div class="erkl muster">${esc(f.antwort)}</div>
-      ${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}
+      <div class="erkl muster">${satz(f.antwort, kompaktInline)}</div>
+      ${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${satz(f.erklaerung, kompaktInline)}</div>` : ""}
       ${normBlock(f.normen, [f.text, f.antwort, f.erklaerung, f.quelle, f.zusatzZitate].join(" "))}
       ${b.korrekt === null ? `<div class="gruppe-fuss" style="margin:10px 0 0">Vergleiche mit deiner Antwort: Hast du die wesentlichen Punkte und die richtige Norm genannt?</div>` : ""}
     </div></div>`;
@@ -2448,7 +2449,7 @@ function auswertungInhalt(f, b) {
     <div class="urteil ${b.korrekt ? "ja" : "nein"}">${b.korrekt ? "✓ Richtig!" : "✗ Leider nicht richtig"}</div>
     ${extra}
     ${f.antwort || f.erklaerung ? erlKopf("Lösung") : ""}
-    ${f.antwort ? `<div class="erkl muster">${esc(f.antwort)}</div>${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${esc(f.erklaerung)}</div>` : ""}` : `<div class="erkl">${esc(f.erklaerung)}</div>`}
+    ${f.antwort ? `<div class="erkl muster">${satz(f.antwort, kompaktInline)}</div>${f.erklaerung ? `<div class="erkl sub" style="margin-top:8px">${satz(f.erklaerung, kompaktInline)}</div>` : ""}` : `<div class="erkl">${satz(f.erklaerung, kompaktInline)}</div>`}
     ${normBlock(f.normen, [f.text, f.antwort, f.erklaerung, f.quelle, f.zusatzZitate].join(" "))}
     ${f.quelle ? `<div class="quelle">📖 ${esc(f.quelle)}</div>` : ""}
   </div></div>`;
@@ -2491,7 +2492,7 @@ function ergebnisView() {
           const ok = x.bewertungen[i]?.korrekt;
           const zeichen = ok === null ? "?" : ok ? ic("haken", "klein") : ic("kreuz", "klein"), hg = ok === null ? "var(--warn)" : ok ? "var(--ok)" : "var(--err)";
           return `<button class="zeile" data-a="review" data-v="${i}"><span style="width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;background:${hg};flex:none">${zeichen}</span>
-            <span class="grow"><div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px">${esc(f.text)}</div>
+            <span class="grow"><div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:15px">${esc(typografie(f.text))}</div>
             <div class="sub">${esc(THEMA[f.thema].titel)} · ${typBezeichnung(f)}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`;
         }).join("")}
       </div></div>
