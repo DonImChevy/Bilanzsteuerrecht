@@ -316,7 +316,7 @@ const bmg = [
     const s19 = posten.filter((p) => p[1] === 19).reduce((a, p) => a + p[2], 0), s7 = posten.filter((p) => p[1] === 7).reduce((a, p) => a + p[2], 0);
     const u19 = ustAus(s19, 19), u7 = ustAus(s7, 7), ges = s19 + s7;
     return {
-      text: `Eine Feinkosthändlerin stellt einem Kunden in ihrem Laden einen Präsentkorb zusammen, den er bezahlt und sofort mitnimmt (Gesamtpreis ${eur(ges)}):\n${posten.map(([w, , p]) => `• ${w} (${eur(p)})`).join("\n")}\n\nWie hoch ist die insgesamt entstehende Umsatzsteuer (in €)?`,
+      text: `Eine Feinkosthändlerin stellt in ihrem Laden einen Präsentkorb für einen Kunden zusammen. Er bezahlt ihn und nimmt ihn sofort mit. Inhalt (Gesamtpreis ${eur(ges)}):\n${posten.map(([w, , p]) => `• ${w} (${eur(p)})`).join("\n")}\n\nWie hoch ist die insgesamt entstehende Umsatzsteuer (in €)?`,
       cent: u19 + u7,
       erklaerung: `Kein einheitlicher Umsatz, sondern mehrere Lieferungen (Abschn. 3.1 UStAE); Ort im Laden (§ 3 Abs. 6 S. 1 UStG), steuerbar und steuerpflichtig. Steuersatz je Ware:\n• 19 % (§ 12 Abs. 1 UStG): ${posten.filter((p) => p[1] === 19).map((p) => p[0]).join(", ")} = ${eur(s19)} → USt ${eur(s19)} × 19/119 = ${eur(u19)}\n• 7 % (§ 12 Abs. 2 Nr. 1 UStG, Anlage 2): ${posten.filter((p) => p[1] === 7).map((p) => p[0]).join(", ")} = ${eur(s7)} → USt ${eur(s7)} × 7/107 = ${eur(u7)}\nSumme ${eur(u19 + u7)}; Entstehung mit Ablauf des VAZ der Lieferung (§ 13 Abs. 1 Nr. 1 a S. 1 UStG).`,
       normen: ["UStG 12 1", "UStG 12 2", "UStG 10 1"],
