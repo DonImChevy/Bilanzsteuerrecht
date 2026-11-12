@@ -51,3 +51,19 @@ Kein P0 (nichts verhindert eine Aufgabe).
 
 ## Plan
 Phase 2 (reparieren): 1, 2, 3, 4, 5–8, 12, 13. Phase 3 (verfeinern): 9–11, Typo/Abstände, Polish. Phase 4 (aufwerten): Bewegung, Momente, Leerzustände.
+
+## Ergebnis des Durchgangs
+
+| Befund | Status |
+|---|---|
+| 1 Kontrast `--text3` | behoben (alle Farbwelten hell/dunkel ≥ 4,5 : 1; Statusfarben als Text abgedunkelt) – Nachmessung: 0 Kontrastfehler außerhalb des Lernpfads |
+| 2, 3 Tippflächen | behoben (unsichtbare 44-px-Trefferflächen, Segmente und Schaubild-Knöpfe 44 px hoch) |
+| 4 Tastaturfokus | behoben (einheitlicher Ring in der Modulfarbe) |
+| 5–8 Texte | behoben („1 Aufgabe“, „0 Taler“, „Diesmal nicht.“, kürzerer Platzhalter + aria-label) |
+| 9–11 Layout | behoben (Deckblatt gestapelt, „Wie sicher“ als Dreierreihe, Gruppentitel) |
+| 12 lange Wörter | Silbentrennung (`hyphens: auto`, auf iPhone/iPad mit Trennstrich) |
+| 13 Sparmodus | behoben |
+| 14 Erstbesuch | offen (Architekturentscheidung) |
+| 15 Lernpfad-Sterne | bewusst unverändert (eigene Lernpfad-Welt) |
+
+Phase 4: Nach dem Prüfen wird die richtige Antwort einmal „abgestempelt“, eine falsch gewählte zuckt kurz – nur beim ersten Zeichnen, nie in der Klausur, abschaltbar. Taler-Momente und Leerzustände waren bereits vorhanden und wurden nicht erweitert.

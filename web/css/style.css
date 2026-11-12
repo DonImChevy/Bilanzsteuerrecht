@@ -2945,3 +2945,14 @@ h1, h2, h3, .tk-text b, .kachel b, .ks-deckblatt h2 { text-wrap: balance; }
   .tk-text b { font-size: 16px; }
   .tk-lesen { padding-inline: 10px; }
 }
+
+/* ---------- Feinschliff Phase 4: Bewegung mit Zweck ---------- */
+/* Nach dem Prüfen (nur beim ersten Zeichnen, nie in der Klausur): die richtige Antwort wird „abgestempelt“,
+   eine falsch gewählte zuckt einmal kurz. Animationsschalter „aus“ schaltet beides ab (globale Regel oben). */
+.frisch-geprueft .option.richtig .kreis { animation: kreisStempel 0.42s cubic-bezier(0.2, 1.5, 0.4, 1) both; }
+.frisch-geprueft .option.richtig { animation: optJa 0.5s ease-out both; }
+.frisch-geprueft .option.falsch { animation: optNein 0.38s ease-out both; }
+@keyframes kreisStempel { from { transform: scale(0.35); opacity: 0.2; } }
+@keyframes optJa { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ok) 45%, transparent); } 40% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--ok) 18%, transparent); } }
+@keyframes optNein { 20% { transform: translateX(-5px); } 45% { transform: translateX(4px); } 70% { transform: translateX(-2px); } }
+:root[data-leistung="spar"] .frisch-geprueft .option.richtig { animation: none; }

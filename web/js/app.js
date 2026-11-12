@@ -2120,7 +2120,7 @@ function sitzungView() {
     ? `<button class="rund" data-a="raster" aria-label="Aufgabenübersicht">${ic("karten")}</button>`
     : `<span class="zaehler">${x.index + 1}/${n}</span>`;
 
-  let fuss, fussKlasse = "", feedback = "";
+  let fuss, fussKlasse = "", feedback = "", frisch = false;
   if (x.modus === "klausur") {
     fuss = `<button class="knopf zweit" data-a="zurueck" ${x.index === 0 ? "disabled" : ""}>${ic("zurueck")} Zurück</button>` +
       (x.index === n - 1 ? `<button class="knopf" data-a="abgeben">${ic("haken")} Abgeben</button>` : `<button class="knopf" data-a="weiter">Weiter ${ic("pfeil")}</button>`);
@@ -2138,7 +2138,7 @@ function sitzungView() {
     const satz = (ok ? LOB : TROST)[(x.index + n) % (ok ? LOB.length : TROST.length)];
     // Die Show läuft nur beim ersten Zeichnen der Rückmeldung zu dieser Aufgabe
     const showKey = `${x.start}-${x.index}`, neu = state.talerShow !== showKey;
-    state.talerShow = showKey;
+    state.talerShow = showKey; frisch = neu;
     const xpInfo = b.plus ? `<span class="xp-chips"><span class="xp-chip${neu ? " neu" : ""}">+${b.plus} XP</span>${b.tagBonus ? `<span class="xp-chip">+${b.tagBonus} Tagesbonus</span>` : ""}${ok && b.serie >= XP.serieAb ? `<span class="xp-chip serie">${ic("flamme", "klein")}${b.serie} in Folge</span>` : ""}</span>` : "";
     feedback = `<div class="feedback">${talerBuehne(ok, { ruhig: !neu })}<span>${satz}${xpInfo}<small>${ok ? (() => { const l = stat.lern[f.id]; return l ? `Kommt ${inTagen(l.faellig)} wieder${l.falsch ? " – erst dann gilt der Fehler als behoben" : ""}.` : "Kommt in der Lernkartei ein Fach weiter."; })() : "Die Lösung steht oben – morgen kommt die Aufgabe wieder."}</small></span></div>`;
     fuss = `<button class="knopf ${ok ? "gruen" : "rot"}" data-a="weiter">${x.index === n - 1 ? "Auswertung" : "Weiter"} ${ic("pfeil")}</button>`;
@@ -2146,7 +2146,7 @@ function sitzungView() {
 
   return `<div class="vollbild">
     <div class="vb-kopf"><button class="rund" data-a="beenden" aria-label="Beenden">${ic("kreuz")}</button>${mitte}${bewegungSchalter(true)}${rechts}</div>
-    <div class="vb-inhalt">
+    <div class="vb-inhalt${frisch ? " frisch-geprueft" : ""}">
       <div class="nr">Aufgabe ${x.index + 1} von ${n} · ${esc(sitzungTitel(x))}</div>
       ${frageView(f, aktAntwort(), b, false, x.modus !== "klausur" && x.aufgedeckt[x.index])}
     </div>
