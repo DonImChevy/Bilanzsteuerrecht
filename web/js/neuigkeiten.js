@@ -5,6 +5,32 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-teilpunkte",
+    datum: "2026-11-12",
+    titel: "Teilpunkte im Selbstkontrollbogen",
+    punkte: [
+      ["haken", "Gerecht bewerten", "Wo die Klausur z. B. zwei von drei Merkmalen verlangt oder eine Prüfung aus mehreren Schritten besteht, tippst du jetzt einzeln an, was in deiner Lösung steht – der Ring zeigt die Teilpunkte, mehr als die volle Punktzahl gibt es nie.", "tab", "klausur"],
+    ],
+  },
+  {
+    id: "2026-11-modulleiste",
+    datum: "2026-11-12",
+    titel: "Modul-Leiste besser sichtbar",
+    klein: true,
+    punkte: [
+      ["start", "Übersicht, Klausur, Karten, Normen", "Auf dem iPad steht die Leiste jetzt oben mittig, auf dem Handy unten in der Modulfarbe mit größerer Schrift."],
+    ],
+  },
+  {
+    id: "2026-11-bewertungsrecht",
+    datum: "2026-11-12",
+    titel: "Neues Modul: Bewertungsrecht",
+    punkte: [
+      ["haus", "Bewertungsrecht (GS I)", "14 Themen von der Schenkung über Steuerklassen, Familienheim, § 13d und Betriebsvermögen bis zum Ertragswertverfahren – mit Lernpfad, Kompaktwissen, Rechenaufgaben und ErbStG/BewG zum Nachschlagen.", "modul", "bewr"],
+      ["klausur", "Probeklausur 120 Minuten", "Ein Erbfall mit drei Erwerbern im Aufbau der Hauptklausur – mit Musterlösung, Selbstkontrollbogen und Stichworten."],
+    ],
+  },
+  {
     id: "2026-11-stichworte",
     datum: "2026-11-12",
     titel: "Stichworte im Selbstkontrollbogen",
@@ -19,7 +45,7 @@ export const NEUIGKEITEN = [
     titel: "Probeklausuren in Teilen",
     punkte: [
       ["ziel", "Einzelne Teile üben", "Auf dem Deckblatt wählst du alle Aufgaben oder nur einzelne (z. B. nur Teil II) – Zeit, Punkte und Note passen sich an, die Zahlen bleiben dieselben.", "tab", "klausur"],
-      ["haken", "Erwartungshorizont überall", "Auch die gemischten Bilanzrecht-Klausuren zeigen jetzt zu jedem Bewertungspunkt, was genau erwartet wird – mit Beträgen und Normen."],
+      ["haken", "Erwartungshorizont überall", "Auch die Bilanzrecht-Klausuren zeigen jetzt zu jedem Bewertungspunkt, was genau erwartet wird – mit Beträgen und Normen."],
     ],
   },
   {

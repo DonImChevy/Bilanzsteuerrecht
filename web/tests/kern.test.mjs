@@ -234,8 +234,8 @@ test("Lernserie, Wochenverlauf und Module", async () => {
   assert.equal(w.length, 7);
   assert.deepEqual([w[0].n, w[6].n, w[6].heute, w[6].kurz], [2, 7, true, "Di"]);
   // Module: aktive haben Themen und Aufgaben, kommende nicht; Icons existieren
-  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer", "est", "ust", "bbf", "ao", "pr"]);
-  assert.deepEqual(aktiveModule("studium").map((m) => m.id), ["bsr", "oer", "est", "ust", "ao", "pr"]);
+  assert.deepEqual(aktiveModule().map((m) => m.id), ["bsr", "oer", "est", "ust", "bbf", "ao", "bewr", "pr"]);
+  assert.deepEqual(aktiveModule("studium").map((m) => m.id), ["bsr", "oer", "est", "ust", "ao", "bewr", "pr"]);
   assert.deepEqual(aktiveModule("ausbildung").map((m) => m.id), ["bbf"]);
   assert.ok(MODULE.length === 8 && !MODUL.asv && MODUL.ust.kurz === "USt" && MODUL.bsr.kurz === "BilR" && MODUL.bbf.kurz === "BilBf" && MODUL.pr.kurz === "PrivR");
   for (const m of MODULE) {
@@ -453,9 +453,9 @@ test("Paare finden: Normen und Kurzerklärungen eindeutig", async () => {
 
 test("Lernpfade aller Module: jeder Block in sich vollständig", async () => {
   const { PFADE } = await import("../js/lernpfad.js");
-  for (const fach of ["ust", "est", "oer", "bsr1", "bsr2", "bbf", "ao", "pr"]) assert.ok(PFADE[fach]?.bloecke.length >= 8, "Lernpfad fehlt: " + fach);
+  for (const fach of ["ust", "est", "oer", "bsr1", "bsr2", "bbf", "ao", "pr", "bewr"]) assert.ok(PFADE[fach]?.bloecke.length >= 8, "Lernpfad fehlt: " + fach);
   const ids = new Set();
-  for (const b of ["ust", "est", "oer", "bsr1", "bsr2", "bbf", "ao", "pr"].flatMap((f) => PFADE[f].bloecke)) {
+  for (const b of ["ust", "est", "oer", "bsr1", "bsr2", "bbf", "ao", "pr", "bewr"].flatMap((f) => PFADE[f].bloecke)) {
     assert.ok(!ids.has(b.id), "doppelt: " + b.id); ids.add(b.id);
     assert.ok(b.karten.length >= 3 && b.fragen.length >= 3, b.id + ": zu wenig Karten oder Fragen");
     for (const r of b.normen) assert.ok(norm(r), `${b.id}: Norm ${r} fehlt`);
@@ -495,7 +495,7 @@ test("Kompaktwissen: jedes Thema hat eine vollständige Zusammenfassung", async 
     assert.ok(lesezeit(k) >= 1);
   }
   for (const id of Object.keys(KOMPAKT)) assert.ok(THEMA[id], `Zusammenfassung ohne Thema: ${id}`);
-  for (const fach of ["bsr", "oer", "est", "ust", "ao", "pr"]) for (const id of KLAUSURPLAN[fach].top) assert.equal(THEMA[id].fach, fach);
+  for (const fach of ["bsr", "oer", "est", "ust", "ao", "pr", "bewr"]) for (const id of KLAUSURPLAN[fach].top) assert.equal(THEMA[id].fach, fach);
   // Normzitate werden antippbar und zeigen auf vorhandene Vorschriften
   const html = kompaktInline("nach § 4 Nr. 12 a UStG und Art. 20 Abs. 3 GG");
   assert.match(html, /data-a="normDetail" data-v="UStG 4[^"]*"/);
@@ -627,7 +627,7 @@ test("Keine doppelten Fragen: Übung je Thema, gemischt und Klausur in allen Mod
   const ohneDoppelte = (name, fr) => { const t = schl(fr); assert.equal(new Set(t).size, t.length, `${name}: doppelte Frage`); };
   for (let s = 0; s < 12; s++) {
     for (const t of THEMEN) { ohneDoppelte(t.id, fragen([t.id], 10, new Zufall(s))); ohneDoppelte(t.id + " MC", fragen([t.id], 10, new Zufall(s), null, true)); }
-    for (const fach of ["bsr", "oer", "est", "ust", "ao", "pr"]) {
+    for (const fach of ["bsr", "oer", "est", "ust", "ao", "pr", "bewr"]) {
       const alle = THEMEN.filter((t) => t.fach === fach).map((t) => t.id);
       for (const f of [null, "qa", "rechnen", "fall", "buchung"]) ohneDoppelte(`${fach} ${f}`, fragen(alle, 20, new Zufall(s), f));
       for (const n of [20, 60]) { const k = klausur(n, new Zufall(s), fach); ohneDoppelte(`Klausur ${fach}`, k); assert.equal(k.length, n, `Klausur ${fach} ${n} vollständig`); }
@@ -806,7 +806,7 @@ test("Duell: gleicher Startwert → gleiche Aufgaben, auch nach anderen Übungen
     const r = new K.Zufall(seed);
     return KA.fragen(K.pruefungsThemen(fach).map((t) => t.id), 16, r, null, true, KA.neueZiehung(fach)).map((f) => alsMultipleChoice(f, r)).filter((f) => f.typ !== "offen").slice(0, 10).map((f) => f.text);
   });
-  for (const fach of ["bsr", "oer", "est", "ust", "bbf", "ao", "pr"]) {
+  for (const fach of ["bsr", "oer", "est", "ust", "bbf", "ao", "pr", "bewr"]) {
     const a = satz(fach, 12345);
     // dazwischen „normal“ üben (verändert die Fallstapel)
     KA.fragen(K.pruefungsThemen(fach).map((t) => t.id), 30, new K.Zufall(), null, false, KA.neueZiehung(fach));
@@ -1021,7 +1021,7 @@ test("Klausursimulation: Sachverhalte rechnen für jeden Startwert sauber, Noten
 test("Probeklausuren: vollständig, Zeit und Punkte stimmen, jeder Merkmal-Punkt mit Erwartung", async () => {
   const { SIM, neueSim, inhalt, hoechstpunkte, zahlStimmt } = await import("../js/klausursim.js");
   for (const [fach, d] of Object.entries(SIM)) {
-    if (d.nurFest) assert.ok((d.klausuren || []).length >= 3, `${fach}: mindestens drei Probeklausuren`);
+    if (d.nurFest) assert.ok((d.klausuren || []).length >= (d.mindestKlausuren ?? 3), `${fach}: zu wenige Probeklausuren`);
     const benutzt = new Set();
     for (const x of d.klausuren || []) {
       const k = neueSim(fach, "k:" + x.id, 1);
@@ -1267,4 +1267,54 @@ test("Textsatz: Typografie, Listen, Nummerierung, Rechenweg – für alle Aufgab
       assert.ok(bz(out.replace(/<[^>]+>/g, "")) >= bz(f[k]) - 6, `${v.id}/${k}: Text verloren`);
     }
   }
+});
+
+test("Bewertungsrecht: Vervielfältiger (Anlage 21), Ertragswert, Härteausgleich, Verschonung", async () => {
+  const R = await import("../js/bewr/rechnen.js");
+  // Stichproben aus Anlage 21 BewG (Stand 2026): [Jahre, Zinssatz, Tabellenwert]
+  for (const [n, z, w] of [[1, 1, 0.9901], [23, 4.5, 14.1478], [24, 4.5, 14.4955], [26, 3.5, 16.8904], [30, 5.5, 14.5337], [50, 3.5, 23.4556], [100, 10, 9.9993], [60, 5, 18.9293]])
+    assert.equal(R.vervielfaeltiger(n, z), w, `Anlage 21: ${n} Jahre, ${z} %`);
+  // Lösungsvorschlag Hauptklausur 2025 (Stichtag 2024): Bewirtschaftungskosten, Steuer mit Härteausgleich, Verschonung
+  const e = R.ertragswert({ flaeche: 270, brw: 800, mieteWohnJahr: 68400, mieteGewerbeJahr: 25200, wohnungen: 6, wohnQm: 600, gewerbeQm: 200, baujahr: 1967, jahr: 2024, gnd: 80, liz: R.liegenschaftszins(600, 200), vpi: [117.8, 77.1] });
+  assert.deepEqual([e.ix.verwaltungJeWohnung, e.ix.instandJeQm, e.bwk, e.reinertrag, e.verzinsung, e.gebaeudereinertrag, e.rndRegel, e.rndMin], [351, 13.8, 16278, 77322, 9720, 67602, 23, 24]);
+  assert.equal(R.liegenschaftszins(600, 200), 4.5); assert.equal(R.liegenschaftszins(300, 450), 5); assert.equal(R.liegenschaftszins(400, 400), 4.5);
+  assert.equal(R.grundstuecksart(480, 120), "gemischt"); assert.equal(R.grundstuecksart(481, 119), "mietwohn"); assert.equal(R.grundstuecksart(100, 900), "geschaeft");
+  // Abbruchverpflichtung begrenzt die Restnutzungsdauer auch unter die 30-%-Mindestdauer (§ 185 Abs. 3 S. 7 BewG)
+  assert.equal(R.ertragswert({ ...{ flaeche: 270, brw: 800, mieteWohnJahr: 68400, mieteGewerbeJahr: 25200, wohnungen: 6, wohnQm: 600, gewerbeQm: 200, baujahr: 1967, jahr: 2024, gnd: 80, liz: 4.5, vpi: [117.8, 77.1] }, abbruchGnd: 57 + 10 }).rnd, 10);
+  assert.equal(R.erbst(75800, 1).steuer, 5650); assert.equal(R.erbst(1301300, 2).steuer, 390390); assert.equal(R.erbst(301000, 1).steuer, 33500);
+  assert.equal(R.erbst(75000, 3).steuer, 22500); assert.equal(R.erbst(6000100, 3).steuer, 1800075);
+  const v = R.verschonung(2100000, 450000);
+  assert.deepEqual([v.unschaedlich, v.schaedlich, v.beguenstigt, v.abschlag, v.abzug, v.steuerpflichtig], [165000, 285000, 1815000, 1542750, 88875, 468375]);
+  assert.equal(R.verschonung(1000000, 950000).steuerpflichtig, 1000000, "≥ 90 % Verwaltungsvermögen: nichts begünstigt");
+  assert.equal(R.verschonung(1800000, 216000, { option: true }).steuerpflichtig, 57600);
+  assert.equal(R.verschonung(1800000, 400000, { option: true }).option, false, "Option scheitert über 20 %");
+  assert.equal(R.abrunden100(437880), 437800);
+});
+
+test("Selbstkontrollbogen: Teilpunkte – Bausteine passen, volle Punktzahl erreichbar, Summe begrenzt", async () => {
+  const { SIM, inhalt, merkmalPunkte, punkte, neueSim } = await import("../js/klausursim.js");
+  const { TEILPUNKTE } = await import("../js/klausur_teilpunkte.js");
+  for (const [id, m] of Object.entries(TEILPUNKTE)) {
+    const fach = Object.keys(SIM).find((f) => SIM[f].pool.some((s) => s.id === id));
+    assert.ok(fach, "Teilpunkte für unbekannten Sachverhalt " + id);
+    const s = inhalt(fach, id, 1, 0);
+    for (const [j, tp] of Object.entries(m)) {
+      const b = s.bewertung[j];
+      assert.ok(b, `${id}: Merkmal ${j} fehlt`);
+      assert.ok(tp.length >= 2, `${id} ${j}: mindestens zwei Bausteine`);
+      for (const [text, w] of tp) assert.ok(text.length > 3 && w > 0 && w <= b[0] && Number.isInteger(w * 2), `${id} ${j}: Baustein „${text}“`);
+      assert.ok(tp.reduce((a, [, w]) => a + w, 0) >= b[0], `${id} ${j}: volle Punktzahl nicht erreichbar`);
+      assert.deepEqual(b[4], tp);
+      const alle = { tp: { [id]: { [j]: tp.map((_, i) => i) } } };
+      assert.equal(merkmalPunkte(alle, id, j, b), b[0], `${id} ${j}: alle Bausteine = volle Punkte`);
+      assert.equal(merkmalPunkte({ tp: { [id]: { [j]: [0] } } }, id, j, b), Math.min(b[0], tp[0][1]));
+    }
+  }
+  // Ganze Klausur: alles angetippt bzw. abgehakt ergibt die Höchstpunktzahl
+  const k = neueSim("pr", "k:pr-a", 1);
+  k.haken = {}; k.tp = {};
+  k.teile.forEach((id, i) => inhalt("pr", id, k.seed, i).bewertung.forEach((b, j) => {
+    if (b[4]) ((k.tp[id] ||= {})[j] = b[4].map((_, x) => x)); else ((k.haken[id] ||= {})[j] = true);
+  }));
+  assert.equal(punkte("pr", k), 70);
 });

@@ -10,16 +10,18 @@ import { KOMPAKT_AO, KLAUSUR_AO } from "./ao/kompakt.js";
 import { KOMPAKT_PR, KLAUSUR_PR } from "./pr/kompakt.js";
 import { BEISPIELE_AO } from "./ao/beispiele.js";
 import { BEISPIELE_PR } from "./pr/beispiele.js";
+import { KOMPAKT_BEWR, KLAUSUR_BEWR } from "./bewr/kompakt.js";
+import { BEISPIELE_BEWR } from "./bewr/beispiele.js";
 import { BEISPIELE_BSR } from "./bilr/beispiele.js";
 import { BEISPIELE_EST } from "./est/beispiele.js";
 import { BEISPIELE_OER } from "./oer/beispiele.js";
 import { normenAusText, norm } from "./oer/normtext.js";
 
-const BEISPIELE = { ...BEISPIELE_BSR, ...BEISPIELE_OER, ...BEISPIELE_EST, ...BEISPIELE_UST, ...BEISPIELE_BBF, ...BEISPIELE_AO, ...BEISPIELE_PR };
+const BEISPIELE = { ...BEISPIELE_BSR, ...BEISPIELE_OER, ...BEISPIELE_EST, ...BEISPIELE_UST, ...BEISPIELE_BBF, ...BEISPIELE_AO, ...BEISPIELE_PR, ...BEISPIELE_BEWR };
 /** Zusammenfassung je Thema, ergänzt um die Klausurbeispiele (Sachverhalt + Musterlösung). */
-export const KOMPAKT = Object.fromEntries(Object.entries({ ...KOMPAKT_BSR, ...KOMPAKT_OER, ...KOMPAKT_EST, ...KOMPAKT_UST, ...KOMPAKT_BBF, ...KOMPAKT_AO, ...KOMPAKT_PR })
+export const KOMPAKT = Object.fromEntries(Object.entries({ ...KOMPAKT_BSR, ...KOMPAKT_OER, ...KOMPAKT_EST, ...KOMPAKT_UST, ...KOMPAKT_BBF, ...KOMPAKT_AO, ...KOMPAKT_PR, ...KOMPAKT_BEWR })
   .map(([id, k]) => [id, { ...k, beispiele: BEISPIELE[id] || [] }]));
-export const KLAUSURPLAN = { bsr: KLAUSUR_BSR, bbf: KLAUSUR_BBF, oer: KLAUSUR_OER, est: KLAUSUR_EST, ust: KLAUSUR_UST, ao: KLAUSUR_AO, pr: KLAUSUR_PR };
+export const KLAUSURPLAN = { bsr: KLAUSUR_BSR, bbf: KLAUSUR_BBF, oer: KLAUSUR_OER, est: KLAUSUR_EST, ust: KLAUSUR_UST, ao: KLAUSUR_AO, pr: KLAUSUR_PR, bewr: KLAUSUR_BEWR };
 
 /** Alle Texte einer Zusammenfassung (für Suche und Lesezeit). */
 export function kompaktText(k) {
@@ -36,7 +38,7 @@ import { typografie } from "./satz.js";
 
 const dauerText = (min) => min < 90 ? `${min} Min.` : `${String(Math.round(min / 6) / 10).replace(".", ",")} Std.`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const ZITAT = /(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|EStDV|LStDV|VwZG|GOBT|GmbHG)\b|\bR \d+[a-z]?(?: Abs\. \d+)? EStR\b/g;
+const ZITAT = /(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|EStDV|LStDV|VwZG|GOBT|GmbHG|ErbStG|BewG)\b|\bR \d+[a-z]?(?: Abs\. \d+)? EStR\b/g;
 
 /** Fließtext: **fett** wird zum Textmarker, Normzitate werden antippbar (öffnen den Gesetzestext). */
 export function kompaktInline(text) {

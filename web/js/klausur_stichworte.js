@@ -643,4 +643,52 @@ export const STICHWORTE = {
     "Entnahme eines Gegenstands, der zum Vorsteuerabzug berechtigt hat = einer Lieferung gleichgestellt · Bemessungsgrundlage Einkaufspreis im Zeitpunkt der Entnahme",
     "Ertrag (unentgeltliche Wertabgabe) in Höhe des Teilwerts · Privatentnahme brutto · Gewinnerhöhung",
   ],
+
+  // ================================================================== Bewertungsrecht und Vermögensbesteuerung
+  "bewr-k1": [
+    "Erwerb durch Erbanfall (Gesamtrechtsnachfolge) beim Alleinerben · Erwerb durch Vermächtnis bei T und N · Erwerbe von Todes wegen",
+    "Steuer entsteht mit dem Tod der Erblasserin · Zeitpunkt der Entstehung = Bewertungsstichtag",
+    "Erblasserin war Inländerin (Wohnsitz im Inland) → unbeschränkte Steuerpflicht für den gesamten Vermögensanfall aller Erwerber · T lebt länger als fünf Jahre im Ausland, ist selbst keine Inländerin – unerheblich, da einer der Beteiligten genügt",
+    "Ehegatte = Steuerklasse I · persönlicher Freibetrag 500.000 € · besonderer Versorgungsfreibetrag 256.000 € nur beim Erwerb von Todes wegen",
+    "Kind = Steuerklasse I · Freibetrag 400.000 € · Versorgungsfreibetrag für Kinder nur bis zur Vollendung des 27. Lebensjahres",
+    "Abkömmling ersten Grades eines Geschwisters (Neffe) = Steuerklasse II · Freibetrag 20.000 €",
+    "Steuerschuldner ist der Erwerber · beim Erwerb von Todes wegen jeder Erwerber für seinen Erwerb",
+  ],
+  "bewr-k2": [
+    "Grundbesitz mit dem gesondert festgestellten Wert · Verhältnisse und Wertverhältnisse am Bewertungsstichtag · Bewertung nach §§ 176 ff. BewG mit dem gemeinen Wert",
+    "Mietwohngrundstück erst bei mehr als 80 % Wohnzwecken · genau 80 % genügt nicht · teils Wohnen, teils betrieblich → gemischt genutztes Grundstück",
+    "gemischt genutzt mit ermittelbarer üblicher Miete → Ertragswertverfahren",
+    "Bodenwert = Fläche × Bodenrichtwert · maßgebend der Richtwert, der zuletzt vor dem Stichtag zu ermitteln war (01.01.2026), Zeitpunkt des Beschlusses unerheblich",
+    "Rohertrag = vertraglich vereinbarte Jahresmiete (Kaltmiete) für zwölf Monate · Umlagen für Betriebskosten nicht anzusetzen",
+    "Bewirtschaftungskosten nach Anlage 23 · Verwaltung und Instandhaltung Wohnen mit Verbraucherpreisindex angepasst (Verwaltung volle Euro, Instandhaltung eine Nachkommastelle) · Laden: Verwaltung 3 %, Mietausfall 4 % · Wohnen: Mietausfall 2 %",
+    "kein Liegenschaftszins des Gutachterausschusses → gesetzlicher Zinssatz · gemischt genutzt mit gewerblichem Anteil bis 50 % = 4,5 % · Reinertrag minus Bodenwertverzinsung = Gebäudereinertrag",
+    "Restnutzungsdauer = Gesamtnutzungsdauer (80 Jahre) − Alter (Bewertungsjahr − Jahr der Bezugsfertigkeit) · mindestens 30 % der Gesamtnutzungsdauer",
+    "Vervielfältiger nach Liegenschaftszins und Restnutzungsdauer aus Anlage 21 · Gebäudereinertrag × Vervielfältiger",
+    "Ertragswert = Bodenwert + Gebäudeertragswert · mindestens Bodenwert",
+  ],
+  "bewr-k3": [
+    "bebautes Grundstück im Inland, zu Wohnzwecken vermietet, kein begünstigtes Betriebsvermögen → Ansatz mit 90 % · gewerblich vermieteter Laden nicht begünstigt",
+    "Aufteilung des Grundbesitzwerts im Verhältnis der Wohnfläche zur gesamten Wohn- und Nutzfläche",
+    "übernommenes Darlehen mindert die Bereicherung · nicht abzugsfähig, soweit das Grundstück steuerbefreit ist · Kürzung im Verhältnis Ansatz zu Grundbesitzwert",
+  ],
+  "bewr-k4": [
+    "Anteile an Kapitalgesellschaften mit dem auf den Stichtag festgestellten Wert",
+    "Anteil an Kapitalgesellschaft mit Sitz oder Geschäftsleitung im Inland · Erblasserin unmittelbar zu mehr als 25 % beteiligt (Mindestbeteiligung) → begünstigungsfähig",
+    "Verwaltungsvermögen unter 90 % · unschädlich bis 10 % des um das Nettoverwaltungsvermögen gekürzten Werts · begünstigt = gemeiner Wert − schädliches Verwaltungsvermögen",
+    "unwiderruflicher Antrag · Verwaltungsvermögen nicht mehr als 20 % → Verschonungsabschlag 100 % · schädliches Verwaltungsvermögen bleibt steuerpflichtig",
+    "Münzen und Edelmetalle von der Hausratsbefreiung ausgenommen · Hausrat in Steuerklasse II bis 12.000 € steuerfrei",
+  ],
+  "bewr-k5": [
+    "Erwerb von Todes wegen durch den überlebenden Ehegatten · Erblasserin hat bis zum Erbfall selbst darin gewohnt · unverzüglich zur Selbstnutzung bestimmt · Familienheim ohne Flächengrenze · zehn Jahre Selbstnutzung",
+    "Hausrat in Steuerklasse I bis 41.000 € steuerfrei · nur der übersteigende Betrag ist steuerpflichtig",
+    "börsennotierte Aktien mit dem niedrigsten Kurs am Stichtag im regulierten Markt · Bankguthaben mit dem Nennwert",
+    "für Bestattung, Grabdenkmal und Abwicklung ohne Nachweis insgesamt 15.000 € · höherer Betrag als der Nachweis",
+    "Vermögensanfall nach Steuerwerten abzüglich Befreiungen und Nachlassverbindlichkeiten = Bereicherung",
+  ],
+  "bewr-k6": [
+    "Bereicherung minus Freibeträge · abgerundet auf volle 100 € · Steuersatz nach Steuerklasse und Wertstufe für den ganzen Erwerb",
+    "übernommenes Darlehen nur anteilig abgezogen · Bereicherung minus Freibetrag 400.000 € · Abrundung auf volle 100 €",
+    "Wertgrenze 600.000 € knapp überschritten · Steuer an der Grenze mit 15 % plus die Hälfte des übersteigenden Betrags (Steuersatz bis 30 %) · niedrigerer Betrag wird festgesetzt",
+    "Steuerklasse II · Wertstufe bis 75.000 € → 15 % · kein Härteausgleich in der ersten Stufe",
+  ],
 };

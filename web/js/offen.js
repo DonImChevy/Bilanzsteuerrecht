@@ -13,7 +13,7 @@ export const normalisiere = (t) => String(t || "").toLowerCase()
 
 const NR = String.raw`\d+(?:\s?[a-z](?![a-zäöüß]))?`;
 const ZITAT = new RegExp(String.raw`(?:§§?|\bart(?:ikel|\.)?|\bparagra(?:ph|f)(?:en)?)\s*(${NR}(?:\s*(?:,|und|u\.|bis|–|-|\/)\s*${NR})*)`, "gi");
-const MIT_GESETZ = new RegExp(String.raw`(${NR})\s*(?:abs\.?\s*\d+\s*)?(?:s(?:atz|\.)?\s*\d+\s*)?(?:nr\.?\s*\d+\s*[a-z]?\s*)?(?:gg|estg|ao|bwahlg|partg|hgb|ustg|estdv|kstg|bgb|gmbhg)\b`, "gi");
+const MIT_GESETZ = new RegExp(String.raw`(${NR})\s*(?:abs\.?\s*\d+\s*)?(?:s(?:atz|\.)?\s*\d+\s*)?(?:nr\.?\s*\d+\s*[a-z]?\s*)?(?:gg|estg|ao|bwahlg|partg|hgb|ustg|estdv|kstg|bgb|gmbhg|erbstg|bewg)\b`, "gi");
 const nrNorm = (n) => n.toLowerCase().replace(/\s+/g, "");
 
 /** Alle in einem Text zitierten Paragrafen-/Artikelnummern (ohne Gesetz), z. B. {"26", "20a"}. */

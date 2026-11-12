@@ -10,6 +10,7 @@ import { BBF_AUFGABEN } from "./bilr/bbf.js";
 import { UST_AUFGABEN } from "./ust/aufgaben.js";
 import { AO_AUFGABEN } from "./ao/aufgaben.js";
 import { PR_AUFGABEN } from "./pr/aufgaben.js";
+import { BEWR_AUFGABEN } from "./bewr/aufgaben.js";
 import { LERNKARTEN as BSR_KARTEN } from "./lernkarten.js";
 import { THEMA, pruefungsThemen, imTeil, Zufall, NICHT_IN, themaIn } from "./kern.js";
 import { normenAusText } from "./oer/normtext.js";
@@ -32,7 +33,7 @@ const mitNormen = (v) => {
   } };
 };
 
-export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...BSR_TEIL1_ZUSATZ, ...EST_AUFGABEN, ...BSR_TEIL2, ...UST_AUFGABEN, ...BBF_AUFGABEN, ...AO_AUFGABEN, ...PR_AUFGABEN].map(mitNormen);
+export const ALLE = [...VORLAGEN, ...FESTE, ...OER_FRAGEN, ...OER_UEBERTRAGUNG, ...BSR_TEIL1_ZUSATZ, ...EST_AUFGABEN, ...BSR_TEIL2, ...UST_AUFGABEN, ...BBF_AUFGABEN, ...AO_AUFGABEN, ...PR_AUFGABEN, ...BEWR_AUFGABEN].map(mitNormen);
 
 export const vorlagenFuer = (thema) => ALLE.filter((v) => v.thema === thema);
 export const fachVon = (vorlage) => THEMA[vorlage.thema].fach;
@@ -169,6 +170,13 @@ export function klausur(anzahl, r, fach = "bsr", ohneFaelle = false, teil = "bei
     // AO-Klausur: Fallfragen und Wissensfragen, dazu Fristen und Zuschläge berechnen (ca. 25 %) und Einordnungsfälle (ca. 30 %)
     const re = fragen(alle, Math.round(anzahl * 0.25), r, "rechnen", false, z);
     const fa = fragen(alle, Math.round(anzahl * 0.3), r, "fall", false, z);
+    const qa = fragen(alle, anzahl - re.length - fa.length, r, "qa", ohneFaelle, z);
+    return r.mischen([...re, ...fa, ...qa]);
+  }
+  if (fach === "bewr") {
+    // Klausur Bewertungsrecht: Gesamtfall mit Berechnungen (ca. 40 %), Einordnung (ca. 25 %), Rest Frage-Antwort
+    const re = fragen(alle, Math.round(anzahl * 0.4), r, "rechnen", false, z);
+    const fa = fragen(alle, Math.round(anzahl * 0.25), r, "fall", false, z);
     const qa = fragen(alle, anzahl - re.length - fa.length, r, "qa", ohneFaelle, z);
     return r.mischen([...re, ...fa, ...qa]);
   }

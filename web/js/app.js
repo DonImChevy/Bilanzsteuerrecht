@@ -313,7 +313,7 @@ const summeFach = (fach) => themenFuer(fach).map((t) => zaehler(t.id)).reduce((a
 
 // ======================= Zustand =======================
 const state = {
-  fach: ["oer", "est", "ust", "bbf", "ao", "pr"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
+  fach: ["oer", "est", "ust", "bbf", "ao", "pr", "bewr"].includes(lies("bsr.fach", "bsr")) ? lies("bsr.fach", "bsr") : "bsr",
   // Studium (Grundstudium I) oder Ausbildung (FTA I); leer = noch nicht gewählt (Willkommen fragt danach). Alte Nutzer: Studium
   rolle: ["studium", "ausbildung"].includes(lies("bsr.rolle", "")) ? lies("bsr.rolle", "") : (lies("bsr.willkommen", "") ? "studium" : ""),
   // "mc" = Multiple Choice (Standard), "qa" = selbst formulieren. Eigener Schlüssel „oerModus2“: Der frühere Standard „qa“
@@ -411,7 +411,7 @@ function gesetzFarbeSetzen(id, wert) {
 }
 function gesetzFarbenView() {
   const w = gesetzFarbenWahl();
-  const beispiel = { hgb: "§ 238", estg: "§ 4", ao: "§ 141", ustg: "§ 15", gg: "Art. 20", bgb: "§ 449", gobt: "§ 10", vo: "§ 9a" };
+  const beispiel = { hgb: "§ 238", estg: "§ 4", ao: "§ 141", ustg: "§ 15", gg: "Art. 20", bgb: "§ 449", gobt: "§ 10", erbstg: "§ 13d", bewg: "§ 179", vo: "§ 9a" };
   return `<div class="gf-intro sub">Jedes Gesetz hat im Spiel „Paare finden“ seinen eigenen Buchrücken. Wähle eine Farbe oder mische dir eine eigene.</div>
     ${GESETZBUECHER.map((g) => {
       const c = farbeVon(g.id, w), eigen = w[g.id] && w[g.id].startsWith("#"), aktiv = w[g.id] || g.standard;
@@ -1554,6 +1554,11 @@ function tabLernen() {
     ? kachel("fall", "lernen", "Fälle einordnen", "Bote oder Vertreter, Anfechtung, Wirksamkeit") +
       kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Definitionen und Gutachten-Fälle") +
       kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") + paareKachel
+    : state.fach === "bewr"
+    ? kachel("rechnen", "tkonto", "Rechnen", "Freibeträge, Steuer, Ertragswert") +
+      kachel("fall", "lernen", "Fälle einordnen", "Steuerpflicht, Steuerklasse, Grundstücksart") +
+      kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "Definitionen und Schemata") +
+      kachel("alles", "mischen", "Gemischt", "Quer durch alle Themen") + paareKachel
     : state.fach === "ao"
     ? kachel("rechnen", "kalender", "Fristen & Zuschläge", "Bekanntgabe, Einspruchsfrist, Zuschläge") +
       kachel("fall", "lernen", "Fälle einordnen", "Steuergeheimnis, Nichtigkeit, Zuständigkeit") +
@@ -1720,6 +1725,8 @@ function tabKlausur() {
         : "Wie in der Klausur: ca. 75 % Frage-Antwort und 25 % Übertragungsaufgaben. Nach der Abgabe vergleichst du mit den Musterantworten.")
       : state.fach === "pr"
       ? "Wie die Privatrecht-Klausur: allgemeine Fragen und Sachverhalte im Gutachtenstil – Stellvertretung, Vertragsschluss, Anfechtung, Delikt. Auswertung erst nach der Abgabe."
+      : state.fach === "bewr"
+      ? "Wie die Klausur Bewertungsrecht: Steuerpflicht, Steuerklasse und Freibeträge, Befreiungen, Grundbesitzwert im Ertragswertverfahren und Steuerberechnung mit Härteausgleich. Auswertung erst nach der Abgabe."
       : state.fach === "ao"
       ? "Wie die AO-Klausur: Fall- und Wissensfragen, dazu Fristen, Bekanntgabe und Zuschläge berechnen. Auswertung erst nach der Abgabe."
       : state.fach === "est" || state.fach === "ust"
@@ -1991,6 +1998,7 @@ const GESETZE = {
   ust: [["UStG", "Umsatzsteuergesetz (UStG)"]],
   ao: [["AO", "Abgabenordnung (AO)"], ["BGB", "Bürgerliches Gesetzbuch (BGB)"], ["VwZG", "Verwaltungszustellungsgesetz (VwZG)"]],
   pr: [["BGB", "Bürgerliches Gesetzbuch (BGB)"], ["HGB", "Handelsgesetzbuch (HGB)"], ["GmbHG", "GmbH-Gesetz (GmbHG)"], ["AO", "Abgabenordnung (AO)"]],
+  bewr: [["ErbStG", "Erbschaftsteuer- und Schenkungsteuergesetz (ErbStG)"], ["BewG", "Bewertungsgesetz (BewG)"]],
 };
 /** Paragrafen in Gesetzesreihenfolge (§ 3 vor § 3a vor § 4); Präambel und Nummern ohne Ziffer zuerst. */
 const nrKey = (nr) => { const m = String(nr).match(/^(\d+)(.*)$/); return m ? [Number(m[1]), m[2]] : [-1, String(nr)]; };
@@ -2016,7 +2024,7 @@ function tabNormen() {
   return `
     ${seitenKopf("Normen", "Alle lehrplanrelevanten Vorschriften im Wortlaut – auch offline.")}
     ${kompaktZeile()}
-    <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="${state.fach === "est" ? "Suchen, z. B. Entfernungspauschale, § 11, Wohnsitz" : state.fach === "ust" ? "Suchen, z. B. Vorsteuer, § 4, Kleinunternehmer" : state.fach === "ao" ? "Suchen, z. B. Bekanntgabe, § 122, Steuergeheimnis" : state.fach === "pr" ? "Suchen, z. B. Vollmacht, § 433, Anfechtung" : "Suchen, z. B. Bundesrat, Art. 63, Wahlrecht"}" autocomplete="off" value="${esc(state.normSuche)}"></div>
+    <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="${state.fach === "est" ? "Suchen, z. B. Entfernungspauschale, § 11, Wohnsitz" : state.fach === "ust" ? "Suchen, z. B. Vorsteuer, § 4, Kleinunternehmer" : state.fach === "ao" ? "Suchen, z. B. Bekanntgabe, § 122, Steuergeheimnis" : state.fach === "pr" ? "Suchen, z. B. Vollmacht, § 433, Anfechtung" : state.fach === "bewr" ? "Suchen, z. B. Freibetrag, § 13d, Ertragswert" : "Suchen, z. B. Bundesrat, Art. 63, Wahlrecht"}" autocomplete="off" value="${esc(state.normSuche)}"></div>
     <div id="normListe">${normenListe()}</div>`;
 }
 
@@ -2579,7 +2587,7 @@ function neuePaarRunde() {
   state.paare = { links: r.mischen(auswahl), rechts: r.mischen(auswahl), weg: [], leben: PAAR_LEBEN, serie: 0, wahl: null, start: Date.now(), ende: null, sperre: false, frisch: true };
 }
 // Gesetzesfarben: jede Norm trägt den „Buchrücken“ ihres Gesetzes (Verordnungen gemeinsam grau).
-const GESETZ_KLASSE = { HGB: "hgb", EStG: "estg", AO: "ao", UStG: "ustg", GG: "gg", BGB: "bgb", GOBT: "gobt" };
+const GESETZ_KLASSE = { HGB: "hgb", EStG: "estg", AO: "ao", UStG: "ustg", GG: "gg", BGB: "bgb", GOBT: "gobt", ErbStG: "erbstg", BewG: "bewg" };
 /** „§ 9 Abs. 1 S. 3 Nr. 4 EStG“ → { zeichen: "§", nr: "9", rest: "Abs. 1 S. 3 Nr. 4", g: "EStG" } */
 function normTeile(norm) {
   const m = String(norm).match(/^(§|Art\.)\s*(\S+)\s*(.*?)\s*([A-Za-zÄÖÜäöü]+)$/);
@@ -3467,6 +3475,11 @@ const AKTIONEN = {
   ksimHaken: (v, el) => {
     const [id, j] = v.split("|"), k = state.ksim;
     ((k.haken ||= {})[id] ||= {})[j] = el.checked; ksimSichern(); render();
+  },
+  ksimTeilpunkt: (v) => {
+    const [id, j, i] = v.split("|"), k = state.ksim, liste = ((k.tp ||= {})[id] ||= {})[j] ||= [], n = Number(i);
+    k.tp[id][j] = liste.includes(n) ? liste.filter((x) => x !== n) : [...liste, n];
+    ksimSichern(); render();
   },
   ksimSpeichern: () => {
     const k = state.ksim, max = hoechstpunkte(k.fach, k), p = simPunkte(k.fach, k);

@@ -18,7 +18,7 @@ export function stamm(w) {
 }
 
 /** Normzitat ohne §: „15 ustg“, „§ 15 Abs. 1 UStG“, „art 63“ → { art, nr, gesetz } oder null. */
-const GESETZE = ["ustg", "estg", "ao", "hgb", "bgb", "gg", "gmbhg", "ustdv", "estdv", "vwzg", "bwahlg", "gobt", "lstdv"];
+const GESETZE = ["ustg", "estg", "ao", "hgb", "bgb", "gg", "gmbhg", "ustdv", "estdv", "vwzg", "bwahlg", "gobt", "lstdv", "erbstg", "bewg"];
 export function zitatAus(q) {
   const t = norma(q).trim();
   let m = /^(art|§)?\s*(\d+[a-z]?)\b(?:\s+abs\s+\d+)?(?:\s+(?:s|satz|nr)\s+\d+)*\s*([a-z]*)\s*$/.exec(t.replace(/^paragraph\s+/, "§ "));
