@@ -1008,7 +1008,7 @@ test("Profi-Stimme: Audio nur bei passender Prüfsumme, Zeitmarken je Punkt", as
 
 test("Klausursimulation: Zeit geht exakt auf, Sachverhalte rechnen sauber, Notentabelle", async () => {
   const { SIM, zusammenstellen, inhalt, hoechstpunkte, note, zahlStimmt } = await import("../js/klausursim.js");
-  for (const fach of Object.keys(SIM)) {
+  for (const fach of Object.keys(SIM).filter((f) => !SIM[f].nurFest)) {
     for (const minuten of [60, 90, 180]) for (let seed = 1; seed <= 60; seed++) {
       const teile = zusammenstellen(fach, minuten, seed);
       const svs = teile.map((id, i) => inhalt(fach, id, seed, i));
@@ -1024,10 +1024,39 @@ test("Klausursimulation: Zeit geht exakt auf, Sachverhalte rechnen sauber, Noten
     }
     // jeder Sachverhalt ist in mindestens einer Zusammenstellung erreichbar
     const vorkommen = new Set([60, 90, 180].flatMap((m) => Array.from({ length: 80 }, (_, i) => zusammenstellen(fach, m, i + 1)).flat()));
-    for (const s of SIM[fach].pool) assert.ok(vorkommen.has(s.id), "nie gezogen: " + s.id);
+    for (const s of SIM[fach].pool.filter((x) => !x.fest)) assert.ok(vorkommen.has(s.id), "nie gezogen: " + s.id);
   }
   assert.deepEqual([100, 96, 90, 50, 49.9, 19].map(note), [15, 15, 13, 5, 4, 0]);
   assert.ok(zahlStimmt({ wert: 1234.5, toleranz: 1 }, "1.234,50") && !zahlStimmt({ wert: 1234.5, toleranz: 1 }, "1.240"));
+});
+
+test("Probeklausuren: vollständig, Zeit und Punkte stimmen, jeder Merkmal-Punkt mit Erwartung", async () => {
+  const { SIM, neueSim, inhalt, hoechstpunkte, zahlStimmt } = await import("../js/klausursim.js");
+  for (const [fach, d] of Object.entries(SIM)) {
+    if (d.nurFest) assert.ok((d.klausuren || []).length >= 3, `${fach}: mindestens drei Probeklausuren`);
+    const benutzt = new Set();
+    for (const x of d.klausuren || []) {
+      const k = neueSim(fach, "k:" + x.id, 1);
+      assert.equal(k.klausur, x.id); assert.equal(k.minuten, x.minuten);
+      const svs = k.teile.map((id, i) => inhalt(fach, id, k.seed, i));
+      assert.equal(svs.reduce((n, s) => n + s.min, 0), x.minuten, `${x.id}: Zeiten ergeben ${x.minuten} Min.`);
+      assert.equal(new Set(k.teile).size, k.teile.length, `${x.id}: Aufgabe doppelt`);
+      for (const s of svs) {
+        benutzt.add(s.id);
+        assert.ok(!/NaN|undefined|Infinity|\[object/.test(JSON.stringify([s.sv, s.aufgaben, s.loesung, s.bewertung, s.zahlen])), `${s.id}: Rechen- oder Textfehler`);
+        assert.ok(s.bewertung.length >= 2 && s.loesung.length >= 1 && s.aufgaben.length >= 1, s.id);
+        for (const [p, t, erw] of s.bewertung) {
+          assert.ok(p > 0 && Number.isInteger(p * 2), `${s.id}: Punkte in halben Schritten (${p})`);
+          if (s.fest) assert.ok(t && erw && erw.length > 8, `${s.id}: Merkmal mit Erwartung – „${t}“`);
+        }
+        for (const z of s.zahlen || []) assert.ok(zahlStimmt(z, String(z.wert).replace(".", ",")), `${s.id}: Kontrollzahl ${z.frage}`);
+      }
+      const max = hoechstpunkte(fach, k);
+      assert.ok(max >= x.minuten * 0.3 && max <= x.minuten * 0.8, `${x.id}: ${max} Punkte für ${x.minuten} Min.`);
+      if (x.punkte) assert.equal(max, x.punkte, `${x.id}: Punktsumme`);
+    }
+    for (const s of d.pool.filter((p) => p.fest)) assert.ok(benutzt.has(s.id), `${fach}: Aufgabe ${s.id} in keiner Probeklausur`);
+  }
 });
 
 test("Klausursimulation: Handschrift – Blätter je Sachverhalt, Auswertung zeigt die Zeichnung", async () => {
