@@ -1,6 +1,6 @@
 // Service Worker: speichert die komplette App für die Offline-Nutzung.
 // Bei jeder inhaltlichen Änderung VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = "bsr-v107";
+const VERSION = "bsr-v108";
 const DATEIEN = [
   "./",
   "./index.html",
@@ -128,6 +128,9 @@ self.addEventListener("install", (e) => {
       .then(() => self.skipWaiting())
   );
 });
+
+// Die App fragt die Version ab (Anzeige in den Einstellungen)
+self.addEventListener("message", (e) => { if (e.data === "version") e.source?.postMessage({ version: VERSION }); });
 
 self.addEventListener("activate", (e) => {
   e.waitUntil(

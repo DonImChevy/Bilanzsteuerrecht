@@ -5,6 +5,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-updates",
+    datum: "2026-11-12",
+    klein: true,
+    titel: "Updates kommen von selbst",
+    punkte: [
+      ["stern", "Kein Neustart mehr nötig", "Die App sucht bei jeder Rückkehr nach Updates und lädt eine neue Version automatisch – aber nie mitten in einer Übung oder Klausur."],
+      ["ziel", "Selbst nachsehen", "Unter Einstellungen → Hinweis siehst du die genaue Version und kannst mit „Nach Update suchen“ sofort aktualisieren.", "einstellungen"],
+    ],
+  },
+  {
     id: "2026-11-textsatz",
     datum: "2026-11-12",
     klein: true,
