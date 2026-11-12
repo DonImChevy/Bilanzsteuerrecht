@@ -1047,6 +1047,23 @@ test("Probeklausuren: vollständig, Zeit und Punkte stimmen, jeder Merkmal-Punkt
   }
 });
 
+test("Selbstkontrollbogen: Stichworte je Merkmal – vollständig und passend zur Bewertung", async () => {
+  const { SIM, inhalt } = await import("../js/klausursim.js");
+  const { STICHWORTE } = await import("../js/klausur_stichworte.js");
+  const ids = new Set();
+  for (const [fach, d] of Object.entries(SIM)) for (const sv of d.pool) {
+    ids.add(sv.id);
+    const s = inhalt(fach, sv.id, 1, 0), st = STICHWORTE[sv.id];
+    assert.ok(Array.isArray(st), `${sv.id}: Stichworte fehlen`);
+    assert.equal(st.length, s.bewertung.length, `${sv.id}: ${st.length} Stichwort-Zeilen für ${s.bewertung.length} Merkmale`);
+    s.bewertung.forEach(([, t, erw, w]) => {
+      if (/§|Art\.|Abschn\.|R \d/.test(erw)) assert.ok(w && w.length > 15, `${sv.id}: „${t}“ braucht Stichworte`);
+      if (w) for (const teil of w.split(" · ")) assert.ok(teil.trim().length > 2, `${sv.id}: leeres Stichwort in „${t}“`);
+    });
+  }
+  for (const id of Object.keys(STICHWORTE)) assert.ok(ids.has(id), `Stichworte für unbekannten Sachverhalt ${id}`);
+});
+
 test("Probeklausuren: Teilauswahl – gleiche Zahlen, Zeit und Punkte passen sich an", async () => {
   const { SIM, neueSim, inhalt, gewaehlt, auswahlSetzen, hoechstpunkte, punkte, simView } = await import("../js/klausursim.js");
   for (const [fach, d] of Object.entries(SIM)) for (const x of d.klausuren || []) {

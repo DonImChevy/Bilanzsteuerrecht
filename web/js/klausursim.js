@@ -9,6 +9,7 @@ import { SV_PR, KLAUSUREN_PR, VORBEMERKUNGEN_PR } from "./pr/klausuren.js";
 import { SV_BBF, KLAUSUREN_BBF, VORBEMERKUNGEN_BBF } from "./bilr/bbf_klausuren.js";
 import { SV_OER, KLAUSUREN_OER, VORBEMERKUNGEN_OER } from "./oer/klausuren.js";
 import * as HS from "./handschrift.js";
+import { STICHWORTE } from "./klausur_stichworte.js";
 
 export const SIM = {
   bsr: {
@@ -79,7 +80,8 @@ export const noteText = (n) => (n >= 14 ? "sehr gut" : n >= 11 ? "gut" : n >= 8 
 /** Inhalt eines Sachverhalts (deterministisch aus Startwert und Position). */
 export function inhalt(fach, id, seed, i) {
   const s = SIM[fach].pool.find((x) => x.id === id);
-  return { ...s, ...s.erzeugen(new Zufall(seed * 31 + i * 7 + 1)) };
+  const x = s.erzeugen(new Zufall(seed * 31 + i * 7 + 1)), stw = STICHWORTE[id] || [];
+  return { ...s, ...x, bewertung: x.bewertung.map(([p, t, erw], j) => [p, t, erw, stw[j] || ""]) };
 }
 /** Ausgewählte Teile als [id, Position] – Position bleibt die der vollständigen Klausur (gleiche Zahlen bei Teilauswahl). */
 export const gewaehlt = (k) => k.teile.map((id, i) => [id, i]).filter(([, i]) => !(k.ohne || []).includes(i));
@@ -184,7 +186,7 @@ export function simView(k, h) {
     const id = s.id, zahlen = s.zahlen || [];
     const ueberschrift = !tn ? "" : i === 0 && s.teil === 1 ? `<h2 class="ks-teil">${tn[1]}</h2>` : i === teilGrenze ? `<h2 class="ks-teil">${tn[2]}</h2>` : "";
     const eigene = k.antworten?.[id] || "";
-    const bogen = s.bewertung.map(([p, t, erw], j) => `<label class="ks-haken"><input type="checkbox" data-a="ksimHaken" data-v="${id}|${j}" ${k.haken?.[id]?.[j] ? "checked" : ""}><span>${h.esc(t)}${erw ? `<small class="ks-erw">Erwartet: ${h.inline(erw)}</small>` : ""}</span><b>${String(p).replace(".", ",")}</b></label>`).join("");
+    const bogen = s.bewertung.map(([p, t, erw, stw], j) => `<label class="ks-haken"><input type="checkbox" data-a="ksimHaken" data-v="${id}|${j}" ${k.haken?.[id]?.[j] ? "checked" : ""}><span>${h.esc(t)}${erw ? `<small class="ks-erw">Erwartet: ${h.inline(erw)}</small>` : ""}${stw ? `<small class="ks-stw"><span>Stichworte</span>${stw.split(" · ").map((w) => `<i>${h.inline(w)}</i>`).join("")}</small>` : ""}</span><b>${String(p).replace(".", ",")}</b></label>`).join("");
     const erreichtSv = s.bewertung.reduce((a, [p], j) => a + (k.haken?.[id]?.[j] ? p : 0), 0), maxSv = s.bewertung.reduce((a, [p]) => a + p, 0);
     return `${ueberschrift}<article class="ks-blatt ks-sv" id="ks-${id}">
       <header class="ks-sv-kopf"><span class="ks-nr">${d.svName || "Sachverhalt"} ${s.nr}</span><h3>${h.esc(s.titel)}</h3><span class="ks-min">ca. ${s.min} Min. · ${String(maxSv).replace(".", ",")} P.</span>

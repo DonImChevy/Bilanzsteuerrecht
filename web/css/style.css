@@ -2974,3 +2974,8 @@ h1, h2, h3, .tk-text b, .kachel b, .ks-deckblatt h2 { text-wrap: balance; }
 .ks-wahl input { width: 18px; height: 18px; accent-color: var(--m); flex: none; }
 .ks-plan li.aus { background: transparent; box-shadow: inset 0 0 0 1px var(--glas-linie); }
 .ks-plan li.aus span, .ks-plan li.aus b { color: var(--text3); text-decoration: line-through; text-decoration-color: color-mix(in srgb, var(--text3) 60%, transparent); }
+
+/* Selbstkontrollbogen: Stichworte je Merkmal */
+.ks-stw { display: flex; flex-wrap: wrap; gap: 4px 5px; margin-top: 6px; font-size: 12px; line-height: 1.35; }
+.ks-stw > span { flex-basis: 100%; font-size: 10.5px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; color: var(--text3); }
+.ks-stw i { font-style: normal; padding: 2px 7px; border-radius: 7px; color: var(--text); background: color-mix(in srgb, var(--m) 9%, transparent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--m) 18%, transparent); }
