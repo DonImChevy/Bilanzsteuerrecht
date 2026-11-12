@@ -7,6 +7,7 @@ import { SV_BSR, VORBEMERKUNGEN as VB_BSR } from "./bilr/klausur_sv.js";
 import { SV_UST, KLAUSUREN_UST, VORBEMERKUNGEN_UST } from "./ust/klausuren.js";
 import { SV_PR, KLAUSUREN_PR, VORBEMERKUNGEN_PR } from "./pr/klausuren.js";
 import { SV_BBF, KLAUSUREN_BBF, VORBEMERKUNGEN_BBF } from "./bilr/bbf_klausuren.js";
+import { SV_OER, KLAUSUREN_OER, VORBEMERKUNGEN_OER } from "./oer/klausuren.js";
 import * as HS from "./handschrift.js";
 
 export const DAUERN = [60, 90, 180];
@@ -37,6 +38,13 @@ SIM.bbf = {
   teilNamen: { 1: "Teil I/II · Wissensfragen und Einordnung", 2: "Teil III · Buchführungstechnik" },
   feldHinweis: "Buchungssätze mit Nummer und Datum, AfA-Berechnung, vorbereitende Abschlussbuchungen, GuV-Konto, SBK, Gewinn",
   startText: "Drei vollständige Klausuren à 90 Minuten wie die Semesterklausur der Ausbildung: Wissensfragen, Einordnung von Geschäftsvorfällen und ein kompletter Monatsabschluss bis zu GuV, Schlussbilanzkonto und Gewinn. Danach Musterlösung und Selbstkontrollbogen (45 Punkte).",
+};
+SIM.oer = {
+  titel: "Öffentliches Recht", amt: "Klausur Öffentliches Recht – Grundstudium I", nurFest: true, svName: "Aufgabenteil",
+  hilfsmittel: ["Grundgesetz und Nebengesetze (Textausgabe)"],
+  vorbemerkungen: VORBEMERKUNGEN_OER, pool: SV_OER, klausuren: KLAUSUREN_OER,
+  feldHinweis: "Antworten mit Artikeln des GG bzw. Paragrafen; Teil E im Gutachtenstil",
+  startText: "Drei vollständige Klausuren à 180 Minuten mit fünf Aufgabenteilen wie in der Prüfung: Allgemeine Fragen, Gesetzgebung, Wahl und Verfassungsorgane, Fallfragen und ein Gutachten. Danach Musterlösung und Selbstkontrollbogen (90 Punkte).",
 };
 SIM.pr = {
   titel: "Privatrecht", amt: "Hauptklausur Privatrecht – Grundstudium I", nurFest: true,
