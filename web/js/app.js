@@ -943,7 +943,7 @@ function tabStart() {
   return `
     <div class="kopfzeile">
       <div class="gruss-block">
-        <button class="taler-knopf" data-a="taler" aria-label="Maskottchen Taler antippen">${taler(state.talerSpruch < 0 ? "hallo" : "jubeln", { groesse: 60, klasse: talerBewegt() ? (state.talerSpruch < 0 ? "" : "flip") : "ruhig" })}</button>
+        <button class="taler-knopf" data-a="garderobe" aria-label="Garderobe öffnen – Taler einkleiden">${taler(state.talerSpruch < 0 ? "hallo" : "jubeln", { groesse: 60, klasse: talerBewegt() ? (state.talerSpruch < 0 ? "" : "flip") : "ruhig" })}</button>
         <div><div class="gruss">${esc(datum)}</div><h1 class="titel" style="margin-top:2px">${gruss()}</h1></div>
       </div>
       <div class="kopf-aktionen"><button class="icon-btn" data-a="einstellungen" aria-label="Einstellungen">${ic("einstellungen")}</button></div>
@@ -956,12 +956,17 @@ function tabStart() {
         <div class="grow"><h2>${titel}</h2><div class="zeile-klein">${text}</div>
           <div class="werte">
             <span class="wert-pille"><span class="${tageSerie ? "flamme-an" : ""}">${ic("flamme")}</span>${tageSerie} ${tageSerie === 1 ? "Tag" : "Tage"} in Folge</span>
-            <button class="wert-pille knopf-pille" data-a="garderobe" aria-label="Garderobe öffnen – ${meineKasse().guthaben} Taler">${talerBetrag(meineKasse().guthaben)} Taler</button>
           </div></div>
       </div>
       ${levelZeile(stat)}
       ${knopf}
     </section>
+    <button class="garderobe-karte" data-a="garderobe" aria-label="Garderobe öffnen – ${meineKasse().guthaben} Taler">
+      <span class="gk-taler">${taler("hallo", { groesse: 56, klasse: "ruhig" })}</span>
+      <span class="gk-text"><b>Garderobe</b><span>Taler einkleiden · Hüte, Brillen, Hintergründe</span></span>
+      <span class="gk-betrag">${talerBetrag(meineKasse().guthaben)}<small>Taler</small></span>
+      ${ic("pfeil", "klein")}
+    </button>
     <div class="suchfeld">${ic("suche")}<input type="search" id="homeSuche" data-fokus="homeSuche" placeholder="Suchen: Stichwort, § oder Kürzel" aria-label="Suche nach Stichwort, Abkürzung oder Paragraf, z. B. B2B, AfA, § 15 UStG" autocomplete="off" enterkeyhint="search" value="${esc(state.suche)}">
       <button class="leeren ${state.suche ? "" : "versteckt"}" data-a="sucheLeeren" aria-label="Suche leeren">${ic("kreuz", "klein")}</button></div>
     <div id="sucheErgebnis">${state.suche.trim() ? suchErgebnisse(state.suche) : ""}</div>
