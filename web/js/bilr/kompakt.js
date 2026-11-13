@@ -22,7 +22,7 @@ export const KOMPAKT_BSR = {
 
   buchfuehrungspflicht: {
     satz: "Kaufleute müssen nach Handelsrecht Bücher führen, und das Steuerrecht übernimmt diese Pflicht – kleine Gewerbetreibende können über § 141 AO trotzdem buchführungspflichtig werden.",
-    zahlen: [["800.000 €", "Umsatzgrenze (§ 241a HGB, § 141 AO)"], ["80.000 €", "Gewinngrenze"], ["10 / 8 Jahre", "Aufbewahrung Bücher / Buchungsbelege"]],
+    zahlen: [["800.000 €", "Umsatzgrenze (§ 241a HGB, § 141 AO)"], ["80.000 €", "Gewinngrenze (§ 141 Abs. 1 S. 1 Nr. 4 AO, § 241a S. 1 HGB)"], ["10 / 8 Jahre", "Aufbewahrung Bücher / Buchungsbelege (§ 147 Abs. 3 S. 1 AO)"]],
     punkte: [
       "**§ 238 Abs. 1 HGB:** Jeder **Kaufmann** ist verpflichtet, Bücher zu führen und darin seine Handelsgeschäfte und die Lage seines Vermögens nach den GoB ersichtlich zu machen.",
       "**Kaufmann:** Istkaufmann mit Handelsgewerbe (§ 1 HGB) – vermutet, wenn ein **kaufmännisch eingerichteter Geschäftsbetrieb** erforderlich ist; Kannkaufmann durch Eintragung (§ 2 HGB); Formkaufmann (GmbH, AG) kraft Rechtsform (§ 6 HGB).",
@@ -183,7 +183,7 @@ export const KOMPAKT_BSR = {
 
   umsatzsteuer: {
     satz: "In der Buchführung ist die Umsatzsteuer ein durchlaufender Posten: Vorsteuer ist eine Forderung ans Finanzamt, Umsatzsteuer eine Verbindlichkeit – die Differenz ist die Zahllast (§ 13a Abs. 1 Nr. 1 UStG, § 15 Abs. 1 UStG).",
-    zahlen: [["19 %", "Regelsatz"], ["7 %", "ermäßigter Satz"], ["USt − VSt", "Zahllast"]],
+    zahlen: [["19 %", "Regelsatz (§ 12 Abs. 1 UStG)"], ["7 %", "ermäßigter Satz (§ 12 Abs. 2 UStG)"], ["USt − VSt", "Zahllast (§ 16 Abs. 2 S. 1 UStG)"]],
     punkte: [
       "**Nettomethode:** Erlöse und Einkäufe werden netto gebucht, die Steuer getrennt auf **Vorsteuer** (Aktivkonto) bzw. **Umsatzsteuer** (Passivkonto) (§ 277 Abs. 1 HGB, § 9b Abs. 1 EStG).",
       "**Einkauf:** Ware/Anlage + Vorsteuer an Verbindlichkeiten. **Verkauf:** Forderungen an WVK + Umsatzsteuer.",
@@ -248,7 +248,7 @@ export const KOMPAKT_BSR = {
 
   gewinnermittlung: {
     satz: "Der Gewinn ist der Zuwachs des Betriebsvermögens, bereinigt um Entnahmen und Einlagen – GuV und Betriebsvermögensvergleich müssen dasselbe Ergebnis liefern (§ 4 Abs. 1 S. 1 EStG).",
-    zahlen: [["BV Ende − BV Anfang", "+ Entnahmen − Einlagen"]],
+    zahlen: [["BV Ende − BV Anfang", "+ Entnahmen − Einlagen (§ 4 Abs. 1 S. 1 EStG)"]],
     punkte: [
       "**Betriebsvermögensvergleich (§ 4 Abs. 1 S. 1 EStG):** Unterschied zwischen dem Betriebsvermögen am Schluss des Wirtschaftsjahres und am Schluss des Vorjahres, **vermehrt um Entnahmen, vermindert um Einlagen**.",
       "**Gewerbetreibende mit Buchführungspflicht** setzen das Betriebsvermögen nach den handelsrechtlichen GoB an (**§ 5 Abs. 1 EStG**, Maßgeblichkeit).",
@@ -283,7 +283,7 @@ export const KOMPAKT_BSR = {
   // ---------------------------------------------------------------- Teil II
   "bsr-gob": {
     satz: "Die GoB und die Maßgeblichkeit verbinden Handels- und Steuerbilanz – und die Frage, ob etwas überhaupt Betriebsvermögen ist, kommt vor jeder Bewertung (§ 243 Abs. 1 HGB, § 5 Abs. 1 S. 1 EStG).",
-    zahlen: [["> 50 %", "notwendiges Betriebsvermögen"], ["10–50 %", "gewillkürtes BV möglich"], ["< 10 %", "notwendiges Privatvermögen"]],
+    zahlen: [["> 50 %", "notwendiges Betriebsvermögen (R 4.2 Abs. 1 S. 4 EStR)"], ["10–50 %", "gewillkürtes BV möglich (R 4.2 Abs. 1 S. 6 EStR)"], ["< 10 %", "notwendiges Privatvermögen (R 4.2 Abs. 1 S. 5 EStR)"]],
     punkte: [
       "**Maßgeblichkeit (§ 5 Abs. 1 S. 1 EStG):** Gewerbetreibende setzen das Betriebsvermögen an, das nach den handelsrechtlichen **GoB** auszuweisen ist – außer das Steuerrecht schreibt anderes vor (Bewertungsvorbehalt § 5 Abs. 6 EStG) oder ein steuerliches Wahlrecht wird anders ausgeübt.",
       "**Bewertungsgrundsätze (§ 252 Abs. 1 HGB):** Bilanzidentität (Nr. 1), Fortführung (Nr. 2), **Einzelbewertung und Stichtag** (Nr. 3), **Vorsicht – Realisations- und Imparitätsprinzip** (Nr. 4), Periodenabgrenzung (Nr. 5), Stetigkeit (Nr. 6).",
@@ -301,7 +301,7 @@ export const KOMPAKT_BSR = {
 
   "bsr-zurechnung": {
     satz: "Bilanziert wird beim wirtschaftlichen Eigentümer – und zwar ab dem Zeitpunkt, in dem Besitz, Gefahr, Nutzen und Lasten übergehen, nicht ab Vertrag oder Grundbucheintrag (§ 246 Abs. 1 S. 2 HGB, § 39 Abs. 2 Nr. 1 AO).",
-    zahlen: [["Lieferung", "Zugang beweglicher WG"], ["Nutzen & Lasten", "Zugang Grundstück"]],
+    zahlen: [["Lieferung", "Zugang beweglicher WG (§ 446 S. 1 BGB, § 246 Abs. 1 S. 2 HGB)"], ["Nutzen & Lasten", "Zugang Grundstück (§ 39 Abs. 2 Nr. 1 AO, § 446 S. 2 BGB)"]],
     punkte: [
       "**Grundsatz (§ 246 Abs. 1 S. 2 HGB, § 39 Abs. 1 AO):** Wirtschaftsgüter sind dem **Eigentümer** zuzurechnen.",
       "**Abweichung (§ 39 Abs. 2 Nr. 1 AO):** Übt ein anderer die tatsächliche Herrschaft so aus, dass er den Eigentümer wirtschaftlich auf Dauer ausschließen kann, ist ihm das Wirtschaftsgut zuzurechnen (**wirtschaftliches Eigentum**).",
@@ -342,7 +342,7 @@ export const KOMPAKT_BSR = {
 
   "bsr-grundstueck": {
     satz: "Ein bebautes Grundstück besteht aus zwei Wirtschaftsgütern: Grund und Boden (nicht abnutzbar) und Gebäude (AfA nach § 7 Abs. 4 EStG) – Kaufpreis und Nebenkosten werden aufgeteilt, Finanzierungskosten nicht.",
-    zahlen: [["3 %", "Wirtschaftsgebäude im BV (Bauantrag nach 31.03.1985)"], ["3 / 2 / 2,5 %", "andere Gebäude: ab 2023 / 1925–2022 / vor 1925 fertiggestellt"], ["monatsgenau", "AfA im Anschaffungsjahr"]],
+    zahlen: [["3 %", "Wirtschaftsgebäude im BV (Bauantrag nach 31.03.1985) (§ 7 Abs. 4 S. 1 Nr. 1 EStG)"], ["3 / 2 / 2,5 %", "andere Gebäude: ab 2023 / 1925–2022 / vor 1925 fertiggestellt (§ 7 Abs. 4 S. 1 Nr. 2 EStG)"], ["monatsgenau", "AfA im Anschaffungsjahr (§ 7 Abs. 1 S. 4 EStG)"]],
     schema: [
       "Zugang mit Übergang von Nutzen und Lasten (Zurechnung)",
       "Kaufpreis aufteilen: Grund und Boden / Gebäude (Verhältnis lt. Sachverhalt)",
@@ -370,7 +370,7 @@ export const KOMPAKT_BSR = {
 
   "bsr-afa": {
     satz: "Abnutzbares Anlagevermögen wird über die Nutzungsdauer verteilt abgeschrieben – im ersten Jahr monatsgenau, und kleine Wirtschaftsgüter dürfen sofort oder über einen Sammelposten abgeschrieben werden.",
-    zahlen: [["800 €", "GWG-Grenze netto (§ 6 Abs. 2 EStG)"], ["250–1.000 €", "Sammelposten, 5 Jahre je 20 %"], ["bis 250 €", "Sofortaufwand ohne Verzeichnis"]],
+    zahlen: [["800 €", "GWG-Grenze netto (§ 6 Abs. 2 EStG)"], ["250–1.000 €", "Sammelposten, 5 Jahre je 20 % (§ 6 Abs. 2a S. 1, 2 EStG)"], ["bis 250 €", "Sofortaufwand ohne Verzeichnis (§ 6 Abs. 2 S. 4 EStG)"]],
     schema: [
       "Abnutzbares bewegliches WG des Anlagevermögens?",
       "Selbständig nutzbar? AK ≤ 800 € → GWG-Wahlrecht (§ 6 Abs. 2 EStG) bzw. Sammelposten (§ 6 Abs. 2a EStG)",
@@ -396,7 +396,7 @@ export const KOMPAKT_BSR = {
 
   "bsr-teilwert": {
     satz: "Sinkt der Wert unter die fortgeführten Anschaffungskosten, darf (Steuer) bzw. muss (HGB) abgeschrieben werden – steuerlich aber nur bei voraussichtlich dauernder Wertminderung (§ 253 Abs. 3 S. 5, Abs. 4 HGB; § 6 Abs. 1 Nr. 1 S. 2, Nr. 2 S. 2 EStG).",
-    zahlen: [["dauernd", "Voraussetzung im Steuerrecht"], ["halbe Rest-ND", "Faustregel für abnutzbares AV"]],
+    zahlen: [["dauernd", "Voraussetzung im Steuerrecht (§ 6 Abs. 1 Nr. 1 S. 2 EStG)"], ["halbe Rest-ND", "Faustregel für abnutzbares AV (BMF vom 02.09.2016, Rn. 8)"]],
     punkte: [
       "**Teilwert (§ 6 Abs. 1 Nr. 1 S. 3 EStG):** Betrag, den ein Erwerber des **ganzen Betriebs** für das einzelne Wirtschaftsgut ansetzen würde, wenn er den Betrieb fortführt. Obergrenze: Wiederbeschaffungskosten.",
       "**Steuerrecht (§ 6 Abs. 1 Nr. 1 S. 2, Nr. 2 S. 2 EStG):** Teilwertabschreibung als **Wahlrecht**, nur bei **voraussichtlich dauernder** Wertminderung.",
@@ -436,7 +436,7 @@ export const KOMPAKT_BSR = {
 
   "bsr-entnahme-einlage": {
     satz: "Was den Betrieb für private Zwecke verlässt, wird mit dem Teilwert entnommen – was privat hineinkommt, wird mit dem Teilwert eingelegt; beides ändert den Gewinn nicht unmittelbar, wohl aber die Bewertung (§ 6 Abs. 1 Nr. 4, 5 EStG).",
-    zahlen: [["Teilwert", "Entnahme (§ 6 Abs. 1 Nr. 4 EStG)"], ["Teilwert, max. AK", "Einlage innerhalb 3 Jahren (Nr. 5)"], ["1 %", "Bruttolistenpreis je Monat (Pkw > 50 % betrieblich)"]],
+    zahlen: [["Teilwert", "Entnahme (§ 6 Abs. 1 Nr. 4 EStG)"], ["Teilwert, max. AK", "Einlage innerhalb 3 Jahren (Nr. 5) (§ 6 Abs. 1 Nr. 5 S. 1 EStG)"], ["1 %", "Bruttolistenpreis je Monat (Pkw > 50 % betrieblich) (§ 6 Abs. 1 Nr. 4 S. 2 EStG)"]],
     punkte: [
       "**Entnahme (§ 4 Abs. 1 S. 2 EStG):** Wirtschaftsgüter (Gegenstände, Geld, **Nutzungen und Leistungen**) für betriebsfremde Zwecke.",
       "**Bewertung (§ 6 Abs. 1 Nr. 4 S. 1 EStG):** **Teilwert** – bei Waren in der Regel der aktuelle Einkaufspreis. Die Umsatzsteuer auf die Entnahme ist ebenfalls Entnahme (§ 12 Nr. 3 EStG).",

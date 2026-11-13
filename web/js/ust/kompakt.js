@@ -114,7 +114,7 @@ export const KOMPAKT_UST = {
 
   "ust-bmg": {
     satz: "Die Bemessungsgrundlage ist alles, was der Kunde aufwendet – ohne die Umsatzsteuer selbst; aus Bruttobeträgen wird die Steuer herausgerechnet (§ 10 Abs. 1 S. 2 UStG).",
-    zahlen: [["÷ 1,19", "Brutto → Netto bei 19 %"], ["× 19/119", "Steuer aus Brutto"], ["× 7/107", "Steuer aus Brutto bei 7 %"]],
+    zahlen: [["÷ 1,19", "Brutto → Netto bei 19 % (§ 10 Abs. 1 S. 2 UStG, § 12 Abs. 1 UStG)"], ["× 19/119", "Steuer aus Brutto (§ 12 Abs. 1 UStG)"], ["× 7/107", "Steuer aus Brutto bei 7 % (§ 12 Abs. 2 UStG)"]],
     punkte: [
       "**Entgelt (§ 10 Abs. 1 S. 2 UStG):** alles, was den Wert der Gegenleistung bildet, die der Unternehmer vom Empfänger oder von einem Dritten erhält – **abzüglich der gesetzlich geschuldeten Umsatzsteuer**.",
       "**Durchlaufende Posten (§ 10 Abs. 1 S. 4 UStG)** gehören nicht dazu – Beträge, die der Unternehmer im Namen und für Rechnung eines anderen vereinnahmt (z. B. Zulassungsgebühren im Namen des Kunden).",

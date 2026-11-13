@@ -4,7 +4,7 @@
 export const KOMPAKT_BEWR = {
   "bew-vorgaenge": {
     satz: "Die Erbschaftsteuer besteuert die **Bereicherung des einzelnen Erwerbers** – von Todes wegen oder durch Schenkung; für Schenkungen gelten die Regeln über Erwerbe von Todes wegen entsprechend.",
-    zahlen: [["4", "steuerpflichtige Vorgänge (§ 1 Abs. 1 ErbStG)"], ["30 Jahre", "Ersatzerbschaftsteuer der Familienstiftung"]],
+    zahlen: [["4", "steuerpflichtige Vorgänge (§ 1 Abs. 1 ErbStG)"], ["30 Jahre", "Ersatzerbschaftsteuer der Familienstiftung (§ 1 Abs. 1 Nr. 4 ErbStG, § 9 Abs. 1 Nr. 4 ErbStG)"]],
     punkte: [
       "**Steuerpflichtige Vorgänge** (§ 1 Abs. 1 ErbStG): Erwerb von Todes wegen, Schenkung unter Lebenden, Zweckzuwendung, Familienstiftung alle 30 Jahre. Vorschriften über Erwerbe von Todes wegen gelten auch für Schenkungen (§ 1 Abs. 2 ErbStG).",
       "**Erwerbe von Todes wegen** (§ 3 Abs. 1 ErbStG): Erbanfall (§ 1922 BGB), Vermächtnis, **geltend gemachter** Pflichtteil, Schenkung auf den Todesfall, Vertrag zugunsten Dritter (z. B. Lebensversicherung an Bezugsberechtigte).",
@@ -18,7 +18,7 @@ export const KOMPAKT_BEWR = {
   },
   "bew-pflicht": {
     satz: "**Unbeschränkt** steuerpflichtig ist der gesamte Erwerb, wenn **einer** der Beteiligten Inländer ist; sonst besteht nur **beschränkte** Steuerpflicht für Inlandsvermögen nach § 121 BewG.",
-    zahlen: [["5 Jahre", "erweiterte unbeschränkte Steuerpflicht deutscher Staatsangehöriger"], ["10 %", "Mindestbeteiligung für Inlandsvermögen bei Kapitalgesellschaften (§ 121 Nr. 4 BewG)"]],
+    zahlen: [["5 Jahre", "erweiterte unbeschränkte Steuerpflicht deutscher Staatsangehöriger (§ 2 Abs. 1 Nr. 1 ErbStG, Buchstabe b)"], ["10 %", "Mindestbeteiligung für Inlandsvermögen bei Kapitalgesellschaften (§ 121 Nr. 4 BewG)"]],
     schema: [
       "Ist der **Erblasser/Schenker** oder der **Erwerber** Inländer? (§ 2 Abs. 1 Nr. 1 ErbStG) → unbeschränkt, gesamter Vermögensanfall",
       "Inländer: **Wohnsitz** (§ 8 AO) oder **gewöhnlicher Aufenthalt** (§ 9 AO) im Inland; **Deutsche** bis fünf Jahre nach Wegzug ohne Wohnsitz",
@@ -49,7 +49,7 @@ export const KOMPAKT_BEWR = {
   },
   "bew-erwerb": {
     satz: "Steuerpflichtiger Erwerb = **Vermögensanfall nach Steuerwerten** − Befreiungen − Nachlassverbindlichkeiten − Freibeträge, abgerundet auf volle **100 €**.",
-    zahlen: [["15.000 €", "Pauschbetrag für Bestattungs- und Abwicklungskosten (§ 10 Abs. 5 Nr. 3 S. 2 ErbStG)"], ["100 €", "Abrundung des steuerpflichtigen Erwerbs"]],
+    zahlen: [["15.000 €", "Pauschbetrag für Bestattungs- und Abwicklungskosten (§ 10 Abs. 5 Nr. 3 S. 2 ErbStG)"], ["100 €", "Abrundung des steuerpflichtigen Erwerbs (§ 10 Abs. 1 S. 6 ErbStG)"]],
     schema: [
       "Vermögensanfall nach Steuerwerten (§ 12 ErbStG)",
       "− sachliche Befreiungen (§§ 13, 13a, 13d ErbStG)",
@@ -71,7 +71,7 @@ export const KOMPAKT_BEWR = {
   },
   "bew-klassen": {
     satz: "Die **Steuerklasse** folgt dem Verwandtschaftsverhältnis zum Erblasser oder Schenker – sie bestimmt **Freibetrag** und **Steuersatz**.",
-    zahlen: [["500.000 €", "Ehegatte, Lebenspartner"], ["400.000 €", "Kinder, Stiefkinder, Kinder verstorbener Kinder"], ["200.000 €", "Enkel"], ["100.000 €", "übrige Klasse I (Eltern beim Erbfall)"], ["20.000 €", "Klasse II und III"], ["256.000 €", "Versorgungsfreibetrag Ehegatte (§ 17 ErbStG)"]],
+    zahlen: [["500.000 €", "Ehegatte, Lebenspartner (§ 16 Abs. 1 Nr. 1 ErbStG)"], ["400.000 €", "Kinder, Stiefkinder, Kinder verstorbener Kinder (§ 16 Abs. 1 Nr. 2 ErbStG)"], ["200.000 €", "Enkel (§ 16 Abs. 1 Nr. 3 ErbStG)"], ["100.000 €", "übrige Klasse I (Eltern beim Erbfall) (§ 16 Abs. 1 Nr. 4 ErbStG)"], ["20.000 €", "Klasse II und III (§ 16 Abs. 1 Nr. 5, 7 ErbStG)"], ["256.000 €", "Versorgungsfreibetrag Ehegatte (§ 17 ErbStG)"]],
     punkte: [
       "**Klasse I** (§ 15 Abs. 1 ErbStG): Ehegatte, Lebenspartner, Kinder, Stiefkinder, deren Abkömmlinge, **Eltern bei Erwerb von Todes wegen**.",
       "**Klasse II:** Eltern bei Schenkung, Geschwister, Nichten/Neffen, Stiefeltern, Schwiegerkinder, Schwiegereltern, geschiedener Ehegatte. **Klasse III:** alle übrigen, z. B. Lebensgefährte, Cousin.",
@@ -84,7 +84,7 @@ export const KOMPAKT_BEWR = {
   },
   "bew-befreiungen": {
     satz: "Hausrat und andere bewegliche Gegenstände bleiben bis zu **Freibeträgen** steuerfrei; der Rückfall geschenkten Vermögens an Eltern und übliche Gelegenheitsgeschenke sind ganz befreit.",
-    zahlen: [["41.000 €", "Hausrat, Klasse I"], ["12.000 €", "andere bewegliche Gegenstände, Klasse I"], ["12.000 €", "Hausrat und andere bewegliche Gegenstände zusammen, Klassen II und III"]],
+    zahlen: [["41.000 €", "Hausrat, Klasse I (§ 13 Abs. 1 Nr. 1 ErbStG, Buchstabe a)"], ["12.000 €", "andere bewegliche Gegenstände, Klasse I (§ 13 Abs. 1 Nr. 1 ErbStG, Buchstabe b)"], ["12.000 €", "Hausrat und andere bewegliche Gegenstände zusammen, Klassen II und III (§ 13 Abs. 1 Nr. 1 ErbStG, Buchstabe c)"]],
     punkte: [
       "**Hausrat** (§ 13 Abs. 1 Nr. 1 ErbStG): Klasse I Hausrat bis 41.000 € (a) **plus** andere bewegliche Gegenstände bis 12.000 € (b); Klassen II/III zusammen 12.000 € (c). Nur der **übersteigende** Teil ist steuerpflichtig.",
       "**Ausgenommen** (§ 13 Abs. 1 Nr. 1 S. 2 ErbStG): Zahlungsmittel, Wertpapiere, **Münzen, Edelmetalle, Edelsteine, Perlen** und Gegenstände des Grund- oder Betriebsvermögens.",
@@ -98,7 +98,7 @@ export const KOMPAKT_BEWR = {
   },
   "bew-familienheim": {
     satz: "Das **Familienheim** bleibt steuerfrei – unter Ehegatten auch zu Lebzeiten und ohne Wertgrenze, von Todes wegen nur bei **Selbstnutzung für zehn Jahre**, bei Kindern bis **200 m²**.",
-    zahlen: [["10 Jahre", "Selbstnutzung nach Erbfall (Nr. 4b, 4c)"], ["200 m²", "Flächengrenze für Kinder (Nr. 4c)"]],
+    zahlen: [["10 Jahre", "Selbstnutzung nach Erbfall (Nr. 4b, 4c) (§ 13 Abs. 1 Nr. 4b S. 5, Nr. 4c S. 5 ErbStG)"], ["200 m²", "Flächengrenze für Kinder (Nr. 4c) (§ 13 Abs. 1 Nr. 4c S. 1 ErbStG)"]],
     punkte: [
       "**Nr. 4a – Schenkung unter Ehegatten/Lebenspartnern:** bebautes Grundstück (§ 181 Abs. 1 Nr. 1–5 BewG) im Inland, in der EU oder im EWR, darin eine selbst bewohnte Wohnung; keine Wert-, Flächen- oder Behaltensgrenze.",
       "**Nr. 4b – Erwerb von Todes wegen durch Ehegatten:** Erblasser hat bis zum Erbfall selbst darin gewohnt (oder war aus **zwingenden Gründen** gehindert); beim Erwerber **unverzüglich** zur Selbstnutzung bestimmt; **zehn Jahre** Selbstnutzung, sonst rückwirkender Wegfall.",
@@ -127,7 +127,7 @@ export const KOMPAKT_BEWR = {
   },
   "bew-betrieb": {
     satz: "Begünstigtes Betriebsvermögen ist zu **85 %** (Regelverschonung) oder auf Antrag zu **100 %** (Option, Verwaltungsvermögen höchstens 20 %) steuerfrei – schädliches Verwaltungsvermögen bleibt voll steuerpflichtig.",
-    zahlen: [["85 %", "Verschonungsabschlag Regelverschonung"], ["100 %", "Optionsverschonung"], ["150.000 €", "Abzugsbetrag, abschmelzend um 50 % des Mehrbetrags"], ["25 %", "Mindestbeteiligung KapG (mehr als)"], ["10 %", "unschädliches Verwaltungsvermögen"], ["20 % / 90 %", "Grenze Option / volle Versagung"], ["26 Mio. €", "Grenze der Regelverschonung"]],
+    zahlen: [["85 %", "Verschonungsabschlag Regelverschonung (§ 13a Abs. 1 S. 1 ErbStG)"], ["100 %", "Optionsverschonung (§ 13a Abs. 10 S. 1 Nr. 1 ErbStG)"], ["150.000 €", "Abzugsbetrag, abschmelzend um 50 % des Mehrbetrags (§ 13a Abs. 2 S. 1, 2 ErbStG)"], ["25 %", "Mindestbeteiligung KapG (mehr als) (§ 13b Abs. 1 Nr. 3 ErbStG)"], ["10 %", "unschädliches Verwaltungsvermögen (§ 13b Abs. 7 S. 1 ErbStG)"], ["20 % / 90 %", "Grenze Option / volle Versagung (§ 13a Abs. 10 S. 2 ErbStG, § 13b Abs. 2 S. 2 ErbStG)"], ["26 Mio. €", "Grenze der Regelverschonung (§ 13a Abs. 1 S. 1 ErbStG)"]],
     schema: [
       "**Begünstigungsfähig?** (§ 13b Abs. 1 ErbStG) – Betrieb, Mitunternehmeranteil, KapG-Anteil > 25 %",
       "Verwaltungsvermögen **≥ 90 %** → nichts begünstigt (§ 13b Abs. 2 S. 2 ErbStG)",
@@ -148,7 +148,7 @@ export const KOMPAKT_BEWR = {
   },
   "bew-steuer": {
     satz: "Die Steuer ergibt sich aus **Steuerklasse und Wertstufe**; knapp über einer Wertgrenze begrenzt der **Härteausgleich** die Mehrsteuer.",
-    zahlen: [["7–30 %", "Steuerklasse I"], ["15–43 %", "Steuerklasse II"], ["30 / 50 %", "Steuerklasse III"], ["50 €", "Kleinbetragsgrenze (§ 22 ErbStG)"]],
+    zahlen: [["7–30 %", "Steuerklasse I (§ 19 Abs. 1 ErbStG)"], ["15–43 %", "Steuerklasse II (§ 19 Abs. 1 ErbStG)"], ["30 / 50 %", "Steuerklasse III (§ 19 Abs. 1 ErbStG)"], ["50 €", "Kleinbetragsgrenze (§ 22 ErbStG)"]],
     schema: [
       "Satz nach § 19 Abs. 1 ErbStG (Tabelle) auf den **ganzen** steuerpflichtigen Erwerb",
       "**Härteausgleich?** Steuer an der letzten Wertgrenze + **½** (Satz bis 30 %) bzw. **¾** (Satz über 30 %) des übersteigenden Betrags (§ 19 Abs. 3 ErbStG)",
@@ -196,7 +196,7 @@ export const KOMPAKT_BEWR = {
   },
   "bew-bebaut": {
     satz: "Erst die **Grundstücksart** (§ 181 BewG) bestimmt das **Verfahren** (§ 182 BewG): Vergleichswert für Wohnungseigentum und Ein-/Zweifamilienhäuser, Ertragswert für Mietwohn-, Geschäfts- und gemischt genutzte Grundstücke mit üblicher Miete, sonst Sachwert.",
-    zahlen: [["2", "Wohnungen höchstens im Ein-/Zweifamilienhaus"], ["> 80 %", "Wohnzwecke → Mietwohngrundstück"], ["> 80 %", "betriebliche Zwecke → Geschäftsgrundstück"], ["< 50 %", "Mitbenutzung im Ein-/Zweifamilienhaus unschädlich"], ["20 m²", "Mindestgröße einer Wohnung (Regel)"]],
+    zahlen: [["2", "Wohnungen höchstens im Ein-/Zweifamilienhaus (§ 181 Abs. 2 S. 1 BewG)"], ["> 80 %", "Wohnzwecke → Mietwohngrundstück (§ 181 Abs. 3 BewG)"], ["> 80 %", "betriebliche Zwecke → Geschäftsgrundstück (§ 181 Abs. 6 BewG)"], ["< 50 %", "Mitbenutzung im Ein-/Zweifamilienhaus unschädlich (§ 181 Abs. 2 S. 2 BewG)"], ["20 m²", "Mindestgröße einer Wohnung (Regel) (§ 181 Abs. 9 S. 4 BewG)"]],
     schema: [
       "Benutzbares Gebäude? → bebautes Grundstück (§ 180 BewG)",
       "Grundstücksart nach Wohn- und Nutzfläche bestimmen (§ 181 BewG)",
@@ -214,7 +214,7 @@ export const KOMPAKT_BEWR = {
   },
   "bew-ertragswert": {
     satz: "Ertragswert = **Bodenwert + Gebäudeertragswert**; der Gebäudeertragswert ist der um die Bodenwertverzinsung gekürzte Reinertrag, kapitalisiert mit dem **Vervielfältiger** aus Liegenschaftszins und Restnutzungsdauer.",
-    zahlen: [["3,5 %", "Liegenschaftszins Mietwohngrundstücke"], ["4,5 %", "gemischt genutzt, gewerblich bis 50 %"], ["5,0 %", "gemischt genutzt, gewerblich über 50 %"], ["6,0 %", "Geschäftsgrundstücke"], ["30 %", "Mindest-Restnutzungsdauer der Gesamtnutzungsdauer"], ["80 Jahre", "Gesamtnutzungsdauer Wohn- und gemischt genutzte Gebäude (Anlage 22)"], ["20 %", "Mietabweichung, ab der die übliche Miete gilt"], ["1 Jahr", "Kaufpreisnachweis vor oder nach dem Stichtag (§ 198 BewG)"]],
+    zahlen: [["3,5 %", "Liegenschaftszins Mietwohngrundstücke (§ 188 Abs. 2 S. 2 Nr. 1 BewG)"], ["4,5 %", "gemischt genutzt, gewerblich bis 50 % (§ 188 Abs. 2 S. 2 Nr. 2 BewG)"], ["5,0 %", "gemischt genutzt, gewerblich über 50 % (§ 188 Abs. 2 S. 2 Nr. 3 BewG)"], ["6,0 %", "Geschäftsgrundstücke (§ 188 Abs. 2 S. 2 Nr. 4 BewG)"], ["30 %", "Mindest-Restnutzungsdauer der Gesamtnutzungsdauer (§ 185 Abs. 3 S. 5 BewG)"], ["80 Jahre", "Gesamtnutzungsdauer Wohn- und gemischt genutzte Gebäude (Anlage 22)"], ["20 %", "Mietabweichung, ab der die übliche Miete gilt (§ 186 Abs. 2 S. 1 Nr. 2 BewG)"], ["1 Jahr", "Kaufpreisnachweis vor oder nach dem Stichtag (§ 198 BewG)"]],
     schema: [
       "Bodenwert = Fläche × Bodenrichtwert (§ 184 Abs. 2 BewG, § 179 BewG)",
       "Rohertrag = Jahresnettokaltmiete ohne Umlagen; übliche Miete bei Eigennutzung, Leerstand oder Abweichung > 20 % (§ 186 BewG)",

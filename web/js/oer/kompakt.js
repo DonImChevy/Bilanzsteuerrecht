@@ -4,7 +4,7 @@
 export const KOMPAKT_OER = {
   "oer-staatsziele": {
     satz: "Deutschland ist ein Staat, weil es Staatsgebiet, Staatsvolk und Staatsgewalt hat – und das Grundgesetz ist seine Verfassung, deren Grundprinzipien selbst der verfassungsändernde Gesetzgeber nicht antasten darf (Präambel, Art. 20, Art. 79 Abs. 3 GG).",
-    zahlen: [["3", "Elemente des Staates"], ["5", "Staatsstrukturprinzipien"], ["⅔ + ⅔", "Verfassungsänderung (BT-Mitglieder + BR-Stimmen)"]],
+    zahlen: [["3", "Elemente des Staates: Staatsgebiet, Staatsvolk, Staatsgewalt (Drei-Elemente-Lehre)"], ["5", "Staatsstrukturprinzipien (Art. 20 Abs. 1–3 GG)"], ["⅔ + ⅔", "Verfassungsänderung (BT-Mitglieder + BR-Stimmen) (Art. 79 Abs. 2 GG)"]],
     punkte: [
       "**Drei-Elemente-Lehre (Jellinek):** **Staatsgebiet** (abgegrenzter Teil der Erdoberfläche), **Staatsvolk** (dauerhaft verbundene Menschen, v. a. Staatsangehörige), **Staatsgewalt** (wirksame, nach innen und außen unabhängige Herrschaftsmacht) (im GG: Staatsgebiet Präambel S. 2 GG, Staatsvolk Art. 116 Abs. 1 GG, Staatsgewalt Art. 20 Abs. 2 GG).",
       "**Das Grundgesetz ist Verfassung:** Es regelt die Grundordnung des Staates (Organe, Verfahren, Grundrechte) und steht im Rang über allen anderen Gesetzen. Die Bezeichnung „Grundgesetz“ ändert daran nichts; den Geltungsbereich nennt die **Präambel** (alle 16 Länder), seit 1990 gilt es für das ganze deutsche Volk (Art. 146 GG).",
@@ -37,7 +37,7 @@ export const KOMPAKT_OER = {
 
   "oer-demokratie": {
     satz: "Alle Staatsgewalt geht vom Volk aus – sie wird in Wahlen und Abstimmungen und durch besondere Organe ausgeübt, und jedes staatliche Handeln braucht eine Legitimationskette zurück zum Volk (Art. 20 Abs. 2 GG).",
-    zahlen: [["4 Jahre", "Wahlperiode (Art. 39 Abs. 1 GG)"], ["Art. 29", "einzige Volksabstimmung auf Bundesebene (Neugliederung)"]],
+    zahlen: [["4 Jahre", "Wahlperiode (Art. 39 Abs. 1 GG)"], ["Art. 29", "einzige Volksabstimmung auf Bundesebene (Neugliederung) (Art. 29 Abs. 2 S. 1 GG)"]],
     punkte: [
       "**Volkssouveränität (Art. 20 Abs. 2 S. 1 GG):** Das Volk ist Träger der Staatsgewalt.",
       "**Repräsentative Demokratie (Art. 20 Abs. 2 S. 2 GG):** Das Volk übt die Staatsgewalt in **Wahlen** und **Abstimmungen** und durch besondere Organe der Gesetzgebung, Verwaltung und Rechtsprechung aus. Volksentscheide auf Bundesebene gibt es nur bei der **Neugliederung des Bundesgebiets** (Art. 29 GG).",
@@ -55,7 +55,7 @@ export const KOMPAKT_OER = {
 
   "oer-rechtsstaat": {
     satz: "Im Rechtsstaat ist alle Staatsgewalt an Recht und Gesetz gebunden, geteilt und kontrolliert – und der Bürger darf darauf vertrauen, dass abgeschlossene Sachverhalte nicht nachträglich verschärft werden (Art. 20 Abs. 2 S. 2, Abs. 3, Art. 28 Abs. 1 S. 1 GG).",
-    zahlen: [["echt", "Rückwirkung grds. unzulässig"], ["unecht", "Rückwirkung grds. zulässig"], ["Art. 103 Abs. 2", "absolutes Rückwirkungsverbot im Strafrecht"]],
+    zahlen: [["echt", "Rückwirkung grds. unzulässig (vgl. Art. 20 Abs. 3 GG)"], ["unecht", "Rückwirkung grds. zulässig (vgl. Art. 20 Abs. 3 GG)"], ["Art. 103 Abs. 2", "absolutes Rückwirkungsverbot im Strafrecht (Art. 103 Abs. 2 GG)"]],
     schema: [
       "Belastendes Gesetz mit Wirkung für die Vergangenheit?",
       "Sachverhalt bei Verkündung abgeschlossen? → echte Rückwirkung (grds. unzulässig, nur ausnahmsweise erlaubt)",
@@ -80,7 +80,7 @@ export const KOMPAKT_OER = {
 
   "oer-bundesstaat": {
     satz: "Bund und Länder sind beide Staaten mit eigener Staatsgewalt – grundsätzlich sind die Länder zuständig, aber Bundesrecht bricht Landesrecht (Art. 20 Abs. 1, Art. 30, Art. 31 GG).",
-    zahlen: [["16", "Länder"], ["Art. 30", "Länder grundsätzlich zuständig"], ["Art. 31", "Bundesrecht bricht Landesrecht"]],
+    zahlen: [["16", "Länder (Präambel S. 2 GG)"], ["Art. 30", "Länder grundsätzlich zuständig (Art. 30 GG)"], ["Art. 31", "Bundesrecht bricht Landesrecht (Art. 31 GG)"]],
     punkte: [
       "**Bundesstaat (Art. 20 Abs. 1 GG):** Zusammenschluss von Staaten (Ländern) zu einem Gesamtstaat (Bund); beide haben **Staatsqualität**.",
       "**Kompetenzverteilung (Art. 30 GG):** Die Ausübung staatlicher Befugnisse ist **Sache der Länder**, soweit das GG nichts anderes regelt – für die Gesetzgebung konkretisiert in Art. 70 GG, für die Verwaltung in Art. 83 GG.",
@@ -98,7 +98,7 @@ export const KOMPAKT_OER = {
 
   "oer-parteien": {
     satz: "Parteien wirken bei der politischen Willensbildung des Volkes mit – sie sind frei gegründet, müssen innerlich demokratisch sein, dürfen nur vom Bundesverfassungsgericht verboten werden und haben Anspruch auf Chancengleichheit (Art. 21 Abs. 1, 2, 4 GG).",
-    zahlen: [["6 Jahre", "ohne Wahlteilnahme → Verlust der Parteieigenschaft"], ["35.000 €", "Großspende sofort anzuzeigen"], ["500 €", "Grenze für anonyme Spenden"]],
+    zahlen: [["6 Jahre", "ohne Wahlteilnahme → Verlust der Parteieigenschaft (§ 2 Abs. 2 S. 1 PartG)"], ["35.000 €", "Großspende sofort anzuzeigen (§ 25 Abs. 3 S. 2 PartG)"], ["500 €", "Grenze für anonyme Spenden (§ 25 Abs. 2 Nr. 6 PartG)"]],
     punkte: [
       "**Aufgabe (Art. 21 Abs. 1 S. 1 GG):** Mitwirkung bei der politischen Willensbildung – Bindeglied zwischen Volk und Staatsorganen.",
       "**Begriff (§ 2 Abs. 1 PartG):** Vereinigung von Bürgern, die dauernd oder für längere Zeit auf die politische Willensbildung einwirken und an der Vertretung des Volkes im Bundestag oder einem Landtag mitwirken will; Ernsthaftigkeit (Organisation, Mitglieder). Ohne Wahlteilnahme seit **6 Jahren** verliert sie die Rechtsstellung (§ 2 Abs. 2 PartG).",
@@ -116,7 +116,7 @@ export const KOMPAKT_OER = {
 
   "oer-bundestag": {
     satz: "Der Bundestag ist das einzige unmittelbar vom Volk gewählte Bundesorgan – seine Abgeordneten sind Vertreter des ganzen Volkes, an Aufträge und Weisungen nicht gebunden (Art. 38 Abs. 1 GG).",
-    zahlen: [["630", "Mitglieder"], ["5 %", "Mitglieder für Fraktionsstärke (§ 10 GOBT)"], ["30 Tage", "spätestens erste Sitzung nach der Wahl"]],
+    zahlen: [["630", "Mitglieder (§ 1 Abs. 1 S. 1 BWahlG)"], ["5 %", "Mitglieder für Fraktionsstärke (§ 10 GOBT)"], ["30 Tage", "spätestens erste Sitzung nach der Wahl (Art. 39 Abs. 2 GG)"]],
     punkte: [
       "**Freies Mandat (Art. 38 Abs. 1 S. 2 GG):** Abgeordnete sind Vertreter des ganzen Volkes, nur ihrem Gewissen unterworfen. **Fraktionsdisziplin** (politischer Druck) ist zulässig, **Fraktionszwang** (rechtlich verbindliche Weisungen, Sanktionen wie Mandatsentzug) nicht.",
       "**Schutz der Abgeordneten:** **Indemnität** (Art. 46 Abs. 1 GG: keine Verfolgung wegen Abstimmungen und Äußerungen im Bundestag, außer verleumderische Beleidigungen), **Immunität** (Art. 46 Abs. 2 GG: Strafverfolgung nur mit Genehmigung des Bundestages), Zeugnisverweigerungsrecht (Art. 47 GG), Entschädigung (Art. 48 Abs. 3 GG).",
@@ -138,7 +138,7 @@ export const KOMPAKT_OER = {
 
   "oer-wahl": {
     satz: "Die Bundestagswahl ist allgemein, unmittelbar, frei, gleich und geheim – gewählt wird nach personalisierter Verhältniswahl, in der allein die Zweitstimmen die Sitzverteilung bestimmen (Art. 38 Abs. 1 S. 1 GG, § 1 Abs. 1 BWahlG).",
-    zahlen: [["5", "Wahlrechtsgrundsätze (Art. 38 Abs. 1 S. 1 GG)"], ["299", "Wahlkreise"], ["5 %", "Sperrklausel"], ["3", "Direktmandate – Grundmandatsklausel"]],
+    zahlen: [["5", "Wahlrechtsgrundsätze (Art. 38 Abs. 1 S. 1 GG)"], ["299", "Wahlkreise (§ 1 Abs. 3 BWahlG)"], ["5 %", "Sperrklausel (§ 4 Abs. 2 S. 2 Nr. 2 BWahlG)"], ["3", "Direktmandate – Grundmandatsklausel (gilt nach dem Urteil des BVerfG vom 30.07.2024 bis zu einer Neuregelung fort)"]],
     punkte: [
       "**Allgemein:** Alle Deutschen ab 18 dürfen wählen – Ausschlüsse nur aus zwingenden Gründen. **Unmittelbar:** keine Wahlmänner, Stimme wirkt direkt. **Frei:** ohne Zwang und unzulässige Beeinflussung. **Gleich:** gleicher Zählwert und grundsätzlich gleicher Erfolgswert. **Geheim:** niemand erfährt, wie man gewählt hat (Art. 38 Abs. 1 S. 1, Abs. 2 GG; § 12 Abs. 1 BWahlG).",
       "**Ungeschriebener Grundsatz:** Öffentlichkeit der Wahl (Art. 38 i. V. m. Art. 20 Abs. 1, 2 GG) – Wahlvorgang und Auszählung sind öffentlich kontrollierbar.",
@@ -157,7 +157,7 @@ export const KOMPAKT_OER = {
 
   "oer-bundesrat": {
     satz: "Über den Bundesrat wirken die Länder an Gesetzgebung und Verwaltung des Bundes mit – seine Mitglieder sind Regierungsmitglieder der Länder und müssen die Stimmen ihres Landes einheitlich abgeben (Art. 50, Art. 51 Abs. 1, 3 GG).",
-    zahlen: [["69", "Stimmen insgesamt"], ["3–6", "Stimmen je Land"], ["35", "absolute Mehrheit"]],
+    zahlen: [["69", "Stimmen insgesamt (Art. 51 Abs. 2 GG)"], ["3–6", "Stimmen je Land (Art. 51 Abs. 2 GG)"], ["35", "absolute Mehrheit (Art. 52 Abs. 3 S. 1 GG)"]],
     punkte: [
       "**Aufgabe (Art. 50 GG):** Mitwirkung der Länder bei Gesetzgebung und Verwaltung des Bundes und in Angelegenheiten der EU.",
       "**Zusammensetzung (Art. 51 Abs. 1 GG):** **Mitglieder der Landesregierungen**, die sie bestellen und abberufen – keine Wahl, keine Wahlperiode („ewiges Organ“).",
@@ -175,7 +175,7 @@ export const KOMPAKT_OER = {
 
   "oer-bundespraesident": {
     satz: "Der Bundespräsident ist Staatsoberhaupt mit überwiegend repräsentativen Aufgaben – er prüft Gesetze vor der Ausfertigung, darf sie aber nur bei formellen oder offenkundigen materiellen Fehlern stoppen (Art. 82 Abs. 1 S. 1 GG).",
-    zahlen: [["5 Jahre", "Amtszeit, einmal wiederwählbar"], ["40", "Mindestalter"], ["2 + 1", "Wahlgänge mit absoluter, dann relativer Mehrheit"]],
+    zahlen: [["5 Jahre", "Amtszeit, einmal wiederwählbar (Art. 54 Abs. 2 GG)"], ["40", "Mindestalter (Art. 54 Abs. 1 S. 2 GG)"], ["2 + 1", "Wahlgänge mit absoluter, dann relativer Mehrheit (Art. 54 Abs. 6 GG)"]],
     punkte: [
       "**Wahl (Art. 54 GG):** durch die **Bundesversammlung** (Mitglieder des Bundestages + gleich viele Vertreter der Länderparlamente), ohne Aussprache; gewählt ist, wer im 1. oder 2. Wahlgang die Mehrheit der Mitglieder erhält, im 3. Wahlgang genügt die relative Mehrheit. Wählbar: Deutsche ab 40 Jahren; Amtszeit 5 Jahre, eine anschließende Wiederwahl.",
       "**Aufgaben:** völkerrechtliche Vertretung (Art. 59 GG), Ernennung und Entlassung von Bundeskanzler und Ministern (Art. 63, 64 GG), Beamten und Richtern (Art. 60 GG), Begnadigung, Auflösung des Bundestages (Art. 63 Abs. 4, Art. 68 GG).",
@@ -193,7 +193,7 @@ export const KOMPAKT_OER = {
 
   "oer-bundesregierung": {
     satz: "Die Bundesregierung besteht aus Kanzler und Ministern; der Kanzler wird vom Bundestag gewählt, bestimmt die Richtlinien der Politik und kann nur durch ein konstruktives Misstrauensvotum gestürzt werden (Art. 62, Art. 63 Abs. 1, Art. 65 S. 1, Art. 67 Abs. 1 GG).",
-    zahlen: [["316", "Kanzlermehrheit bei 630 Mitgliedern"], ["14 Tage", "zweite Wahlphase"], ["48 Std.", "Frist vor Abstimmung Art. 67/68"], ["21 Tage", "Auflösungsfrist nach Art. 68"]],
+    zahlen: [["316", "Kanzlermehrheit bei 630 Mitgliedern (Art. 63 Abs. 2 S. 1 GG, Art. 121 GG)"], ["14 Tage", "zweite Wahlphase (Art. 63 Abs. 3 GG)"], ["48 Std.", "Frist vor Abstimmung Art. 67/68"], ["21 Tage", "Auflösungsfrist nach Art. 68"]],
     schema: [
       "1. Phase: Vorschlag des Bundespräsidenten, Wahl ohne Aussprache mit Mehrheit der Mitglieder (Art. 63 Abs. 1, 2 GG)",
       "2. Phase: binnen 14 Tagen eigene Kandidaten des Bundestages, Mehrheit der Mitglieder (Art. 63 Abs. 3 GG)",
@@ -216,7 +216,7 @@ export const KOMPAKT_OER = {
 
   "oer-bverfg": {
     satz: "Das Bundesverfassungsgericht ist Hüter der Verfassung – es entscheidet nur auf Antrag in den im Grundgesetz genannten Verfahren, und seine Entscheidungen binden alle Staatsorgane (Art. 92, Art. 94 Abs. 1, 4 S. 1 GG).",
-    zahlen: [["16", "Richter in 2 Senaten"], ["12 Jahre", "Amtszeit, keine Wiederwahl"], ["⅔", "Wahl durch Bundestag bzw. Bundesrat"]],
+    zahlen: [["16", "Richter in 2 Senaten (Art. 93 Abs. 2 S. 1, 2 GG)"], ["12 Jahre", "Amtszeit, keine Wiederwahl (Art. 93 Abs. 3 GG)"], ["⅔", "Mehrheit für die Wahl der Richter durch Bundestag bzw. Bundesrat (§ 6 Abs. 1 S. 2 BVerfGG, § 7 BVerfGG)"]],
     punkte: [
       "**Verfassungsorgane:** Bundestag, Bundesrat, Bundespräsident, Bundesregierung, Bundesverfassungsgericht (dazu Bundesversammlung und Gemeinsamer Ausschuss) (Art. 38, 50, 54, 62, 93 Abs. 1 GG).",
       "**Zusammensetzung (Art. 93 Abs. 2, 3 GG):** 16 Richter in zwei Senaten, je zur Hälfte von **Bundestag und Bundesrat** mit **Zweidrittelmehrheit** gewählt; 12 Jahre Amtszeit, Altersgrenze 68, keine Wiederwahl.",

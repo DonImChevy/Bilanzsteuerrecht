@@ -387,6 +387,10 @@ export const NORMEN_EST = [
 {
 "abs": "1",
 "text": "Zu den Einkünften aus Kapitalvermögen gehören\n7. Erträge aus sonstigen Kapitalforderungen jeder Art, wenn die Rückzahlung des Kapitalvermögens oder ein Entgelt für die Überlassung des Kapitalvermögens zur Nutzung zugesagt oder geleistet worden ist, auch wenn die Höhe der Rückzahlung oder des Entgelts von einem ungewissen Ereignis abhängt. Dies gilt unabhängig von der Bezeichnung und der zivilrechtlichen Ausgestaltung der Kapitalanlage. Erstattungszinsen im Sinne des § 233a der Abgabenordnung sind Erträge im Sinne des Satzes 1;\n…"
+},
+{
+"abs": "9",
+"text": "Bei der Ermittlung der Einkünfte aus Kapitalvermögen ist als Werbungskosten ein Betrag von 1 000 Euro abzuziehen (Sparer-Pauschbetrag); der Abzug der tatsächlichen Werbungskosten ist ausgeschlossen. Ehegatten, die zusammen veranlagt werden, wird ein gemeinsamer Sparer-Pauschbetrag von 2 000 Euro gewährt. Der gemeinsame Sparer-Pauschbetrag ist bei der Einkunftsermittlung bei jedem Ehegatten je zur Hälfte abzuziehen; sind die Kapitalerträge eines Ehegatten niedriger als 1 000 Euro, so ist der anteilige Sparer-Pauschbetrag insoweit, als er die Kapitalerträge dieses Ehegatten übersteigt, bei dem anderen Ehegatten abzuziehen. Der Sparer-Pauschbetrag und der gemeinsame Sparer-Pauschbetrag dürfen nicht höher sein als die nach Maßgabe des Absatzes 6 verrechneten Kapitalerträge."
 }
 ],
 "auszug": true

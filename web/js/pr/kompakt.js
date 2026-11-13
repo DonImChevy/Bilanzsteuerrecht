@@ -82,7 +82,7 @@ export const KOMPAKT_PR = {
 
   "pr-rechtsobjekte": {
     satz: "Sachen sind nur **körperliche Gegenstände** (§ 90 BGB) – Rechte, Forderungen und Tiere sind keine Sachen; Bestandteile und Zubehör entscheiden, was mit übereignet wird.",
-    zahlen: [["§ 90 BGB", "Sachbegriff"], ["§ 93 BGB/94", "wesentliche Bestandteile"], ["§ 95 BGB", "Scheinbestandteile"], ["§ 97 BGB", "Zubehör"]],
+    zahlen: [["§ 90 BGB", "Sachbegriff"], ["§§ 93, 94 BGB", "wesentliche Bestandteile"], ["§ 95 BGB", "Scheinbestandteile"], ["§ 97 BGB", "Zubehör"]],
     punkte: [
       "**Bewegliche Sachen** werden nach §§ 929 ff. BGB übereignet, **Grundstücke** nach §§ 873, 925 BGB.",
       "**Vertretbar** (§ 91 BGB): nach Zahl, Maß, Gewicht bestimmbar (Geld, Serienware). **Verbrauchbar** (§ 92 BGB): zum Verbrauch oder zur Veräußerung bestimmt.",
@@ -148,7 +148,7 @@ export const KOMPAKT_PR = {
 
   "pr-rechtsgeschaefte": {
     satz: "Verpflichten und Verfügen sind **getrennte** Geschäfte, deren Wirksamkeit **unabhängig** voneinander ist – der Kaufvertrag macht den Käufer noch nicht zum Eigentümer.",
-    zahlen: [["3", "Rechtsgeschäfte beim Barkauf"], ["6", "Willenserklärungen beim Barkauf"]],
+    zahlen: [["3", "Rechtsgeschäfte beim Barkauf (§ 433 BGB, § 929 S. 1 BGB)"], ["6", "Willenserklärungen beim Barkauf"]],
     punkte: [
       "**Einseitige** Rechtsgeschäfte (Kündigung, Anfechtung, Testament) und **mehrseitige** (Vertrag, Beschluss). Verträge: einseitig verpflichtend (Schenkung, Bürgschaft), unvollkommen zweiseitig (Leihe, Auftrag), **gegenseitig/synallagmatisch** (Kauf, Miete, Werkvertrag – „do ut des“, §§ 320 ff. BGB).",
       "**Trennungsprinzip:** Verpflichtungsgeschäft (§ 433 BGB) begründet nur Pflichten; Verfügungsgeschäft (§ 929 BGB, § 398 BGB) überträgt, belastet, ändert oder hebt ein Recht unmittelbar auf.",

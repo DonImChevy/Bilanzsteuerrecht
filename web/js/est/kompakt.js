@@ -4,7 +4,7 @@
 export const KOMPAKT_EST = {
   "est-grundlagen": {
     satz: "Die Einkommensteuer besteuert das Einkommen natürlicher Personen für ein Kalenderjahr – erhoben wird sie teils per Abzug an der Quelle, teils durch Veranlagung (§ 1 EStG, § 2 Abs. 7 S. 1 EStG, § 25 Abs. 1 EStG).",
-    zahlen: [["42,5 / 42,5 / 15 %", "Aufkommen Bund / Länder / Gemeinden"], ["25 %", "Abgeltungsteuer auf Kapitalerträge"], ["Kalenderjahr", "Veranlagungszeitraum"]],
+    zahlen: [["42,5 / 42,5 / 15 %", "Aufkommen Bund / Länder / Gemeinden (Art. 106 Abs. 3, 5 GG)"], ["25 %", "Abgeltungsteuer auf Kapitalerträge (§ 32d Abs. 1 S. 1 EStG)"], ["Kalenderjahr", "Veranlagungszeitraum (§ 25 Abs. 1 EStG)"]],
     punkte: [
       "**Einordnung:** Personensteuer (knüpft an die persönliche Leistungsfähigkeit an), direkte Steuer (Steuerschuldner = Steuerträger), **Gemeinschaftsteuer** (Art. 106 Abs. 3 GG): Bund und Länder je 42,5 %, Gemeinden 15 % (Art. 106 Abs. 5 GG).",
       "**Gesetzgebung:** konkurrierende Kompetenz des Bundes (Art. 105 Abs. 2 GG), Zustimmung des Bundesrats nötig (Art. 105 Abs. 3 GG); Verwaltung durch die Länder (Art. 108 Abs. 2 GG).",
@@ -46,7 +46,7 @@ export const KOMPAKT_EST = {
 
   "est-einkuenfte": {
     satz: "Steuerbar ist nur, was unter eine der sieben Einkunftsarten fällt – bei den ersten drei zählt der Gewinn, bei den übrigen vier der Überschuss der Einnahmen über die Werbungskosten (§ 2 Abs. 1, 2 EStG).",
-    zahlen: [["7", "Einkunftsarten (§ 2 Abs. 1 EStG)"], ["3 + 4", "Gewinn- und Überschusseinkünfte"]],
+    zahlen: [["7", "Einkunftsarten (§ 2 Abs. 1 EStG)"], ["3 + 4", "Gewinn- und Überschusseinkünfte (§ 2 Abs. 2 S. 1 EStG)"]],
     punkte: [
       "**Gewinneinkunftsarten (§ 2 Abs. 2 S. 1 Nr. 1 EStG):** Land- und Forstwirtschaft (§ 13 EStG), **Gewerbebetrieb** (§ 15 EStG), **selbständige Arbeit** (§ 18 EStG) → Gewinn nach §§ 4–7k EStG.",
       "**Überschusseinkunftsarten (§ 2 Abs. 2 S. 1 Nr. 2 EStG):** **nichtselbständige Arbeit** (§ 19 EStG), Kapitalvermögen (§ 20 EStG), **Vermietung und Verpachtung** (§ 21 EStG), sonstige Einkünfte (§ 22 EStG, z. B. Renten, private Veräußerungsgeschäfte § 23 EStG) → Einnahmen (§ 8 EStG) − Werbungskosten (§§ 9, 9a EStG).",
@@ -64,7 +64,7 @@ export const KOMPAKT_EST = {
 
   "est-zve": {
     satz: "Vom Einkommen zur Steuer führt ein festes Schema: Summe der Einkünfte, Gesamtbetrag der Einkünfte, Einkommen, zu versteuerndes Einkommen (§ 2 Abs. 3–5 EStG). Das vollständige amtliche Schema steht in R 2 Abs. 1 EStR, der Weg zur festzusetzenden Steuer in R 2 Abs. 2 EStR.",
-    zahlen: [["36 / 72 €", "Sonderausgaben-Pauschbetrag (§ 10c EStG)"], ["4.260 €", "Entlastungsbetrag Alleinerziehende (1 Kind)"], ["1.000 / 2.000 €", "Sparer-Pauschbetrag"]],
+    zahlen: [["36 / 72 €", "Sonderausgaben-Pauschbetrag (§ 10c EStG)"], ["4.260 €", "Entlastungsbetrag Alleinerziehende (1 Kind) (§ 24b Abs. 2 S. 1 EStG)"], ["1.000 / 2.000 €", "Sparer-Pauschbetrag (§ 20 Abs. 9 S. 1, 2 EStG)"]],
     schema: [
       "Einkünfte aus den 7 Einkunftsarten (§ 2 Abs. 1 EStG)",
       "= Summe der Einkünfte (Verlustausgleich)",
@@ -90,7 +90,7 @@ export const KOMPAKT_EST = {
 
   "est-veranlagung": {
     satz: "Nach Ablauf des Jahres wird die ESt per Bescheid festgesetzt – Ehegatten dürfen zwischen Zusammen- und Einzelveranlagung wählen, Arbeitnehmer werden nur in bestimmten Fällen veranlagt (§ 25 Abs. 1 EStG, §§ 26, 46 EStG).",
-    zahlen: [["410 €", "Grenze Nebeneinkünfte (§ 46 Abs. 2 Nr. 1 EStG)"], ["4 Jahre", "Frist Antragsveranlagung"], ["31.07.", "Abgabefrist ohne Berater"]],
+    zahlen: [["410 €", "Grenze Nebeneinkünfte (§ 46 Abs. 2 Nr. 1 EStG)"], ["4 Jahre", "Frist Antragsveranlagung (§ 169 Abs. 2 S. 1 Nr. 2 AO)"], ["31.07.", "Abgabefrist ohne Berater (§ 149 Abs. 2 S. 1 AO)"]],
     punkte: [
       "**Veranlagung (§ 25 Abs. 1 EStG):** Die ESt wird nach Ablauf des Kalenderjahres nach dem Einkommen veranlagt, das der Steuerpflichtige in diesem Jahr bezogen hat. Erklärung nach amtlichem Vordruck/elektronisch (§ 25 Abs. 3, 4 EStG).",
       "**Ehegattenwahlrecht (§ 26 Abs. 1 EStG):** Voraussetzungen: Ehe/eingetragene Lebenspartnerschaft, **beide unbeschränkt steuerpflichtig**, **nicht dauernd getrennt lebend** – an mindestens einem Tag des Jahres gleichzeitig erfüllt.",
@@ -108,7 +108,7 @@ export const KOMPAKT_EST = {
 
   "est-tarif": {
     satz: "Der Tarif setzt nach einer Nullzone stufenlos steigende Grenzsteuersätze an – das zvE wird auf volle Euro abgerundet, die Steuer ebenfalls (§ 32a Abs. 1 S. 1, 6 EStG).",
-    zahlen: [["12.348 €", "Grundfreibetrag 2026"], ["14 → 42 %", "Progressionszonen bis 69.878 €"], ["45 %", "ab 277.826 €"]],
+    zahlen: [["12.348 €", "Grundfreibetrag 2026 (§ 32a Abs. 1 S. 2 Nr. 1 EStG)"], ["14 → 42 %", "Progressionszonen bis 69.878 € (§ 32a Abs. 1 S. 2 Nr. 2, 3 EStG)"], ["45 %", "ab 277.826 € (§ 32a Abs. 1 S. 2 Nr. 5 EStG)"]],
     schema: [
       "zvE auf volle Euro abrunden",
       "Tarifzone bestimmen und nur diese Formel anwenden (§ 32a Abs. 1 EStG)",
@@ -138,7 +138,7 @@ export const KOMPAKT_EST = {
       "Steuerbefreiung nach §§ 3 ff. EStG? Ja → steuerfrei",
       "Nein → steuerbar und steuerpflichtig; Zeitpunkt nach § 11 EStG bzw. § 38a EStG",
     ],
-    zahlen: [["50 €", "Sachbezugsfreigrenze monatlich"], ["60 €", "Aufmerksamkeit (Sachgeschenk, persönlicher Anlass)"], ["1.080 €", "Rabattfreibetrag (§ 8 Abs. 3 EStG)"], ["3.300 € / 960 €", "Übungsleiter / Ehrenamt"], ["960 € + 288 €", "Versorgungsfreibetrag + Zuschlag (Beginn 2026)"]],
+    zahlen: [["50 €", "Sachbezugsfreigrenze monatlich (§ 8 Abs. 2 S. 11 EStG)"], ["60 €", "Aufmerksamkeit (Sachgeschenk, persönlicher Anlass) (R 19.6 Abs. 1 LStR)"], ["1.080 €", "Rabattfreibetrag (§ 8 Abs. 3 EStG)"], ["3.300 € / 960 €", "Übungsleiter / Ehrenamt (§ 3 Nr. 26 EStG, § 3 Nr. 26a EStG)"], ["960 € + 288 €", "Versorgungsfreibetrag + Zuschlag (Beginn 2026) (§ 19 Abs. 2 S. 3 EStG)"]],
     punkte: [
       "**Einnahmen (§ 8 Abs. 1 EStG):** alle Güter in Geld oder Geldeswert, die dem Steuerpflichtigen im Rahmen einer der Einkunftsarten des § 2 Abs. 1 Nr. 4–7 EStG zufließen.",
       "**Sachbezüge (§ 8 Abs. 2 EStG):** mit dem üblichen Endpreis am Abgabeort; steuerfrei bis **50 € im Monat** (Freigrenze – bei Überschreiten ist alles steuerpflichtig).",
@@ -160,7 +160,7 @@ export const KOMPAKT_EST = {
 
   "est-ausgaben": {
     satz: "Kosten der privaten Lebensführung sind nicht abziehbar – auch wenn sie dem Beruf nützen; gemischte Aufwendungen werden aufgeteilt, wenn das objektiv möglich ist (§ 12 Nr. 1 EStG).",
-    zahlen: [["< 10 %", "untergeordneter Anteil – voller Abzug bzw. Ausschluss"]],
+    zahlen: [["< 10 %", "untergeordneter Anteil – voller Abzug bzw. Ausschluss (BMF vom 06.07.2010, Rn. 11, 12)"]],
     punkte: [
       "**§ 12 Nr. 1 EStG:** Aufwendungen für den Haushalt und den Unterhalt der Familie (Wohnung, Essen, Kleidung) sowie für die Lebensführung, die die wirtschaftliche oder gesellschaftliche Stellung mit sich bringt (**Repräsentationsaufwand**), sind nicht abziehbar – auch wenn sie den Beruf fördern.",
       "**Gemischte Aufwendungen (BFH, Großer Senat):** Lassen sich berufliche und private Veranlassung nach **objektiven Kriterien** trennen (Zeit, Fläche, Kilometer), wird **aufgeteilt**. Ist der private oder berufliche Anteil **untergeordnet (unter 10 %)**, gilt alles als beruflich bzw. privat (BMF vom 06.07.2010; vgl. § 12 Nr. 1 S. 2 EStG).",
@@ -177,7 +177,7 @@ export const KOMPAKT_EST = {
 
   "est-zufluss": {
     satz: "Bei Überschusseinkünften zählt das Kalenderjahr, in dem Geld tatsächlich zufließt oder abfließt – mit einer 10-Tage-Ausnahme für regelmäßig wiederkehrende Zahlungen um den Jahreswechsel (§ 11 Abs. 1 S. 1, 2, Abs. 2 S. 1, 2 EStG).",
-    zahlen: [["10 Tage", "kurze Zeit um den Jahreswechsel"], ["> 5 Jahre", "Vorauszahlung für Nutzung – verteilbar"]],
+    zahlen: [["10 Tage", "kurze Zeit um den Jahreswechsel (H 11 EStH „Kurze Zeit“)"], ["> 5 Jahre", "Vorauszahlung für Nutzung – verteilbar (§ 11 Abs. 2 S. 3 EStG)"]],
     punkte: [
       "**Zufluss (§ 11 Abs. 1 S. 1 EStG):** wenn der Steuerpflichtige die **wirtschaftliche Verfügungsmacht** erlangt – Barzahlung, Gutschrift auf dem Konto, Scheck mit Übergabe (bei Deckung).",
       "**Abfluss (§ 11 Abs. 2 S. 1 EStG):** wenn der Steuerpflichtige die wirtschaftliche Verfügungsmacht verliert – bei Überweisung mit Eingang des Auftrags bei der Bank (gedecktes Konto), bei Lastschrift mit Fälligkeit, wenn eine Einzugsermächtigung vorliegt und das Konto gedeckt ist (H 11 EStH).",
@@ -204,7 +204,7 @@ export const KOMPAKT_EST = {
       "Teilweise (gemischte Aufwendung) → objektiver Maßstab: unter 10 % privat → voll abziehbar; unter 10 % beruflich → nicht abziehbar; dazwischen aufteilen",
     ],
     satz: "Werbungskosten sind alle Aufwendungen, die durch die Einnahmeerzielung veranlasst sind – wer weniger als 1.230 € nachweist, bekommt als Arbeitnehmer den Pauschbetrag (§ 9 Abs. 1 S. 1 EStG, § 9a S. 1 Nr. 1 a EStG).",
-    zahlen: [["1.230 €", "Arbeitnehmer-Pauschbetrag"], ["102 €", "Pauschbetrag Versorgungsbezüge/Renten"], ["+ Gewerkschaft", "seit 2026 zusätzlich zum Pauschbetrag"]],
+    zahlen: [["1.230 €", "Arbeitnehmer-Pauschbetrag (§ 9a S. 1 Nr. 1 a EStG)"], ["102 €", "Pauschbetrag Versorgungsbezüge/Renten (§ 9a S. 1 Nr. 1 b, Nr. 3 EStG)"], ["+ Gewerkschaft", "seit 2026 zusätzlich zum Pauschbetrag (§ 9a S. 3 EStG)"]],
     punkte: [
       "**Definition (§ 9 Abs. 1 S. 1 EStG):** Aufwendungen zur **Erwerbung, Sicherung und Erhaltung** der Einnahmen – abzuziehen bei der Einkunftsart, bei der sie erwachsen sind. Auch vorweggenommene (Bewerbung) und nachträgliche WK sind möglich.",
       "**Katalog (§ 9 Abs. 1 S. 3 EStG):** Beiträge zu Berufsverbänden/**Gewerkschaften** (Nr. 3), Wege zur ersten Tätigkeitsstätte (Nr. 4), Reisekosten (Nr. 4a, 5a), doppelte Haushaltsführung (Nr. 5), **Arbeitsmittel** (Nr. 6), AfA (Nr. 7) – nur Beispiele („auch“).",
@@ -220,7 +220,7 @@ export const KOMPAKT_EST = {
 
   "est-arbeitsmittel": {
     satz: "Arbeitsmittel sind Gegenstände, die unmittelbar der beruflichen Tätigkeit dienen – bis 800 € ohne USt sofort abziehbar, sonst über die Nutzungsdauer (§ 9 Abs. 1 S. 3 Nr. 6, 7 EStG).",
-    zahlen: [["800 €", "GWG-Grenze ohne USt (952 € brutto)"], ["brutto", "abziehbar beim Arbeitnehmer"], ["10 %", "Grenze für private bzw. berufliche Mitbenutzung"], ["1 Jahr", "Nutzungsdauer Computer und Software"]],
+    zahlen: [["800 €", "GWG-Grenze ohne USt (952 € brutto) (§ 9 Abs. 1 S. 3 Nr. 7 S. 2 EStG, § 6 Abs. 2 S. 1 EStG)"], ["brutto", "abziehbar beim Arbeitnehmer (§ 9b Abs. 1 EStG)"], ["10 %", "Grenze für private bzw. berufliche Mitbenutzung (BMF vom 06.07.2010, Rn. 11, 12)"], ["1 Jahr", "Nutzungsdauer Computer und Software (BMF vom 22.02.2022)"]],
     schema: [
       "Arbeitsmittel? Beruflicher Gegenstand oder Lebensführung (§ 12 Nr. 1 EStG)",
       "Beruflicher Anteil (unter 10 % privat → voll; unter 10 % beruflich → nichts)",
@@ -245,7 +245,7 @@ export const KOMPAKT_EST = {
 
   "est-homeoffice": {
     satz: "Ein häusliches Arbeitszimmer ist nur abziehbar, wenn es den Mittelpunkt der gesamten Tätigkeit bildet; sonst gibt es für Home-Office-Tage 6 € je Tag, höchstens 1.260 € im Jahr (§ 4 Abs. 5 S. 1 Nr. 6b, 6c EStG i. V. m. § 9 Abs. 5 S. 1 EStG).",
-    zahlen: [["6 €", "Tagespauschale je Home-Office-Tag"], ["1.260 €", "Höchstbetrag Tagespauschale = Jahrespauschale Arbeitszimmer"], ["1/12", "Kürzung je Monat ohne Mittelpunkt"], ["210 Tage", "erreichen den Höchstbetrag"]],
+    zahlen: [["6 €", "Tagespauschale je Home-Office-Tag (§ 4 Abs. 5 S. 1 Nr. 6c S. 1 EStG)"], ["1.260 €", "Höchstbetrag Tagespauschale = Jahrespauschale Arbeitszimmer (§ 4 Abs. 5 S. 1 Nr. 6b S. 4, Nr. 6c S. 1 EStG)"], ["1/12", "Kürzung je Monat ohne Mittelpunkt (§ 4 Abs. 5 S. 1 Nr. 6b S. 4 EStG)"], ["210 Tage", "erreichen den Höchstbetrag"]],
     schema: [
       "Häusliches Arbeitszimmer? (abgeschlossener, büromäßiger Raum, fast nur beruflich)",
       "Mittelpunkt der gesamten Tätigkeit? → tatsächliche Kosten oder Jahrespauschale 1.260 € (Nr. 6b)",
@@ -270,7 +270,7 @@ export const KOMPAKT_EST = {
 
   "est-entfernung": {
     satz: "Für jeden Arbeitstag gibt es 0,38 € pro vollem Kilometer der einfachen Strecke zur ersten Tätigkeitsstätte – unabhängig vom Verkehrsmittel und seit 2026 ab dem ersten Kilometer (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG).",
-    zahlen: [["0,38 €", "je Entfernungskilometer ab 2026"], ["4.500 €", "Höchstbetrag ohne eigenen Pkw"], ["einfache Strecke", "kürzeste Straßenverbindung"]],
+    zahlen: [["0,38 €", "je Entfernungskilometer ab 2026 (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG)"], ["4.500 €", "Höchstbetrag ohne eigenen Pkw (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG)"], ["einfache Strecke", "kürzeste Straßenverbindung (§ 9 Abs. 1 S. 3 Nr. 4 S. 4 EStG)"]],
     schema: [
       "Erste Tätigkeitsstätte bestimmen (§ 9 Abs. 4 EStG)",
       "Arbeitstage mit Aufsuchen der Tätigkeitsstätte zählen",
@@ -296,7 +296,7 @@ export const KOMPAKT_EST = {
 
   "est-reisekosten": {
     satz: "Bei einer Auswärtstätigkeit – beruflich außerhalb von Wohnung und erster Tätigkeitsstätte – sind Fahrt, Verpflegung (nur Pauschalen), Übernachtung und Nebenkosten Werbungskosten (§ 9 Abs. 1 S. 3 Nr. 4a, 5a, Abs. 4a EStG).",
-    zahlen: [["0,30 €", "je gefahrenem km mit dem Pkw (BRKG)"], ["14 €", "mehr als 8 Std. bzw. An- und Abreisetag"], ["28 €", "24 Std. abwesend"], ["5,60 € / 11,20 €", "Kürzung Frühstück / Mittag- oder Abendessen"], ["3 Monate", "Verpflegung an derselben Tätigkeitsstätte"]],
+    zahlen: [["0,30 €", "je gefahrenem km mit dem Pkw (BRKG) (§ 9 Abs. 1 S. 3 Nr. 4a S. 2 EStG)"], ["14 €", "mehr als 8 Std. bzw. An- und Abreisetag (§ 9 Abs. 4a S. 3 Nr. 2, 3 EStG)"], ["28 €", "24 Std. abwesend (§ 9 Abs. 4a S. 3 Nr. 1 EStG)"], ["5,60 € / 11,20 €", "Kürzung Frühstück / Mittag- oder Abendessen (§ 9 Abs. 4a S. 8 EStG)"], ["3 Monate", "Verpflegung an derselben Tätigkeitsstätte (§ 9 Abs. 4a S. 6 EStG)"]],
     schema: [
       "Auswärtstätigkeit? (außerhalb Wohnung und erster Tätigkeitsstätte, § 9 Abs. 4a S. 2 EStG)",
       "Fahrtkosten: gefahrene km (hin und zurück) × 0,30 € oder tatsächliche Kosten",
@@ -324,7 +324,7 @@ export const KOMPAKT_EST = {
   },
   "est-gewinn": {
     satz: "Freiberufler ohne Buchführungspflicht ermitteln ihren Gewinn als Überschuss der Betriebseinnahmen über die Betriebsausgaben (§ 4 Abs. 3 S. 1 EStG) – in der Klausur wird ein vorläufiger Gewinn Schritt für Schritt korrigiert.",
-    zahlen: [["1 %", "des Bruttolistenpreises je Monat (Privatnutzung)"], ["0,03 %", "je Monat und Entfernungskilometer (Wohnung–Betrieb)"], ["0,38 €", "Entfernungspauschale je km (gegenrechnen)"], ["50 %", "betriebliche Nutzung → notwendiges Betriebsvermögen"], ["5 Jahre", "Vorauszahlungen darüber verteilen (§ 11 Abs. 2 S. 3 EStG)"]],
+    zahlen: [["1 %", "des Bruttolistenpreises je Monat (Privatnutzung) (§ 6 Abs. 1 Nr. 4 S. 2 EStG)"], ["0,03 %", "je Monat und Entfernungskilometer (Wohnung–Betrieb) (§ 4 Abs. 5 S. 1 Nr. 6 S. 3 EStG)"], ["0,38 €", "Entfernungspauschale je km (gegenrechnen) (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG)"], ["50 %", "betriebliche Nutzung → notwendiges Betriebsvermögen (R 4.2 Abs. 1 S. 4 EStR)"], ["5 Jahre", "Vorauszahlungen darüber verteilen (§ 11 Abs. 2 S. 3 EStG)"]],
     schema: [
       "Einkunftsart (§ 18 Abs. 1 Nr. 1 EStG) und Gewinnermittlungsart (§ 4 Abs. 3 EStG) begründen",
       "Vorläufiger Gewinn",

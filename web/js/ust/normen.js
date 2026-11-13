@@ -332,6 +332,10 @@ export const NORMEN_UST = [
 {
 "abs": "1",
 "text": "Die Steuer ist, soweit nicht § 20 gilt, nach vereinbarten Entgelten zu berechnen. Besteuerungszeitraum ist das Kalenderjahr. Bei der Berechnung der Steuer ist von der Summe der Umsätze nach § 1 Abs. 1 Nr. 1 und 5 auszugehen, soweit für sie die Steuer in dem Besteuerungszeitraum entstanden und die Steuerschuldnerschaft gegeben ist. Der Steuer sind die nach § 6a Abs. 4 Satz 2, nach § 14c sowie nach § 17 Abs. 1 Satz 6 geschuldeten Steuerbeträge hinzuzurechnen."
+},
+{
+"abs": "2",
+"text": "Von der nach Absatz 1 berechneten Steuer sind vorbehaltlich des § 18 Absatz 9 Satz 3 die in den Besteuerungszeitraum fallenden, nach § 15 abziehbaren Vorsteuerbeträge abzusetzen. § 15a ist zu berücksichtigen."
 }
 ],
 "auszug": true

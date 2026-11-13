@@ -91,7 +91,7 @@ export const KOMPAKT_AO = {
 
   "ao-erklaerung": {
     satz: "Wer erklärungspflichtig ist und zu spät abgibt, muss mit einem Verspätungszuschlag rechnen – im Ermessen nach § 152 Abs. 1 AO, zwingend ab 14 Monaten nach Jahresende (§ 152 Abs. 2 AO).",
-    zahlen: [["31.07.", "Abgabe ohne Berater (§ 149 Abs. 2 AO)"], ["Ende Feb.", "des zweiten Folgejahres mit Berater (§ 149 Abs. 3 AO)"], ["0,25 %", "je angefangenen Monat (§ 152 Abs. 5 AO)"], ["25 €", "Mindestbetrag je Monat bei Jahreserklärungen"], ["25.000 €", "Höchstbetrag (§ 152 Abs. 10 AO)"]],
+    zahlen: [["31.07.", "Abgabe ohne Berater (§ 149 Abs. 2 AO)"], ["Ende Feb.", "des zweiten Folgejahres mit Berater (§ 149 Abs. 3 AO)"], ["0,25 %", "je angefangenen Monat (§ 152 Abs. 5 AO)"], ["25 €", "Mindestbetrag je Monat bei Jahreserklärungen (§ 152 Abs. 5 S. 2 AO)"], ["25.000 €", "Höchstbetrag (§ 152 Abs. 10 AO)"]],
     punkte: [
       "**Erklärungspflicht (§ 149 Abs. 1 AO):** nach den Einzelsteuergesetzen oder auf Aufforderung; sie bleibt nach einer Schätzung bestehen.",
       "**Fristen:** ohne Berater sieben Monate nach Ablauf des Kalenderjahres (§ 149 Abs. 2 AO); mit Berater bis Ende Februar des zweiten Folgejahres (§ 149 Abs. 3 AO), bei Vorabanforderung vier Monate ab Bekanntgabe (§ 149 Abs. 4 AO). Voranmeldungen: 10. Tag nach Ablauf des Zeitraums.",
@@ -189,7 +189,7 @@ export const KOMPAKT_AO = {
 
   "ao-bekanntgabe": {
     satz: "Erst die Bekanntgabe macht den Verwaltungsakt wirksam: Die Behörde muss ihn bewusst dem Richtigen zugehen lassen – per Post gilt er am vierten Tag als bekannt gegeben (§ 122 Abs. 1, 2 AO, § 124 Abs. 1 AO).",
-    zahlen: [["4 Tage", "Bekanntgabefiktion Inland und Datenabruf (seit 2025)"], ["1 Monat", "Bekanntgabefiktion Ausland"]],
+    zahlen: [["4 Tage", "Bekanntgabefiktion Inland und Datenabruf (seit 2025) (§ 122 Abs. 2 Nr. 1 AO, § 122a Abs. 4 S. 1 AO)"], ["1 Monat", "Bekanntgabefiktion Ausland (§ 122 Abs. 2 Nr. 2 AO)"]],
     punkte: [
       "**Bekanntgabewille:** Die Behörde will das „Ob“ und „Wie“. Aufgabe des Willens nur bis zum Verlassen des Machtbereichs (dokumentiert); danach nur Widerruf, der spätestens mit dem Bescheid zugehen muss (auch telefonisch).",
       "**Zugang:** im Machtbereich des Empfängers, mit Kenntnisnahme ist zu rechnen (Briefkasten). Was danach passiert, ist sein Risiko. Fehlt der Bekanntgabewille bei der Weiterleitung, Heilung mit tatsächlichem Erhalt (§ 8 VwZG entsprechend).",
@@ -297,7 +297,7 @@ export const KOMPAKT_AO = {
 
   "ao-erhebung": {
     satz: "Steueransprüche entstehen kraft Gesetzes, werden nach den Einzelsteuergesetzen fällig – und wer zu spät zahlt, schuldet automatisch Säumniszuschläge (§§ 38, 220, 240 AO).",
-    zahlen: [["1 %", "Säumniszuschlag je angefangenen Monat (§ 240 Abs. 1 AO)"], ["50 €", "Abrundung des Rückstands"], ["3 Tage", "Schonfrist bei Überweisung (§ 240 Abs. 3 AO)"]],
+    zahlen: [["1 %", "Säumniszuschlag je angefangenen Monat (§ 240 Abs. 1 AO)"], ["50 €", "Abrundung des Rückstands (§ 240 Abs. 1 S. 1 AO)"], ["3 Tage", "Schonfrist bei Überweisung (§ 240 Abs. 3 AO)"]],
     punkte: [
       "**Ablauf:** Entstehung → Ermittlung → Festsetzung → Erhebung (Fälligkeit, Zahlung) → ggf. Vollstreckung.",
       "**Entstehung (§ 38 AO):** sobald der Tatbestand verwirklicht ist – die Festsetzung wirkt nur **deklaratorisch**. ESt mit Ablauf des Veranlagungszeitraums (§ 36 Abs. 1 EStG), LSt mit Zufluss des Lohns, USt mit Ablauf des Voranmeldungszeitraums der Leistung.",
