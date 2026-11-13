@@ -121,7 +121,7 @@ export const PFAD_PR = [
     id: "pr-vertrag", titel: "Wie ein Vertrag entsteht", kurz: "§§ 145–150 BGB", icon: "🤝", normen: ["BGB 145", "BGB 146", "BGB 147 1", "BGB 150 2"],
     karten: [
       { art: "merksatz", titel: "Angebot + Annahme", text: "Ein Vertrag entsteht aus **zwei übereinstimmenden Willenserklärungen**. Das **Angebot** enthält alles Wesentliche (beim Kauf: Sache, Preis, Parteien), sodass ein einfaches **„Ja“** genügt." },
-      { art: "erklaerung", titel: "Wie lange gilt ein Angebot?", text: "• Unter Anwesenden (auch Telefon): **sofort** (§ 147 Abs. 1 BGB)\n• Unter Abwesenden: so lange, wie normalerweise mit einer Antwort zu rechnen ist (§ 147 Abs. 2 BGB)\n• Abgelehnt oder zu spät → erloschen (§ 146 BGB)" },
+      { art: "erklaerung", titel: "Wie lange gilt ein Angebot?", text: "• Unter Anwesenden (auch Telefon): **sofort** (§ 147 Abs. 1 BGB)\n• Unter Abwesenden: bis zu dem Zeitpunkt, in dem der Antragende die Antwort **unter regelmäßigen Umständen** erwarten darf (§ 147 Abs. 2 BGB)\n• Abgelehnt oder zu spät → erloschen (§ 146 BGB)" },
       { art: "erklaerung", titel: "Ja, aber …", text: "Wer mit **Änderungen** annimmt, lehnt ab und macht ein **neues Angebot** (§ 150 Abs. 2 BGB). Auch eine **verspätete** Annahme ist ein neues Angebot (§ 150 Abs. 1 BGB)." },
     ],
     fragen: [

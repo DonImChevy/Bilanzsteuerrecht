@@ -366,5 +366,17 @@ export const NORMEN_UST = [
 }
 ],
 "auszug": true
+},
+{
+"g": "UStG",
+"nr": "14a",
+"titel": "Zusätzliche Pflichten bei der Ausstellung von Rechnungen in besonderen Fällen",
+"abs": [
+{
+"abs": "1",
+"text": "Hat der Unternehmer seinen Sitz, seine Geschäftsleitung, eine Betriebsstätte, von der aus der Umsatz ausgeführt wird, oder in Ermangelung eines Sitzes seinen Wohnsitz oder gewöhnlichen Aufenthalt im Inland und führt er einen Umsatz in einem anderen Mitgliedstaat aus, an dem eine Betriebsstätte in diesem Mitgliedstaat nicht beteiligt ist, so ist er zur Ausstellung einer Rechnung mit der Angabe „Steuerschuldnerschaft des Leistungsempfängers“ verpflichtet, wenn die Steuer in dem anderen Mitgliedstaat von dem Leistungsempfänger geschuldet wird und keine Gutschrift gemäß § 14 Absatz 2 Satz 5 vereinbart worden ist. Führt der Unternehmer eine sonstige Leistung im Sinne des § 3a Absatz 2 in einem anderen Mitgliedstaat aus, so ist die Rechnung bis zum fünfzehnten Tag des Monats, der auf den Monat folgt, in dem der Umsatz ausgeführt worden ist, auszustellen. In dieser Rechnung sind die Umsatzsteuer-Identifikationsnummer des Unternehmers und die des Leistungsempfängers anzugeben. Wird eine Abrechnung durch Gutschrift gemäß § 14 Absatz 2 Satz 5 über eine sonstige Leistung im Sinne des § 3a Absatz 2 vereinbart, die im Inland ausgeführt wird und für die der Leistungsempfänger die Steuer nach § 13b Absatz 1 und 5 schuldet, sind die Sätze 2 und 3 und Absatz 5 entsprechend anzuwenden."
+}
+],
+"auszug": true
 }
 ];

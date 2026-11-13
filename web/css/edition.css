@@ -418,3 +418,11 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .leer-zustand b { font-family: var(--serif); font-size: 20px; font-weight: 500; }
 .liste .zeile .symbol { font-size: 21px !important; }
 .gruppe-titel::before { top: 0.62em; }
+
+/* ---------- Begriffe und ihre Normen (Überblick): Lexikon-Einträge mit Stichwort am Rand ---------- */
+.km-glossar { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--gold-linie); }
+.km-glossar > div { padding: 14px 0 13px; border-bottom: 1px solid var(--glas-linie); }
+.km-glossar dt { font-family: var(--serif); font-size: 18.5px; font-weight: 500; letter-spacing: -0.1px; line-height: 1.2; margin-bottom: 4px; }
+.km-glossar dd { margin: 0; font-size: 15px; line-height: 1.5; color: var(--text2); text-wrap: pretty; }
+.km-glossar dd mark.km { color: var(--text); }
+@media (min-width: 700px) { .km-glossar > div { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 18px; align-items: baseline; } .km-glossar dt { margin: 0; } }

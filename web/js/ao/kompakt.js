@@ -285,7 +285,7 @@ export const KOMPAKT_AO = {
       "**Gesetzliche Fristen** (Einspruch, Klage) sind Ausschlussfristen – nur Wiedereinsetzung hilft; **behördliche Fristen** sind verlängerbar, auch rückwirkend (§ 109 Abs. 1 AO). Steuererklärungsfristen sind trotz Gesetz verlängerbar.",
       "**Ereignisfrist (§ 187 Abs. 1 BGB):** Ereignistag zählt nicht mit – Einspruchsfrist, Wiedereinsetzungsfrist, Zahlungsfristen. **Tagesbeginnfrist (§ 187 Abs. 2 BGB):** Anfangstag zählt mit – Lebensalter.",
       "**Wiedereinsetzung (§ 110 AO):** gesetzliche Frist versäumt · ohne Verschulden (einfache Fahrlässigkeit schadet; Vertreterverschulden wird zugerechnet) · Antrag und Nachholung binnen eines Monats nach Wegfall des Hindernisses · Jahresfrist.",
-      "**Kein Verschulden** z. B. bei plötzlicher schwerer Krankheit, Urlaub bis ca. sechs Wochen, verzögertem Postlauf; **Verschulden** bei Arbeitsüberlastung oder Rechtsirrtum.",
+      "**Kein Verschulden** z. B. bei plötzlicher schwerer Krankheit, urlaubsbedingter Abwesenheit von bis zu sechs Wochen, verzögertem Postlauf; **Verschulden** bei Arbeitsüberlastung oder Rechtsirrtum.",
       "**§ 126 Abs. 3 AO:** Fehlen Begründung oder Anhörung und wird deshalb die Einspruchsfrist versäumt, gilt das als unverschuldet.",
     ],
     fallen: [

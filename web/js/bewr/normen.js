@@ -73,6 +73,18 @@ export const NORMEN_BEW = [
 },
 {
 "g": "ErbStG",
+"nr": "14",
+"titel": "Berücksichtigung früherer Erwerbe",
+"abs": [
+{
+"abs": "1",
+"text": "Mehrere innerhalb von zehn Jahren von derselben Person anfallende Vermögensvorteile werden in der Weise zusammengerechnet, daß dem letzten Erwerb die früheren Erwerbe nach ihrem früheren Wert zugerechnet werden. Von der Steuer für den Gesamtbetrag wird die Steuer abgezogen, die für die früheren Erwerbe nach den persönlichen Verhältnissen des Erwerbers und auf der Grundlage der geltenden Vorschriften zur Zeit des letzten Erwerbs zu erheben gewesen wäre. Anstelle der Steuer nach Satz 2 ist die tatsächlich für die in die Zusammenrechnung einbezogenen früheren Erwerbe zu entrichtende Steuer abzuziehen, wenn diese höher ist. Die Steuer, die sich für den letzten Erwerb ohne Zusammenrechnung mit früheren Erwerben ergibt, darf durch den Abzug der Steuer nach Satz 2 oder Satz 3 nicht unterschritten werden. Erwerbe, für die sich nach den steuerlichen Bewertungsgrundsätzen kein positiver Wert ergeben hat, bleiben unberücksichtigt."
+}
+],
+"auszug": true
+},
+{
+"g": "ErbStG",
 "nr": "10",
 "titel": "Steuerpflichtiger Erwerb",
 "abs": [

@@ -16,6 +16,7 @@ import { BEISPIELE_BSR } from "./bilr/beispiele.js";
 import { BEISPIELE_EST } from "./est/beispiele.js";
 import { BEISPIELE_OER } from "./oer/beispiele.js";
 import { normenAusText, norm } from "./oer/normtext.js";
+import { begriffeIm } from "./begriffe.js";
 
 const BEISPIELE = { ...BEISPIELE_BSR, ...BEISPIELE_OER, ...BEISPIELE_EST, ...BEISPIELE_UST, ...BEISPIELE_BBF, ...BEISPIELE_AO, ...BEISPIELE_PR, ...BEISPIELE_BEWR };
 /** Zusammenfassung je Thema, ergänzt um die Klausurbeispiele (Sachverhalt + Musterlösung). */
@@ -106,6 +107,9 @@ export function kompaktView(id, h) {
       ${abschnitt("km-schema", "Prüfungsschema", k.schema?.length ? `<ol class="km-schritte">${k.schema.map((s, i) => `<li data-hoer="schema-${i}">${kompaktInline(s)}</li>`).join("")}</ol>` : "")}
       ${abschnitt("km-kern", "Das Wichtigste", liste(k.punkte, "punkte"))}
       ${abschnitt("km-fallen", "Typische Fehler", liste(k.fallen, "fallen"))}`, h.abdecken);
+  // Begriffe mit gesetzlicher Definition: alles, was im Überblick verwendet wird, steht hier mit seiner Norm (nicht vorgelesen, nicht abgedeckt)
+  const begriffe = begriffeIm(t.fach, kompaktText({ ...k, beispiele: [] }));
+  const glossar = begriffe.length ? `<section class="km-abschnitt km-begriffe"><h3>Begriffe und ihre Normen</h3><dl class="km-glossar">${begriffe.map((b) => `<div><dt>${esc(b.name)}</dt><dd>${kompaktInline(b.text)}</dd></div>`).join("")}</dl></section>` : "";
   if (h.abdecken) h.abdecken.gesamt = (kern.match(/class="km-luecke/g) || []).length;
   return `<div class="vollbild kompakt" role="dialog" aria-label="Zusammenfassung ${esc(t.titel)}">
     <div class="vb-kopf"><button class="rund" data-a="kompaktZu" aria-label="Schließen">${h.ic("kreuz")}</button>
@@ -117,6 +121,7 @@ export function kompaktView(id, h) {
       ${abdeckenLeiste(h.abdecken, h.ic)}
       ${schaubildKnoepfe(id)}
       ${kern}
+      ${glossar}
       ${abschnitt("km-beispiele", k.beispiele.length === 1 ? "Klausurbeispiel" : "Klausurbeispiele", k.beispiele.map((b, i) => beispielView(b, i, h.alsKarte ? `<div class="km-bsp-karte">${h.alsKarte("beispiel", `${id}|${i}`)}</div>` : "")).join(""))}
       <p class="km-hinweis" data-hoer="ende">Die Zusammenfassung gibt einen Überblick über die klausurrelevanten Punkte – sie ersetzt nicht das Skript. Paragrafen antippen, um den Gesetzestext zu lesen.</p>
     </div>
