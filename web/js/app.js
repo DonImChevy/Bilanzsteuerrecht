@@ -30,7 +30,7 @@ import { ic } from "./icons.js";
 import { syncVerfuegbar, neuerCode, neueGeraeteId, codeNormal, codeGueltig, codeAnzeige, abgleichen, SERVER } from "./sync.js";
 import qrcode from "./lib/qrcode.js";
 import { taler, talerBuehne, TALER_SPRUECHE, talerOutfitSetzen } from "./maskottchen.js";
-import { kasse, kaufbar, outfitVon, artikel, preisFuer, STANDARD, FARBWELTEN } from "./garderobe.js";
+import { kasse, kaufbar, besitzt, outfitVon, artikel, preisFuer, STANDARD, FARBWELTEN } from "./garderobe.js";
 import { bildLaden, bildSpeichern, bildVerkleinern, ablageLaden, ablageSpeichern } from "./bildspeicher.js";
 import { garderobeView, talerBetrag } from "./garderobeansicht.js";
 import { kommende, countdownText, proTag, icsErzeugen } from "./termine.js";
@@ -326,6 +326,7 @@ const state = {
   hatBild: false, // eigenes Hintergrundbild auf diesem Gerät gespeichert
   bildDaten: null, // dessen data-URL
   hgVorschau: null, // Hintergrund zur Probe auf der ganzen App: {id, bild?}
+  fwVorschau: null, // Premium-Farbgebung zur Probe (30 s): {id, bis}
   // Eigenes Bild: Ausschnitt (x/y in %) und Stärke (0 = Schrift am besten lesbar, 1 = Bild am kräftigsten); nur auf diesem Gerät
   bildEinst: { x: Number(lies("bsr.hgBildX", "50")), y: Number(lies("bsr.hgBildY", "50")), s: Number(lies("bsr.hgBildStaerke", "0.35")), z: Number(lies("bsr.hgBildZoom", "1")) || 1 },
   bildMasse: null, // Pixelmaße des Bilds (für den Zoom)
@@ -427,14 +428,29 @@ function gesetzFarbenView() {
     <button class="knopf zweit" data-a="gesetzFarbenStandard" style="margin:8px 0 6px">${ic("wiederholen")} Alle Farben zurücksetzen</button>
     <div class="gruppe-fuss" style="margin:4px 4px 20px">Die Farben gelten in heller und dunkler Ansicht – eigene Farben werden dafür automatisch angepasst, damit alles lesbar bleibt. Sie werden mit dem Sync-Code übertragen.</div>`;
 }
+// Neigungsglanz der Metallic-Farbgebungen: der Lichtreflex wandert mit der Handy-Neigung (nur bei eingeschalteten Animationen)
+let glanzLetzt = 0;
+window.addEventListener("deviceorientation", (e) => {
+  const r = document.documentElement;
+  if (!/^(feingold|rosegold)$/.test(r.dataset.farbwelt || "") || r.dataset.bewegung === "aus" || r.dataset.leistung === "spar" || e.gamma == null) return;
+  const t = performance.now(); if (t - glanzLetzt < 60) return; glanzLetzt = t;
+  r.style.setProperty("--glanz-x", Math.round(50 + Math.max(-45, Math.min(45, e.gamma)) * 1.1) + "%");
+});
+/** Aktive Farbwelt: Premium nur mit Besitz (oder während der 30-Sekunden-Vorschau), sonst Standard. */
+function farbweltJetzt() {
+  const wahl = state.fwVorschau?.id || state.farbwelt;
+  const f = FARBWELTEN.find((x) => x.id === wahl) || FARBWELTEN[0];
+  return f.premium && !state.fwVorschau && !besitzt(f.premium, stat.gekauft || {}) ? FARBWELTEN[0] : f;
+}
 function designAnwenden() {
   // Startseite in der App-Farbe, innerhalb eines Moduls in dessen Farbe
-  const fw = FARBWELTEN.find((f) => f.id === state.farbwelt) || FARBWELTEN[0];
+  const fw = farbweltJetzt();
   const m = state.tab === "start" && !state.sitzung && !state.deck ? { farbe: fw.hell, farbeDunkel: fw.dunkel } : MODUL[state.fach], root = document.documentElement;
   root.dataset.farbwelt = fw.id;
   root.style.setProperty("--m-hell", m.farbe);
   root.style.setProperty("--m-dunkel", m.farbeDunkel);
-  if (state.design === "light" || state.design === "dark") root.dataset.theme = state.design;
+  if (fw.modus) root.dataset.theme = fw.modus; // Premium-Farbgebungen haben eine feste Helligkeit
+  else if (state.design === "light" || state.design === "dark") root.dataset.theme = state.design;
   else delete root.dataset.theme;
   root.dataset.bewegung = state.bewegungAus ? "aus" : "an";
   root.dataset.leistung = leistungSpar() ? "spar" : "voll";
@@ -832,6 +848,7 @@ function render() {
   if (state.ksim) html += simView(state.ksim, { ic, esc, inline: kompaktInline, loesungZeile, hs: state.hs, modus: lies("bsr.ksimModus", "text"), fotos: ksimFotos(state.ksim) });
   if (state.sheet) html += sheetView();
   if (state.hgVorschau && !state.sheet) html += vorschauLeiste();
+  if (state.fwVorschau && !state.sheet) html += fwVorschauLeiste();
   // Scrollposition innerhalb von Übung und Sheet behalten, solange dieselbe Ansicht bleibt (z. B. beim Ankreuzen)
   const scrollVoll = animVoll ? [] : [...app.querySelectorAll(".vollbild .vb-inhalt")].map((el) => el.scrollTop);
   const scrollSheet = animSheet ? 0 : app.querySelector(".sheet .vb-inhalt")?.scrollTop || 0;
@@ -866,7 +883,7 @@ function render() {
 // Jede geöffnete Ebene (Unterseite, Übung, Rückschau, Lernkarten, Menü) bekommt einen Eintrag im Browserverlauf.
 // So schließt die Zurück-Geste (Android) bzw. Zurück-Taste die oberste Ebene, statt die App zu verlassen.
 let verlaufTiefe = 0, popIgnorieren = 0;
-const ansichtTiefe = () => (state.hgVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.ksim ? 1 : 0) + (state.otest ? 1 : 0) + (state.abfrage ? 1 : 0) + (state.sheet ? 1 : 0);
+const ansichtTiefe = () => (state.hgVorschau || state.fwVorschau ? 1 : 0) + (state.tab !== "start" ? 1 : 0) + (state.sitzung ? 1 : 0) + (state.sitzung?.review != null ? 1 : 0) + (state.deck ? 1 : 0) + (state.paare ? 1 : 0) + (state.pfad ? 1 : 0) + (state.pfad?.block ? 1 : 0) + (state.kompakt ? 1 : 0) + (state.ksim ? 1 : 0) + (state.otest ? 1 : 0) + (state.abfrage ? 1 : 0) + (state.sheet ? 1 : 0);
 function verlaufAbgleichen() {
   const t = ansichtTiefe();
   while (verlaufTiefe < t) { verlaufTiefe += 1; history.pushState({ tiefe: verlaufTiefe }, ""); }
@@ -876,6 +893,7 @@ function verlaufAbgleichen() {
 function ebeneZurueck() {
   if (state.sheet) AKTIONEN.sheetZu();
   else if (state.hgVorschau) AKTIONEN.vorschauEnde();
+  else if (state.fwVorschau) AKTIONEN.fwVorschauEnde();
   else if (state.kompakt) AKTIONEN.kompaktZu();
   else if (state.abfrage) AKTIONEN.abfrageZu();
   else if (state.otest) AKTIONEN.otZu();
@@ -3286,7 +3304,40 @@ const AKTIONEN = {
     if (!state.bewegungAus) document.body.insertAdjacentHTML("beforeend", konfetti()), setTimeout(() => document.querySelector("body > .konfetti")?.remove(), 2600);
     toast(hat ? `${a.name} ist jetzt dein Hintergrund.` : `Gekauft! ${a.name} ist jetzt dein Hintergrund.`);
   },
-  farbwelt: (v) => { if (!FARBWELTEN.some((f) => f.id === v)) return; state.farbwelt = v; einstellungMerken("farbwelt", v); render(); },
+  farbwelt: (v) => {
+    const f = FARBWELTEN.find((x) => x.id === v); if (!f || (f.premium && !besitzt(f.premium, stat.gekauft || {}))) return;
+    state.farbwelt = v; einstellungMerken("farbwelt", v); render();
+  },
+  fwVorschau: (v) => {
+    const f = FARBWELTEN.find((x) => x.id === v); if (!f?.premium) return;
+    state.fwVorschau = { id: v, bis: Date.now() + 30000 };
+    state.sheet = null; state.tab = "start";
+    render(); scrollOben();
+    clearInterval(fwUhr);
+    fwUhr = setInterval(() => {
+      const rest = Math.max(0, Math.ceil((state.fwVorschau.bis - Date.now()) / 1000));
+      const el = document.getElementById("fwRest"); if (el) el.textContent = rest + " s";
+      if (!state.fwVorschau) clearInterval(fwUhr); else if (rest <= 0) AKTIONEN.fwVorschauEnde();
+    }, 500);
+  },
+  fwVorschauEnde: () => {
+    clearInterval(fwUhr);
+    state.fwVorschau = null;
+    state.garderobe = { slot: "hintergrund", probe: null }; state.sheet = { art: "garderobe" };
+    render();
+  },
+  fwKaufen: () => {
+    const v = state.fwVorschau; if (!v) return;
+    const f = FARBWELTEN.find((x) => x.id === v.id);
+    const k = kaufbar(f.premium, { gekauft: stat.gekauft || {}, guthaben: meineKasse().guthaben, level: levelJetzt().level });
+    if (!k.ok && k.grund !== "besitz") return;
+    clearInterval(fwUhr);
+    if (k.ok) stat.gekauft = { ...(stat.gekauft || {}), [f.premium]: Date.now() };
+    state.fwVorschau = null; state.farbwelt = v.id; einstellungMerken("farbwelt", v.id);
+    speichern(); render();
+    if (!state.bewegungAus) document.body.insertAdjacentHTML("beforeend", konfetti()), setTimeout(() => document.querySelector("body > .konfetti")?.remove(), 2600);
+    toast(`Gekauft! ${f.name} ist jetzt deine Farbgebung.`);
+  },
   hintergrundWaehlen: () => { state.garderobe = { slot: "hintergrund", probe: null }; state.sheet = { art: "garderobe" }; render(); },
   garderobe: (v) => { state.garderobe.probe = null; if (v) state.garderobe.slot = v; state.sheet = { art: "garderobe" }; render(); },
   garSlot: (v) => { state.garderobe = { slot: v, probe: null }; render(); },
@@ -4041,6 +4092,18 @@ function eigenesBildSetzen(daten) {
 async function bildVorschauWaehlen(datei) {
   if (!/^image\//.test(datei.type)) { toast("Bitte ein Bild auswählen."); return; }
   try { AKTIONEN.hgVorschau("eigenesbild", await bildVerkleinern(datei)); } catch (err) { toast(err.message || "Das Bild konnte nicht geöffnet werden."); }
+}
+let fwUhr = 0;
+/** Leiste unten während der 30-Sekunden-Vorschau einer Premium-Farbgebung. */
+function fwVorschauLeiste() {
+  const v = state.fwVorschau, f = FARBWELTEN.find((x) => x.id === v.id);
+  const k = kaufbar(f.premium, { gekauft: stat.gekauft || {}, guthaben: meineKasse().guthaben, level: levelJetzt().level });
+  const haupt = k.ok ? `<button class="knopf gold" data-a="fwKaufen">Kaufen für ${talerBetrag(f.preis, "im-knopf")}</button>`
+    : k.grund === "besitz" ? `<button class="knopf" data-a="fwKaufen">${ic("haken")} Verwenden</button>`
+    : `<button class="knopf zweit" disabled>Noch ${talerBetrag(k.fehlt, "im-knopf")} fehlen</button>`;
+  return `<div class="hg-vorschau-leiste" role="region" aria-label="Vorschau der Farbgebung">
+    <div class="hvl-text">${ic("auge")}<span><small>Vorschau · noch&nbsp;<span id="fwRest">${Math.max(0, Math.ceil((v.bis - Date.now()) / 1000))} s</span></small><b>${esc(f.name)}</b></span></div>
+    <div class="hvl-knoepfe"><button class="knopf zweit" data-a="fwVorschauEnde">${ic("zurueck")} Zurück</button>${haupt}</div></div>`;
 }
 /** Leiste unten während der Vorschau: zurück zur Garderobe oder kaufen bzw. verwenden. */
 function vorschauLeiste() {
