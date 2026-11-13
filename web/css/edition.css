@@ -1,6 +1,8 @@
 /* =====================================================================
    Edition – das Gesetzeswerk als Prachtausgabe (Design 3.0)
    Papier und Tinte statt Milchglas, Leinen in der Farbe des Moduls, Goldprägung für Linien und Zahlen,
+   Schriftdateien: Bodoni Moda fest auf die kleinste optische Größe (opsz 6) gesetzt – kräftige Haarlinien,
+   damit Ziffern auch auf kleinen Handys nicht „abreißen“; Gewichte deshalb 580/680 statt 500/600.
    Bodoni Moda für Titel und große Ziffern, Inter für alles, was gelesen und bedient wird.
    Diese Datei liegt über style.css: oben die Werte, darunter die Bausteine. Der Lernpfad (.pfad/.pf-*)
    behält seine eigene Welt und wird hier nicht angefasst.
@@ -70,7 +72,7 @@ body::after { inset: 0; opacity: 0.5; mask-image: none; -webkit-mask-image: none
 input, textarea { caret-color: var(--m); }
 
 /* ---------- Schrift ---------- */
-h1.titel { font-family: var(--serif); font-size: 36px; font-weight: 500; letter-spacing: -0.5px; line-height: 1.08; background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--text); }
+h1.titel { font-family: var(--serif); font-size: 36px; font-weight: 580; letter-spacing: -0.5px; line-height: 1.08; background: none; -webkit-background-clip: border-box; background-clip: border-box; color: var(--text); }
 .gruss { font-size: 12px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; color: var(--text3); }
 .untertitel { color: var(--text2); }
 /* Gruppen-Titel: Kapitälchen mit goldener Raute und Haarlinie bis zum Rand */
@@ -134,10 +136,10 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
   outline: 1px solid color-mix(in oklab, var(--blattgold) 82%, transparent); outline-offset: -7px; }
 .hero::before, .modul-banner::before, .hero::after, .modul-banner::after { display: none; }
 .hero { padding: 24px 22px 22px; margin-top: 16px; }
-.hero h2 { font-family: var(--serif); font-size: 25px; font-weight: 500; letter-spacing: -0.2px; line-height: 1.12; }
+.hero h2 { font-family: var(--serif); font-size: 25px; font-weight: 580; letter-spacing: -0.2px; line-height: 1.12; }
 .hero .zeile-klein { opacity: 0.82; font-size: 13.5px; margin-top: 4px; }
 .hero .ziel-ring { width: 80px; height: 80px; box-shadow: none; background: conic-gradient(var(--blattgold) calc(var(--p) * 1%), rgba(248, 242, 228, 0.2) 0); }
-.hero .ziel-ring > div { width: 74px; height: 74px; background: var(--leinen-tief); font-family: var(--serif); font-size: 26px; font-weight: 500; color: var(--blattgold); }
+.hero .ziel-ring > div { width: 74px; height: 74px; background: var(--leinen-tief); font-family: var(--serif); font-size: 26px; font-weight: 580; color: var(--blattgold); }
 .hero .ziel-ring small { font-family: "Inter", sans-serif; font-size: 9.5px; letter-spacing: 0.9px; text-transform: uppercase; color: var(--elfenbein); opacity: 0.75; margin-top: 2px; }
 .hero .wert-pille, .modul-banner .zahlen > div, .modul-banner .m-icon, .modul-banner .wechsel { background: rgba(0, 0, 0, 0.16); box-shadow: inset 0 0 0 1px rgba(236, 217, 160, 0.3); backdrop-filter: none; -webkit-backdrop-filter: none; }
 .hero .wert-pille { border-radius: 7px; padding: 5px 10px; font-weight: 600; font-size: 12.5px; }
@@ -146,13 +148,13 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .hero .knopf:active:not(:disabled) { box-shadow: inset 0 0 0 1px rgba(120, 90, 30, 0.45); }
 .modul-banner { padding: 24px 22px 20px; margin-top: 12px; }
 .modul-banner .m-icon { width: 52px; height: 52px; border-radius: 50%; color: var(--blattgold); }
-.modul-banner h1 { font-family: var(--serif); font-size: 28px; font-weight: 500; letter-spacing: -0.3px; line-height: 1.1; }
+.modul-banner h1 { font-family: var(--serif); font-size: 28px; font-weight: 580; letter-spacing: -0.3px; line-height: 1.1; }
 .modul-banner .unter { opacity: 0.8; margin-top: 3px; letter-spacing: 0.1px; }
 .modul-banner .zahlen { margin-top: 20px; gap: 0; border-top: 1px solid rgba(236, 217, 160, 0.34); }
 .modul-banner .zahlen > div { background: none; box-shadow: none; border-radius: 0; padding: 12px 4px 0 14px; }
 .modul-banner .zahlen > div:first-child { padding-left: 2px; }
 .modul-banner .zahlen > div + div { border-left: 1px solid rgba(236, 217, 160, 0.24); }
-.modul-banner .zahlen b { font-family: var(--serif); font-size: 27px; font-weight: 500; line-height: 1.1; color: var(--blattgold); }
+.modul-banner .zahlen b { font-family: var(--serif); font-size: 27px; font-weight: 580; line-height: 1.1; color: var(--blattgold); }
 .modul-banner .zahlen span { font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; opacity: 0.78; }
 
 /* Modul-Kachel = Band im Regal: Leinenrücken links, geprägter Titel, Bauchbinde für „heute fällig“ */
@@ -167,7 +169,7 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .modul-kachel:not(.bald) .m-oben:active { background: rgba(0, 0, 0, 0.12); }
 .modul-kachel:not(.bald) .m-icon { width: 38px; height: 38px; border-radius: 50%; background: none; color: var(--blattgold); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--blattgold) 70%, transparent); }
 .modul-kachel .m-icon .ic { width: 19px; height: 19px; stroke-width: 1.6; }
-.modul-kachel .m-titel { font-family: var(--serif); font-size: clamp(14.5px, 3.95vw, 17.5px); font-weight: 500; line-height: 1.16; letter-spacing: -0.1px; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
+.modul-kachel .m-titel { font-family: var(--serif); font-size: clamp(14.5px, 3.95vw, 17.5px); font-weight: 580; line-height: 1.16; letter-spacing: -0.1px; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; }
 .modul-kachel .m-oben > span:nth-child(2) { min-width: 0; }
 .modul-kachel:not(.bald) .m-unter { color: var(--elfenbein); opacity: 0.74; font-size: 11.5px; letter-spacing: 0.4px; margin-top: 5px; }
 .modul-kachel:not(.bald) .m-fuss { color: var(--blattgold); font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums; gap: 10px; }
@@ -177,7 +179,7 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .modul-kachel:not(.bald) .m-unten.leer, .modul-kachel:not(.bald) .m-unten.erledigt { color: var(--elfenbein); background: rgba(0, 0, 0, 0.18); opacity: 0.9; }
 .modul-kachel:not(.bald) .m-unten.erledigt { color: var(--blattgold); }
 .modul-kachel .m-unten.faellig { background: linear-gradient(180deg, #fffaf0, var(--elfenbein)); color: #1b1814; box-shadow: 0 6px 12px -8px rgba(0, 0, 0, 0.8); }
-.modul-kachel .m-unten.faellig b { font-family: var(--serif); font-size: 18px; font-weight: 600; }
+.modul-kachel .m-unten.faellig b { font-family: var(--serif); font-size: 18px; font-weight: 680; }
 .modul-kachel.bald { border-radius: 6px 12px 12px 6px; border-style: dashed; border-color: var(--glas-rand); background: transparent; }
 .modul-kachel.bald .m-icon { border-radius: 50%; background: none; box-shadow: inset 0 0 0 1px var(--glas-rand); color: var(--text3); }
 .modul-kachel.bald .m-unten { border-top: 0; color: var(--text3); }
@@ -236,13 +238,13 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .sheet-hg { background: rgba(8, 6, 4, 0.58); backdrop-filter: none; -webkit-backdrop-filter: none; }
 .toast { background: #1b1814; color: #f3eee3; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(236, 217, 160, 0.3), 0 20px 40px -20px #000; backdrop-filter: none; -webkit-backdrop-filter: none; }
 .ring { box-shadow: none; }
-.taler-blase { border-radius: 12px; font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 16px; }
+.taler-blase { border-radius: 12px; font-family: var(--serif); font-style: italic; font-weight: 580; font-size: 16px; }
 .taler-blase::before { background: var(--glas); border-color: var(--glas-rand); }
 
 /* ---------- Kompaktwissen: gesetzte Buchseite ---------- */
-.km-kopf h2 { font-family: var(--serif); font-size: 30px; font-weight: 500; letter-spacing: -0.4px; line-height: 1.1; }
+.km-kopf h2 { font-family: var(--serif); font-size: 30px; font-weight: 580; letter-spacing: -0.4px; line-height: 1.1; }
 .km-icon { border-radius: 50%; background: transparent; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--m) 42%, transparent); }
-.km-satz { font-family: var(--serif); font-size: 22px; font-weight: 500; line-height: 1.36; letter-spacing: -0.1px; padding-left: 20px; }
+.km-satz { font-family: var(--serif); font-size: 22px; font-weight: 580; line-height: 1.36; letter-spacing: -0.1px; padding-left: 20px; }
 .km-satz::before { width: 2px; border-radius: 0; background: var(--gold-ton); box-shadow: none; }
 
 /* ---------- Einblenden: ein ruhiges Aufschlagen statt Federn ---------- */
@@ -255,7 +257,7 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 /* ---------- Kleine Knöpfe und Marken ---------- */
 .tk-lesen { background: transparent; color: var(--accent); font-weight: 650; border-radius: 8px; box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--m) 46%, transparent); }
 .tk-lesen:active { transform: translateY(1px); background: var(--accent-weak); box-shadow: inset 0 0 0 1px var(--m); }
-.ks-fest b { font-family: var(--serif); font-weight: 500; font-size: 24px; border-radius: 50%; color: var(--blattgold); box-shadow: inset 0 0 0 1px rgba(236, 217, 160, 0.5); }
+.ks-fest b { font-family: var(--serif); font-weight: 580; font-size: 24px; border-radius: 50%; color: var(--blattgold); box-shadow: inset 0 0 0 1px rgba(236, 217, 160, 0.5); }
 .ks-note { font-family: var(--serif); box-shadow: inset 0 0 0 1px rgba(236, 217, 160, 0.5); }
 .km-vorher-icon, .hl-haupt, .rollen-kachel .m-icon { border-radius: 50%; }
 .ho-knopf { border-radius: 8px; font-weight: 650; }
@@ -263,15 +265,15 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .start-anpassen { letter-spacing: 0.2px; }
 
 /* ---------- Titel in Sheets, Rückmeldung, Level ---------- */
-.sheet .vb-kopf .mitte { font-family: var(--serif); font-size: 20px; font-weight: 500; letter-spacing: -0.2px; }
-.vb-fuss .feedback b:first-child, .vb-fuss .feedback .fb-titel { font-family: var(--serif); font-weight: 600; font-size: 21px; letter-spacing: -0.2px; }
-.xp-quellen b { font-family: var(--serif); font-weight: 500; font-size: 22px; color: var(--gold-ton); }
+.sheet .vb-kopf .mitte { font-family: var(--serif); font-size: 20px; font-weight: 580; letter-spacing: -0.2px; }
+.vb-fuss .feedback b:first-child, .vb-fuss .feedback .fb-titel { font-family: var(--serif); font-weight: 680; font-size: 21px; letter-spacing: -0.2px; }
+.xp-quellen b { font-family: var(--serif); font-weight: 580; font-size: 22px; color: var(--gold-ton); }
 .xp-quellen li { border-radius: var(--r-klein); }
-.lv-zeile .lv-oben b { font-family: var(--serif); font-weight: 500; font-size: 18px; letter-spacing: -0.1px; }
+.lv-zeile .lv-oben b { font-family: var(--serif); font-weight: 580; font-size: 18px; letter-spacing: -0.1px; }
 .hero .lv-zeile { background: rgba(0, 0, 0, 0.16); box-shadow: inset 0 0 0 1px rgba(236, 217, 160, 0.3); border-radius: 10px; backdrop-filter: none; -webkit-backdrop-filter: none; }
 .lv-zeile .lv-balken { height: 3px; background: rgba(248, 242, 228, 0.22); }
 .lv-zeile .lv-balken > span { background: var(--blattgold); box-shadow: none; }
-.vb-fuss .feedback > span { font-family: var(--serif); font-weight: 600; font-size: 21px; letter-spacing: -0.2px; }
+.vb-fuss .feedback > span { font-family: var(--serif); font-weight: 680; font-size: 21px; letter-spacing: -0.2px; }
 .vb-fuss .feedback > span small, .vb-fuss .feedback > span > * { font-family: "Inter", sans-serif; letter-spacing: 0; }
 
 /* ---------- Der eine inszenierte Moment: Licht wandert einmal über die Goldprägung ---------- */
@@ -299,11 +301,11 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 }
 
 /* ---------- Serifen für Deckblätter, Kartenfragen, Kennzahlen, Begrüßung ---------- */
-.ks-deckblatt h2 { font-family: var(--serif); font-size: 28px; font-weight: 500; letter-spacing: -0.3px; line-height: 1.12; }
-.karte .frage-gross:not(.links) { font-family: var(--serif); font-size: 25px; font-weight: 500; line-height: 1.22; letter-spacing: -0.2px; }
-.stat-kachel .zahl { font-family: var(--serif); font-size: 30px; font-weight: 500; letter-spacing: -0.3px; color: var(--gold-ton); line-height: 1.1; }
+.ks-deckblatt h2 { font-family: var(--serif); font-size: 28px; font-weight: 580; letter-spacing: -0.3px; line-height: 1.12; }
+.karte .frage-gross:not(.links) { font-family: var(--serif); font-size: 25px; font-weight: 580; line-height: 1.22; letter-spacing: -0.2px; }
+.stat-kachel .zahl { font-family: var(--serif); font-size: 30px; font-weight: 580; letter-spacing: -0.3px; color: var(--gold-ton); line-height: 1.1; }
 .stat-kachel .lbl { font-size: 10.5px; letter-spacing: 1px; text-transform: uppercase; }
-.willkommen h2 { font-family: var(--serif); font-size: 34px; font-weight: 500; letter-spacing: -0.5px; line-height: 1.1; }
+.willkommen h2 { font-family: var(--serif); font-size: 34px; font-weight: 580; letter-spacing: -0.5px; line-height: 1.1; }
 .willkommen .logo { border-radius: 50%; background: var(--leinen); box-shadow: inset 0 0 0 1px rgba(236, 217, 160, 0.6), inset 0 0 0 5px var(--leinen), inset 0 0 0 6px rgba(236, 217, 160, 0.35), 0 24px 34px -22px #000; color: var(--blattgold); }
 
 /* =====================================================================
@@ -321,7 +323,7 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .kachel-grid .kachel .k-icon { width: 26px; height: 26px; border-radius: 0; background: none !important; box-shadow: none; }
 .kachel-grid .kachel .k-icon .ic { width: 24px; height: 24px; stroke-width: 1.5; }
 .kachel-grid .kachel .k-text, .kachel-grid .kachel .grow { flex: 1; min-width: 0; gap: 2px; }
-.kachel-grid .kachel b { font-family: var(--serif); font-size: 18.5px; font-weight: 500; letter-spacing: -0.1px; line-height: 1.18; }
+.kachel-grid .kachel b { font-family: var(--serif); font-size: 18.5px; font-weight: 580; letter-spacing: -0.1px; line-height: 1.18; }
 .kachel-grid .kachel .sub { font-size: 13px; line-height: 1.35; }
 .kachel-grid .kachel.betont { background: var(--gold-hauch); box-shadow: none; }
 .kachel-grid .kachel-huelle > .kachel { padding-right: 92px; }
@@ -335,14 +337,14 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .themen-karte:active { transform: none; }
 @media (hover: hover) { .themen-karte:hover { transform: none; box-shadow: none; } .themen-karte:hover .tk-haupt b { color: var(--accent); } }
 .tk-icon { width: 34px; height: auto; border-radius: 0; background: none; box-shadow: none; font-size: 0; place-items: start; }
-.tk-icon i { position: static; min-width: 0; height: auto; padding: 0; display: block; background: none; box-shadow: none; border-radius: 0; font-family: var(--serif); font-size: 30px; font-weight: 500; line-height: 0.95; letter-spacing: -0.5px; color: var(--gold-ton); font-variant-numeric: lining-nums; }
+.tk-icon i { position: static; min-width: 0; height: auto; padding: 0; display: block; background: none; box-shadow: none; border-radius: 0; font-family: var(--serif); font-size: 30px; font-weight: 580; line-height: 0.95; letter-spacing: -0.5px; color: var(--gold-ton); font-variant-numeric: lining-nums; }
 .tk-text { gap: 4px; }
-.tk-text b { font-family: var(--serif); font-size: 19.5px; font-weight: 500; letter-spacing: -0.15px; line-height: 1.16; transition: color 0.2s; }
+.tk-text b { font-family: var(--serif); font-size: 19.5px; font-weight: 580; letter-spacing: -0.15px; line-height: 1.16; transition: color 0.2s; }
 .tk-text .sub { font-size: 13px; }
 .tk-fuss { margin-top: 9px; gap: 12px; }
 .tk-balken { height: 2px; }
 .tk-n { font-size: 10.5px; font-weight: 600; letter-spacing: 0.9px; text-transform: uppercase; color: var(--text3); }
-.tk-status { min-width: 0; padding: 0; box-shadow: none; background: none; font-family: var(--serif); font-size: 19px; font-weight: 500; text-align: right; }
+.tk-status { min-width: 0; padding: 0; box-shadow: none; background: none; font-family: var(--serif); font-size: 19px; font-weight: 580; text-align: right; }
 .tk-status.neu { background: none; color: var(--gold-ton); font-family: "Inter", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.6px; }
 .tk-lesen { min-height: 34px; padding: 6px 0 6px 8px; border-radius: 0; box-shadow: none; background: none; font-size: 13px; font-weight: 600; text-decoration: underline; text-decoration-color: color-mix(in oklab, var(--m) 45%, transparent); text-underline-offset: 4px; text-decoration-thickness: 1px; }
 .tk-lesen .ic { display: none; }
@@ -360,9 +362,9 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .segment button.aktiv { background: none; color: var(--text); box-shadow: inset 0 -2px 0 var(--gold-ton); }
 
 /* Kompaktwissen-Zeile */
-.kk-text b { font-family: var(--serif); font-size: 21px; font-weight: 500; letter-spacing: -0.2px; }
+.kk-text b { font-family: var(--serif); font-size: 21px; font-weight: 580; letter-spacing: -0.2px; }
 .kk-pfeil { color: var(--gold-ton); }
-.kk-weiter { background: none; font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 15.5px; padding: 12px 18px 14px; }
+.kk-weiter { background: none; font-family: var(--serif); font-style: italic; font-weight: 580; font-size: 15.5px; padding: 12px 18px 14px; }
 .kk-haupt { padding: 18px; }
 
 /* =====================================================================
@@ -389,40 +391,40 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
    ===================================================================== */
 .liste .zeile { padding: 15px 18px; gap: 14px; }
 .liste .zeile + .zeile::before { left: 18px; right: 18px; }
-.liste .zeile .grow > b:first-child, .liste .zeile .grow > div:first-child:not(.sub) { font-family: var(--serif); font-size: 18px; font-weight: 500 !important; letter-spacing: -0.1px; line-height: 1.2; }
+.liste .zeile .grow > b:first-child, .liste .zeile .grow > div:first-child:not(.sub) { font-family: var(--serif); font-size: 18px; font-weight: 580 !important; letter-spacing: -0.1px; line-height: 1.2; }
 .liste .zeile .sub { margin-top: 2px; }
-.liste .zeile .symbol { background: none; box-shadow: none; border-radius: 0; width: 34px; height: 34px; font-family: var(--serif); font-size: 21px; font-weight: 500; color: var(--gold-ton); justify-items: start; }
+.liste .zeile .symbol { background: none; box-shadow: none; border-radius: 0; width: 34px; height: 34px; font-family: var(--serif); font-size: 21px; font-weight: 580; color: var(--gold-ton); justify-items: start; }
 .liste .zeile .symbol .ic { color: var(--accent); width: 24px; height: 24px; stroke-width: 1.5; }
 .liste .zeile .chev { color: var(--gold-ton); }
 .stepper { border-radius: 8px; background: none; box-shadow: inset 0 0 0 1px var(--glas-rand); }
-.stepper b { font-family: var(--serif); font-size: 19px; font-weight: 500; }
+.stepper b { font-family: var(--serif); font-size: 19px; font-weight: 580; }
 /* Punkte-Hebel, Probeklausuren, „Vor der Klausur“ */
 .hebel { gap: 0; background: var(--glas); border: 1px solid var(--glas-rand); border-radius: var(--r-karte); box-shadow: var(--schatten); overflow: hidden; }
 .hebel-zeile { padding: 15px 18px; gap: 14px; border: 0; border-radius: 0; background: none; box-shadow: none; }
 .hebel-zeile + .hebel-zeile { border-top: 1px solid var(--glas-linie); }
-.hebel-zeile b { font-family: var(--serif); font-size: 18px; font-weight: 500; letter-spacing: -0.1px; }
-.hebel-nr { width: 26px; height: auto; border-radius: 0; background: none; place-items: start; font-family: var(--serif); font-size: 26px; font-weight: 500; line-height: 1; color: var(--gold-ton); }
+.hebel-zeile b { font-family: var(--serif); font-size: 18px; font-weight: 580; letter-spacing: -0.1px; }
+.hebel-nr { width: 26px; height: auto; border-radius: 0; background: none; place-items: start; font-family: var(--serif); font-size: 26px; font-weight: 580; line-height: 1; color: var(--gold-ton); }
 .hebel-balken { height: 2px; border-radius: 0; }
 .ks-start { padding: 22px 20px 18px; border-radius: var(--r-gross); border-color: var(--gold-linie); background: var(--glas); }
 .ks-start-kopf { gap: 8px; }
-.ks-start-kopf b { font-family: var(--serif); font-size: 26px; font-weight: 500; letter-spacing: -0.3px; line-height: 1.1; }
+.ks-start-kopf b { font-family: var(--serif); font-size: 26px; font-weight: 580; letter-spacing: -0.3px; line-height: 1.1; }
 .ks-feste-titel { font-size: 10.5px; font-weight: 650; letter-spacing: 1.6px; margin-top: 20px; padding-bottom: 8px; border-bottom: 1px solid var(--gold-linie); }
 .ks-feste { gap: 0; }
 .ks-fest { padding: 16px 0; border: 0; border-radius: 0; background: none; box-shadow: none; column-gap: 16px; }
 .ks-fest + .ks-fest { border-top: 1px solid var(--glas-linie); }
-.ks-fest span { font-family: var(--serif); font-size: 17.5px; font-weight: 500; letter-spacing: -0.1px; line-height: 1.22; }
+.ks-fest span { font-family: var(--serif); font-size: 17.5px; font-weight: 580; letter-spacing: -0.1px; line-height: 1.22; }
 .ks-fest i { font-style: normal; font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text3); margin-top: 4px; }
 .km-vorher { padding: 18px; border-radius: var(--r-karte); gap: 16px; }
-.km-vorher b { font-family: var(--serif); font-size: 20px; font-weight: 500; letter-spacing: -0.2px; }
+.km-vorher b { font-family: var(--serif); font-size: 20px; font-weight: 580; letter-spacing: -0.2px; }
 .km-vorher > .ic { color: var(--gold-ton); }
-.leer-zustand b { font-family: var(--serif); font-size: 20px; font-weight: 500; }
+.leer-zustand b { font-family: var(--serif); font-size: 20px; font-weight: 580; }
 .liste .zeile .symbol { font-size: 21px !important; }
 .gruppe-titel::before { top: 0.62em; }
 
 /* ---------- Begriffe und ihre Normen (Überblick): Lexikon-Einträge mit Stichwort am Rand ---------- */
 .km-glossar { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--gold-linie); }
 .km-glossar > div { padding: 14px 0 13px; border-bottom: 1px solid var(--glas-linie); }
-.km-glossar dt { font-family: var(--serif); font-size: 18.5px; font-weight: 500; letter-spacing: -0.1px; line-height: 1.2; margin-bottom: 4px; }
+.km-glossar dt { font-family: var(--serif); font-size: 18.5px; font-weight: 580; letter-spacing: -0.1px; line-height: 1.2; margin-bottom: 4px; }
 .km-glossar dd { margin: 0; font-size: 15px; line-height: 1.5; color: var(--text2); text-wrap: pretty; }
 .km-glossar dd mark.km { color: var(--text); }
 @media (min-width: 700px) { .km-glossar > div { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 18px; align-items: baseline; } .km-glossar dt { margin: 0; } }
