@@ -6,7 +6,7 @@ export const KOMPAKT_UST = {
     satz: "Die Umsatzsteuer belastet am Ende nur den privaten Verbrauch – Unternehmer schulden sie auf ihre Umsätze und holen sich die gezahlte Steuer über den Vorsteuerabzug zurück (§ 1 Abs. 1 Nr. 1 UStG, § 15 Abs. 1 UStG).",
     zahlen: [["19 %", "Regelsteuersatz (§ 12 Abs. 1 UStG)"], ["7 %", "ermäßigter Satz (§ 12 Abs. 2 UStG)"], ["Monat", "Voranmeldungszeitraum, wenn die Steuer des Vorjahres mehr als 9.000 € betrug – sonst das Kalendervierteljahr (§ 18 Abs. 2 S. 1, 2 UStG)"]],
     punkte: [
-      "**System:** Allphasen-Netto-Umsatzsteuer mit Vorsteuerabzug – jede Stufe versteuert ihren Umsatz, zieht aber die ihr berechnete Steuer ab (§ 15 UStG). Nur der Endverbraucher bleibt belastet.",
+      "**System:** Allphasen-Netto-Umsatzsteuer mit Vorsteuerabzug – jede Stufe versteuert ihren Umsatz, zieht aber die ihr berechnete Steuer ab (§ 15 UStG). Besteuert wird so auf jeder Stufe nur der **Mehrwert**; für den Unternehmer ist die Umsatzsteuer **kostenneutral** (durchlaufender Betrag). Wirtschaftlich belastet bleibt allein der Endverbraucher.",
       "**Unternehmer (§ 2 Abs. 1 S. 1 UStG):** wer eine gewerbliche oder berufliche Tätigkeit **selbständig** ausübt. Gewerblich oder beruflich ist jede **nachhaltige** Tätigkeit zur **Erzielung von Einnahmen** – Gewinnabsicht ist nicht nötig (§ 2 Abs. 1 S. 3 UStG).",
       "**Unternehmerfähig** ist jedes Gebilde, das nach außen auftritt: natürliche Person, OHG, KG, GmbH, auch eine **GbR oder ein Ehepaar**, das gemeinsam ein Gebäude vermietet (§ 2 Abs. 1 S. 1 UStG).",
       "**Unternehmenseinheit (§ 2 Abs. 1 S. 2 UStG):** Ein Unternehmer hat nur **ein** Unternehmen – Arztpraxis und vermietete Ferienwohnung gehören zusammen. Leistungen zwischen den Betriebsteilen sind **nicht steuerbare Innenumsätze**.",
@@ -25,7 +25,7 @@ export const KOMPAKT_UST = {
   "ust-leistung": {
     satz: "Erst die Art der Leistung bestimmen – Lieferung oder sonstige Leistung –, denn davon hängen Ort, Steuersatz und Entstehung ab (§ 3 Abs. 1, 9 UStG).",
     punkte: [
-      "**Lieferung (§ 3 Abs. 1 UStG):** Der Unternehmer verschafft dem Abnehmer die **Verfügungsmacht** an einem Gegenstand – der Abnehmer kann wirtschaftlich wie ein Eigentümer darüber verfügen. Maßgeblich ist die Übergabe, nicht die Zahlung.",
+      "**Lieferung (§ 3 Abs. 1 UStG):** Der Unternehmer verschafft dem Abnehmer die **Verfügungsmacht** an einem Gegenstand – der Abnehmer kann wirtschaftlich wie ein Eigentümer darüber verfügen. Maßgeblich ist die Übergabe, nicht die Zahlung. **Gegenstände** sind körperliche Sachen und Güter, die im Verkehr wie Sachen behandelt werden, z. B. **Strom und Wärme** (vgl. Abschn. 3.1 Abs. 1 UStAE).",
       "**Eigentumsvorbehalt (§ 449 BGB):** Die Lieferung ist trotzdem mit der **Übergabe** ausgeführt – zivilrechtliches Eigentum ist nicht entscheidend.",
       "**Sonstige Leistung (§ 3 Abs. 9 S. 1 UStG):** alle Leistungen, die keine Lieferungen sind – Vermietung, Beratung, Reparatur, Unterricht, Beförderung, Restaurantumsätze. Auch ein **Unterlassen oder Dulden** kann eine sonstige Leistung sein (§ 3 Abs. 9 S. 2 UStG).",
       "**Werklieferung (§ 3 Abs. 4 UStG):** Der Unternehmer bearbeitet einen Gegenstand und verwendet dabei **eigene Hauptstoffe** → Lieferung. Steuert er nur **Zutaten oder sonstige Nebensachen** bei, bleibt es eine Werkleistung, also eine sonstige Leistung (§ 3 Abs. 4 S. 1 UStG).",
@@ -50,7 +50,7 @@ export const KOMPAKT_UST = {
     ],
     punkte: [
       "**Bewegte Lieferung (§ 3 Abs. 6 S. 1 UStG):** Ort ist dort, wo die Beförderung oder Versendung **beginnt** – Pullover per DHL von Hannover nach München: Ort Hannover.",
-      "**Befördern** = der Lieferer/Abnehmer transportiert selbst; **versenden** = ein selbständiger Dritter (Spediteur, DHL) wird beauftragt (§ 3 Abs. 6 S. 2, 3 UStG).",
+      "**Befördern** = der Lieferer/Abnehmer transportiert selbst; **versenden** = ein selbständiger Dritter (Spediteur, DHL) wird beauftragt (§ 3 Abs. 6 S. 2, 3 UStG). Auch der **Abholfall** ist eine Beförderung: Holt der Kunde die Ware selbst im Laden ab, befördert der Abnehmer – Ort ist der Laden.",
       "**Unbewegte Lieferung (§ 3 Abs. 7 S. 1 UStG):** Ort ist dort, wo sich der Gegenstand bei Verschaffung der Verfügungsmacht befindet – z. B. Grundstücke, Verkauf im Laden.",
       "**Leistung an einen Unternehmer für dessen Unternehmen („B2B“, § 3a Abs. 2 S. 1 UStG):** Ort ist dort, von wo aus der **Empfänger** sein Unternehmen betreibt.",
       "**Leistung an einen Nichtunternehmer („B2C“, § 3a Abs. 1 S. 1 UStG):** Ort ist dort, von wo aus der **leistende** Unternehmer sein Unternehmen betreibt.",
@@ -141,12 +141,13 @@ export const KOMPAKT_UST = {
       "Ändert sich das Entgelt später? → § 17 UStG im Voranmeldungszeitraum der Änderung",
     ],
     punkte: [
-      "**Vereinbarte Entgelte (Soll-Versteuerung, § 16 Abs. 1 UStG):** Die Steuer entsteht mit **Ablauf des Voranmeldungszeitraums**, in dem die Leistung **ausgeführt** wurde (§ 13 Abs. 1 Nr. 1 a S. 1 UStG) – egal, wann der Kunde zahlt.",
+      "**Vereinbarte Entgelte (Soll-Versteuerung, § 16 Abs. 1 UStG):** Die Steuer entsteht mit **Ablauf des Voranmeldungszeitraums**, in dem die Leistung **ausgeführt** wurde (§ 13 Abs. 1 Nr. 1 a S. 1 UStG) – egal, wann der Kunde zahlt. **Ausgeführt** ist eine Lieferung mit der Verschaffung der Verfügungsmacht (bei Beförderung oder Versendung mit deren Beginn), eine sonstige Leistung mit ihrer **Vollendung** – die Vermietung einer Ferienwohnung also am letzten Miettag (vgl. Abschn. 13.1 Abs. 2, 3 UStAE).",
       "**Ratenzahlung:** volle Steuer im Monat der Lieferung – nicht nach Raten verteilen (§ 13 Abs. 1 Nr. 1 a S. 1 UStG).",
       "**Anzahlungen (§ 13 Abs. 1 Nr. 1 a S. 4 UStG):** Wird vor der Leistung gezahlt, entsteht die Steuer insoweit mit Ablauf des Voranmeldungszeitraum der **Vereinnahmung** („Mindest-Ist-Versteuerung“).",
       "**Dauerleistungen** wie Vermietung: monatliche Teilleistungen (§ 13 Abs. 1 Nr. 1 a S. 2, 3 UStG) – jede Monatsmiete entsteht im Mietmonat, auch wenn sie später gezahlt wird; Quartalsmieten im Voraus sind Anzahlungen.",
       "**Änderung der Bemessungsgrundlage (§ 17 Abs. 1 UStG):** Skonto, Rabatt, Rücksendung, Gutschrift → Steuer im Voranmeldungszeitraum der Änderung berichtigen; der Empfänger berichtigt seine Vorsteuer entsprechend (§ 17 Abs. 1 S. 2 UStG).",
       "**Uneinbringlichkeit (§ 17 Abs. 2 Nr. 1 UStG):** Steuer berichtigen; wird später doch gezahlt, erneut erhöhen. Bloßer Zahlungsverzug reicht nicht.",
+      "**Rückgängig gemachte Leistung (§ 17 Abs. 2 Nr. 3 UStG):** Tritt der Kunde vom Kauf zurück und gibt die Ware zurück, werden Umsatzsteuer und Vorsteuer ebenso berichtigt wie bei einer Entgeltminderung.",
       "**Wertabgaben** entstehen mit Ablauf des Voranmeldungszeitraum ihrer Ausführung (§ 13 Abs. 1 Nr. 2 UStG); die nach § 14c UStG geschuldete Steuer entsteht im Zeitpunkt der **Ausgabe der Rechnung** (§ 13 Abs. 1 Nr. 3 UStG).",
       "**Ist-Versteuerung (§ 20 S. 1 UStG):** Besteuerung nach **vereinnahmten** Entgelten – nur auf Antrag, u. a. bei einem Vorjahresumsatz bis **800.000 €** und für Freiberufler. Die Steuer entsteht dann mit Ablauf des Voranmeldungszeitraums der Vereinnahmung (§ 13 Abs. 1 Nr. 1 b UStG). In Klausuren ist sie meist ausgeschlossen.",
     ],

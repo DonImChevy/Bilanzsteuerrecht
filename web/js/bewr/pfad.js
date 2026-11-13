@@ -183,7 +183,7 @@ export const PFAD_BEWR = [
     karten: [
       { art: "erklaerung", titel: "Der Rechenweg", text: "1. Bodenwert = Fläche × Richtwert\n2. Rohertrag (Jahreskaltmiete ohne Umlagen)\n3. − Bewirtschaftungskosten (Anlage 23)\n4. = Reinertrag − Bodenwert × Liegenschaftszins\n5. = Gebäudereinertrag × **Vervielfältiger** (Anlage 21)\n6. = Gebäudeertragswert + Bodenwert = **Ertragswert**" },
       { art: "erklaerung", titel: "Bewirtschaftungskosten", text: "Wohnen: Verwaltung **230 €** je Wohnung, Instandhaltung **9 €** je m² – beides mit dem **Verbraucherpreisindex** angepasst –, Mietausfall **2 %**. Gewerbe: Verwaltung **3 %**, Mietausfall **4 %** des Rohertrags, Instandhaltung je m² wie Wohnen." },
-      { art: "merksatz", titel: "Restnutzungsdauer", text: "Gesamtnutzungsdauer (meist **80 Jahre**) − Alter, aber **mindestens 30 %** der Gesamtnutzungsdauer (24 Jahre). Bei Abbruchverpflichtung höchstens bis zum Abbruch (§ 185 Abs. 3 BewG)." },
+      { art: "merksatz", titel: "Restnutzungsdauer", text: "Gesamtnutzungsdauer nach Anlage 22 BewG (Wohngebäude **80 Jahre**) − Alter, aber **mindestens 30 %** der Gesamtnutzungsdauer (24 Jahre). Bei Abbruchverpflichtung höchstens bis zum Abbruch (§ 185 Abs. 3 BewG)." },
       { art: "erklaerung", titel: "Liegenschaftszins und § 198 BewG", text: "Ohne Wert vom Gutachterausschuss: Mietwohn **3,5 %**, gemischt bis 50 % gewerblich **4,5 %**, darüber **5,0 %**, Geschäft **6,0 %** (§ 188 BewG). Ein niedrigerer Verkehrswert kann durch **Gutachten** oder **Kaufpreis** (± 1 Jahr) nachgewiesen werden (§ 198 BewG)." },
     ],
     fragen: [

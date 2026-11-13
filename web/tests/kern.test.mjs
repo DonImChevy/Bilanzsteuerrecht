@@ -1335,3 +1335,17 @@ test("Begriffsverzeichnis: jede zitierte Fundstelle ist als Gesetzestext vorhand
   const block = L.PFADE.ust.bloecke[0];
   assert.equal(block.karten.at(-1).art, "begriffe");
 });
+
+test("Überblick ist mindestens so vollständig wie der Lernpfad: jeder im Lernpfad zitierte Paragraf steht auch in einem Überblick des Moduls", async () => {
+  const L = await import("../js/lernpfad.js"), K = await import("../js/kompakt.js"), N = await import("../js/oer/normtext.js"), kern = await import("../js/kern.js");
+  const para = (text) => new Set(N.normenAusText(text).map((r) => r.split(" ").slice(0, 2).join(" ")));
+  for (const fach of ["ust", "est", "oer", "bsr", "bbf", "ao", "pr", "bewr"]) {
+    const ids = kern.THEMEN.filter((t) => kern.themaIn(t.id, fach)).map((t) => t.id);
+    const ueberblick = para(ids.map((i) => JSON.stringify(K.KOMPAKT[i] || "")).join(" "));
+    for (const b of L.PFADE[fach].bloecke) {
+      const text = JSON.stringify({ k: b.karten.filter((c) => c.art !== "begriffe"), f: b.fragen });
+      const fehlt = [...para(text)].filter((r) => !ueberblick.has(r));
+      assert.deepEqual(fehlt, [], `${fach}/${b.id}: im Lernpfad zitiert, in keinem Überblick`);
+    }
+  }
+});

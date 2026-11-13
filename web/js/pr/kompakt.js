@@ -9,7 +9,7 @@ export const KOMPAKT_PR = {
       "**Sonderrechtstheorie (modifizierte Subjektstheorie):** Öffentlich-rechtlich ist eine Norm, die ausschließlich einen Hoheitsträger **gerade als solchen** berechtigt oder verpflichtet. Kauft das Finanzamt Papier, gilt § 433 BGB wie für jeden – Privatrecht. Erlässt es einen Steuerbescheid, handelt es hoheitlich.",
       "**Folgen der Zuordnung:** anwendbare Normen (Verjährung §§ 194 ff. BGB oder Zahlungsverjährung §§ 228 ff. AO – nicht mischbar) und **Rechtsweg** (Amts-/Landgericht oder Verwaltungs-, Finanz-, Sozialgericht).",
       "**Aufbau des BGB:** Allgemeiner Teil – Schuldrecht – Sachenrecht – Familienrecht – Erbrecht. Der AT ist **vor die Klammer gezogen** und gilt für alles Folgende, soweit dort nichts Spezielleres steht; ebenso Schuldrecht AT für alle Schuldverhältnisse.",
-      "**HGB = Sonderprivatrecht der Kaufleute:** geht dem BGB als spezielleres Recht vor und soll den Handelsverkehr erleichtern und beschleunigen (z. B. § 350 HGB, § 377 HGB); im Übrigen gilt das BGB.",
+      "**HGB = Sonderprivatrecht der Kaufleute:** Kaufmann ist, wer ein Handelsgewerbe betreibt (§ 1 Abs. 1 HGB); das HGB geht dem BGB als spezielleres Recht vor und soll den Handelsverkehr erleichtern und beschleunigen (z. B. § 350 HGB, § 377 HGB); im Übrigen gilt das BGB.",
       "**Brücke ins Steuerrecht:** Steuertatbestände knüpfen an Zivilrecht an – Grundstückskauf (§ 1 Abs. 1 Nr. 1 GrEStG), Mietvertrag (§ 21 EStG), Ehe (§ 26 EStG). **Wirtschaftliche Betrachtungsweise:** wirtschaftliches Eigentum (§ 39 AO), Besteuerung trotz Gesetz- oder Sittenwidrigkeit (§ 40 AO) und trotz Unwirksamkeit (§ 41 AO).",
     ],
     fallen: [
@@ -51,7 +51,7 @@ export const KOMPAKT_PR = {
       "**Vertragsfreiheit** (vgl. § 311 Abs. 1 BGB): **Abschlussfreiheit** (ob und mit wem), **Inhaltsfreiheit** (was), **Formfreiheit** (wie – Umkehrschluss aus § 125 BGB).",
       "**Weitere Ausprägungen:** Vereinigungsfreiheit (Art. 9 GG, §§ 21 ff., 705 ff. BGB), Testierfreiheit (Art. 14 GG, § 1937 BGB), Eigentumsfreiheit (Art. 14 GG, § 903 BGB), Eheschließungsfreiheit (Art. 6 GG).",
       "**Grenzen der Abschlussfreiheit:** Kontrahierungszwang, z. B. Grundversorgung mit Strom (§ 17 Abs. 1 EnWG), Kfz-Haftpflicht.",
-      "**Grenzen der Inhaltsfreiheit:** gesetzliches Verbot (§ 134 BGB), Sittenwidrigkeit und Wucher (§ 138 BGB), AGB-Kontrolle (§§ 305 ff. BGB), zwingendes Recht (§ 444 BGB, § 476 BGB), Typenzwang im Sachenrecht.",
+      "**Grenzen der Inhaltsfreiheit:** gesetzliches Verbot (§ 134 BGB), Sittenwidrigkeit (§ 138 Abs. 1 BGB) und Wucher – Ausbeutung einer Zwangslage oder Unerfahrenheit bei auffälligem Missverhältnis von Leistung und Gegenleistung (§ 138 Abs. 2 BGB) –, AGB-Kontrolle (§§ 305 ff. BGB), zwingendes Recht (§ 444 BGB, § 476 BGB), Typenzwang im Sachenrecht.",
       "**Grenzen der Formfreiheit:** § 311b Abs. 1 S. 1 BGB (Grundstück), § 518 Abs. 1 BGB (Schenkungsversprechen), § 766 S. 1 BGB (Bürgschaft), § 2247 BGB (Testament) – Verstoß: Nichtigkeit (§ 125 S. 1 BGB).",
       "**Dispositives Recht** (z. B. § 434 BGB) dürfen die Parteien abbedingen, **zwingendes** nicht. Grundrechte wirken nur **mittelbar** über Generalklauseln (§§ 138, 242, 826 BGB).",
     ],

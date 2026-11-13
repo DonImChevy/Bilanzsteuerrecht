@@ -3,12 +3,12 @@
 
 export const KOMPAKT_OER = {
   "oer-staatsziele": {
-    satz: "Deutschland ist ein Staat, weil es Staatsgebiet, Staatsvolk und Staatsgewalt hat – und das Grundgesetz ist seine Verfassung, deren Grundprinzipien selbst der verfassungsändernde Gesetzgeber nicht antasten darf (Präambel, Art. 20, Art. 79 Abs. 3 GG).",
+    satz: "Deutschland ist ein Staat, weil es Staatsgebiet, Staatsvolk und Staatsgewalt hat – und das Grundgesetz ist seine Verfassung, deren Grundprinzipien selbst der verfassungsändernde Gesetzgeber nicht antasten darf (Präambel, Art. 20 GG, Art. 79 Abs. 3 GG).",
     zahlen: [["3", "Elemente des Staates: Staatsgebiet, Staatsvolk, Staatsgewalt (Drei-Elemente-Lehre)"], ["5", "Staatsstrukturprinzipien (Art. 20 Abs. 1–3 GG)"], ["⅔ + ⅔", "Verfassungsänderung (BT-Mitglieder + BR-Stimmen) (Art. 79 Abs. 2 GG)"]],
     punkte: [
       "**Drei-Elemente-Lehre (Jellinek):** **Staatsgebiet** (abgegrenzter Teil der Erdoberfläche), **Staatsvolk** (dauerhaft verbundene Menschen, v. a. Staatsangehörige), **Staatsgewalt** (wirksame, nach innen und außen unabhängige Herrschaftsmacht) (im GG: Staatsgebiet Präambel S. 2 GG, Staatsvolk Art. 116 Abs. 1 GG, Staatsgewalt Art. 20 Abs. 2 GG).",
       "**Das Grundgesetz ist Verfassung:** Es regelt die Grundordnung des Staates (Organe, Verfahren, Grundrechte) und steht im Rang über allen anderen Gesetzen. Die Bezeichnung „Grundgesetz“ ändert daran nichts; den Geltungsbereich nennt die **Präambel** (alle 16 Länder), seit 1990 gilt es für das ganze deutsche Volk (Art. 146 GG).",
-      "**Fünf Staatsstrukturprinzipien:** **Republik, Demokratie, Bundesstaat, Sozialstaat** (Art. 20 Abs. 1 GG) und **Rechtsstaat** (Art. 20 Abs. 2 S. 2, Abs. 3; Art. 28 Abs. 1 S. 1 GG).",
+      "**Fünf Staatsstrukturprinzipien:** **Republik, Demokratie, Bundesstaat, Sozialstaat** (Art. 20 Abs. 1 GG) und **Rechtsstaat** (Art. 20 Abs. 2 S. 2, Abs. 3 GG; Art. 28 Abs. 1 S. 1 GG).",
       "**Verfassungsänderung (Art. 79 Abs. 1, 2 GG):** nur durch ein Gesetz, das den **Wortlaut ausdrücklich ändert**, mit **zwei Dritteln der Mitglieder des Bundestages** und **zwei Dritteln der Stimmen des Bundesrates**.",
       "**Ewigkeitsklausel (Art. 79 Abs. 3 GG):** unzulässig ist jede Änderung, die die Gliederung des Bundes in Länder, die grundsätzliche Mitwirkung der Länder bei der Gesetzgebung oder die Grundsätze der Art. 1 und 20 GG berührt.",
       "**Homogenitätsprinzip (Art. 28 Abs. 1 S. 1 GG):** Die verfassungsmäßige Ordnung der Länder muss den Grundsätzen des republikanischen, demokratischen und sozialen Rechtsstaats entsprechen; der Bund gewährleistet das (Art. 28 Abs. 3 GG).",
@@ -21,12 +21,12 @@ export const KOMPAKT_OER = {
   },
 
   "oer-republik": {
-    satz: "Republik heißt: Das Staatsoberhaupt wird auf Zeit gewählt, nicht geboren – Sozialstaat heißt: Der Staat sorgt für soziale Gerechtigkeit und sichert das Existenzminimum (Art. 20 Abs. 1, Art. 54 Abs. 1, 2, Art. 28 Abs. 1 S. 1 GG).",
+    satz: "Republik heißt: Das Staatsoberhaupt wird auf Zeit gewählt, nicht geboren – Sozialstaat heißt: Der Staat sorgt für soziale Gerechtigkeit und sichert das Existenzminimum (Art. 20 Abs. 1 GG, Art. 54 Abs. 1, 2 GG, Art. 28 Abs. 1 S. 1 GG).",
     punkte: [
       "**Republik (Art. 20 Abs. 1 GG):** formell die **Absage an die Monarchie** – das Staatsoberhaupt (Bundespräsident) wird für eine begrenzte Zeit gewählt (Art. 54 GG). Materiell: Amtsführung zum Gemeinwohl.",
       "**Geschützt durch Art. 79 Abs. 3 GG** und über **Art. 28 Abs. 1 S. 1 GG** auch für die Länder: Ein Land darf keine Monarchie einführen.",
-      "**Sozialstaat (Art. 20 Abs. 1, Art. 28 Abs. 1 GG):** Auftrag an den Staat, für eine **gerechte Sozialordnung** und **soziale Sicherheit** zu sorgen; zusammen mit der Menschenwürde (Art. 1 Abs. 1 GG) Pflicht zur Sicherung des **Existenzminimums**.",
-      "**Konkretisierungen:** Grundfreibetrag und Kinderfreibetrag (steuerfreies Existenzminimum), Kindergeld, Sozialversicherung, Bürgergeld, progressiver Einkommensteuertarif (Art. 20 Abs. 1 i. V. m. Art. 1 Abs. 1 GG; Grundfreibetrag § 32a Abs. 1 EStG).",
+      "**Sozialstaat (Art. 20 Abs. 1 GG, Art. 28 Abs. 1 GG):** Auftrag an den Staat, für eine **gerechte Sozialordnung** und **soziale Sicherheit** zu sorgen; zusammen mit der Menschenwürde (Art. 1 Abs. 1 GG) Pflicht zur Sicherung des **Existenzminimums**.",
+      "**Konkretisierungen:** Grundfreibetrag und Kinderfreibetrag (steuerfreies Existenzminimum), Kindergeld, Sozialversicherung, Bürgergeld, progressiver Einkommensteuertarif (Art. 20 Abs. 1 GG i. V. m. Art. 1 Abs. 1 GG; Grundfreibetrag § 32a Abs. 1 EStG).",
       "**Weiter Gestaltungsspielraum** des Gesetzgebers – aus dem Sozialstaatsprinzip folgen grundsätzlich **keine unmittelbaren Leistungsansprüche** des Einzelnen (Ausnahme: Existenzminimum) (Art. 20 Abs. 1 GG).",
       "**Staatsziel Umwelt- und Tierschutz (Art. 20a GG):** bindet alle Staatsgewalt, insbesondere den Gesetzgeber.",
     ],
@@ -37,13 +37,13 @@ export const KOMPAKT_OER = {
 
   "oer-demokratie": {
     satz: "Alle Staatsgewalt geht vom Volk aus – sie wird in Wahlen und Abstimmungen und durch besondere Organe ausgeübt, und jedes staatliche Handeln braucht eine Legitimationskette zurück zum Volk (Art. 20 Abs. 2 GG).",
-    zahlen: [["4 Jahre", "Wahlperiode (Art. 39 Abs. 1 GG)"], ["Art. 29", "einzige Volksabstimmung auf Bundesebene (Neugliederung) (Art. 29 Abs. 2 S. 1 GG)"]],
+    zahlen: [["4 Jahre", "Wahlperiode (Art. 39 Abs. 1 GG)"], ["Art. 29 GG", "einzige Volksabstimmung auf Bundesebene (Neugliederung) (Art. 29 Abs. 2 S. 1 GG)"]],
     punkte: [
       "**Volkssouveränität (Art. 20 Abs. 2 S. 1 GG):** Das Volk ist Träger der Staatsgewalt.",
       "**Repräsentative Demokratie (Art. 20 Abs. 2 S. 2 GG):** Das Volk übt die Staatsgewalt in **Wahlen** und **Abstimmungen** und durch besondere Organe der Gesetzgebung, Verwaltung und Rechtsprechung aus. Volksentscheide auf Bundesebene gibt es nur bei der **Neugliederung des Bundesgebiets** (Art. 29 GG).",
-      "**Legitimationskette:** Parlament direkt gewählt → Kanzler vom Parlament gewählt → Minister → Verwaltung; Richter durch Wahlausschüsse (Art. 38 Abs. 1, Art. 63 Abs. 1, Art. 64 Abs. 1 GG).",
+      "**Legitimationskette:** Parlament direkt gewählt → Kanzler vom Parlament gewählt → Minister → Verwaltung; Richter durch Wahlausschüsse (Art. 38 Abs. 1 GG, Art. 63 Abs. 1 GG, Art. 64 Abs. 1 GG).",
       "**Periodische Wahlen:** Herrschaft auf Zeit; Wahlperiode 4 Jahre (Art. 39 Abs. 1 GG). Eine Verlängerung auf 8 Jahre wäre mit dem Demokratieprinzip unvereinbar (Obergrenze etwa 5–6 Jahre).",
-      "**Mehrheitsprinzip** (Art. 42 Abs. 2 GG) mit **Minderheitenschutz** und Rechten der **Opposition** (z. B. Untersuchungsausschuss auf Antrag eines Viertels, Art. 44 GG).",
+      "**Mehrheitsprinzip** (Art. 42 Abs. 2 GG) mit **Minderheitenschutz** und Rechten der **Opposition** (z. B. Untersuchungsausschuss auf Antrag eines Viertels, Art. 44 GG): Die Minderheit muss die Chance haben, selbst zur Mehrheit zu werden – deshalb gehören regelmäßige Wahlen und **Parteienvielfalt** (freie Gründung, Art. 21 Abs. 1 S. 2 GG) zur Demokratie.",
       "**Öffentlichkeit** der Verhandlungen (Art. 42 Abs. 1 GG), **Parteien** als Mittler (Art. 21 GG), **Wahlrechtsgrundsätze** (Art. 38 Abs. 1 S. 1 GG).",
       "**Wesentlichkeitstheorie:** Das unmittelbar demokratisch legitimierte Parlament muss die **wesentlichen** Entscheidungen selbst treffen – Gesetzesvorbehalt wird zum Parlamentsvorbehalt (Art. 20 Abs. 2, 3 GG).",
       "**Wehrhafte Demokratie:** Parteiverbot (Art. 21 Abs. 2 GG), Grundrechtsverwirkung (Art. 18 GG), Ewigkeitsklausel (Art. 79 Abs. 3 GG).",
@@ -54,8 +54,8 @@ export const KOMPAKT_OER = {
   },
 
   "oer-rechtsstaat": {
-    satz: "Im Rechtsstaat ist alle Staatsgewalt an Recht und Gesetz gebunden, geteilt und kontrolliert – und der Bürger darf darauf vertrauen, dass abgeschlossene Sachverhalte nicht nachträglich verschärft werden (Art. 20 Abs. 2 S. 2, Abs. 3, Art. 28 Abs. 1 S. 1 GG).",
-    zahlen: [["echt", "Rückwirkung grds. unzulässig (vgl. Art. 20 Abs. 3 GG)"], ["unecht", "Rückwirkung grds. zulässig (vgl. Art. 20 Abs. 3 GG)"], ["Art. 103 Abs. 2", "absolutes Rückwirkungsverbot im Strafrecht (Art. 103 Abs. 2 GG)"]],
+    satz: "Im Rechtsstaat ist alle Staatsgewalt an Recht und Gesetz gebunden, geteilt und kontrolliert – und der Bürger darf darauf vertrauen, dass abgeschlossene Sachverhalte nicht nachträglich verschärft werden (Art. 20 Abs. 2 S. 2, Abs. 3 GG, Art. 28 Abs. 1 S. 1 GG).",
+    zahlen: [["echt", "Rückwirkung grds. unzulässig (vgl. Art. 20 Abs. 3 GG)"], ["unecht", "Rückwirkung grds. zulässig (vgl. Art. 20 Abs. 3 GG)"], ["Art. 103 Abs. 2 GG", "absolutes Rückwirkungsverbot im Strafrecht (Art. 103 Abs. 2 GG)"]],
     schema: [
       "Belastendes Gesetz mit Wirkung für die Vergangenheit?",
       "Sachverhalt bei Verkündung abgeschlossen? → echte Rückwirkung (grds. unzulässig, nur ausnahmsweise erlaubt)",
@@ -79,8 +79,8 @@ export const KOMPAKT_OER = {
   },
 
   "oer-bundesstaat": {
-    satz: "Bund und Länder sind beide Staaten mit eigener Staatsgewalt – grundsätzlich sind die Länder zuständig, aber Bundesrecht bricht Landesrecht (Art. 20 Abs. 1, Art. 30, Art. 31 GG).",
-    zahlen: [["16", "Länder (Präambel S. 2 GG)"], ["Art. 30", "Länder grundsätzlich zuständig (Art. 30 GG)"], ["Art. 31", "Bundesrecht bricht Landesrecht (Art. 31 GG)"]],
+    satz: "Bund und Länder sind beide Staaten mit eigener Staatsgewalt – grundsätzlich sind die Länder zuständig, aber Bundesrecht bricht Landesrecht (Art. 20 Abs. 1 GG, Art. 30 GG, Art. 31 GG).",
+    zahlen: [["16", "Länder (Präambel S. 2 GG)"], ["Art. 30 GG", "Länder grundsätzlich zuständig (Art. 30 GG)"], ["Art. 31 GG", "Bundesrecht bricht Landesrecht (Art. 31 GG)"]],
     punkte: [
       "**Bundesstaat (Art. 20 Abs. 1 GG):** Zusammenschluss von Staaten (Ländern) zu einem Gesamtstaat (Bund); beide haben **Staatsqualität**.",
       "**Kompetenzverteilung (Art. 30 GG):** Die Ausübung staatlicher Befugnisse ist **Sache der Länder**, soweit das GG nichts anderes regelt – für die Gesetzgebung konkretisiert in Art. 70 GG, für die Verwaltung in Art. 83 GG.",
@@ -105,7 +105,7 @@ export const KOMPAKT_OER = {
       "**Gründungsfreiheit, innere demokratische Ordnung, Rechenschaftspflicht** über Herkunft und Verwendung der Mittel (Art. 21 Abs. 1 S. 2–4 GG).",
       "**Parteienprivileg (Art. 21 Abs. 2, 4 GG):** Über die Verfassungswidrigkeit entscheidet **nur das Bundesverfassungsgericht** (Antrag: Bundestag, Bundesrat oder Bundesregierung). Bis dahin darf die Partei in ihrer Tätigkeit nicht behindert werden.",
       "**Ausschluss von staatlicher Finanzierung (Art. 21 Abs. 3 GG):** für Parteien, die darauf ausgerichtet sind, die freiheitliche demokratische Grundordnung zu beeinträchtigen – auch ohne Verbot.",
-      "**Chancengleichheit (Art. 21 Abs. 1 i. V. m. Art. 3 Abs. 1 GG, § 5 PartG):** Staatliche Leistungen (z. B. Säle, Sendezeiten) müssen gleichwertig gewährt werden – **abgestuft** nach Bedeutung (Wahlergebnisse) ist zulässig.",
+      "**Chancengleichheit (Art. 21 Abs. 1 GG i. V. m. Art. 3 Abs. 1 GG, § 5 PartG):** Staatliche Leistungen (z. B. Säle, Sendezeiten) müssen gleichwertig gewährt werden – **abgestuft** nach Bedeutung (Wahlergebnisse) ist zulässig.",
       "**Spenden (§ 25 PartG):** grundsätzlich zulässig; **unzulässig** u. a. anonyme Spenden über 500 €, Spenden von öffentlichen Körperschaften und die meisten Auslandsspenden. Spenden über **35.000 €** sind dem Bundestagspräsidenten **unverzüglich** anzuzeigen und werden veröffentlicht.",
     ],
     fallen: [
@@ -128,7 +128,7 @@ export const KOMPAKT_OER = {
       "**Untersuchungsausschuss – Einsetzung (Art. 44 Abs. 1 S. 1 GG):** **Recht:** Der Bundestag **darf** jederzeit einen Ausschuss einsetzen, wenn die **Mehrheit der abgegebenen Stimmen** es beschließt (Art. 42 Abs. 2 S. 1 GG). **Pflicht:** Beantragt ein **Viertel** seiner Mitglieder die Einsetzung (bei 630 Mitgliedern: 158), **muss** er ihn einsetzen – die Mehrheit kann das nicht verhindern (**Minderheitenrecht** der Opposition). In beiden Fällen muss der Untersuchungsgegenstand in die **Zuständigkeit des Bundestages** fallen und hinreichend bestimmt sein.",
       "**Untersuchungsausschuss – Verfahren (Art. 44 Abs. 1 S. 2, Abs. 2, 3 GG):** Beweiserhebung grundsätzlich **öffentlich**, die Öffentlichkeit kann ausgeschlossen werden. Für die Beweise gilt die **Strafprozessordnung sinngemäß** (z. B. Zeugen); das Brief-, Post- und Fernmeldegeheimnis bleibt geschützt. Gerichte und Behörden müssen **Rechts- und Amtshilfe** leisten.",
       "**Untersuchungsausschuss – Ergebnis (Art. 44 Abs. 4 GG):** Die abschließenden Beschlüsse (Bericht) sind der **richterlichen Erörterung entzogen**; umgekehrt sind die Gerichte bei der Würdigung desselben Sachverhalts **frei**. Sonderfall: Der **Verteidigungsausschuss** hat selbst die Rechte eines Untersuchungsausschusses (Art. 45a Abs. 2 GG).",
-      "**Kein Selbstauflösungsrecht:** Auflösung nur durch den Bundespräsidenten nach Art. 63 Abs. 4 S. 3 oder Art. 68 GG.",
+      "**Kein Selbstauflösungsrecht:** Auflösung nur durch den Bundespräsidenten nach Art. 63 Abs. 4 S. 3 GG oder Art. 68 GG.",
     ],
     fallen: [
       "Indemnität gilt dauerhaft, Immunität nur während des Mandats und kann aufgehoben werden (Art. 46 Abs. 1, 2 GG).",
@@ -141,7 +141,7 @@ export const KOMPAKT_OER = {
     zahlen: [["5", "Wahlrechtsgrundsätze (Art. 38 Abs. 1 S. 1 GG)"], ["299", "Wahlkreise (§ 1 Abs. 3 BWahlG)"], ["5 %", "Sperrklausel (§ 4 Abs. 2 S. 2 Nr. 2 BWahlG)"], ["3", "Direktmandate – Grundmandatsklausel (gilt nach dem Urteil des BVerfG vom 30.07.2024 bis zu einer Neuregelung fort)"]],
     punkte: [
       "**Allgemein:** Alle Deutschen ab 18 dürfen wählen – Ausschlüsse nur aus zwingenden Gründen. **Unmittelbar:** keine Wahlmänner, Stimme wirkt direkt. **Frei:** ohne Zwang und unzulässige Beeinflussung. **Gleich:** gleicher Zählwert und grundsätzlich gleicher Erfolgswert. **Geheim:** niemand erfährt, wie man gewählt hat (Art. 38 Abs. 1 S. 1, Abs. 2 GG; § 12 Abs. 1 BWahlG).",
-      "**Ungeschriebener Grundsatz:** Öffentlichkeit der Wahl (Art. 38 i. V. m. Art. 20 Abs. 1, 2 GG) – Wahlvorgang und Auszählung sind öffentlich kontrollierbar.",
+      "**Ungeschriebener Grundsatz:** Öffentlichkeit der Wahl (Art. 38 GG i. V. m. Art. 20 Abs. 1, 2 GG) – Wahlvorgang und Auszählung sind öffentlich kontrollierbar.",
       "**Wahlrecht (Art. 38 Abs. 2 GG, § 12 BWahlG):** aktiv ab 18 Jahren; **passiv mit Volljährigkeit** – beides steht im GG selbst, ist daher kein Verstoß.",
       "**Wahlsystem (BWahlG):** **630 Sitze**; Erststimme für einen Wahlkreisbewerber, Zweitstimme für eine Landesliste. Sitze nach dem Zweitstimmenergebnis (Sainte-Laguë). **Zweitstimmendeckung:** Ein Wahlkreissieger bekommt den Sitz nur, wenn seine Partei genug Zweitstimmensitze hat – **keine Überhang- und Ausgleichsmandate** mehr (§ 1 Abs. 1, §§ 4–6 BWahlG).",
       "**Sperrklausel (§ 4 Abs. 2 BWahlG):** Parteien unter 5 % der Zweitstimmen nehmen nicht an der Sitzverteilung teil – Ausnahmen: nationale Minderheiten und (nach BVerfG 2024 bis zur Neuregelung) Parteien mit mindestens **drei Direktmandaten**. Die Sperrklausel ist ein gerechtfertigter Eingriff in die Wahlgleichheit (Funktionsfähigkeit des Parlaments).",
@@ -156,7 +156,7 @@ export const KOMPAKT_OER = {
   },
 
   "oer-bundesrat": {
-    satz: "Über den Bundesrat wirken die Länder an Gesetzgebung und Verwaltung des Bundes mit – seine Mitglieder sind Regierungsmitglieder der Länder und müssen die Stimmen ihres Landes einheitlich abgeben (Art. 50, Art. 51 Abs. 1, 3 GG).",
+    satz: "Über den Bundesrat wirken die Länder an Gesetzgebung und Verwaltung des Bundes mit – seine Mitglieder sind Regierungsmitglieder der Länder und müssen die Stimmen ihres Landes einheitlich abgeben (Art. 50 GG, Art. 51 Abs. 1, 3 GG).",
     zahlen: [["69", "Stimmen insgesamt (Art. 51 Abs. 2 GG)"], ["3–6", "Stimmen je Land (Art. 51 Abs. 2 GG)"], ["35", "absolute Mehrheit (Art. 52 Abs. 3 S. 1 GG)"]],
     punkte: [
       "**Aufgabe (Art. 50 GG):** Mitwirkung der Länder bei Gesetzgebung und Verwaltung des Bundes und in Angelegenheiten der EU.",
@@ -178,7 +178,7 @@ export const KOMPAKT_OER = {
     zahlen: [["5 Jahre", "Amtszeit, einmal wiederwählbar (Art. 54 Abs. 2 GG)"], ["40", "Mindestalter (Art. 54 Abs. 1 S. 2 GG)"], ["2 + 1", "Wahlgänge mit absoluter, dann relativer Mehrheit (Art. 54 Abs. 6 GG)"]],
     punkte: [
       "**Wahl (Art. 54 GG):** durch die **Bundesversammlung** (Mitglieder des Bundestages + gleich viele Vertreter der Länderparlamente), ohne Aussprache; gewählt ist, wer im 1. oder 2. Wahlgang die Mehrheit der Mitglieder erhält, im 3. Wahlgang genügt die relative Mehrheit. Wählbar: Deutsche ab 40 Jahren; Amtszeit 5 Jahre, eine anschließende Wiederwahl.",
-      "**Aufgaben:** völkerrechtliche Vertretung (Art. 59 GG), Ernennung und Entlassung von Bundeskanzler und Ministern (Art. 63, 64 GG), Beamten und Richtern (Art. 60 GG), Begnadigung, Auflösung des Bundestages (Art. 63 Abs. 4, Art. 68 GG).",
+      "**Aufgaben:** völkerrechtliche Vertretung (Art. 59 GG), Ernennung und Entlassung von Bundeskanzler und Ministern (Art. 63, 64 GG), Beamten und Richtern (Art. 60 GG), Begnadigung, Auflösung des Bundestages (Art. 63 Abs. 4 GG, Art. 68 GG).",
       "**Ausfertigung und Verkündung (Art. 82 Abs. 1 GG):** Er fertigt die „nach den Vorschriften dieses Grundgesetzes zustande gekommenen“ Gesetze aus.",
       "**Prüfungsrecht:** **formell** (Zuständigkeit, Verfahren, Form) unstreitig umfassend; **materiell** (Inhalt) nach h. M. nur bei **offenkundigen, schwerwiegenden** Verstößen (Evidenzkontrolle) – sonst muss er ausfertigen; die Kontrolle ist Sache des BVerfG.",
       "**Gegenzeichnung (Art. 58 GG):** Anordnungen und Verfügungen bedürfen der Gegenzeichnung durch Kanzler oder zuständigen Minister – **außer** Ernennung/Entlassung des Kanzlers, Auflösung des Bundestages nach Art. 63 Abs. 4 GG und Ersuchen nach Art. 69 Abs. 3 GG.",
@@ -192,8 +192,8 @@ export const KOMPAKT_OER = {
   },
 
   "oer-bundesregierung": {
-    satz: "Die Bundesregierung besteht aus Kanzler und Ministern; der Kanzler wird vom Bundestag gewählt, bestimmt die Richtlinien der Politik und kann nur durch ein konstruktives Misstrauensvotum gestürzt werden (Art. 62, Art. 63 Abs. 1, Art. 65 S. 1, Art. 67 Abs. 1 GG).",
-    zahlen: [["316", "Kanzlermehrheit bei 630 Mitgliedern (Art. 63 Abs. 2 S. 1 GG, Art. 121 GG)"], ["14 Tage", "zweite Wahlphase (Art. 63 Abs. 3 GG)"], ["48 Std.", "Frist vor Abstimmung Art. 67/68"], ["21 Tage", "Auflösungsfrist nach Art. 68"]],
+    satz: "Die Bundesregierung besteht aus Kanzler und Ministern; der Kanzler wird vom Bundestag gewählt, bestimmt die Richtlinien der Politik und kann nur durch ein konstruktives Misstrauensvotum gestürzt werden (Art. 62 GG, Art. 63 Abs. 1 GG, Art. 65 S. 1 GG, Art. 67 Abs. 1 GG).",
+    zahlen: [["316", "Kanzlermehrheit bei 630 Mitgliedern (Art. 63 Abs. 2 S. 1 GG, Art. 121 GG)"], ["14 Tage", "zweite Wahlphase (Art. 63 Abs. 3 GG)"], ["48 Std.", "Frist vor Abstimmung Art. 67/68 GG"], ["21 Tage", "Auflösungsfrist nach Art. 68 GG"]],
     schema: [
       "1. Phase: Vorschlag des Bundespräsidenten, Wahl ohne Aussprache mit Mehrheit der Mitglieder (Art. 63 Abs. 1, 2 GG)",
       "2. Phase: binnen 14 Tagen eigene Kandidaten des Bundestages, Mehrheit der Mitglieder (Art. 63 Abs. 3 GG)",
@@ -209,13 +209,13 @@ export const KOMPAKT_OER = {
       "**Amtsende (Art. 69 Abs. 2 GG):** mit Zusammentritt eines neuen Bundestages; Amt der Minister endet auch mit jeder Erledigung des Kanzleramts. Geschäftsführung auf Ersuchen (Art. 69 Abs. 3 GG).",
     ],
     fallen: [
-      "Kanzlermehrheit = Mehrheit der **Mitglieder** (316), nicht der Anwesenden (Art. 63 Abs. 2 S. 1, Art. 121 GG).",
+      "Kanzlermehrheit = Mehrheit der **Mitglieder** (316), nicht der Anwesenden (Art. 63 Abs. 2 S. 1 GG, Art. 121 GG).",
       "Das Misstrauensvotum richtet sich nur gegen den Kanzler (Art. 67 Abs. 1 S. 1 GG).",
     ],
   },
 
   "oer-bverfg": {
-    satz: "Das Bundesverfassungsgericht ist Hüter der Verfassung – es entscheidet nur auf Antrag in den im Grundgesetz genannten Verfahren, und seine Entscheidungen binden alle Staatsorgane (Art. 92, Art. 94 Abs. 1, 4 S. 1 GG).",
+    satz: "Das Bundesverfassungsgericht ist Hüter der Verfassung – es entscheidet nur auf Antrag in den im Grundgesetz genannten Verfahren, und seine Entscheidungen binden alle Staatsorgane (Art. 92 GG, Art. 94 Abs. 1, 4 S. 1 GG).",
     zahlen: [["16", "Richter in 2 Senaten (Art. 93 Abs. 2 S. 1, 2 GG)"], ["12 Jahre", "Amtszeit, keine Wiederwahl (Art. 93 Abs. 3 GG)"], ["⅔", "Mehrheit für die Wahl der Richter durch Bundestag bzw. Bundesrat (§ 6 Abs. 1 S. 2 BVerfGG, § 7 BVerfGG)"]],
     punkte: [
       "**Verfassungsorgane:** Bundestag, Bundesrat, Bundespräsident, Bundesregierung, Bundesverfassungsgericht (dazu Bundesversammlung und Gemeinsamer Ausschuss) (Art. 38, 50, 54, 62, 93 Abs. 1 GG).",
@@ -236,25 +236,27 @@ export const KOMPAKT_OER = {
   "oer-gesetzgebung": {
     satz: "Zuerst die Kompetenz (Bund oder Land?), dann das Verfahren (Initiative, Beschluss, Bundesrat, Ausfertigung) – und Steuergesetze haben ihre eigenen Kompetenzregeln in Art. 105 GG.",
     schema: [
-      "Kompetenz: Art. 70 GG (Länder) – ausschließliche Bundeskompetenz (Art. 71, 73)? – konkurrierende (Art. 72, 74)? – ggf. Art. 72 Abs. 2 (Erforderlichkeit) – Steuern Art. 105",
-      "Initiative (Art. 76 Abs. 1): Bundesregierung, Bundesrat oder Mitte des Bundestages",
-      "Beratung und Beschluss im Bundestag (Art. 77 Abs. 1, Art. 42 Abs. 2)",
-      "Bundesrat: Zustimmungs- oder Einspruchsgesetz? Vermittlungsausschuss (Art. 77 Abs. 2–4)",
-      "Zustandekommen (Art. 78), Gegenzeichnung (Art. 58), Ausfertigung und Verkündung (Art. 82 Abs. 1), Inkrafttreten (Art. 82 Abs. 2)",
+      "Kompetenz: Art. 70 GG (Länder) – ausschließliche Bundeskompetenz (Art. 71, 73 GG)? – konkurrierende (Art. 72, 74 GG)? – ggf. Art. 72 Abs. 2 GG (Erforderlichkeit) – Steuern Art. 105 GG",
+      "Initiative (Art. 76 Abs. 1 GG): Bundesregierung, Bundesrat oder Mitte des Bundestages",
+      "Beratung und Beschluss im Bundestag (Art. 77 Abs. 1 GG, Art. 42 Abs. 2 GG)",
+      "Bundesrat: Zustimmungs- oder Einspruchsgesetz? Vermittlungsausschuss (Art. 77 Abs. 2–4 GG)",
+      "Zustandekommen (Art. 78 GG), Gegenzeichnung (Art. 58 GG), Ausfertigung und Verkündung (Art. 82 Abs. 1 GG), Inkrafttreten (Art. 82 Abs. 2 GG)",
     ],
     punkte: [
       "**Grundsatz (Art. 70 Abs. 1 GG):** Die **Länder** haben das Recht der Gesetzgebung, soweit das GG nicht dem Bund Befugnisse verleiht – z. B. Schulrecht, Polizeirecht, Kommunalrecht.",
-      "**Ausschließliche Gesetzgebung (Art. 71, 73 GG):** u. a. Auswärtiges, Verteidigung, Staatsangehörigkeit, Währung, Zölle, Luftverkehr, **Statistik für Bundeszwecke** (Art. 73 Abs. 1 Nr. 11). Das **Wahlrecht zum Bundestag** regelt der Bund nach Art. 38 Abs. 3 GG.",
-      "**Konkurrierende Gesetzgebung (Art. 72, 74 GG):** Länder dürfen, solange und soweit der Bund nicht tätig geworden ist – u. a. Bürgerliches Recht, **Strafrecht**, Recht der Wirtschaft, **Pflanzenschutz** (Art. 74 Abs. 1 Nr. 20). Für einige Bereiche nur bei **Erforderlichkeit** (Art. 72 Abs. 2 GG); Abweichungsrecht der Länder (Art. 72 Abs. 3 GG).",
-      "**Steuern (Art. 105 GG):** Zölle und Finanzmonopole ausschließlich Bund (Abs. 1); übrige Steuern konkurrierend, wenn dem Bund das Aufkommen ganz oder teilweise zusteht oder Art. 72 Abs. 2 vorliegt (Abs. 2); örtliche Verbrauch- und Aufwandsteuern Länder (Abs. 2a). Zustimmung des Bundesrates bei Steuern, deren Aufkommen Ländern/Gemeinden zufließt (Abs. 3).",
+      "**Ausschließliche Gesetzgebung (Art. 71, 73 GG):** u. a. Auswärtiges, Verteidigung, Staatsangehörigkeit, Währung, Zölle, Luftverkehr, **Statistik für Bundeszwecke** (Art. 73 Abs. 1 Nr. 11 GG). Das **Wahlrecht zum Bundestag** regelt der Bund nach Art. 38 Abs. 3 GG.",
+      "**Konkurrierende Gesetzgebung (Art. 72, 74 GG):** Länder dürfen, solange und soweit der Bund von seiner Zuständigkeit nicht durch Gesetz Gebrauch gemacht hat (Art. 72 Abs. 1 GG) – u. a. Bürgerliches Recht, **Strafrecht**, Recht der Wirtschaft, **Pflanzenschutz** (Art. 74 Abs. 1 Nr. 20 GG). Für einige Bereiche nur bei **Erforderlichkeit** (Art. 72 Abs. 2 GG); Abweichungsrecht der Länder (Art. 72 Abs. 3 GG).",
+      "**Steuern (Art. 105 GG):** Zölle und Finanzmonopole ausschließlich Bund (Abs. 1); übrige Steuern konkurrierend, wenn dem Bund das Aufkommen ganz oder teilweise zusteht oder Art. 72 Abs. 2 GG vorliegt (Abs. 2); örtliche Verbrauch- und Aufwandsteuern Länder (Abs. 2a). Zustimmung des Bundesrates bei Steuern, deren Aufkommen Ländern/Gemeinden zufließt (Abs. 3).",
+      "**Ertragshoheit (Art. 106 GG):** **Bund** (Abs. 1): Zölle, die meisten Verbrauchsteuern (z. B. Energie-, Tabaksteuer), Kraftfahrzeug- und Versicherungsteuer. **Länder** (Abs. 2): Vermögensteuer, Erbschaftsteuer, Biersteuer, Spielbankabgabe und Verkehrsteuern wie die Grunderwerbsteuer. **Bund und Länder gemeinsam** (Abs. 3, Gemeinschaftsteuern): Einkommen-, Körperschaft- und Umsatzsteuer. **Gemeinden** (Abs. 6): Grund- und Gewerbesteuer.",
+      "**Zwei Klassiker:** **Einkommensteuer** – Gemeinschaftsteuer (Art. 106 Abs. 3 GG), das Aufkommen steht dem Bund teilweise zu → konkurrierende Gesetzgebung (Art. 105 Abs. 2 S. 2 Alt. 1 GG), Zustimmung des Bundesrates (Art. 105 Abs. 3 GG). **Vermögensteuer** – Aufkommen allein bei den Ländern (Art. 106 Abs. 2 Nr. 1 GG) → der Bund darf sie nur regeln, wenn die Voraussetzungen des Art. 72 Abs. 2 GG vorliegen (Art. 105 Abs. 2 S. 2 Alt. 2 GG).",
       "**Ungeschriebene Kompetenzen:** kraft Natur der Sache, kraft Sachzusammenhangs, Annexkompetenz (als Ausnahme zu Art. 70 Abs. 1 GG).",
-      "**Einspruchsgesetz** ist der Regelfall: Bundesrat kann nach Vermittlungsverfahren Einspruch einlegen; Bundestag kann ihn mit entsprechender Mehrheit zurückweisen (Art. 77 Abs. 4 GG). **Zustimmungsgesetz** nur, wenn das GG es ausdrücklich verlangt (z. B. Art. 105 Abs. 3, Art. 79 Abs. 2 GG) – ohne Zustimmung kein Gesetz.",
+      "**Einspruchsgesetz** ist der Regelfall: Bundesrat kann nach Vermittlungsverfahren Einspruch einlegen; Bundestag kann ihn mit entsprechender Mehrheit zurückweisen (Art. 77 Abs. 4 GG). **Zustimmungsgesetz** nur, wenn das GG es ausdrücklich verlangt (z. B. Art. 105 Abs. 3 GG, Art. 79 Abs. 2 GG) – ohne Zustimmung kein Gesetz.",
       "**Regierungsvorlagen** gehen zuerst an den Bundesrat (Stellungnahme in 6 Wochen, Art. 76 Abs. 2 GG); Vorlagen des Bundesrates über die Bundesregierung an den Bundestag (Art. 76 Abs. 3 GG).",
       "**Inkrafttreten (Art. 82 Abs. 2 GG):** am bestimmten Tag, sonst mit dem 14. Tag nach Ausgabe des Bundesgesetzblatts.",
     ],
     fallen: [
       "Nicht mit Art. 73/74 GG beginnen – zuerst Art. 70 GG als Grundsatz nennen.",
-      "Zustimmungsbedürftigkeit nie vermuten – sie muss im GG angeordnet sein (Art. 77 Abs. 2a, Art. 78 GG).",
+      "Zustimmungsbedürftigkeit nie vermuten – sie muss im GG angeordnet sein (Art. 77 Abs. 2a GG, Art. 78 GG).",
     ],
   },
 

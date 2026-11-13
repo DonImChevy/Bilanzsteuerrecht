@@ -18,7 +18,7 @@ export const BEISPIELE_OER = {
       titel: "Die fünf Staatsstrukturprinzipien",
       sv: "Nennen Sie die Staatsformmerkmale der Bundesrepublik mit Fundstelle und erklären Sie, wie sie geschützt sind.",
       loesung: [
-        "Art. 20 Abs. 1 GG: Die Bundesrepublik ist **Republik, Demokratie, Sozialstaat** und **Bundesstaat**; das **Rechtsstaatsprinzip** folgt aus Art. 20 Abs. 2 S. 2 und Abs. 3 GG (ausdrücklich genannt in Art. 28 Abs. 1 S. 1 GG).",
+        "Art. 20 Abs. 1 GG: Die Bundesrepublik ist **Republik, Demokratie, Sozialstaat** und **Bundesstaat**; das **Rechtsstaatsprinzip** folgt aus Art. 20 Abs. 2 S. 2 GG und Abs. 3 GG (ausdrücklich genannt in Art. 28 Abs. 1 S. 1 GG).",
         "Sie sind durch die Ewigkeitsklausel geschützt (Art. 79 Abs. 3 GG) und gelten über das Homogenitätsprinzip auch für die Länder (Art. 28 Abs. 1 S. 1 GG).",
       ],
     },
@@ -264,8 +264,8 @@ export const BEISPIELE_OER = {
       loesung: [
         "Grundsätzlich die Länder, soweit das Grundgesetz nicht dem Bund Befugnisse verleiht (Art. 70 Abs. 1 GG).",
         "(1) Keine Zuweisung in Art. 73, 74 GG → Länder (Art. 70 Abs. 1 GG).",
-        "(2) Ausschließliche Kompetenz des Bundes (Art. 71 i. V. m. Art. 73 Abs. 1 Nr. 11 GG).",
-        "(3) Konkurrierende Kompetenz (Art. 72 i. V. m. Art. 74 Abs. 1 Nr. 20 GG); der Bund muss die Erforderlichkeit nach Art. 72 Abs. 2 GG darlegen – bei bundeseinheitlicher Zulassung von Pflanzenschutzmitteln zu bejahen.",
+        "(2) Ausschließliche Kompetenz des Bundes (Art. 71 GG i. V. m. Art. 73 Abs. 1 Nr. 11 GG).",
+        "(3) Konkurrierende Kompetenz (Art. 72 GG i. V. m. Art. 74 Abs. 1 Nr. 20 GG); der Bund muss die Erforderlichkeit nach Art. 72 Abs. 2 GG darlegen – bei bundeseinheitlicher Zulassung von Pflanzenschutzmitteln zu bejahen.",
       ],
     },
     {

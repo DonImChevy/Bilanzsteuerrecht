@@ -203,13 +203,15 @@ export const KOMPAKT_BEWR = {
       "Verfahren: Vergleichswert (§ 182 Abs. 2 BewG, § 183 BewG) – Ertragswert (§ 182 Abs. 3 BewG, §§ 184–188 BewG) – Sachwert (§ 182 Abs. 4 BewG)",
     ],
     punkte: [
+      "**Sechs Grundstücksarten (§ 181 Abs. 1 BewG):** **Ein- und Zweifamilienhäuser** – Wohngrundstücke mit bis zu zwei Wohnungen, kein Wohnungseigentum (§ 181 Abs. 2 BewG); **Mietwohngrundstücke** – zu mehr als 80 % Wohnzwecke (§ 181 Abs. 3 BewG); **Wohnungseigentum** – Sondereigentum an einer Wohnung mit Miteigentumsanteil (§ 181 Abs. 4 BewG) und **Teileigentum** – Sondereigentum an nicht zu Wohnzwecken dienenden Räumen (§ 181 Abs. 5 BewG); **Geschäftsgrundstücke** – zu mehr als 80 % betriebliche oder öffentliche Zwecke (§ 181 Abs. 6 BewG); **gemischt genutzte Grundstücke** – teils Wohnen, teils Betrieb (§ 181 Abs. 7 BewG); **sonstige bebaute Grundstücke** (§ 181 Abs. 8 BewG). Maßstab ist jeweils die Wohn- und Nutzfläche.",
+      "**Zuordnung der Verfahren (§ 182 BewG):** **Vergleichswert** für Wohnungseigentum, Teileigentum und Ein-/Zweifamilienhäuser (§ 182 Abs. 2 BewG); **Ertragswert** für Mietwohngrundstücke sowie Geschäfts- und gemischt genutzte Grundstücke mit üblicher Miete (§ 182 Abs. 3 BewG); **Sachwert**, wenn für die Grundstücke des Abs. 2 kein Vergleichswert vorliegt, für Geschäfts- und gemischt genutzte Grundstücke ohne übliche Miete und für sonstige bebaute Grundstücke (§ 182 Abs. 4 BewG).",
       "**Vergleichswertverfahren** (§ 183 BewG): Kaufpreise vergleichbarer Grundstücke, vorrangig Vergleichspreise des Gutachterausschusses; alternativ **Vergleichsfaktoren** je m² – beziehen sie sich nur aufs Gebäude, kommt der **Bodenwert** hinzu.",
-      "**Geschäfts- und gemischt genutzte Grundstücke:** Ertragswert nur, wenn sich eine **übliche Miete** ermitteln lässt – sonst Sachwert.",
-      "**Wohnung** (§ 181 Abs. 9 BewG): abgeschlossen, eigener Zugang, Küche, Bad/Dusche, Toilette.",
+      "**Geschäfts- und gemischt genutzte Grundstücke:** Ertragswert nur, wenn sich auf dem örtlichen Grundstücksmarkt eine **übliche Miete** ermitteln lässt (§ 182 Abs. 3 Nr. 2 BewG) – sonst Sachwert (§ 182 Abs. 4 Nr. 2 BewG).",
+      "**Wohnung** (§ 181 Abs. 9 BewG): Räume, die die Führung eines selbständigen Haushalts ermöglichen – baulich getrennt und in sich abgeschlossen, mit eigenem Zugang, Küche, Bad oder Dusche und Toilette; die Wohnfläche soll mindestens 20 m² betragen.",
     ],
     fallen: [
-      "Drei Wohnungen sind **kein** Zweifamilienhaus mehr.",
-      "Genau 80 % Wohnfläche reicht **nicht** für ein Mietwohngrundstück (mehr als 80 %).",
+      "Drei Wohnungen sind **kein** Zweifamilienhaus mehr (§ 181 Abs. 2 S. 1 BewG).",
+      "Genau 80 % Wohnfläche reicht **nicht** für ein Mietwohngrundstück – das Gesetz verlangt mehr als 80 % (§ 181 Abs. 3 BewG).",
     ],
   },
   "bew-ertragswert": {
@@ -224,7 +226,7 @@ export const KOMPAKT_BEWR = {
       "Bodenwert + Gebäudeertragswert = **Ertragswert**, mindestens Bodenwert (§ 184 Abs. 3 BewG)",
     ],
     punkte: [
-      "**Bewirtschaftungskosten** (Anlage 23 BewG): Wohnen – Verwaltung 230 € je Wohnung, Instandhaltung 9 € je m², beides **indexiert** mit dem VPI (Oktober Vorjahr ÷ Oktober 2001; Verwaltung auf volle Euro, Instandhaltung auf eine Nachkommastelle), Mietausfall 2 %; Gewerbe – Verwaltung 3 %, Instandhaltung je m² wie Wohnen, Mietausfall 4 % des Rohertrags.",
+      "**Bewirtschaftungskosten** (Anlage 23 BewG): Wohnen – Verwaltung 230 € je Wohnung, Instandhaltung 9 € je m², beides **indexiert** mit dem Verbraucherpreisindex (Oktober Vorjahr ÷ Oktober 2001; Verwaltung auf volle Euro, Instandhaltung auf eine Nachkommastelle), Mietausfall 2 %; Gewerbe – Verwaltung 3 %, Instandhaltung je m² wie Wohnen, Mietausfall 4 % des Rohertrags.",
       "**Restnutzungsdauer** (§ 185 Abs. 3 BewG): Gesamtnutzungsdauer − (Bewertungsjahr − Jahr der Bezugsfertigkeit), **mindestens 30 %** der Gesamtnutzungsdauer; bei **Abbruchverpflichtung** begrenzt auf die tatsächliche Restdauer.",
       "**Liegenschaftszins** (§ 188 BewG): vorrangig vom Gutachterausschuss, sonst 3,5 / 4,5 / 5,0 / 6,0 %.",
       "**§ 198 BewG:** niedrigerer gemeiner Wert durch **Gutachten** (Gutachterausschuss, zertifizierter Sachverständiger) oder **Kaufpreis** innerhalb eines Jahres um den Stichtag – Nachweislast beim Steuerpflichtigen.",
