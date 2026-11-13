@@ -428,3 +428,7 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .km-glossar dd { margin: 0; font-size: 15px; line-height: 1.5; color: var(--text2); text-wrap: pretty; }
 .km-glossar dd mark.km { color: var(--text); }
 @media (min-width: 700px) { .km-glossar > div { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 18px; align-items: baseline; } .km-glossar dt { margin: 0; } }
+
+/* Normenliste: Nummer in der Randspalte bricht nie um („§ 101“, „§ 1311“, „Art. 103“) – feste, breite Spalte, schmal auf kleinen Handys */
+#normListe .zeile .symbol { flex: none; width: 4.1em !important; min-width: 0; white-space: nowrap; font-size: 17px !important; letter-spacing: -0.2px; justify-items: start; overflow: visible; }
+@media (max-width: 360px) { #normListe .zeile .symbol { font-size: 15.5px !important; } }
