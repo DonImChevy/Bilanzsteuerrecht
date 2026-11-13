@@ -7,7 +7,7 @@ export const PFAD_PR = [
     id: "pr-system", titel: "Privatrecht oder öffentliches Recht?", kurz: "BGB, HGB, AO", icon: "🏛️", normen: ["BGB 433", "HGB 1 1", "AO 39"],
     karten: [
       { art: "merksatz", titel: "Nicht wer – sondern wie", text: "**Privatrecht** = Beziehungen auf **Augenhöhe** (Kauf, Miete). **Öffentliches Recht** = der Staat handelt **hoheitlich**, im Über- und Unterordnungsverhältnis (Steuerbescheid). Kauft das Finanzamt Papier, gilt § 433 BGB wie für jeden." },
-      { art: "erklaerung", titel: "Die fünf Bücher des BGB", text: "1. **Allgemeiner Teil** – gilt für alles Folgende („vor die Klammer gezogen“)\n2. **Schuldrecht** – AT (§§ 241–432) und BT mit Kauf, Miete, Delikt (§§ 433–853)\n3. **Sachenrecht** – Besitz, Eigentum\n4. **Familienrecht**\n5. **Erbrecht**" },
+      { art: "erklaerung", titel: "Die fünf Bücher des BGB", text: "1. **Allgemeiner Teil** – gilt für alles Folgende („vor die Klammer gezogen“)\n2. **Schuldrecht** – AT (§§ 241–432 BGB) und BT mit Kauf, Miete, Delikt (§§ 433–853 BGB)\n3. **Sachenrecht** – Besitz, Eigentum\n4. **Familienrecht**\n5. **Erbrecht**" },
       { art: "erklaerung", titel: "BGB und HGB", text: "Das **HGB** ist das **Sonderprivatrecht der Kaufleute** (§ 1 HGB). Es geht dem BGB als spezielleres Gesetz vor und macht den Handelsverkehr schneller – wo es schweigt, gilt das BGB." },
       { art: "klausur", titel: "Warum Privatrecht im Steuerstudium?", text: "Steuern knüpfen an Zivilrecht an: Grundstückskauf → Grunderwerbsteuer, Mietvertrag → § 21 EStG. Steuerlich zählt aber die **wirtschaftliche** Betrachtung – z. B. wirtschaftliches Eigentum nach § 39 AO." },
     ],
@@ -121,7 +121,7 @@ export const PFAD_PR = [
     id: "pr-vertrag", titel: "Wie ein Vertrag entsteht", kurz: "§§ 145–150 BGB", icon: "🤝", normen: ["BGB 145", "BGB 146", "BGB 147 1", "BGB 150 2"],
     karten: [
       { art: "merksatz", titel: "Angebot + Annahme", text: "Ein Vertrag entsteht aus **zwei übereinstimmenden Willenserklärungen**. Das **Angebot** enthält alles Wesentliche (beim Kauf: Sache, Preis, Parteien), sodass ein einfaches **„Ja“** genügt." },
-      { art: "erklaerung", titel: "Wie lange gilt ein Angebot?", text: "• Unter Anwesenden (auch Telefon): **sofort** (§ 147 Abs. 1 BGB)\n• Unter Abwesenden: so lange, wie normalerweise mit einer Antwort zu rechnen ist (§ 147 Abs. 2 BGB)\n• Abgelehnt oder zu spät → erloschen (§ 146 BGB)" },
+      { art: "erklaerung", titel: "Wie lange gilt ein Angebot?", text: "• Unter Anwesenden (auch Telefon): **sofort** (§ 147 Abs. 1 BGB)\n• Unter Abwesenden: bis zu dem Zeitpunkt, in dem der Antragende die Antwort **unter regelmäßigen Umständen** erwarten darf (§ 147 Abs. 2 BGB)\n• Abgelehnt oder zu spät → erloschen (§ 146 BGB)" },
       { art: "erklaerung", titel: "Ja, aber …", text: "Wer mit **Änderungen** annimmt, lehnt ab und macht ein **neues Angebot** (§ 150 Abs. 2 BGB). Auch eine **verspätete** Annahme ist ein neues Angebot (§ 150 Abs. 1 BGB)." },
     ],
     fragen: [
@@ -182,7 +182,7 @@ export const PFAD_PR = [
     fragen: [
       { art: "wahl", frage: "Ein 16-Jähriger fährt mit dem Rad bei Rot über die Ampel und beschädigt eine Jacke. Haftet er?", optionen: ["Ja, wenn er die nötige Einsicht hatte", "Nein, Minderjährige haften nie", "Nur seine Eltern", "Nur bei Vorsatz"], richtig: 0, erkl: "§ 828 Abs. 3 BGB." },
       { art: "wahl", frage: "Ein Erwachsener tritt im selbst angetrunkenen Vollrausch eine Scheibe ein. Haftet er?", optionen: ["Ja – wie bei Fahrlässigkeit (§ 827 S. 2 BGB)", "Nein – er war nicht bei Sinnen", "Nur wenn er sich erinnert", "Nur seine Eltern"], richtig: 0, erkl: "Das Verschulden liegt im Sich-Betrinken." },
-      { art: "wahl", frage: "Ist das bloße Vermögen durch § 823 Abs. 1 BGB geschützt?", optionen: ["Nein", "Ja, als sonstiges Recht", "Ja, als Eigentum", "Nur bei Unternehmen"], richtig: 0, erkl: "Reine Vermögensschäden nur über § 823 Abs. 2 oder § 826 BGB." },
+      { art: "wahl", frage: "Ist das bloße Vermögen durch § 823 Abs. 1 BGB geschützt?", optionen: ["Nein", "Ja, als sonstiges Recht", "Ja, als Eigentum", "Nur bei Unternehmen"], richtig: 0, erkl: "Reine Vermögensschäden nur über § 823 Abs. 2 BGB oder § 826 BGB." },
       { art: "wahl", frage: "Was verlangt der Eigentümer vom Besitzer ohne Besitzrecht?", optionen: ["Herausgabe nach § 985 BGB", "Kaufpreis nach § 433 BGB", "Miete nach § 535 BGB", "Nichts"], richtig: 0, erkl: "Vindikation – § 985 BGB." },
     ],
   },

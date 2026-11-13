@@ -4,7 +4,7 @@
 export const KOMPAKT_BBF = {
   "bbf-afa": {
     satz: "Abnutzbares Anlagevermögen wird linear über die Nutzungsdauer abgeschrieben – im Anschaffungsjahr monatsgenau ab der Lieferung; Computer und Software dürfen sofort voll abgeschrieben werden (§ 7 Abs. 1 S. 1, 4 EStG).",
-    zahlen: [["AK ÷ ND", "Jahres-AfA (linear)"], ["Monat zählt voll", "Anschaffungsmonat im 1. Jahr"], ["1 Jahr", "Digital-AfA für Hard- und Software"], ["1 €", "Erinnerungswert nach Ablauf der ND"]],
+    zahlen: [["AK ÷ ND", "Jahres-AfA (linear) (§ 7 Abs. 1 S. 1, 2 EStG)"], ["Monat zählt voll", "Anschaffungsmonat im 1. Jahr (§ 7 Abs. 1 S. 4 EStG)"], ["1 Jahr", "Digital-AfA für Hard- und Software (BMF vom 22.02.2022)"], ["1 €", "Erinnerungswert nach Ablauf der ND"]],
     schema: [
       "Abnutzbares Wirtschaftsgut des Anlagevermögens, Nutzung länger als ein Jahr?",
       "Anschaffungszeitpunkt = Lieferung (nicht Bestellung, nicht Zahlung)",

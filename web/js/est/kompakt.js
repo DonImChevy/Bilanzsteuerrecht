@@ -3,13 +3,16 @@
 
 export const KOMPAKT_EST = {
   "est-grundlagen": {
-    satz: "Die Einkommensteuer besteuert das Einkommen natürlicher Personen für ein Kalenderjahr – erhoben wird sie teils per Abzug an der Quelle, teils durch Veranlagung (§ 1, § 2 Abs. 7 S. 1, § 25 Abs. 1 EStG).",
-    zahlen: [["42,5 / 42,5 / 15 %", "Aufkommen Bund / Länder / Gemeinden"], ["25 %", "Abgeltungsteuer auf Kapitalerträge"], ["Kalenderjahr", "Veranlagungszeitraum"]],
+    satz: "Die Einkommensteuer besteuert das Einkommen natürlicher Personen für ein Kalenderjahr – erhoben wird sie teils per Abzug an der Quelle, teils durch Veranlagung (§ 1 EStG, § 2 Abs. 7 S. 1 EStG, § 25 Abs. 1 EStG).",
+    zahlen: [["42,5 / 42,5 / 15 %", "Aufkommen Bund / Länder / Gemeinden (Art. 106 Abs. 3, 5 GG)"], ["25 %", "Abgeltungsteuer auf Kapitalerträge (§ 32d Abs. 1 S. 1 EStG)"], ["Kalenderjahr", "Veranlagungszeitraum (§ 25 Abs. 1 EStG)"]],
     punkte: [
       "**Einordnung:** Personensteuer (knüpft an die persönliche Leistungsfähigkeit an), direkte Steuer (Steuerschuldner = Steuerträger), **Gemeinschaftsteuer** (Art. 106 Abs. 3 GG): Bund und Länder je 42,5 %, Gemeinden 15 % (Art. 106 Abs. 5 GG).",
       "**Gesetzgebung:** konkurrierende Kompetenz des Bundes (Art. 105 Abs. 2 GG), Zustimmung des Bundesrats nötig (Art. 105 Abs. 3 GG); Verwaltung durch die Länder (Art. 108 Abs. 2 GG).",
       "**Rechtsgrundlagen:** EStG und EStDV (Rechtsnormen, binden alle); EStR, EStH und BMF-Schreiben (Verwaltungsanweisungen, binden nur die Verwaltung) (EStDV auf Grundlage von § 51 EStG und Art. 80 Abs. 1 GG).",
-      "**Erhebungsformen:** Veranlagung (§ 25 EStG) mit Vorauszahlungen (§ 37 EStG); Abzugsteuern: **Lohnsteuer** (§ 38 EStG) und **Kapitalertragsteuer** (§ 43 EStG) – beide sind Vorauszahlungen auf die ESt bzw. haben abgeltende Wirkung.",
+      "**Erhebungsformen:** Veranlagung (§ 25 EStG) mit Vorauszahlungen (§ 37 EStG) – daneben **Steuerabzug an der Quelle**: Lohnsteuer (§ 38 EStG) durch den Arbeitgeber, Kapitalertragsteuer (§ 43 EStG) durch die Bank. Beides sind keine eigenen Steuern.",
+      "**Lohnsteuer:** wird auf die festgesetzte ESt angerechnet (§ 36 Abs. 2 Nr. 2 EStG); ohne Veranlagung ist die ESt auf den Arbeitslohn damit abgegolten (§ 46 Abs. 4 S. 1 EStG).",
+      "**Kapitalertragsteuer:** gilt die ESt auf Kapitalerträge grundsätzlich ab (§ 43 Abs. 5 S. 1 EStG).",
+      "**Nur natürliche Personen (§ 1 Abs. 1 S. 1 EStG):** Juristische Personen wie GmbH und AG zahlen keine Einkommensteuer, sondern **Körperschaftsteuer** (§ 1 Abs. 1 Nr. 1 KStG). Personengesellschaften sind weder das eine noch das andere – ihre Gewinne versteuern die Gesellschafter (§ 15 Abs. 1 S. 1 Nr. 2 EStG).",
       "**Jahressteuer (§ 2 Abs. 7 EStG):** Die ESt ist eine Jahressteuer, Grundlagen werden für das Kalenderjahr ermittelt (Veranlagungszeitraum, § 25 Abs. 1 EStG).",
       "**Zuschlagsteuern:** Solidaritätszuschlag (5,5 %, mit hoher Freigrenze) und Kirchensteuer (8 bzw. 9 % der ESt) bemessen sich nach der ESt (§ 51a EStG).",
     ],
@@ -21,7 +24,7 @@ export const KOMPAKT_EST = {
 
   "est-steuerpflicht": {
     satz: "Wer im Inland wohnt oder sich gewöhnlich aufhält, ist mit seinem gesamten Welteinkommen unbeschränkt steuerpflichtig – alle anderen nur mit ihren inländischen Einkünften (§ 1 Abs. 1, 4 EStG).",
-    zahlen: [["> 6 Monate", "gewöhnlicher Aufenthalt (§ 9 S. 2 AO)"], ["90 %", "Grenze fiktive unbeschränkte Stpfl. (§ 1 Abs. 3)"]],
+    zahlen: [["> 6 Monate", "gewöhnlicher Aufenthalt (§ 9 S. 2 AO)"], ["90 %", "Grenze fiktive unbeschränkte Stpfl. (§ 1 Abs. 3 EStG)"]],
     schema: [
       "Natürliche Person? (von Geburt bis Tod)",
       "Wohnsitz (§ 8 AO) oder gewöhnlicher Aufenthalt (§ 9 AO) im Inland? → § 1 Abs. 1 EStG",
@@ -36,7 +39,7 @@ export const KOMPAKT_EST = {
       "**Erweiterte unbeschränkte Steuerpflicht (§ 1 Abs. 2 EStG):** deutsche Staatsangehörige ohne Inlandswohnsitz, die zu einer inländischen juristischen Person des öffentlichen Rechts in einem Dienstverhältnis stehen und Bezüge aus einer öffentlichen Kasse erhalten (z. B. Diplomaten).",
       "**Fiktive unbeschränkte Steuerpflicht (§ 1 Abs. 3 EStG):** auf **Antrag**, wenn mindestens **90 %** der Einkünfte der deutschen ESt unterliegen oder die nicht der deutschen ESt unterliegenden Einkünfte den Grundfreibetrag nicht übersteigen.",
       "**Beschränkte Steuerpflicht (§ 1 Abs. 4 EStG):** keine der obigen Varianten, aber **inländische Einkünfte nach § 49 EStG** – nur diese werden besteuert.",
-      "**Beginn und Ende:** mit der Geburt bzw. dem Tod; Wechsel zwischen unbeschränkter und beschränkter Steuerpflicht im Jahr ist möglich (§ 2 Abs. 7 S. 3 EStG).",
+      "**Beginn und Ende:** mit der Vollendung der Geburt (§ 1 BGB) bzw. dem Tod; Wechsel zwischen unbeschränkter und beschränkter Steuerpflicht im Jahr ist möglich (§ 2 Abs. 7 S. 3 EStG).",
     ],
     fallen: [
       "Ein Hotelzimmer oder eine Ferienwohnung, die nur gelegentlich genutzt wird, begründet regelmäßig keinen Wohnsitz (§ 8 AO).",
@@ -46,33 +49,37 @@ export const KOMPAKT_EST = {
 
   "est-einkuenfte": {
     satz: "Steuerbar ist nur, was unter eine der sieben Einkunftsarten fällt – bei den ersten drei zählt der Gewinn, bei den übrigen vier der Überschuss der Einnahmen über die Werbungskosten (§ 2 Abs. 1, 2 EStG).",
-    zahlen: [["7", "Einkunftsarten (§ 2 Abs. 1 EStG)"], ["3 + 4", "Gewinn- und Überschusseinkünfte"]],
+    zahlen: [["7", "Einkunftsarten (§ 2 Abs. 1 EStG)"], ["3 + 4", "Gewinn- und Überschusseinkünfte (§ 2 Abs. 2 S. 1 EStG)"]],
     punkte: [
-      "**Gewinneinkunftsarten (§ 2 Abs. 2 S. 1 Nr. 1 EStG):** Land- und Forstwirtschaft (§ 13), **Gewerbebetrieb** (§ 15), **selbständige Arbeit** (§ 18) → Gewinn nach §§ 4–7k EStG.",
-      "**Überschusseinkunftsarten (§ 2 Abs. 2 S. 1 Nr. 2 EStG):** **nichtselbständige Arbeit** (§ 19), Kapitalvermögen (§ 20), **Vermietung und Verpachtung** (§ 21), sonstige Einkünfte (§ 22, z. B. Renten, private Veräußerungsgeschäfte § 23) → Einnahmen (§ 8) − Werbungskosten (§§ 9, 9a).",
-      "**Dualismus der Einkunftsermittlung:** Bei Gewinneinkünften werden Wertänderungen des Betriebsvermögens erfasst, bei Überschusseinkünften grundsätzlich nur die laufenden Einnahmen (Veräußerung des Vermögens nur in Sonderfällen, §§ 17, 20 Abs. 2, 23).",
+      "**Gewinneinkunftsarten (§ 2 Abs. 2 S. 1 Nr. 1 EStG):** Land- und Forstwirtschaft (§ 13 EStG), **Gewerbebetrieb** (§ 15 EStG), **selbständige Arbeit** (§ 18 EStG) → Gewinn nach §§ 4–7k EStG.",
+      "**Überschusseinkunftsarten (§ 2 Abs. 2 S. 1 Nr. 2 EStG):** **nichtselbständige Arbeit** (§ 19 EStG), Kapitalvermögen (§ 20 EStG), **Vermietung und Verpachtung** (§ 21 EStG), sonstige Einkünfte (§ 22 EStG, z. B. Renten, private Veräußerungsgeschäfte § 23 EStG) → Einnahmen (§ 8 EStG) − Werbungskosten (§§ 9, 9a EStG).",
+      "**Dualismus der Einkunftsermittlung:** Bei Gewinneinkünften werden Wertänderungen des Betriebsvermögens erfasst, bei Überschusseinkünften grundsätzlich nur die laufenden Einnahmen (Veräußerung des Vermögens nur in Sonderfällen, §§ 17, 20 Abs. 2, 23 EStG).",
       "**Gewerbebetrieb (§ 15 Abs. 2 EStG):** selbständig, nachhaltig, mit **Gewinnerzielungsabsicht**, Beteiligung am allgemeinen wirtschaftlichen Verkehr – und keine LuF, keine freiberufliche Tätigkeit, keine private Vermögensverwaltung.",
       "**Freiberufler (§ 18 Abs. 1 Nr. 1 EStG):** Katalogberufe (Ärzte, Rechtsanwälte, Steuerberater, Architekten, Journalisten …), wissenschaftliche, künstlerische, schriftstellerische, **unterrichtende** und erzieherische Tätigkeit.",
-      "**Arbeitnehmer (§ 1 LStDV):** schuldet seine Arbeitskraft, ist weisungsgebunden und in den Betrieb eingegliedert – auch Pensionäre (früheres Dienstverhältnis), Rechtsnachfolger wie die Witwe mit Witwengeld und der angestellte GmbH-Geschäftsführer. **Arbeitslohn (§ 2 LStDV):** alle Einnahmen aus dem Dienstverhältnis, gleich in welcher Form (auch Sachbezüge).",
-      "**Nicht steuerbar:** Liebhaberei (keine Einkünfteerzielungsabsicht), Erbschaften, Schenkungen, Lottogewinne, private Vermögensumschichtungen außerhalb der §§ 17, 20, 23.",
+      "**Arbeitnehmer (§ 1 Abs. 1 LStDV):** wer in öffentlichem oder privatem Dienst angestellt oder beschäftigt ist oder war und daraus Arbeitslohn bezieht – auch Pensionäre, die Witwe mit Witwengeld und der angestellte GmbH-Geschäftsführer.",
+      "**Dienstverhältnis (§ 1 Abs. 2 LStDV):** Der Beschäftigte **schuldet seine Arbeitskraft** – er steht unter der **Leitung** des Arbeitgebers oder ist eingegliedert und an **Weisungen** gebunden.",
+      "**Kein Arbeitnehmer (§ 1 Abs. 3 LStDV):** wer seine Leistungen im Rahmen einer selbständigen gewerblichen oder beruflichen Tätigkeit erbringt. Entscheidend ist das **Gesamtbild** (vgl. H 19.0 LStH).",
+      "**Indizien:** für ein Dienstverhältnis feste Arbeitszeit und -ort, feste Bezüge, Urlaub, Lohnfortzahlung; für Selbständigkeit eigenes **Unternehmerrisiko**, eigene Initiative, Bezahlung nach Erfolg.",
+      " **Arbeitslohn (§ 2 LStDV):** alle Einnahmen aus dem Dienstverhältnis, gleich in welcher Form (auch Sachbezüge).",
+      "**Nicht steuerbar:** Liebhaberei (keine Einkünfteerzielungsabsicht), Erbschaften, Schenkungen, Lottogewinne, private Vermögensumschichtungen außerhalb der §§ 17, 20, 23 EStG.",
     ],
     fallen: [
-      "Einkünfte aus Kapitalvermögen und V+V sind subsidiär – gehören die Erträge zu einem Betrieb, sind es betriebliche Einkünfte (§ 20 Abs. 8, § 21 Abs. 3 EStG).",
+      "Einkünfte aus Kapitalvermögen und V+V sind subsidiär – gehören die Erträge zu einem Betrieb, sind es betriebliche Einkünfte (§ 20 Abs. 8 EStG, § 21 Abs. 3 EStG).",
       "„Nebenberuflich“ ist keine Einkunftsart (§ 2 Abs. 1 EStG ist abschließend).",
     ],
   },
 
   "est-zve": {
     satz: "Vom Einkommen zur Steuer führt ein festes Schema: Summe der Einkünfte, Gesamtbetrag der Einkünfte, Einkommen, zu versteuerndes Einkommen (§ 2 Abs. 3–5 EStG). Das vollständige amtliche Schema steht in R 2 Abs. 1 EStR, der Weg zur festzusetzenden Steuer in R 2 Abs. 2 EStR.",
-    zahlen: [["36 / 72 €", "Sonderausgaben-Pauschbetrag (§ 10c)"], ["4.260 €", "Entlastungsbetrag Alleinerziehende (1 Kind)"], ["1.000 / 2.000 €", "Sparer-Pauschbetrag"]],
+    zahlen: [["36 / 72 €", "Sonderausgaben-Pauschbetrag (§ 10c EStG)"], ["4.260 €", "Entlastungsbetrag Alleinerziehende (1 Kind) (§ 24b Abs. 2 S. 1 EStG)"], ["1.000 / 2.000 €", "Sparer-Pauschbetrag (§ 20 Abs. 9 S. 1, 2 EStG)"]],
     schema: [
       "Einkünfte aus den 7 Einkunftsarten (§ 2 Abs. 1 EStG)",
       "= Summe der Einkünfte (Verlustausgleich)",
-      "− Altersentlastungsbetrag (§ 24a), − Entlastungsbetrag für Alleinerziehende (§ 24b), − Freibetrag für Land- und Forstwirte (§ 13 Abs. 3)",
+      "− Altersentlastungsbetrag (§ 24a EStG), − Entlastungsbetrag für Alleinerziehende (§ 24b EStG), − Freibetrag für Land- und Forstwirte (§ 13 Abs. 3 EStG)",
       "= Gesamtbetrag der Einkünfte (§ 2 Abs. 3 EStG)",
-      "− Verlustabzug (§ 10d), − Sonderausgaben (§§ 10–10c), − außergewöhnliche Belastungen (§§ 33–33b)",
+      "− Verlustabzug (§ 10d EStG), − Sonderausgaben (§§ 10–10c EStG), − außergewöhnliche Belastungen (§§ 33–33b EStG)",
       "= Einkommen (§ 2 Abs. 4 EStG)",
-      "− Freibeträge für Kinder (§ 32 Abs. 6, nur bei Günstigerprüfung), − Härteausgleich",
+      "− Freibeträge für Kinder (§ 32 Abs. 6 EStG, nur bei Günstigerprüfung), − Härteausgleich",
       "= zu versteuerndes Einkommen (§ 2 Abs. 5 EStG)",
     ],
     punkte: [
@@ -83,21 +90,23 @@ export const KOMPAKT_EST = {
       "**Die Beträge richtig zuordnen:** Werbungskosten mindern die Einkünfte, Sonderausgaben und agB erst den Gesamtbetrag der Einkünfte (§ 2 Abs. 2–4 EStG).",
     ],
     fallen: [
-      "Altersentlastungsbetrag und Entlastungsbetrag für Alleinerziehende werden vor dem Gesamtbetrag der Einkünfte abgezogen – nicht als Sonderausgaben (§ 2 Abs. 3, §§ 24a, 24b EStG).",
+      "Altersentlastungsbetrag und Entlastungsbetrag für Alleinerziehende werden vor dem Gesamtbetrag der Einkünfte abgezogen – nicht als Sonderausgaben (§ 2 Abs. 3 EStG, §§ 24a, 24b EStG).",
       "Kirchensteuer ist Sonderausgabe, Einkommensteuer ist nie abziehbar (§ 12 Nr. 3 EStG).",
     ],
   },
 
   "est-veranlagung": {
-    satz: "Nach Ablauf des Jahres wird die ESt per Bescheid festgesetzt – Ehegatten dürfen zwischen Zusammen- und Einzelveranlagung wählen, Arbeitnehmer werden nur in bestimmten Fällen veranlagt (§ 25 Abs. 1, §§ 26, 46 EStG).",
-    zahlen: [["410 €", "Grenze Nebeneinkünfte (§ 46 Abs. 2 Nr. 1)"], ["4 Jahre", "Frist Antragsveranlagung"], ["31.07.", "Abgabefrist ohne Berater"]],
+    satz: "Nach Ablauf des Jahres wird die ESt per Bescheid festgesetzt – Ehegatten dürfen zwischen Zusammen- und Einzelveranlagung wählen, Arbeitnehmer werden nur in bestimmten Fällen veranlagt (§ 25 Abs. 1 EStG, §§ 26, 46 EStG).",
+    zahlen: [["410 €", "Grenze Nebeneinkünfte (§ 46 Abs. 2 Nr. 1 EStG)"], ["4 Jahre", "Frist Antragsveranlagung (§ 169 Abs. 2 S. 1 Nr. 2 AO)"], ["31.07.", "Abgabefrist ohne Berater (§ 149 Abs. 2 S. 1 AO)"]],
     punkte: [
       "**Veranlagung (§ 25 Abs. 1 EStG):** Die ESt wird nach Ablauf des Kalenderjahres nach dem Einkommen veranlagt, das der Steuerpflichtige in diesem Jahr bezogen hat. Erklärung nach amtlichem Vordruck/elektronisch (§ 25 Abs. 3, 4 EStG).",
       "**Ehegattenwahlrecht (§ 26 Abs. 1 EStG):** Voraussetzungen: Ehe/eingetragene Lebenspartnerschaft, **beide unbeschränkt steuerpflichtig**, **nicht dauernd getrennt lebend** – an mindestens einem Tag des Jahres gleichzeitig erfüllt.",
+      "**Neue Ehe im selben Jahr (§ 26 Abs. 1 S. 2 EStG):** Wird eine Ehe aufgelöst (Tod, Scheidung) und heiratet ein Ehegatte im selben Veranlagungszeitraum neu, bleibt die **frühere Ehe unberücksichtigt** – das Wahlrecht besteht nur mit dem neuen Ehegatten.",
+      "**Erklärungspflicht (§ 25 Abs. 3 EStG i. V. m. § 56 EStDV):** Eine Erklärung muss abgeben, wessen Gesamtbetrag der Einkünfte den **Grundfreibetrag** übersteigt (2026: 12.348 €, bei Zusammenveranlagung das Doppelte) – bei Arbeitslohn mit Lohnsteuerabzug nur in den Fällen des § 46 Abs. 2 EStG.",
       "**Zusammenveranlagung (§ 26b EStG):** Einkünfte werden zusammengerechnet, Ehegatten werden gemeinsam als ein Steuerpflichtiger behandelt → **Splittingtarif** (§ 32a Abs. 5 EStG). Ohne Wahl gilt Zusammenveranlagung (§ 26 Abs. 3 EStG).",
       "**Einzelveranlagung (§ 26a EStG):** jeder Ehegatte für seine Einkünfte, Grundtarif; Sonderausgaben, agB und § 35a-Beträge werden dem zugerechnet, der sie getragen hat (auf Antrag hälftig).",
-      "**Witwensplitting (§ 32a Abs. 6 S. 1 Nr. 1 EStG):** im Jahr nach dem Tod des Ehegatten noch Splittingtarif.",
-      "**Arbeitnehmer (§ 46 EStG):** Lohnsteuer wirkt grundsätzlich abgeltend (§ 46 Abs. 4). **Pflichtveranlagung** z. B. bei Nebeneinkünften über 410 €, Arbeitslohn von mehreren Arbeitgebern, Steuerklassen III/V, Lohnersatzleistungen über 410 €. **Antragsveranlagung** nach § 46 Abs. 2 Nr. 8 EStG (Festsetzungsfrist 4 Jahre).",
+      "**Tod des Ehegatten:** Im **Todesjahr** lagen die Voraussetzungen noch vor → Wahlrecht und bei Zusammenveranlagung Splittingtarif (§ 26 Abs. 1 S. 1 EStG, § 32a Abs. 5 EStG). **Witwensplitting (§ 32a Abs. 6 S. 1 Nr. 1 EStG):** auch im Jahr nach dem Tod gilt noch der Splittingtarif, obwohl einzeln veranlagt wird.",
+      "**Arbeitnehmer (§ 46 EStG):** Lohnsteuer wirkt grundsätzlich abgeltend (§ 46 Abs. 4 EStG). **Pflichtveranlagung** z. B. bei Nebeneinkünften über 410 €, Arbeitslohn von mehreren Arbeitgebern, Steuerklassen III/V, Lohnersatzleistungen über 410 €. **Antragsveranlagung** nach § 46 Abs. 2 Nr. 8 EStG (Festsetzungsfrist 4 Jahre).",
       "**Abgabefrist (§ 149 Abs. 2 AO):** 31. Juli des Folgejahres; mit Steuerberater später.",
     ],
     fallen: [
@@ -108,13 +117,13 @@ export const KOMPAKT_EST = {
 
   "est-tarif": {
     satz: "Der Tarif setzt nach einer Nullzone stufenlos steigende Grenzsteuersätze an – das zvE wird auf volle Euro abgerundet, die Steuer ebenfalls (§ 32a Abs. 1 S. 1, 6 EStG).",
-    zahlen: [["12.348 €", "Grundfreibetrag 2026"], ["14 → 42 %", "Progressionszonen bis 69.878 €"], ["45 %", "ab 277.826 €"]],
+    zahlen: [["12.348 €", "Grundfreibetrag 2026 (§ 32a Abs. 1 S. 2 Nr. 1 EStG)"], ["14 → 42 %", "Progressionszonen bis 69.878 € (§ 32a Abs. 1 S. 2 Nr. 2, 3 EStG)"], ["45 %", "ab 277.826 € (§ 32a Abs. 1 S. 2 Nr. 5 EStG)"]],
     schema: [
       "zvE auf volle Euro abrunden",
       "Tarifzone bestimmen und nur diese Formel anwenden (§ 32a Abs. 1 EStG)",
-      "Bei Zusammenveranlagung: Splitting – Steuer auf zvE/2 berechnen und verdoppeln (§ 32a Abs. 5)",
-      "= tarifliche ESt − Steuerermäßigungen (z. B. § 35, § 35a) + Hinzurechnungen = festzusetzende ESt (§ 2 Abs. 6)",
-      "− Vorauszahlungen, Lohnsteuer, Kapitalertragsteuer (§ 36 Abs. 2) = Abschlusszahlung oder Erstattung (§ 36 Abs. 4)",
+      "Bei Zusammenveranlagung: Splitting – Steuer auf zvE/2 berechnen und verdoppeln (§ 32a Abs. 5 EStG)",
+      "= tarifliche ESt − Steuerermäßigungen (z. B. § 35 EStG, § 35a EStG) + Hinzurechnungen = festzusetzende ESt (§ 2 Abs. 6 EStG)",
+      "− Vorauszahlungen, Lohnsteuer, Kapitalertragsteuer (§ 36 Abs. 2 EStG) = Abschlusszahlung oder Erstattung (§ 36 Abs. 4 EStG)",
     ],
     punkte: [
       "**Zonen 2026 (§ 32a Abs. 1 EStG):** bis 12.348 € 0; 12.349–17.799 € (14–24 %); 17.800–69.878 € (24–42 %); 69.879–277.825 € 42 %; ab 277.826 € 45 %.",
@@ -138,18 +147,20 @@ export const KOMPAKT_EST = {
       "Steuerbefreiung nach §§ 3 ff. EStG? Ja → steuerfrei",
       "Nein → steuerbar und steuerpflichtig; Zeitpunkt nach § 11 EStG bzw. § 38a EStG",
     ],
-    zahlen: [["50 €", "Sachbezugsfreigrenze monatlich"], ["60 €", "Aufmerksamkeit (Sachgeschenk, persönlicher Anlass)"], ["1.080 €", "Rabattfreibetrag (§ 8 Abs. 3)"], ["3.300 € / 960 €", "Übungsleiter / Ehrenamt"], ["960 € + 288 €", "Versorgungsfreibetrag + Zuschlag (Beginn 2026)"]],
+    zahlen: [["50 €", "Sachbezugsfreigrenze monatlich (§ 8 Abs. 2 S. 11 EStG)"], ["60 €", "Aufmerksamkeit (Sachgeschenk, persönlicher Anlass) (R 19.6 Abs. 1 LStR)"], ["1.080 €", "Rabattfreibetrag (§ 8 Abs. 3 EStG)"], ["3.300 € / 960 €", "Übungsleiter / Ehrenamt (§ 3 Nr. 26 EStG, § 3 Nr. 26a EStG)"], ["960 € + 288 €", "Versorgungsfreibetrag + Zuschlag (Beginn 2026) (§ 19 Abs. 2 S. 3 EStG)"]],
     punkte: [
-      "**Einnahmen (§ 8 Abs. 1 EStG):** alle Güter in Geld oder Geldeswert, die dem Steuerpflichtigen im Rahmen einer der Einkunftsarten des § 2 Abs. 1 Nr. 4–7 zufließen.",
+      "**Einnahmen (§ 8 Abs. 1 EStG):** alle Güter in Geld oder Geldeswert, die dem Steuerpflichtigen im Rahmen einer der Einkunftsarten des § 2 Abs. 1 Nr. 4–7 EStG zufließen.",
       "**Sachbezüge (§ 8 Abs. 2 EStG):** mit dem üblichen Endpreis am Abgabeort; steuerfrei bis **50 € im Monat** (Freigrenze – bei Überschreiten ist alles steuerpflichtig).",
       "**Personalrabatt (§ 8 Abs. 3 EStG):** Waren/Dienstleistungen des Arbeitgebers: 96 % des Endpreises, Rabattfreibetrag **1.080 €** im Jahr.",
       "**Übungsleiterfreibetrag (§ 3 Nr. 26 EStG):** nebenberufliche Tätigkeit als Übungsleiter, Ausbilder, Erzieher, Betreuer, Künstler oder Pfleger für eine juristische Person des öffentlichen Rechts oder eine gemeinnützige Einrichtung – steuerfrei bis **3.300 €** (seit 2026).",
-      "**Ehrenamtspauschale (§ 3 Nr. 26a EStG):** andere nebenberufliche Tätigkeiten für solche Träger (Vorstand, Kassenwart, Platzwart) bis **960 €**; § 3 Nr. 26 hat Vorrang.",
-      "**Nebenberuflich:** höchstens ein Drittel einer Vollzeitstelle (ca. 14 Std./Woche); eine Haupttätigkeit ist nicht erforderlich (zu § 3 Nr. 26 S. 1 EStG, R 3.26 Abs. 2 LStR).",
+      "**Ehrenamtspauschale (§ 3 Nr. 26a EStG):** andere nebenberufliche Tätigkeiten für solche Träger (Vorstand, Kassenwart, Platzwart) bis **960 €**; § 3 Nr. 26 EStG hat Vorrang.",
+      "**Nebenberuflich:** höchstens ein Drittel der Arbeitszeit einer vergleichbaren Vollzeitstelle; bis 14 Wochenstunden wird das ohne weitere Prüfung angenommen; eine Haupttätigkeit ist nicht erforderlich (zu § 3 Nr. 26 S. 1 EStG, R 3.26 Abs. 2 LStR).",
       "**§ 3c Abs. 1 EStG:** Ausgaben, die mit steuerfreien Einnahmen unmittelbar zusammenhängen, sind nicht abziehbar. **Ausnahme § 3 Nr. 26 S. 2 EStG:** Ausgaben sind abziehbar, soweit sie die steuerfreien Einnahmen übersteigen.",
-      "**Weitere Befreiungen:** z. B. Arbeitslosengeld (§ 3 Nr. 2, mit Progressionsvorbehalt), Reisekostenerstattungen des Arbeitgebers (§ 3 Nr. 13, 16), private Nutzung betrieblicher PCs und Handys (§ 3 Nr. 45).",
+      "**Lohnersatzleistungen:** Krankengeld (§ 3 Nr. 1 a EStG), Arbeitslosengeld und Kurzarbeitergeld (§ 3 Nr. 2 a EStG) sowie Elterngeld (§ 3 Nr. 67 b EStG) sind steuerfrei, erhöhen aber über den **Progressionsvorbehalt** den Steuersatz auf das übrige zu versteuernde Einkommen (§ 32b Abs. 1 S. 1 Nr. 1 EStG).",
+      "**Weitere Befreiungen:** z. B. **Arbeitgeberanteile zur Sozialversicherung** (§ 3 Nr. 62 EStG), Reisekostenerstattungen des Arbeitgebers (§ 3 Nr. 13, 16 EStG), private Nutzung betrieblicher PCs und Handys (§ 3 Nr. 45 EStG).",
       "**Aufmerksamkeiten:** Sachgeschenke des Arbeitgebers zu einem besonderen persönlichen Ereignis bis **60 €** sind kein Arbeitslohn; **Geld** ist immer Arbeitslohn und zählt nicht zur 60-€-Grenze (R 19.6 Abs. 1 LStR). Geschenke der Kollegen sind privat und nicht steuerbar.",
-      "**Versorgungsbezüge (§ 19 Abs. 2 EStG):** Versorgungsfreibetrag (Prozentsatz der Bemessungsgrundlage = 12 × erster voller Monat, höchstens Höchstbetrag) und Zuschlag nach dem **Jahr des Versorgungsbeginns** – 2026: 12,8 %, höchstens 960 €, Zuschlag 288 €. Gilt für die ganze Laufzeit, Anpassungen ändern nichts (S. 8, 9); im ersten Jahr je fehlendem Monat ein Zwölftel weniger (S. 12). Werbungskosten-Pauschbetrag **102 €** (§ 9a S. 1 Nr. 1 b EStG).",
+      "**Versorgungsfreibetrag (§ 19 Abs. 2 EStG):** Prozentsatz der Bemessungsgrundlage (12 × erster voller Monat) plus Zuschlag – maßgeblich ist das **Jahr des Versorgungsbeginns**; 2026: 12,8 %, höchstens 960 €, Zuschlag 288 €.",
+      "**Festgeschrieben:** Der Betrag gilt für die ganze Laufzeit, Anpassungen ändern nichts (§ 19 Abs. 2 S. 8, 9 EStG); im ersten Jahr je fehlendem Monat ein Zwölftel weniger (S. 12). Werbungskosten-Pauschbetrag **102 €** (§ 9a S. 1 Nr. 1 b EStG).",
     ],
     fallen: [
       "Die Sachbezugsgrenze ist eine Freigrenze, kein Freibetrag (§ 8 Abs. 2 S. 11 EStG).",
@@ -160,35 +171,37 @@ export const KOMPAKT_EST = {
 
   "est-ausgaben": {
     satz: "Kosten der privaten Lebensführung sind nicht abziehbar – auch wenn sie dem Beruf nützen; gemischte Aufwendungen werden aufgeteilt, wenn das objektiv möglich ist (§ 12 Nr. 1 EStG).",
-    zahlen: [["< 10 %", "untergeordneter Anteil – voller Abzug bzw. Ausschluss"]],
+    zahlen: [["< 10 %", "untergeordneter Anteil – voller Abzug bzw. Ausschluss (BMF vom 06.07.2010, Rn. 11, 12)"]],
     punkte: [
       "**§ 12 Nr. 1 EStG:** Aufwendungen für den Haushalt und den Unterhalt der Familie (Wohnung, Essen, Kleidung) sowie für die Lebensführung, die die wirtschaftliche oder gesellschaftliche Stellung mit sich bringt (**Repräsentationsaufwand**), sind nicht abziehbar – auch wenn sie den Beruf fördern.",
       "**Gemischte Aufwendungen (BFH, Großer Senat):** Lassen sich berufliche und private Veranlassung nach **objektiven Kriterien** trennen (Zeit, Fläche, Kilometer), wird **aufgeteilt**. Ist der private oder berufliche Anteil **untergeordnet (unter 10 %)**, gilt alles als beruflich bzw. privat (BMF vom 06.07.2010; vgl. § 12 Nr. 1 S. 2 EStG).",
       "**Nicht trennbar** (z. B. bürgerliche Kleidung, Brille, Tageszeitung) → insgesamt nicht abziehbar (§ 12 Nr. 1 S. 2 EStG).",
       "**Typische Berufskleidung** (Uniform, Robe, Schutzkleidung) ist dagegen Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 6 EStG).",
-      "**§ 12 Nr. 2 EStG:** freiwillige Zuwendungen (Spenden, Geschenke), Zuwendungen auf Grund einer freiwillig begründeten Rechtspflicht und an gesetzlich unterhaltsberechtigte Personen. **Nr. 3:** Steuern vom Einkommen (festgesetzte ESt, Vorauszahlungen, Lohnsteuer, Kapitalertragsteuer, Soli und Kirchensteuer als Zuschlagsteuern), sonstige Personensteuern (Erbschaft- und Schenkungsteuer), die USt auf Entnahmen und die Nebenleistungen zu diesen Steuern. **Nr. 4:** Geldstrafen aus Strafverfahren.",
+      "**§ 12 Nr. 2 EStG:** freiwillige Zuwendungen (Spenden, Geschenke), Zuwendungen aufgrund einer freiwillig begründeten Rechtspflicht und an gesetzlich unterhaltsberechtigte Personen. Spenden an gemeinnützige Empfänger sind aber Sonderausgaben (§ 10b Abs. 1 EStG).",
+      "**§ 12 Nr. 3 EStG:** Steuern vom Einkommen (ESt, Lohn- und Kapitalertragsteuer, Soli, Kirchensteuer), Erbschaft- und Schenkungsteuer, die USt auf Entnahmen sowie die Nebenleistungen dazu (z. B. Säumniszuschläge, § 3 Abs. 4 AO).",
+      "**§ 12 Nr. 4 EStG:** Geldstrafen aus Strafverfahren.",
       "**Vorrang:** Was als Sonderausgabe oder außergewöhnliche Belastung ausdrücklich zugelassen ist, bleibt abziehbar („soweit … nichts anderes bestimmt“) (Einleitungssatz des § 12 EStG).",
     ],
     fallen: [
       "„Fördert den Beruf“ reicht nicht – die private Mitveranlassung schließt den Abzug aus, wenn sie nicht trennbar ist (§ 12 Nr. 1 S. 2 EStG).",
-      "Kirchensteuer ist trotz § 12 Nr. 3 als Sonderausgabe abziehbar (§ 10 Abs. 1 Nr. 4 EStG).",
+      "Kirchensteuer ist trotz § 12 Nr. 3 EStG als Sonderausgabe abziehbar (§ 10 Abs. 1 Nr. 4 EStG).",
     ],
   },
 
   "est-zufluss": {
     satz: "Bei Überschusseinkünften zählt das Kalenderjahr, in dem Geld tatsächlich zufließt oder abfließt – mit einer 10-Tage-Ausnahme für regelmäßig wiederkehrende Zahlungen um den Jahreswechsel (§ 11 Abs. 1 S. 1, 2, Abs. 2 S. 1, 2 EStG).",
-    zahlen: [["10 Tage", "kurze Zeit um den Jahreswechsel"], ["> 5 Jahre", "Vorauszahlung für Nutzung – verteilbar"]],
+    zahlen: [["10 Tage", "kurze Zeit um den Jahreswechsel (H 11 EStH „Kurze Zeit“)"], ["> 5 Jahre", "Vorauszahlung für Nutzung – verteilbar (§ 11 Abs. 2 S. 3 EStG)"]],
     punkte: [
       "**Zufluss (§ 11 Abs. 1 S. 1 EStG):** wenn der Steuerpflichtige die **wirtschaftliche Verfügungsmacht** erlangt – Barzahlung, Gutschrift auf dem Konto, Scheck mit Übergabe (bei Deckung).",
       "**Abfluss (§ 11 Abs. 2 S. 1 EStG):** wenn der Steuerpflichtige die wirtschaftliche Verfügungsmacht verliert – bei Überweisung mit Eingang des Auftrags bei der Bank (gedecktes Konto), bei Lastschrift mit Fälligkeit, wenn eine Einzugsermächtigung vorliegt und das Konto gedeckt ist (H 11 EStH).",
       "**Regelmäßig wiederkehrende Einnahmen/Ausgaben (§ 11 Abs. 1 S. 2, Abs. 2 S. 2 EStG):** Werden sie **kurze Zeit (10 Tage)** vor Beginn oder nach Ende des Kalenderjahres gezahlt, zu dem sie wirtschaftlich gehören, gelten sie in diesem Jahr als zu- bzw. abgeflossen. Auch die **Fälligkeit** muss in diesem Zeitraum liegen.",
       "**Typische Fälle:** Miete, Zinsen, **USt-Vorauszahlungen** (fällig am 10.01.), Versicherungsbeiträge (§ 11 Abs. 1 S. 2, Abs. 2 S. 2 EStG; Fälligkeit der USt-Vorauszahlung § 18 Abs. 1 S. 4 UStG).",
-      "**Vorauszahlungen für eine Nutzungsüberlassung von mehr als 5 Jahren** können gleichmäßig verteilt werden (Einnahmen: Wahlrecht, § 11 Abs. 1 S. 3; Ausgaben: Pflicht, § 11 Abs. 2 S. 3 EStG).",
-      "**Arbeitslohn (§ 11 Abs. 1 S. 4 i. V. m. § 38a Abs. 1 EStG):** **laufender Arbeitslohn** (Monatsgehalt, laufende Pension) gilt im Kalenderjahr als bezogen, in dem der **Lohnzahlungszeitraum endet** – Dezembergehalt im Januar gezahlt → altes Jahr. **Sonstige Bezüge** (Weihnachtsgeld, Urlaubsgeld, Jubiläumszuwendung, Tantieme) zählen im Jahr des **Zuflusses** (§ 38a Abs. 1 S. 3 EStG) – keine 10-Tage-Regel.",
+      "**Vorauszahlungen für eine Nutzungsüberlassung von mehr als 5 Jahren** können gleichmäßig verteilt werden (Einnahmen: Wahlrecht, § 11 Abs. 1 S. 3 EStG; Ausgaben: Pflicht, § 11 Abs. 2 S. 3 EStG).",
+      "**Arbeitslohn (§ 11 Abs. 1 S. 4 EStG i. V. m. § 38a Abs. 1 EStG):** **laufender Arbeitslohn** (Monatsgehalt, laufende Pension) gilt im Kalenderjahr als bezogen, in dem der **Lohnzahlungszeitraum endet** – Dezembergehalt im Januar gezahlt → altes Jahr. **Sonstige Bezüge** (Weihnachtsgeld, Urlaubsgeld, Jubiläumszuwendung, Tantieme) zählen im Jahr des **Zuflusses** (§ 38a Abs. 1 S. 3 EStG) – keine 10-Tage-Regel.",
       "**Drei-Wochen-Grenze:** Laufender Arbeitslohn für das abgelaufene Jahr, der erst **später als drei Wochen** nach Jahresende zufließt, ist ein **sonstiger Bezug** → Jahr des Zuflusses (R 39b.2 Abs. 1 Nr. 7, Abs. 2 S. 2 Nr. 8 LStR, § 38a Abs. 1 S. 3 EStG).",
       "**Damnum/Disagio:** Ein **marktübliches** Damnum ist im Jahr der Zahlung bzw. des Einbehalts sofort abziehbar – keine Verteilung nach § 11 Abs. 2 S. 3 EStG (§ 11 Abs. 2 S. 4 EStG).",
       "**Gewinnausschüttungen:** Zufluss grundsätzlich mit Gutschrift; beim **beherrschenden Gesellschafter** schon mit dem Ausschüttungsbeschluss, da er über die Auszahlung bestimmen kann (vgl. H 20.2 „Zuflusszeitpunkt bei Gewinnausschüttungen“ EStH).",
-      "**Nicht nach § 11:** AfA auf abnutzbare Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 7 i. V. m. § 7 EStG) – sie wird über die Nutzungsdauer verteilt, egal wann bezahlt wurde – und die Gewinnermittlung durch Bestandsvergleich.",
+      "**Nicht nach § 11 EStG:** AfA auf abnutzbare Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 7 EStG i. V. m. § 7 EStG) – sie wird über die Nutzungsdauer verteilt, egal wann bezahlt wurde – und die Gewinnermittlung durch Bestandsvergleich.",
     ],
     fallen: [
       "Die 10-Tage-Regel gilt nur für regelmäßig wiederkehrende Zahlungen – nicht für einmalige (§ 11 Abs. 1 S. 2 EStG).",
@@ -203,8 +216,8 @@ export const KOMPAKT_EST = {
       "Nein → nicht abziehbare Kosten der Lebensführung (§ 12 Nr. 1 EStG), ggf. Sonderausgaben oder außergewöhnliche Belastungen",
       "Teilweise (gemischte Aufwendung) → objektiver Maßstab: unter 10 % privat → voll abziehbar; unter 10 % beruflich → nicht abziehbar; dazwischen aufteilen",
     ],
-    satz: "Werbungskosten sind alle Aufwendungen, die durch die Einnahmeerzielung veranlasst sind – wer weniger als 1.230 € nachweist, bekommt als Arbeitnehmer den Pauschbetrag (§ 9 Abs. 1 S. 1, § 9a S. 1 Nr. 1 a EStG).",
-    zahlen: [["1.230 €", "Arbeitnehmer-Pauschbetrag"], ["102 €", "Pauschbetrag Versorgungsbezüge/Renten"], ["+ Gewerkschaft", "seit 2026 zusätzlich zum Pauschbetrag"]],
+    satz: "Werbungskosten sind alle Aufwendungen, die durch die Einnahmeerzielung veranlasst sind – wer weniger als 1.230 € nachweist, bekommt als Arbeitnehmer den Pauschbetrag (§ 9 Abs. 1 S. 1 EStG, § 9a S. 1 Nr. 1 a EStG).",
+    zahlen: [["1.230 €", "Arbeitnehmer-Pauschbetrag (§ 9a S. 1 Nr. 1 a EStG)"], ["102 €", "Pauschbetrag Versorgungsbezüge/Renten (§ 9a S. 1 Nr. 1 b, Nr. 3 EStG)"], ["+ Gewerkschaft", "seit 2026 zusätzlich zum Pauschbetrag (§ 9a S. 3 EStG)"]],
     punkte: [
       "**Definition (§ 9 Abs. 1 S. 1 EStG):** Aufwendungen zur **Erwerbung, Sicherung und Erhaltung** der Einnahmen – abzuziehen bei der Einkunftsart, bei der sie erwachsen sind. Auch vorweggenommene (Bewerbung) und nachträgliche WK sind möglich.",
       "**Katalog (§ 9 Abs. 1 S. 3 EStG):** Beiträge zu Berufsverbänden/**Gewerkschaften** (Nr. 3), Wege zur ersten Tätigkeitsstätte (Nr. 4), Reisekosten (Nr. 4a, 5a), doppelte Haushaltsführung (Nr. 5), **Arbeitsmittel** (Nr. 6), AfA (Nr. 7) – nur Beispiele („auch“).",
@@ -220,7 +233,7 @@ export const KOMPAKT_EST = {
 
   "est-arbeitsmittel": {
     satz: "Arbeitsmittel sind Gegenstände, die unmittelbar der beruflichen Tätigkeit dienen – bis 800 € ohne USt sofort abziehbar, sonst über die Nutzungsdauer (§ 9 Abs. 1 S. 3 Nr. 6, 7 EStG).",
-    zahlen: [["800 €", "GWG-Grenze ohne USt (952 € brutto)"], ["brutto", "abziehbar beim Arbeitnehmer"], ["10 %", "Grenze für private bzw. berufliche Mitbenutzung"], ["1 Jahr", "Nutzungsdauer Computer und Software"]],
+    zahlen: [["800 €", "GWG-Grenze ohne USt (952 € brutto) (§ 9 Abs. 1 S. 3 Nr. 7 S. 2 EStG, § 6 Abs. 2 S. 1 EStG)"], ["brutto", "abziehbar beim Arbeitnehmer (§ 9b Abs. 1 EStG)"], ["10 %", "Grenze für private bzw. berufliche Mitbenutzung (BMF vom 06.07.2010, Rn. 11, 12)"], ["1 Jahr", "Nutzungsdauer Computer und Software (BMF vom 22.02.2022)"]],
     schema: [
       "Arbeitsmittel? Beruflicher Gegenstand oder Lebensführung (§ 12 Nr. 1 EStG)",
       "Beruflicher Anteil (unter 10 % privat → voll; unter 10 % beruflich → nichts)",
@@ -232,9 +245,9 @@ export const KOMPAKT_EST = {
       "**Arbeitsmittel (§ 9 Abs. 1 S. 3 Nr. 6 EStG):** z. B. Werkzeug, Fachliteratur, Computer, Schreibtisch, Aktentasche und **typische Berufskleidung**.",
       "**Typische Berufskleidung:** Schutzkleidung (Sicherheitsschuhe), Uniform, Kittel, Kochjacke – auch ihre Reinigung. **Bürgerliche Kleidung** (Anzug, Kostüm) ist Lebensführung, selbst wenn sie nur im Büro getragen wird (§ 12 Nr. 1 S. 2 EStG).",
       "**Gemischte Nutzung:** Aufteilung nach objektivem Maßstab (z. B. Zeitanteile). Private Mitbenutzung unter 10 % → voller Abzug, berufliche Nutzung unter 10 % → kein Abzug (§ 12 Nr. 1 EStG).",
-      "**Sofortabzug oder AfA:** Nutzungsdauer über ein Jahr → AfA (§ 9 Abs. 1 S. 3 Nr. 7 S. 1 i. V. m. § 7 Abs. 1 EStG), im Jahr der Lieferung **monatsgenau** (§ 7 Abs. 1 S. 4 EStG). AK ohne USt bis **800 €** → GWG, Sofortabzug (§ 9 Abs. 1 S. 3 Nr. 7 S. 2 i. V. m. § 6 Abs. 2 S. 1 EStG).",
+      "**Sofortabzug oder AfA:** Nutzungsdauer über ein Jahr → AfA (§ 9 Abs. 1 S. 3 Nr. 7 S. 1 EStG i. V. m. § 7 Abs. 1 EStG), im Jahr der Lieferung **monatsgenau** (§ 7 Abs. 1 S. 4 EStG). AK ohne USt bis **800 €** → GWG, Sofortabzug (§ 9 Abs. 1 S. 3 Nr. 7 S. 2 EStG i. V. m. § 6 Abs. 2 S. 1 EStG).",
       "**Umsatzsteuer:** Arbeitnehmer haben keinen Vorsteuerabzug → die AK sind **brutto**; nur die GWG-Grenze wird **netto** geprüft (§ 9b Abs. 1 EStG im Umkehrschluss, § 6 Abs. 2 S. 1 EStG).",
-      "**Computer und Software:** Nach Verwaltungsauffassung (BMF vom 22.02.2022) Nutzungsdauer ein Jahr → voller Abzug im Anschaffungsjahr (§ 9 Abs. 1 S. 3 Nr. 7 S. 1 i. V. m. § 7 Abs. 1 EStG).",
+      "**Computer und Software:** Nach Verwaltungsauffassung (BMF vom 22.02.2022) Nutzungsdauer ein Jahr → voller Abzug im Anschaffungsjahr (§ 9 Abs. 1 S. 3 Nr. 7 S. 1 EStG i. V. m. § 7 Abs. 1 EStG).",
     ],
     fallen: [
       "Die GWG-Grenze mit dem Bruttopreis prüfen – maßgeblich sind 800 € **ohne** USt (§ 6 Abs. 2 S. 1 EStG).",
@@ -244,8 +257,8 @@ export const KOMPAKT_EST = {
   },
 
   "est-homeoffice": {
-    satz: "Ein häusliches Arbeitszimmer ist nur abziehbar, wenn es den Mittelpunkt der gesamten Tätigkeit bildet; sonst gibt es für Home-Office-Tage 6 € je Tag, höchstens 1.260 € im Jahr (§ 4 Abs. 5 S. 1 Nr. 6b, 6c i. V. m. § 9 Abs. 5 S. 1 EStG).",
-    zahlen: [["6 €", "Tagespauschale je Home-Office-Tag"], ["1.260 €", "Höchstbetrag Tagespauschale = Jahrespauschale Arbeitszimmer"], ["1/12", "Kürzung je Monat ohne Mittelpunkt"], ["210 Tage", "erreichen den Höchstbetrag"]],
+    satz: "Ein häusliches Arbeitszimmer ist nur abziehbar, wenn es den Mittelpunkt der gesamten Tätigkeit bildet; sonst gibt es für Home-Office-Tage 6 € je Tag, höchstens 1.260 € im Jahr (§ 4 Abs. 5 S. 1 Nr. 6b, 6c EStG i. V. m. § 9 Abs. 5 S. 1 EStG).",
+    zahlen: [["6 €", "Tagespauschale je Home-Office-Tag (§ 4 Abs. 5 S. 1 Nr. 6c S. 1 EStG)"], ["1.260 €", "Höchstbetrag Tagespauschale = Jahrespauschale Arbeitszimmer (§ 4 Abs. 5 S. 1 Nr. 6b S. 4, Nr. 6c S. 1 EStG)"], ["1/12", "Kürzung je Monat ohne Mittelpunkt (§ 4 Abs. 5 S. 1 Nr. 6b S. 4 EStG)"], ["210 Tage", "erreichen den Höchstbetrag"]],
     schema: [
       "Häusliches Arbeitszimmer? (abgeschlossener, büromäßiger Raum, fast nur beruflich)",
       "Mittelpunkt der gesamten Tätigkeit? → tatsächliche Kosten oder Jahrespauschale 1.260 € (Nr. 6b)",
@@ -263,14 +276,14 @@ export const KOMPAKT_EST = {
     ],
     fallen: [
       "Lehrer: Mittelpunkt ist der Unterricht in der Schule – kein Arbeitszimmerabzug, aber Tagespauschale auch an Schultagen (§ 4 Abs. 5 S. 1 Nr. 6b S. 2, Nr. 6c S. 2 EStG).",
-      "Für einen Tag mit Büroarbeitsplatz-Besuch Entfernungspauschale und Tagespauschale ansetzen (§ 4 Abs. 5 S. 1 Nr. 6c S. 1 EStG).",
+      "Für einen Tag, an dem auch die erste Tätigkeitsstätte aufgesucht wird, Entfernungspauschale und Tagespauschale ansetzen – steht dort ein Arbeitsplatz zur Verfügung, gibt es an diesem Tag nur die Entfernungspauschale (§ 4 Abs. 5 S. 1 Nr. 6c S. 1 EStG).",
       "Die Jahrespauschale voll ansetzen, obwohl der Mittelpunkt erst unterjährig entsteht – je Monat ohne Mittelpunkt 1/12 kürzen (§ 4 Abs. 5 S. 1 Nr. 6b S. 4 EStG).",
     ],
   },
 
   "est-entfernung": {
     satz: "Für jeden Arbeitstag gibt es 0,38 € pro vollem Kilometer der einfachen Strecke zur ersten Tätigkeitsstätte – unabhängig vom Verkehrsmittel und seit 2026 ab dem ersten Kilometer (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG).",
-    zahlen: [["0,38 €", "je Entfernungskilometer ab 2026"], ["4.500 €", "Höchstbetrag ohne eigenen Pkw"], ["einfache Strecke", "kürzeste Straßenverbindung"]],
+    zahlen: [["0,38 €", "je Entfernungskilometer ab 2026 (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG)"], ["4.500 €", "Höchstbetrag ohne eigenen Pkw (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG)"], ["einfache Strecke", "kürzeste Straßenverbindung (§ 9 Abs. 1 S. 3 Nr. 4 S. 4 EStG)"]],
     schema: [
       "Erste Tätigkeitsstätte bestimmen (§ 9 Abs. 4 EStG)",
       "Arbeitstage mit Aufsuchen der Tätigkeitsstätte zählen",
@@ -282,10 +295,10 @@ export const KOMPAKT_EST = {
     punkte: [
       "**Entfernungspauschale (§ 9 Abs. 1 S. 3 Nr. 4 EStG):** für jeden Arbeitstag, an dem der Arbeitnehmer die erste Tätigkeitsstätte aufsucht, **0,38 €** für jeden vollen Kilometer der Entfernung – **ab 2026 einheitlich ab dem ersten Kilometer** (2025: 0,30 € bis 20 km).",
       "**Nur einmal je Arbeitstag** – auch bei mehreren Wegen; Hin- und Rückweg sind abgegolten (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG).",
-      "**Höchstbetrag 4.500 €** im Jahr – **gilt nicht**, soweit ein eigener oder zur Nutzung überlassener **Pkw** benutzt wird (nicht für Motorrad, Fahrgemeinschaft-Mitfahrer, Bahn) (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 HS. 2 EStG).",
-      "**Abgeltungswirkung (§ 9 Abs. 2 S. 1 EStG):** Mit der Pauschale sind alle Kosten abgegolten (Parkgebühren, Kfz-Kosten). **Ausnahmen:** Unfallkosten auf dem Arbeitsweg; höhere tatsächliche Kosten für **öffentliche Verkehrsmittel** (§ 9 Abs. 2 S. 2); Menschen mit Behinderung (§ 9 Abs. 2 S. 3).",
+      "**Höchstbetrag 4.500 €** im Jahr – er **gilt nicht**, soweit ein eigener oder zur Nutzung überlassener **Pkw** benutzt wird (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 HS. 2 EStG). Bei Motorrad, Fahrrad, Bahn und für Mitfahrer einer Fahrgemeinschaft bleibt es bei höchstens 4.500 €.",
+      "**Abgeltungswirkung (§ 9 Abs. 2 S. 1 EStG):** Mit der Pauschale sind alle Kosten abgegolten (Parkgebühren, Kfz-Kosten). **Ausnahmen:** Unfallkosten auf dem Arbeitsweg; höhere tatsächliche Kosten für **öffentliche Verkehrsmittel** (§ 9 Abs. 2 S. 2 EStG); Menschen mit Behinderung (§ 9 Abs. 2 S. 3 EStG).",
       "**Erste Tätigkeitsstätte (§ 9 Abs. 4 EStG):** ortsfeste betriebliche Einrichtung, der der Arbeitnehmer dauerhaft zugeordnet ist (Zuordnung durch den Arbeitgeber, sonst quantitative Kriterien). Je Dienstverhältnis höchstens eine.",
-      "**Home-Office-Tage** zählen nicht als Arbeitstage für die Pauschale (bei anderem Arbeitsplatz) (§ 9 Abs. 5 S. 1 i. V. m. § 4 Abs. 5 S. 1 Nr. 6c EStG).",
+      "**Home-Office-Tage** zählen nicht als Arbeitstage für die Pauschale (bei anderem Arbeitsplatz) (§ 9 Abs. 5 S. 1 EStG i. V. m. § 4 Abs. 5 S. 1 Nr. 6c EStG).",
     ],
     fallen: [
       "Kilometer abrunden, nicht aufrunden („voller Kilometer“, § 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG).",
@@ -296,7 +309,7 @@ export const KOMPAKT_EST = {
 
   "est-reisekosten": {
     satz: "Bei einer Auswärtstätigkeit – beruflich außerhalb von Wohnung und erster Tätigkeitsstätte – sind Fahrt, Verpflegung (nur Pauschalen), Übernachtung und Nebenkosten Werbungskosten (§ 9 Abs. 1 S. 3 Nr. 4a, 5a, Abs. 4a EStG).",
-    zahlen: [["0,30 €", "je gefahrenem km mit dem Pkw (BRKG)"], ["14 €", "mehr als 8 Std. bzw. An- und Abreisetag"], ["28 €", "24 Std. abwesend"], ["5,60 € / 11,20 €", "Kürzung Frühstück / Mittag- oder Abendessen"], ["3 Monate", "Verpflegung an derselben Tätigkeitsstätte"]],
+    zahlen: [["0,30 €", "je gefahrenem km mit dem Pkw (BRKG) (§ 9 Abs. 1 S. 3 Nr. 4a S. 2 EStG)"], ["14 €", "mehr als 8 Std. bzw. An- und Abreisetag (§ 9 Abs. 4a S. 3 Nr. 2, 3 EStG)"], ["28 €", "24 Std. abwesend (§ 9 Abs. 4a S. 3 Nr. 1 EStG)"], ["5,60 € / 11,20 €", "Kürzung Frühstück / Mittag- oder Abendessen (§ 9 Abs. 4a S. 8 EStG)"], ["3 Monate", "Verpflegung an derselben Tätigkeitsstätte (§ 9 Abs. 4a S. 6 EStG)"]],
     schema: [
       "Auswärtstätigkeit? (außerhalb Wohnung und erster Tätigkeitsstätte, § 9 Abs. 4a S. 2 EStG)",
       "Fahrtkosten: gefahrene km (hin und zurück) × 0,30 € oder tatsächliche Kosten",
@@ -324,11 +337,11 @@ export const KOMPAKT_EST = {
   },
   "est-gewinn": {
     satz: "Freiberufler ohne Buchführungspflicht ermitteln ihren Gewinn als Überschuss der Betriebseinnahmen über die Betriebsausgaben (§ 4 Abs. 3 S. 1 EStG) – in der Klausur wird ein vorläufiger Gewinn Schritt für Schritt korrigiert.",
-    zahlen: [["1 %", "des Bruttolistenpreises je Monat (Privatnutzung)"], ["0,03 %", "je Monat und Entfernungskilometer (Wohnung–Betrieb)"], ["0,38 €", "Entfernungspauschale je km (gegenrechnen)"], ["50 %", "betriebliche Nutzung → notwendiges Betriebsvermögen"], ["5 Jahre", "Vorauszahlungen darüber verteilen (§ 11 Abs. 2 S. 3)"]],
+    zahlen: [["1 %", "des Bruttolistenpreises je Monat (Privatnutzung) (§ 6 Abs. 1 Nr. 4 S. 2 EStG)"], ["0,03 %", "je Monat und Entfernungskilometer (Wohnung–Betrieb) (§ 4 Abs. 5 S. 1 Nr. 6 S. 3 EStG)"], ["0,38 €", "Entfernungspauschale je km (gegenrechnen) (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG)"], ["50 %", "betriebliche Nutzung → notwendiges Betriebsvermögen (R 4.2 Abs. 1 S. 4 EStR)"], ["5 Jahre", "Vorauszahlungen darüber verteilen (§ 11 Abs. 2 S. 3 EStG)"]],
     schema: [
       "Einkunftsart (§ 18 Abs. 1 Nr. 1 EStG) und Gewinnermittlungsart (§ 4 Abs. 3 EStG) begründen",
       "Vorläufiger Gewinn",
-      "Jeden Vorgang prüfen: Betriebseinnahme / Betriebsausgabe / Zeitpunkt (§ 11) / Ausnahme?",
+      "Jeden Vorgang prüfen: Betriebseinnahme / Betriebsausgabe / Zeitpunkt (§ 11 EStG) / Ausnahme?",
       "Korrektur mit Vorzeichen (+ / −) oder „keine Korrektur“",
       "Endgültiger Gewinn",
     ],

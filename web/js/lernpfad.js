@@ -10,6 +10,7 @@ import { PFAD_BSR1, PFAD_BSR2 } from "./bilr/pfad.js";
 import { PFAD_BBF } from "./bilr/bbf_pfad.js";
 import * as G from "./geld.js";
 import { normenVerlinken } from "./kompakt.js";
+import { begriffeIm } from "./begriffe.js";
 import { typografie } from "./satz.js";
 import { taler, talerBuehne } from "./maskottchen.js";
 
@@ -26,6 +27,25 @@ export const PFADE = {
   bewr: { titel: "Bewertungsrecht", untertitel: "Von der Schenkung bis zum Ertragswert – Block für Block", bloecke: PFAD_BEWR },
   bbf: { titel: "Bilanz und Buchführung", untertitel: "Ausbildung FTA I – von der Buchführungspflicht bis zum Abschluss", bloecke: PFAD_BBF },
 };
+// Jeder Block bekommt als letzte Lernkarte die wichtigsten Begriffe (höchstens 3, je ein Satz mit Fundstelle, begriffe.js).
+// Das vollständige Verzeichnis mit allen Begriffen steht im Überblick – der Lernpfad bleibt knapp.
+const alleTexte = (v) => (typeof v === "string" ? v : Array.isArray(v) ? v.map(alleTexte).join("\n") : v && typeof v === "object" ? Object.values(v).map(alleTexte).join("\n") : "");
+/** Erster Satz einer Definition (endet mit der Fundstelle „…).“) */
+const ersterSatz = (t) => { const m = /^[\s\S]{40,}?\((?:vgl\. )?(?:§|Art\.|Anlage|R \d)[^()]*\)(?=[.;,](\s|$))/.exec(t); return (m ? m[0] + "." : t).replace(/\*\*/g, ""); };
+for (const [schluessel, p] of Object.entries(PFADE)) {
+  const fach = schluessel.startsWith("bsr") ? "bsr" : schluessel;
+  p.bloecke = p.bloecke.map((b) => {
+    // Nur Begriffe, die den Block tragen: im Titel oder hervorgehoben (**fett**) – Titel zuerst
+    const fett = [...alleTexte(b.karten).matchAll(/\*\*([^*]+)\*\*/g)].map((m) => m[1]).join(" · ");
+    const imTitel = begriffeIm(fach, b.titel, 12).map((x) => x.name);
+    const liste = begriffeIm(fach, b.titel + " · " + fett, 12)
+      .sort((a, c) => imTitel.includes(c.name) - imTitel.includes(a.name) || a.pos - c.pos).slice(0, 3);
+    // Höchstens etwa 450 Zeichen, damit die Karte auf einen Bildschirm passt (der erste Begriff steht immer da)
+    const zeilen = [];
+    for (const x of liste) { const z = `• **${x.name}:** ${ersterSatz(x.text)}`; if (zeilen.length && zeilen.join("\n").length + z.length > 450) break; zeilen.push(z); }
+    return zeilen.length ? { ...b, karten: [...b.karten, { art: "begriffe", titel: "Begriffe und ihre Normen", text: zeilen.join("\n") }] } : b;
+  });
+}
 /** Fortschritt wird je Modul gespeichert – Teil I, Teil II und „beide“ teilen sich die Sterne. */
 const speicherVon = (schluessel) => (schluessel.startsWith("bsr") ? "bsr" : schluessel);
 /** Lernpfad-Schlüssel für ein Modul (Bilanzrecht abhängig vom gewählten Skriptteil). */
@@ -94,6 +114,7 @@ function grafikHtml(g, esc) {
 const ART = {
   merksatz: ["Merksatz", "✦", "amber"], erklaerung: ["So funktioniert's", "◆", "cyan"],
   beispiel: ["Beispiel", "▲", "gruen"], klausur: ["Klausursatz", "✎", "pink"],
+  begriffe: ["Begriffe", "§", "cyan"],
 };
 /** „Block 3“ bzw. bei Bilanzrecht „Teil II · Block 3“ (gezählt innerhalb des Teils). */
 const blockNr = (alle, x) => {

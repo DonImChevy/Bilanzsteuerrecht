@@ -1366,6 +1366,135 @@ export const NORMEN = [
 ]
 },
 {
+"g": "GG",
+"nr": "2",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Jeder hat das Recht auf die freie Entfaltung seiner Persönlichkeit, soweit er nicht die Rechte anderer verletzt und nicht gegen die verfassungsmäßige Ordnung oder das Sittengesetz verstößt."
+},
+{
+"abs": "2",
+"text": "Jeder hat das Recht auf Leben und körperliche Unversehrtheit. Die Freiheit der Person ist unverletzlich. In diese Rechte darf nur auf Grund eines Gesetzes eingegriffen werden."
+}
+]
+},
+{
+"g": "GG",
+"nr": "3",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Alle Menschen sind vor dem Gesetz gleich."
+},
+{
+"abs": "2",
+"text": "Männer und Frauen sind gleichberechtigt. Der Staat fördert die tatsächliche Durchsetzung der Gleichberechtigung von Frauen und Männern und wirkt auf die Beseitigung bestehender Nachteile hin."
+},
+{
+"abs": "3",
+"text": "Niemand darf wegen seines Geschlechtes, seiner Abstammung, seiner Rasse, seiner Sprache, seiner Heimat und Herkunft, seines Glaubens, seiner religiösen oder politischen Anschauungen benachteiligt oder bevorzugt werden. Niemand darf wegen seiner Behinderung benachteiligt werden."
+}
+]
+},
+{
+"g": "GG",
+"nr": "6",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Ehe und Familie stehen unter dem besonderen Schutze der staatlichen Ordnung."
+},
+{
+"abs": "2",
+"text": "Pflege und Erziehung der Kinder sind das natürliche Recht der Eltern und die zuvörderst ihnen obliegende Pflicht. Über ihre Betätigung wacht die staatliche Gemeinschaft."
+},
+{
+"abs": "3",
+"text": "Gegen den Willen der Erziehungsberechtigten dürfen Kinder nur auf Grund eines Gesetzes von der Familie getrennt werden, wenn die Erziehungsberechtigten versagen oder wenn die Kinder aus anderen Gründen zu verwahrlosen drohen."
+},
+{
+"abs": "4",
+"text": "Jede Mutter hat Anspruch auf den Schutz und die Fürsorge der Gemeinschaft."
+},
+{
+"abs": "5",
+"text": "Den unehelichen Kindern sind durch die Gesetzgebung die gleichen Bedingungen für ihre leibliche und seelische Entwicklung und ihre Stellung in der Gesellschaft zu schaffen wie den ehelichen Kindern."
+}
+]
+},
+{
+"g": "GG",
+"nr": "9",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Alle Deutschen haben das Recht, Vereine und Gesellschaften zu bilden."
+},
+{
+"abs": "2",
+"text": "Vereinigungen, deren Zwecke oder deren Tätigkeit den Strafgesetzen zuwiderlaufen oder die sich gegen die verfassungsmäßige Ordnung oder gegen den Gedanken der Völkerverständigung richten, sind verboten."
+},
+{
+"abs": "3",
+"text": "Das Recht, zur Wahrung und Förderung der Arbeits- und Wirtschaftsbedingungen Vereinigungen zu bilden, ist für jedermann und für alle Berufe gewährleistet. Abreden, die dieses Recht einschränken oder zu behindern suchen, sind nichtig, hierauf gerichtete Maßnahmen sind rechtswidrig. Maßnahmen nach den Artikeln 12a, 35 Abs. 2 und 3, Artikel 87a Abs. 4 und Artikel 91 dürfen sich nicht gegen Arbeitskämpfe richten, die zur Wahrung und Förderung der Arbeits- und Wirtschaftsbedingungen von Vereinigungen im Sinne des Satzes 1 geführt werden."
+}
+]
+},
+{
+"g": "GG",
+"nr": "14",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Das Eigentum und das Erbrecht werden gewährleistet. Inhalt und Schranken werden durch die Gesetze bestimmt."
+},
+{
+"abs": "2",
+"text": "Eigentum verpflichtet. Sein Gebrauch soll zugleich dem Wohle der Allgemeinheit dienen."
+},
+{
+"abs": "3",
+"text": "Eine Enteignung ist nur zum Wohle der Allgemeinheit zulässig. Sie darf nur durch Gesetz oder auf Grund eines Gesetzes erfolgen, das Art und Ausmaß der Entschädigung regelt. Die Entschädigung ist unter gerechter Abwägung der Interessen der Allgemeinheit und der Beteiligten zu bestimmen. Wegen der Höhe der Entschädigung steht im Streitfalle der Rechtsweg vor den ordentlichen Gerichten offen."
+}
+]
+},
+{
+"g": "GG",
+"nr": "34",
+"titel": "",
+"abs": [
+{
+"abs": "",
+"text": "Verletzt jemand in Ausübung eines ihm anvertrauten öffentlichen Amtes die ihm einem Dritten gegenüber obliegende Amtspflicht, so trifft die Verantwortlichkeit grundsätzlich den Staat oder die Körperschaft, in deren Dienst er steht. Bei Vorsatz oder grober Fahrlässigkeit bleibt der Rückgriff vorbehalten. Für den Anspruch auf Schadensersatz und für den Rückgriff darf der ordentliche Rechtsweg nicht ausgeschlossen werden."
+}
+]
+},
+{
+"g": "GG",
+"nr": "35",
+"titel": "",
+"abs": [
+{
+"abs": "1",
+"text": "Alle Behörden des Bundes und der Länder leisten sich gegenseitig Rechts- und Amtshilfe."
+},
+{
+"abs": "2",
+"text": "Zur Aufrechterhaltung oder Wiederherstellung der öffentlichen Sicherheit oder Ordnung kann ein Land in Fällen von besonderer Bedeutung Kräfte und Einrichtungen des Bundesgrenzschutzes zur Unterstützung seiner Polizei anfordern, wenn die Polizei ohne diese Unterstützung eine Aufgabe nicht oder nur unter erheblichen Schwierigkeiten erfüllen könnte. Zur Hilfe bei einer Naturkatastrophe oder bei einem besonders schweren Unglücksfall kann ein Land Polizeikräfte anderer Länder, Kräfte und Einrichtungen anderer Verwaltungen sowie des Bundesgrenzschutzes und der Streitkräfte anfordern."
+},
+{
+"abs": "3",
+"text": "Gefährdet die Naturkatastrophe oder der Unglücksfall das Gebiet mehr als eines Landes, so kann die Bundesregierung, soweit es zur wirksamen Bekämpfung erforderlich ist, den Landesregierungen die Weisung erteilen, Polizeikräfte anderen Ländern zur Verfügung zu stellen, sowie Einheiten des Bundesgrenzschutzes und der Streitkräfte zur Unterstützung der Polizeikräfte einsetzen. Maßnahmen der Bundesregierung nach Satz 1 sind jederzeit auf Verlangen des Bundesrates, im übrigen unverzüglich nach Beseitigung der Gefahr aufzuheben."
+}
+]
+},
+{
 "g": "BWahlG",
 "nr": "1",
 "titel": "Zusammensetzung des Deutschen Bundestages und Wahlrechtsgrundsätze",

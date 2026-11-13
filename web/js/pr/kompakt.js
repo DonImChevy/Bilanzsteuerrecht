@@ -4,12 +4,12 @@
 export const KOMPAKT_PR = {
   "pr-grundlagen": {
     satz: "Privatrecht regelt Beziehungen auf **Augenhöhe**, öffentliches Recht das **Über- und Unterordnungsverhältnis** zum Staat – entscheidend ist nicht, wer handelt, sondern wie.",
-    zahlen: [["5", "Bücher des BGB"], ["§§ 1–240", "Allgemeiner Teil"], ["§§ 241–853", "Schuldrecht (AT bis § 432, BT ab § 433)"], ["1900", "BGB in Kraft (1. Januar)"]],
+    zahlen: [["5", "Bücher des BGB"], ["§§ 1–240 BGB", "Allgemeiner Teil"], ["§§ 241–853 BGB", "Schuldrecht (AT bis § 432 BGB, BT ab § 433 BGB)"], ["1900", "BGB in Kraft (1. Januar)"]],
     punkte: [
       "**Sonderrechtstheorie (modifizierte Subjektstheorie):** Öffentlich-rechtlich ist eine Norm, die ausschließlich einen Hoheitsträger **gerade als solchen** berechtigt oder verpflichtet. Kauft das Finanzamt Papier, gilt § 433 BGB wie für jeden – Privatrecht. Erlässt es einen Steuerbescheid, handelt es hoheitlich.",
       "**Folgen der Zuordnung:** anwendbare Normen (Verjährung §§ 194 ff. BGB oder Zahlungsverjährung §§ 228 ff. AO – nicht mischbar) und **Rechtsweg** (Amts-/Landgericht oder Verwaltungs-, Finanz-, Sozialgericht).",
       "**Aufbau des BGB:** Allgemeiner Teil – Schuldrecht – Sachenrecht – Familienrecht – Erbrecht. Der AT ist **vor die Klammer gezogen** und gilt für alles Folgende, soweit dort nichts Spezielleres steht; ebenso Schuldrecht AT für alle Schuldverhältnisse.",
-      "**HGB = Sonderprivatrecht der Kaufleute:** geht dem BGB als spezielleres Recht vor und soll den Handelsverkehr erleichtern und beschleunigen (z. B. § 350 HGB, § 377 HGB); im Übrigen gilt das BGB.",
+      "**HGB = Sonderprivatrecht der Kaufleute:** Kaufmann ist, wer ein Handelsgewerbe betreibt (§ 1 Abs. 1 HGB); das HGB geht dem BGB als spezielleres Recht vor und soll den Handelsverkehr erleichtern und beschleunigen (z. B. § 350 HGB, § 377 HGB); im Übrigen gilt das BGB.",
       "**Brücke ins Steuerrecht:** Steuertatbestände knüpfen an Zivilrecht an – Grundstückskauf (§ 1 Abs. 1 Nr. 1 GrEStG), Mietvertrag (§ 21 EStG), Ehe (§ 26 EStG). **Wirtschaftliche Betrachtungsweise:** wirtschaftliches Eigentum (§ 39 AO), Besteuerung trotz Gesetz- oder Sittenwidrigkeit (§ 40 AO) und trotz Unwirksamkeit (§ 41 AO).",
     ],
     fallen: [
@@ -23,15 +23,17 @@ export const KOMPAKT_PR = {
     satz: "Jeder Fall beginnt mit der Frage **„Wer will was von wem woraus?“** – und jede Anspruchsgrundlage wird in drei Stufen geprüft: entstanden, erloschen, durchsetzbar.",
     schema: [
       "Anspruch **entstanden?** – Voraussetzungen der Anspruchsgrundlage, keine rechtshindernden Einwendungen (§§ 105, 117, 125, 134, 138 BGB)",
-      "Anspruch **erloschen?** – rechtsvernichtende Einwendungen (Erfüllung § 362, Anfechtung § 142, Aufrechnung § 389, Rücktritt § 346, Erlass § 397 BGB)",
-      "Anspruch **durchsetzbar?** – rechtshemmende Einreden (Verjährung § 214, Zurückbehaltungsrecht § 273, § 320 BGB)",
+      "Anspruch **erloschen?** – rechtsvernichtende Einwendungen (Erfüllung § 362 BGB, Anfechtung § 142 BGB, Aufrechnung § 389 BGB, Rücktritt § 346 BGB, Erlass § 397 BGB)",
+      "Anspruch **durchsetzbar?** – rechtshemmende Einreden (Verjährung § 214 BGB, Zurückbehaltungsrecht § 273 BGB, § 320 BGB)",
       "**Ergebnis**",
     ],
     punkte: [
       "**Anspruch** = Recht, von einem anderen ein Tun oder Unterlassen zu verlangen (§ 194 Abs. 1 BGB). **Anspruchsgrundlage** = Norm mit Tatbestand und Rechtsfolge, z. B. § 433 Abs. 2 BGB.",
-      "**Reihenfolge bei mehreren Anspruchsgrundlagen:** vertraglich (erst Primär-, dann Sekundäransprüche wie § 280 Abs. 1 BGB) → quasivertraglich (§ 280 Abs. 1 i. V. m. §§ 311 Abs. 2, 241 Abs. 2 BGB; GoA §§ 677 ff. BGB) → dinglich (§ 985 BGB) → **Delikt** (§ 823 BGB) → **Bereicherung** (§ 812 BGB). Grundsätzlich **alle** in Betracht kommenden prüfen, auch wenn die erste schon trägt.",
+      "**Reihenfolge bei mehreren Anspruchsgrundlagen:** vertraglich (erst Primär-, dann Sekundäransprüche wie § 280 Abs. 1 BGB) → quasivertraglich (§ 280 Abs. 1 BGB i. V. m. §§ 311 Abs. 2, 241 Abs. 2 BGB; GoA §§ 677 ff. BGB) → dinglich (§ 985 BGB) → **Delikt** (§ 823 BGB) → **Bereicherung** (§ 812 BGB). Grundsätzlich **alle** in Betracht kommenden prüfen, auch wenn die erste schon trägt.",
       "**Wer, von wem?** Ist die Rechtsfähigkeit eines Beteiligten zweifelhaft (Verein, Gesellschaft, Erbengemeinschaft), vor der Anspruchsgrundlage prüfen (§ 1 BGB, § 13 Abs. 1 GmbHG, § 105 Abs. 2 HGB).",
-      "**Typische Prüfungspunkte bei § 433 Abs. 2 BGB:** entstanden – Angebot und Annahme, ggf. Stellvertretung; Geschäftsfähigkeit, bewusste Willensmängel (§§ 116 ff.), Form (§ 125), Verbot (§ 134), Sitten (§ 138 BGB). Erloschen – Anfechtung (§ 142, auch schon bei „entstanden“ möglich), Erfüllung und Surrogate (§§ 362, 364, 389, 397 BGB), Unmöglichkeit (§§ 275, 326 BGB), Rücktritt, Kündigung, Widerruf. Durchsetzbar – Verjährung, Stundung, §§ 273, 320 BGB.",
+      "**§ 433 Abs. 2 BGB – entstanden?** Angebot und Annahme, ggf. Stellvertretung; Geschäftsfähigkeit, bewusste Willensmängel (§§ 116 ff. BGB), Form (§ 125 BGB), Verbot (§ 134 BGB), Sitten (§ 138 BGB).",
+      "**Erloschen?** Anfechtung (§ 142 BGB), Erfüllung und Surrogate (§§ 362, 364, 389, 397 BGB), Unmöglichkeit (§§ 275, 326 BGB), Rücktritt, Kündigung, Widerruf.",
+      "**Durchsetzbar?** Verjährung, Stundung, Zurückbehaltungsrechte (§§ 273, 320 BGB).",
       "**Obersatz-Varianten:** „V könnte gegen K einen Anspruch auf … aus § 433 Abs. 2 BGB haben.“ oder „Fraglich ist, ob dem V gegen K ein Anspruch auf … aus § 433 Abs. 2 BGB zusteht.“ – immer mit Wer, von wem, was (Betrag, Sache) und woraus.",
       "**Einwendungen** sind von Amts wegen zu beachten; **Einreden** wirken nur, wenn sich der Schuldner auf sie beruft.",
       "**Gutachtenstil:** Obersatz im Konjunktiv („V könnte … aus § 433 Abs. 2 BGB haben“) → Definition/Voraussetzungen → Subsumtion → Ergebnis. Unproblematisches darf kurz im **Urteilsstil** festgestellt werden.",
@@ -51,7 +53,7 @@ export const KOMPAKT_PR = {
       "**Vertragsfreiheit** (vgl. § 311 Abs. 1 BGB): **Abschlussfreiheit** (ob und mit wem), **Inhaltsfreiheit** (was), **Formfreiheit** (wie – Umkehrschluss aus § 125 BGB).",
       "**Weitere Ausprägungen:** Vereinigungsfreiheit (Art. 9 GG, §§ 21 ff., 705 ff. BGB), Testierfreiheit (Art. 14 GG, § 1937 BGB), Eigentumsfreiheit (Art. 14 GG, § 903 BGB), Eheschließungsfreiheit (Art. 6 GG).",
       "**Grenzen der Abschlussfreiheit:** Kontrahierungszwang, z. B. Grundversorgung mit Strom (§ 17 Abs. 1 EnWG), Kfz-Haftpflicht.",
-      "**Grenzen der Inhaltsfreiheit:** gesetzliches Verbot (§ 134 BGB), Sittenwidrigkeit und Wucher (§ 138 BGB), AGB-Kontrolle (§§ 305 ff. BGB), zwingendes Recht (§ 444, § 476 BGB), Typenzwang im Sachenrecht.",
+      "**Grenzen der Inhaltsfreiheit:** gesetzliches Verbot (§ 134 BGB), Sittenwidrigkeit (§ 138 Abs. 1 BGB) und Wucher – Ausbeutung einer Zwangslage oder Unerfahrenheit bei auffälligem Missverhältnis von Leistung und Gegenleistung (§ 138 Abs. 2 BGB) –, AGB-Kontrolle (§§ 305 ff. BGB), zwingendes Recht (§ 444 BGB, § 476 BGB), Typenzwang im Sachenrecht.",
       "**Grenzen der Formfreiheit:** § 311b Abs. 1 S. 1 BGB (Grundstück), § 518 Abs. 1 BGB (Schenkungsversprechen), § 766 S. 1 BGB (Bürgschaft), § 2247 BGB (Testament) – Verstoß: Nichtigkeit (§ 125 S. 1 BGB).",
       "**Dispositives Recht** (z. B. § 434 BGB) dürfen die Parteien abbedingen, **zwingendes** nicht. Grundrechte wirken nur **mittelbar** über Generalklauseln (§§ 138, 242, 826 BGB).",
     ],
@@ -68,7 +70,7 @@ export const KOMPAKT_PR = {
       "**Natürliche Personen:** rechtsfähig von der Vollendung der Geburt bis zum Tod (Hirntod). Der **nasciturus** ist geschützt: Erbfähigkeit (§ 1923 Abs. 2 BGB), Unterhaltsersatz (§ 844 Abs. 2 S. 2 BGB). Tiere sind keine Rechtssubjekte (§ 90a BGB).",
       "**Rechts-, Handlungs-, Geschäfts-, Deliktsfähigkeit:** Rechtsfähigkeit = Träger von Rechten sein; Handlungsfähigkeit = durch eigenes Handeln Rechtsfolgen auslösen (Oberbegriff); Geschäftsfähigkeit = Rechtsgeschäfte selbst wirksam vornehmen (§§ 104 ff. BGB); Deliktsfähigkeit = für unerlaubte Handlungen verantwortlich sein (§§ 827, 828 BGB).",
       "**Juristische Personen:** Privatrecht – e. V. (§ 21 BGB), Stiftung (§ 80 BGB), GmbH (§ 13 Abs. 1 GmbHG), AG, eG; öffentliches Recht – Bund, Länder, Gemeinden, Anstalten. Sie handeln durch **Organe**: Vorstand (§ 26 BGB), Geschäftsführer (§ 35 GmbHG), Bürgermeister.",
-      "**Rechtsfähige Personengesellschaften** sind keine juristischen Personen, ihre Gesellschafter **haften persönlich:** GbR (§ 705 Abs. 2, § 721 BGB), oHG (§ 105 Abs. 2, § 126 HGB), KG (§ 161 HGB; Kommanditisten bis zur Einlage, § 171 Abs. 1 HGB).",
+      "**Rechtsfähige Personengesellschaften** sind keine juristischen Personen, ihre Gesellschafter **haften persönlich:** GbR (§ 705 Abs. 2 BGB, § 721 BGB), oHG (§ 105 Abs. 2 HGB, § 126 HGB), KG (§ 161 HGB; Kommanditisten bis zur Einlage, § 171 Abs. 1 HGB).",
       "**Nicht rechtsfähig:** Innen-GbR (§ 740 BGB), Erbengemeinschaft, Bruchteilsgemeinschaft (§§ 741 ff. BGB, jeder verfügt über seinen Anteil, § 747 BGB).",
       "**GmbH-Gründung:** Vorgründungsgesellschaft (GbR/oHG, volle Haftung) → notarieller Vertrag → **Vor-GmbH** (Handelndenhaftung § 11 Abs. 2 GmbHG) → **Eintragung = Entstehung** (§ 11 Abs. 1 GmbHG, konstitutiv). Ende erst mit **Löschung** nach Auflösung und Liquidation.",
       "**Steuerrechtsfähigkeit** folgt eigenen Regeln: GbR und oHG sind nicht einkommen- oder körperschaftsteuerpflichtig, können aber Unternehmer im Sinne des UStG sein.",
@@ -82,7 +84,7 @@ export const KOMPAKT_PR = {
 
   "pr-rechtsobjekte": {
     satz: "Sachen sind nur **körperliche Gegenstände** (§ 90 BGB) – Rechte, Forderungen und Tiere sind keine Sachen; Bestandteile und Zubehör entscheiden, was mit übereignet wird.",
-    zahlen: [["§ 90", "Sachbegriff"], ["§ 93/94", "wesentliche Bestandteile"], ["§ 95", "Scheinbestandteile"], ["§ 97", "Zubehör"]],
+    zahlen: [["§ 90 BGB", "Sachbegriff"], ["§§ 93, 94 BGB", "wesentliche Bestandteile"], ["§ 95 BGB", "Scheinbestandteile"], ["§ 97 BGB", "Zubehör"]],
     punkte: [
       "**Bewegliche Sachen** werden nach §§ 929 ff. BGB übereignet, **Grundstücke** nach §§ 873, 925 BGB.",
       "**Vertretbar** (§ 91 BGB): nach Zahl, Maß, Gewicht bestimmbar (Geld, Serienware). **Verbrauchbar** (§ 92 BGB): zum Verbrauch oder zur Veräußerung bestimmt.",
@@ -137,7 +139,7 @@ export const KOMPAKT_PR = {
     punkte: [
       "**Auslegung:** wirklicher Wille (§ 133 BGB) und Treu und Glauben mit Rücksicht auf die Verkehrssitte (§ 157 BGB) – empfangsbedürftige Erklärungen nach dem **objektiven Empfängerhorizont**. Gemeinsam Gewolltes geht dem Wortlaut vor (falsa demonstratio non nocet).",
       "**Rechtsbindungswille** fehlt bei Gefälligkeiten des täglichen Lebens und bei der **invitatio ad offerendum** (Schaufenster, Prospekt, Inserat, Speisekarte): Der Anbieter will Bonität und Vorrat prüfen und nicht mehrfach gebunden sein.",
-      "**Schweigen** ist grundsätzlich keine Erklärung – Ausnahmen: Vereinbarung, Gesetz (§ 108 Abs. 2, § 177 Abs. 2 BGB, § 362 HGB), kaufmännisches Bestätigungsschreiben.",
+      "**Schweigen** ist grundsätzlich keine Erklärung – Ausnahmen: Vereinbarung, Gesetz (§ 108 Abs. 2 BGB, § 177 Abs. 2 BGB, § 362 HGB), kaufmännisches Bestätigungsschreiben.",
       "**Abgabe:** willentlich in den Verkehr gebracht. **Zugang unter Abwesenden:** im **Machtbereich** des Empfängers mit Möglichkeit der Kenntnisnahme unter **normalen Umständen** (§ 130 Abs. 1 S. 1 BGB). Widerruf muss vorher oder gleichzeitig zugehen (§ 130 Abs. 1 S. 2 BGB); Tod nach Abgabe schadet nicht (§ 130 Abs. 2 BGB).",
     ],
     fallen: [
@@ -148,12 +150,12 @@ export const KOMPAKT_PR = {
 
   "pr-rechtsgeschaefte": {
     satz: "Verpflichten und Verfügen sind **getrennte** Geschäfte, deren Wirksamkeit **unabhängig** voneinander ist – der Kaufvertrag macht den Käufer noch nicht zum Eigentümer.",
-    zahlen: [["3", "Rechtsgeschäfte beim Barkauf"], ["6", "Willenserklärungen beim Barkauf"]],
+    zahlen: [["3", "Rechtsgeschäfte beim Barkauf (§ 433 BGB, § 929 S. 1 BGB)"], ["6", "Willenserklärungen beim Barkauf"]],
     punkte: [
       "**Einseitige** Rechtsgeschäfte (Kündigung, Anfechtung, Testament) und **mehrseitige** (Vertrag, Beschluss). Verträge: einseitig verpflichtend (Schenkung, Bürgschaft), unvollkommen zweiseitig (Leihe, Auftrag), **gegenseitig/synallagmatisch** (Kauf, Miete, Werkvertrag – „do ut des“, §§ 320 ff. BGB).",
-      "**Trennungsprinzip:** Verpflichtungsgeschäft (§ 433 BGB) begründet nur Pflichten; Verfügungsgeschäft (§ 929, § 398 BGB) überträgt, belastet, ändert oder hebt ein Recht unmittelbar auf.",
+      "**Trennungsprinzip:** Verpflichtungsgeschäft (§ 433 BGB) begründet nur Pflichten; Verfügungsgeschäft (§ 929 BGB, § 398 BGB) überträgt, belastet, ändert oder hebt ein Recht unmittelbar auf.",
       "**Abstraktionsprinzip:** Ist der Kaufvertrag nichtig, bleibt die Übereignung wirksam – Rückabwicklung über **§ 812 BGB**. Nur bei Fehlern, die beide Geschäfte treffen (Geschäftsunfähigkeit, Täuschung), scheitert auch die Verfügung → § 985 BGB.",
-      "**Form:** Schriftform (§ 126), elektronische Form (§ 126a), Textform (§ 126b), Beglaubigung (§ 129), Beurkundung (§ 128 BGB). Verstoß → **nichtig** (§ 125 S. 1 BGB); Heilung durch Erfüllung in § 311b Abs. 1 S. 2, § 518 Abs. 2, § 766 S. 3 BGB.",
+      "**Form:** Schriftform (§ 126 BGB), elektronische Form (§ 126a BGB), Textform (§ 126b BGB), Beglaubigung (§ 129 BGB), Beurkundung (§ 128 BGB). Verstoß → **nichtig** (§ 125 S. 1 BGB); Heilung durch Erfüllung in § 311b Abs. 1 S. 2 BGB, § 518 Abs. 2 BGB, § 766 S. 3 BGB.",
       "**Nichtig** auch: Scheingeschäft (§ 117 Abs. 1 BGB, verdecktes Geschäft gilt ggf. nach Abs. 2), Scherzerklärung (§ 118 BGB, Vertrauensschaden § 122 BGB), Verbotsgesetz (§ 134 BGB), Sittenwidrigkeit und Wucher (§ 138 BGB). Der **geheime Vorbehalt** schadet nicht (§ 116 BGB).",
     ],
     fallen: [
@@ -212,7 +214,7 @@ export const KOMPAKT_PR = {
   "pr-stellvertretung": {
     satz: "Der Vertreter gibt eine **eigene** Erklärung **im Namen** des Vertretenen **mit Vertretungsmacht** ab – dann wirkt sie unmittelbar für und gegen den Vertretenen (§ 164 Abs. 1 S. 1 BGB).",
     schema: [
-      "**Zulässigkeit:** kein höchstpersönliches Geschäft (Ehe § 1311, Testament § 2064 BGB)",
+      "**Zulässigkeit:** kein höchstpersönliches Geschäft (Ehe § 1311 BGB, Testament § 2064 BGB)",
       "**Eigene Willenserklärung:** Entscheidungsspielraum → Vertreter; nur Übermittlung → Bote. Vertreter mindestens beschränkt geschäftsfähig (§ 165 BGB)",
       "**Im fremden Namen** (Offenkundigkeit, § 164 Abs. 1 S. 2 BGB) – Ausnahmen: unternehmensbezogenes Geschäft, Geschäft für den, den es angeht",
       "**Vertretungsmacht:** Gesetz, Organstellung oder Vollmacht (§ 167 BGB); Rechtsschein (§§ 170–172 BGB, Duldungs- und Anscheinsvollmacht)",
@@ -235,10 +237,11 @@ export const KOMPAKT_PR = {
 
   "pr-schuldverhaeltnis": {
     satz: "Kraft eines Schuldverhältnisses kann der Gläubiger vom Schuldner eine **Leistung** fordern (§ 241 Abs. 1 BGB) – entstanden durch Vertrag oder kraft Gesetzes, beendet meist durch Erfüllung.",
-    zahlen: [["§ 241", "Pflichten aus dem Schuldverhältnis"], ["§ 362", "Erfüllung"], ["§ 389", "Wirkung der Aufrechnung"]],
+    zahlen: [["§ 241 BGB", "Pflichten aus dem Schuldverhältnis"], ["§ 362 BGB", "Erfüllung"], ["§ 389 BGB", "Wirkung der Aufrechnung"]],
     punkte: [
-      "**Vertraglich** (§ 311 Abs. 1 BGB) oder **gesetzlich** (Delikt §§ 823 ff., Bereicherung §§ 812 ff., GoA §§ 677 ff. BGB). Schon Vertragsverhandlungen begründen Rücksichtnahmepflichten (§ 311 Abs. 2, § 241 Abs. 2 BGB).",
-      "**Zielschuldverhältnis:** einmaliger Austausch (Kauf § 433, Werkvertrag § 631 BGB) – endet ordentlich durch **Erfüllung**, außerordentlich durch Rücktritt oder Anfechtung. **Dauerschuldverhältnis:** Leistung über Zeit (Miete § 535, Dienst-/Arbeitsvertrag §§ 611, 611a, Darlehen § 488 BGB) – befristet: **Zeitablauf**; unbefristet: **ordentliche Kündigung**; beide: **Kündigung aus wichtigem Grund** (§ 314 BGB) und Aufhebungsvertrag.",
+      "**Vertraglich** (§ 311 Abs. 1 BGB) oder **gesetzlich** (Delikt §§ 823 ff. BGB, Bereicherung §§ 812 ff. BGB, GoA §§ 677 ff. BGB). Schon Vertragsverhandlungen begründen Rücksichtnahmepflichten (§ 311 Abs. 2 BGB, § 241 Abs. 2 BGB).",
+      "**Zielschuldverhältnis:** einmaliger Austausch (Kauf § 433 BGB, Werkvertrag § 631 BGB) – endet durch **Erfüllung**, außerordentlich durch Rücktritt oder Anfechtung.",
+      "**Dauerschuldverhältnis:** Leistung über Zeit (Miete § 535 BGB, Arbeitsvertrag § 611a BGB, Darlehen § 488 BGB) – endet durch **Zeitablauf** oder **ordentliche Kündigung**, immer auch durch **Kündigung aus wichtigem Grund** (§ 314 BGB) oder Aufhebungsvertrag.",
       "**Stückschuld** (diese Sache) – **Gattungsschuld** (mittlere Art und Güte, § 243 Abs. 1 BGB; Konkretisierung § 243 Abs. 2 BGB).",
       "**Leistungsort:** im Zweifel Wohnsitz des Schuldners – **Holschuld** (§ 269 BGB); Bring- und Schickschuld nach Vereinbarung. **Leistungszeit:** im Zweifel **sofort** (§ 271 Abs. 1 BGB).",
       "**Gesamtschuld** (§ 421 BGB): jeder schuldet alles, der Gläubiger bekommt es nur einmal; Ausgleich im Innenverhältnis zu gleichen Teilen (§ 426 BGB).",
@@ -295,11 +298,11 @@ export const KOMPAKT_PR = {
 
   "pr-kauf": {
     satz: "Der Verkäufer schuldet **Übergabe und Eigentum** an einer mangelfreien Sache, der Käufer **Zahlung und Abnahme** (§ 433 BGB) – bei Mängeln zuerst Nacherfüllung.",
-    zahlen: [["§ 433", "Hauptpflichten"], ["§ 437", "Rechte bei Mängeln"], ["2 Jahre", "Verjährung ab Ablieferung (§ 438 Abs. 1 Nr. 3 BGB)"], ["1 Jahr", "Beweislastumkehr beim Verbrauchsgüterkauf (§ 477 BGB)"]],
+    zahlen: [["§ 433 BGB", "Hauptpflichten"], ["§ 437 BGB", "Rechte bei Mängeln"], ["2 Jahre", "Verjährung ab Ablieferung (§ 438 Abs. 1 Nr. 3 BGB)"], ["1 Jahr", "Beweislastumkehr beim Verbrauchsgüterkauf (§ 477 BGB)"]],
     schema: [
       "Wirksamer **Kaufvertrag**",
       "**Mangel** bei Gefahrübergang (§§ 434, 435, 446 BGB)",
-      "Kein Ausschluss (§ 442 Kenntnis, § 444 BGB Haftungsausschluss nur ohne Arglist/Garantie)",
+      "Kein Ausschluss (§ 442 BGB Kenntnis, § 444 BGB Haftungsausschluss nur ohne Arglist/Garantie)",
       "**Nacherfüllung** nach Wahl des Käufers (§ 439 BGB)",
       "Nach erfolgloser Frist: **Rücktritt** (§§ 440, 323 BGB) oder **Minderung** (§ 441 BGB); daneben **Schadensersatz** (§§ 280, 281 BGB)",
       "Keine **Verjährung** (§ 438 BGB)",
@@ -308,12 +311,12 @@ export const KOMPAKT_PR = {
       "**Sachmangel (§ 434 BGB):** Abweichung von den subjektiven (Vereinbarung, vorausgesetzte Verwendung), objektiven (gewöhnliche Verwendung, übliche Beschaffenheit) oder Montageanforderungen bei Gefahrübergang. **Rechtsmangel** (§ 435 BGB): Rechte Dritter.",
       "**Gefahrübergang** mit Übergabe (§ 446 BGB); beim **Versendungskauf** mit Auslieferung an die Transportperson (§ 447 BGB) – **nicht** beim Verbrauchsgüterkauf (§ 475 Abs. 2 BGB).",
       "**Eigentumsvorbehalt (§ 449 BGB):** Übereignung unter der aufschiebenden Bedingung vollständiger Zahlung (§ 158 Abs. 1 BGB).",
-      "**Verbrauchsgüterkauf (§ 474 BGB):** Verbraucher (§ 13) kauft vom Unternehmer (§ 14 BGB) – zwingender Schutz (§ 476 BGB), Beweislastumkehr ein Jahr (§ 477 BGB).",
+      "**Verbrauchsgüterkauf (§ 474 BGB):** Verbraucher (§ 13 BGB) kauft vom Unternehmer (§ 14 BGB) – zwingender Schutz (§ 476 BGB), Beweislastumkehr ein Jahr (§ 477 BGB).",
       "**Tausch** (§ 480 BGB) folgt Kaufrecht; **Schenkungsversprechen** braucht notarielle Form (§ 518 Abs. 1 BGB), Heilung durch Bewirken.",
       "**Handelskauf:** Rügeobliegenheit des Kaufmanns (§ 377 HGB).",
     ],
     fallen: [
-      "Kein Rücktritt ohne vorherige Frist zur Nacherfüllung (Ausnahmen § 440, § 323 Abs. 2 BGB).",
+      "Kein Rücktritt ohne vorherige Frist zur Nacherfüllung (Ausnahmen § 440 BGB, § 323 Abs. 2 BGB).",
       "Bei der Nacherfüllung wählt der **Käufer**, nicht der Verkäufer.",
     ],
   },
@@ -322,7 +325,7 @@ export const KOMPAKT_PR = {
     satz: "Besitz ist die **tatsächliche**, Eigentum die **rechtliche** Herrschaft über eine Sache – übertragen wird Eigentum durch Einigung und Übergabe (§ 929 BGB) bzw. Auflassung und Eintragung (§§ 873, 925 BGB).",
     schema: [
       "**Einigung** über den Eigentumsübergang (dinglicher Vertrag, Stellvertretung möglich)",
-      "**Übergabe** oder Ersatz (§ 929 S. 2, §§ 930, 931 BGB)",
+      "**Übergabe** oder Ersatz (§ 929 S. 2 BGB, §§ 930, 931 BGB)",
       "**Einigsein** bei Übergabe",
       "**Berechtigung** des Veräußerers – sonst gutgläubiger Erwerb (§§ 932–935 BGB)",
     ],
@@ -347,7 +350,7 @@ export const KLAUSUR_PR = {
     "**120 Minuten**, Stoff: Kapitel 1–12 (Stellung des Privatrechts bis Sachenrecht). Hilfsmittel nach Ankündigung, zuletzt die NWB-Textausgaben „Wichtige Wirtschaftsgesetze“ und „Wichtige Steuergesetze“.",
     "**Teil A – allgemeine Fragen** (ca. 30 Minuten): Definitionen und Zusammenhänge in ganzen Sätzen – z. B. Rechts- und Geschäftsfähigkeit, Privatautonomie, Trennungs- und Abstraktionsprinzip, Aufbau des BGB, Bestandteile der Willenserklärung, Bedeutung des Privatrechts fürs Steuerrecht.",
     "**Teil B – Sachverhaltsbearbeitung** (ca. 90 Minuten) **im Gutachtenstil**: fast immer ein Zahlungsanspruch aus § 433 Abs. 2 BGB mit **Stellvertretung** (Bote oder Vertreter, Minderjährigkeit und § 165 BGB, Offenkundigkeit, Vollmacht), dazu Angebot/invitatio, Anfechtung oder ein Deliktsfall (§ 823 BGB mit § 828 BGB).",
-    "Mitunter **Teil C – Gesetzesverständnis**: Normen im Gesetz finden und erklären (z. B. Ziel- und Dauerschuldverhältnisse und ihre Beendigung, § 311b und § 925 BGB).",
+    "Mitunter **Teil C – Gesetzesverständnis**: Normen im Gesetz finden und erklären (z. B. Ziel- und Dauerschuldverhältnisse und ihre Beendigung, § 311b BGB und § 925 BGB).",
     "Bewertet werden auch **Sachverhaltsermittlung** (nur das Relevante herausarbeiten), **Obersatz**, **Definitionen**, **Subsumtion** und die Darstellung (Begründung, Klarheit, Ausdruck).",
   ],
   top: ["pr-stellvertretung", "pr-vertragsschluss", "pr-geschaeftsfaehigkeit", "pr-willenserklaerung", "pr-anfechtung", "pr-rechtsgeschaefte", "pr-rechtssubjekte", "pr-gesetzlich"],

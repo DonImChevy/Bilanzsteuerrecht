@@ -21,11 +21,11 @@ export const KOMPAKT_AO = {
   },
 
   "ao-steuergeheimnis": {
-    satz: "Wer als Amtsträger dienstlich etwas über andere erfährt, darf es weder weitererzählen noch für sich nutzen oder grundlos abrufen – außer eine Erlaubnisnorm des § 30 Abs. 4 oder 5 AO greift.",
+    satz: "Wer als Amtsträger dienstlich etwas über andere erfährt, darf es weder weitererzählen noch für sich nutzen oder grundlos abrufen – außer eine Erlaubnisnorm des § 30 Abs. 4 AO oder 5 AO greift.",
     schema: [
       "Amtsträger (§ 7 AO) oder gleichgestellte Person (§ 30 Abs. 3 AO)?",
       "Geschützte Daten: personenbezogene Daten eines anderen (§ 30 Abs. 2 Nr. 1 AO) oder ein fremdes Betriebs- oder Geschäftsgeheimnis (§ 30 Abs. 2 Nr. 2 AO)?",
-      "Dienstlich bekannt geworden (§ 30 Abs. 2 Nr. 1 a–c AO)?",
+      "Dienstlich bekannt geworden (§ 30 Abs. 2 Nr. 1 a AO–c AO)?",
       "Offenbaren oder verwerten (§ 30 Abs. 2 Nr. 1, 2 AO) oder im automatisierten Verfahren abrufen (§ 30 Abs. 2 Nr. 3 AO)?",
       "Ohne Befugnis – greift keine Erlaubnisnorm? Steuerverfahren (§ 30 Abs. 4 Nr. 1 AO), Gesetz (§ 30 Abs. 4 Nr. 2 AO), Zustimmung (§ 30 Abs. 4 Nr. 3 AO), nichtsteuerliche Straftat (§ 30 Abs. 4 Nr. 4 AO), zwingendes öffentliches Interesse (§ 30 Abs. 4 Nr. 5 AO), falsche Angaben (§ 30 Abs. 5 AO)",
     ],
@@ -91,7 +91,7 @@ export const KOMPAKT_AO = {
 
   "ao-erklaerung": {
     satz: "Wer erklärungspflichtig ist und zu spät abgibt, muss mit einem Verspätungszuschlag rechnen – im Ermessen nach § 152 Abs. 1 AO, zwingend ab 14 Monaten nach Jahresende (§ 152 Abs. 2 AO).",
-    zahlen: [["31.07.", "Abgabe ohne Berater (§ 149 Abs. 2 AO)"], ["Ende Feb.", "des zweiten Folgejahres mit Berater (§ 149 Abs. 3 AO)"], ["0,25 %", "je angefangenen Monat (§ 152 Abs. 5 AO)"], ["25 €", "Mindestbetrag je Monat bei Jahreserklärungen"], ["25.000 €", "Höchstbetrag (§ 152 Abs. 10 AO)"]],
+    zahlen: [["31.07.", "Abgabe ohne Berater (§ 149 Abs. 2 AO)"], ["Ende Feb.", "des zweiten Folgejahres mit Berater (§ 149 Abs. 3 AO)"], ["0,25 %", "je angefangenen Monat (§ 152 Abs. 5 AO)"], ["25 €", "Mindestbetrag je Monat bei Jahreserklärungen (§ 152 Abs. 5 S. 2 AO)"], ["25.000 €", "Höchstbetrag (§ 152 Abs. 10 AO)"]],
     punkte: [
       "**Erklärungspflicht (§ 149 Abs. 1 AO):** nach den Einzelsteuergesetzen oder auf Aufforderung; sie bleibt nach einer Schätzung bestehen.",
       "**Fristen:** ohne Berater sieben Monate nach Ablauf des Kalenderjahres (§ 149 Abs. 2 AO); mit Berater bis Ende Februar des zweiten Folgejahres (§ 149 Abs. 3 AO), bei Vorabanforderung vier Monate ab Bekanntgabe (§ 149 Abs. 4 AO). Voranmeldungen: 10. Tag nach Ablauf des Zeitraums.",
@@ -181,15 +181,15 @@ export const KOMPAKT_AO = {
       "**§ 127 AO:** Keine Aufhebung allein wegen Verfahrens-, Form- oder örtlicher Zuständigkeitsfehler, wenn in der Sache nichts anderes hätte entschieden werden können – gilt für **gebundene** Verwaltungsakte, nicht für Ermessensentscheidungen (außer Ermessensreduzierung auf null).",
     ],
     fallen: [
-      "Erst § 125 Abs. 2, dann Abs. 3, dann erst die Generalklausel Abs. 1 prüfen.",
+      "Erst § 125 Abs. 2 AO, dann Abs. 3, dann erst die Generalklausel Abs. 1 prüfen.",
       "Örtliche Unzuständigkeit allein führt nie zur Nichtigkeit.",
       "Nichtige Verwaltungsakte lassen sich nicht heilen – §§ 126, 127 AO setzen einen wirksamen Verwaltungsakt voraus.",
     ],
   },
 
   "ao-bekanntgabe": {
-    satz: "Erst die Bekanntgabe macht den Verwaltungsakt wirksam: Die Behörde muss ihn bewusst dem Richtigen zugehen lassen – per Post gilt er am vierten Tag als bekannt gegeben (§ 122 Abs. 1, 2, § 124 Abs. 1 AO).",
-    zahlen: [["4 Tage", "Bekanntgabefiktion Inland und Datenabruf (seit 2025)"], ["1 Monat", "Bekanntgabefiktion Ausland"]],
+    satz: "Erst die Bekanntgabe macht den Verwaltungsakt wirksam: Die Behörde muss ihn bewusst dem Richtigen zugehen lassen – per Post gilt er am vierten Tag als bekannt gegeben (§ 122 Abs. 1, 2 AO, § 124 Abs. 1 AO).",
+    zahlen: [["4 Tage", "Bekanntgabefiktion Inland und Datenabruf (seit 2025) (§ 122 Abs. 2 Nr. 1 AO, § 122a Abs. 4 S. 1 AO)"], ["1 Monat", "Bekanntgabefiktion Ausland (§ 122 Abs. 2 Nr. 2 AO)"]],
     punkte: [
       "**Bekanntgabewille:** Die Behörde will das „Ob“ und „Wie“. Aufgabe des Willens nur bis zum Verlassen des Machtbereichs (dokumentiert); danach nur Widerruf, der spätestens mit dem Bescheid zugehen muss (auch telefonisch).",
       "**Zugang:** im Machtbereich des Empfängers, mit Kenntnisnahme ist zu rechnen (Briefkasten). Was danach passiert, ist sein Risiko. Fehlt der Bekanntgabewille bei der Weiterleitung, Heilung mit tatsächlichem Erhalt (§ 8 VwZG entsprechend).",
@@ -229,7 +229,7 @@ export const KOMPAKT_AO = {
   "ao-feststellung": {
     satz: "Normalerweise sind Besteuerungsgrundlagen nur Rechenweg im Steuerbescheid; wo mehrere beteiligt sind oder ein anderes Finanzamt zuständig ist, werden sie vorab verbindlich festgestellt (§§ 157 Abs. 2, 179, 180 AO).",
     schema: [
-      "Mehrere Beteiligte, ESt-/KSt-pflichtige Einkünfte? → gesondert und einheitlich (§ 179 Abs. 2 S. 2, § 180 Abs. 1 S. 1 Nr. 2 a AO)",
+      "Mehrere Beteiligte, ESt-/KSt-pflichtige Einkünfte? → gesondert und einheitlich (§ 179 Abs. 2 S. 2 AO, § 180 Abs. 1 S. 1 Nr. 2 a AO)",
       "Ausnahmen: nur ein Beteiligter im Inland steuerpflichtig, Fall geringer Bedeutung (§ 180 Abs. 3 AO)",
       "Eine Person, Gewinneinkünfte, Betriebs-/Tätigkeitsfinanzamt ≠ Wohnsitzfinanzamt? → gesondert (§ 180 Abs. 1 S. 1 Nr. 2 b AO)",
       "Zuständig: § 18 Abs. 1 Nr. 1–4 AO",
@@ -285,7 +285,7 @@ export const KOMPAKT_AO = {
       "**Gesetzliche Fristen** (Einspruch, Klage) sind Ausschlussfristen – nur Wiedereinsetzung hilft; **behördliche Fristen** sind verlängerbar, auch rückwirkend (§ 109 Abs. 1 AO). Steuererklärungsfristen sind trotz Gesetz verlängerbar.",
       "**Ereignisfrist (§ 187 Abs. 1 BGB):** Ereignistag zählt nicht mit – Einspruchsfrist, Wiedereinsetzungsfrist, Zahlungsfristen. **Tagesbeginnfrist (§ 187 Abs. 2 BGB):** Anfangstag zählt mit – Lebensalter.",
       "**Wiedereinsetzung (§ 110 AO):** gesetzliche Frist versäumt · ohne Verschulden (einfache Fahrlässigkeit schadet; Vertreterverschulden wird zugerechnet) · Antrag und Nachholung binnen eines Monats nach Wegfall des Hindernisses · Jahresfrist.",
-      "**Kein Verschulden** z. B. bei plötzlicher schwerer Krankheit, Urlaub bis ca. sechs Wochen, verzögertem Postlauf; **Verschulden** bei Arbeitsüberlastung oder Rechtsirrtum.",
+      "**Kein Verschulden** z. B. bei plötzlicher schwerer Krankheit, urlaubsbedingter Abwesenheit von bis zu sechs Wochen, verzögertem Postlauf; **Verschulden** bei Arbeitsüberlastung oder Rechtsirrtum.",
       "**§ 126 Abs. 3 AO:** Fehlen Begründung oder Anhörung und wird deshalb die Einspruchsfrist versäumt, gilt das als unverschuldet.",
     ],
     fallen: [
@@ -297,7 +297,7 @@ export const KOMPAKT_AO = {
 
   "ao-erhebung": {
     satz: "Steueransprüche entstehen kraft Gesetzes, werden nach den Einzelsteuergesetzen fällig – und wer zu spät zahlt, schuldet automatisch Säumniszuschläge (§§ 38, 220, 240 AO).",
-    zahlen: [["1 %", "Säumniszuschlag je angefangenen Monat (§ 240 Abs. 1 AO)"], ["50 €", "Abrundung des Rückstands"], ["3 Tage", "Schonfrist bei Überweisung (§ 240 Abs. 3 AO)"]],
+    zahlen: [["1 %", "Säumniszuschlag je angefangenen Monat (§ 240 Abs. 1 AO)"], ["50 €", "Abrundung des Rückstands (§ 240 Abs. 1 S. 1 AO)"], ["3 Tage", "Schonfrist bei Überweisung (§ 240 Abs. 3 AO)"]],
     punkte: [
       "**Ablauf:** Entstehung → Ermittlung → Festsetzung → Erhebung (Fälligkeit, Zahlung) → ggf. Vollstreckung.",
       "**Entstehung (§ 38 AO):** sobald der Tatbestand verwirklicht ist – die Festsetzung wirkt nur **deklaratorisch**. ESt mit Ablauf des Veranlagungszeitraums (§ 36 Abs. 1 EStG), LSt mit Zufluss des Lohns, USt mit Ablauf des Voranmeldungszeitraums der Leistung.",

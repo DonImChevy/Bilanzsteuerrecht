@@ -1430,6 +1430,84 @@ export const NORMEN_AO = [
 "auszug": true
 },
 {
+"g": "AO",
+"nr": "5",
+"titel": "Ermessen",
+"abs": [
+{
+"abs": "",
+"text": "Ist die Finanzbehörde ermächtigt, nach ihrem Ermessen zu handeln, hat sie ihr Ermessen entsprechend dem Zweck der Ermächtigung auszuüben und die gesetzlichen Grenzen des Ermessens einzuhalten."
+}
+]
+},
+{
+"g": "AO",
+"nr": "6",
+"titel": "Behörden, öffentliche und nicht-öffentliche Stellen, Finanzbehörden",
+"abs": [
+{
+"abs": "1",
+"text": "Behörde ist jede öffentliche Stelle, die Aufgaben der öffentlichen Verwaltung wahrnimmt."
+},
+{
+"abs": "2",
+"text": "Finanzbehörden im Sinne dieses Gesetzes sind die folgenden im Gesetz über die Finanzverwaltung genannten Bundes- und Landesfinanzbehörden:\n1. das Bundesministerium der Finanzen und die für die Finanzverwaltung zuständigen obersten Landesbehörden als oberste Behörden,\n2. das Bundeszentralamt für Steuern, das Informationstechnikzentrum Bund und die Generalzolldirektion als Bundesoberbehörden,\n3. Rechenzentren sowie Landesfinanzbehörden, denen durch eine Rechtsverordnung nach § 17 Absatz 2 Satz 3 Nummer 3 des Finanzverwaltungsgesetzes die landesweite Zuständigkeit für Kassengeschäfte und das Erhebungsverfahren einschließlich der Vollstreckung übertragen worden ist, als Landesoberbehörden,\n4. die Oberfinanzdirektionen als Mittelbehörden,\n4a. die nach dem Finanzverwaltungsgesetz oder nach Landesrecht an Stelle einer Oberfinanzdirektion eingerichteten Landesfinanzbehörden,\n5. die Hauptzollämter einschließlich ihrer Dienststellen, die Zollfahndungsämter, die Finanzämter und die besonderen Landesfinanzbehörden als örtliche Behörden,\n6. Familienkassen,\n7. die zentrale Stelle im Sinne des § 81 des Einkommensteuergesetzes und\n8. die Deutsche Rentenversicherung Knappschaft-Bahn-See (§ 40a Absatz 6 des Einkommensteuergesetzes)."
+}
+],
+"auszug": true
+},
+{
+"g": "AO",
+"nr": "29c",
+"titel": "Verarbeitung personenbezogener Daten durch Finanzbehörden zu anderen Zwecken",
+"abs": [
+{
+"abs": "1",
+"text": "Die Verarbeitung personenbezogener Daten zu einem anderen Zweck als zu demjenigen, zu dem die Daten von einer Finanzbehörde erhoben oder erfasst wurden (Weiterverarbeitung), durch Finanzbehörden im Rahmen ihrer Aufgabenerfüllung ist zulässig, wenn\n1. sie einem Verwaltungsverfahren, einem Rechnungsprüfungsverfahren oder einem gerichtlichen Verfahren in Steuersachen, einem Strafverfahren wegen einer Steuerstraftat oder einem Bußgeldverfahren wegen einer Steuerordnungswidrigkeit dient,\n2. die gesetzlichen Voraussetzungen vorliegen, die nach § 30 Absatz 4 oder 5 eine Offenbarung der Daten zulassen würden, oder zu prüfen ist, ob diese Voraussetzungen vorliegen,\n3. offensichtlich ist, dass die Weiterverarbeitung im Interesse der betroffenen Person liegt und kein Grund zu der Annahme besteht, dass sie in Kenntnis des anderen Zwecks ihre Einwilligung verweigern würde,\n4. sie für die Entwicklung, Überprüfung oder Änderung automatisierter Verfahren der Finanzbehörden erforderlich ist, weil\na) unveränderte Daten benötigt werden oder\nb) eine Anonymisierung oder Pseudonymisierung der Daten nicht oder nur mit unverhältnismäßigem Aufwand möglich ist. Die Nutzung personenbezogener Daten ist dabei insbesondere erforderlich, wenn personenbezogene Daten aus mehreren verschiedenen Dateisystemen eindeutig miteinander verknüpft werden sollen und die Schaffung geeigneter Testfälle nicht oder nur mit unverhältnismäßigem Aufwand möglich ist,\n5. sie für die Gesetzesfolgenabschätzung erforderlich ist, weil\na) unveränderte Daten benötigt werden oder\nb) eine Anonymisierung oder Pseudonymisierung der Daten nicht oder nur mit unverhältnismäßigem Aufwand möglich ist, oder\n6. sie für die Wahrnehmung von Aufsichts-, Steuerungs- und Disziplinarbefugnissen der Finanzbehörde erforderlich ist. Das gilt auch für die Veränderung oder Nutzung personenbezogener Daten zu Ausbildungs- und Prüfungszwecken durch die Finanzbehörde, soweit nicht überwiegende schutzwürdige Interessen der betroffenen Person entgegenstehen. In den Fällen von Satz 1 Nummer 4 dürfen die Daten ausschließlich für Zwecke der Entwicklung, Überprüfung oder Änderung automatisierter Verfahren verarbeitet werden und müssen innerhalb eines Jahres nach Beendigung dieser Maßnahmen gelöscht werden. In den Fällen von Satz 1 Nummer 6 dürfen die Daten nur durch Personen verarbeitet werden, die nach § 30 zur Wahrung des Steuergeheimnisses verpflichtet sind."
+}
+],
+"auszug": true
+},
+{
+"g": "AO",
+"nr": "249",
+"titel": "Vollstreckungsbehörden",
+"abs": [
+{
+"abs": "1",
+"text": "Die Finanzbehörden können Verwaltungsakte, mit denen eine Geldleistung, eine sonstige Handlung, eine Duldung oder Unterlassung gefordert wird, im Verwaltungsweg vollstrecken. Dies gilt auch für Steueranmeldungen (§ 168). Vollstreckungsbehörden sind die Finanzämter und die Hauptzollämter sowie die Landesfinanzbehörden, denen durch eine Rechtsverordnung nach § 17 Absatz 2 Satz 3 Nummer 3 des Finanzverwaltungsgesetzes die landesweite Zuständigkeit für Kassengeschäfte und das Erhebungsverfahren einschließlich der Vollstreckung übertragen worden ist; § 328 Absatz 1 Satz 3 bleibt unberührt."
+}
+],
+"auszug": true
+},
+{
+"g": "AO",
+"nr": "356",
+"titel": "Rechtsbehelfsbelehrung",
+"abs": [
+{
+"abs": "1",
+"text": "Ergeht ein Verwaltungsakt schriftlich oder elektronisch, so beginnt die Frist für die Einlegung des Einspruchs nur, wenn der Beteiligte über den Einspruch und die Finanzbehörde, bei der er einzulegen ist, deren Sitz und die einzuhaltende Frist in der für den Verwaltungsakt verwendeten Form belehrt worden ist."
+},
+{
+"abs": "2",
+"text": "Ist die Belehrung unterblieben oder unrichtig erteilt, so ist die Einlegung des Einspruchs nur binnen eines Jahres seit Bekanntgabe des Verwaltungsakts zulässig, es sei denn, dass die Einlegung vor Ablauf der Jahresfrist infolge höherer Gewalt unmöglich war oder schriftlich oder elektronisch darüber belehrt wurde, dass ein Einspruch nicht gegeben sei. § 110 Absatz 2 gilt für den Fall höherer Gewalt sinngemäß."
+}
+]
+},
+{
+"g": "AO",
+"nr": "393",
+"titel": "Verhältnis des Strafverfahrens zum Besteuerungsverfahren",
+"abs": [
+{
+"abs": "1",
+"text": "Die Rechte und Pflichten der Steuerpflichtigen und der Finanzbehörde im Besteuerungsverfahren und im Strafverfahren richten sich nach den für das jeweilige Verfahren geltenden Vorschriften. Im Besteuerungsverfahren sind jedoch Zwangsmittel (§ 328) gegen den Steuerpflichtigen unzulässig, wenn er dadurch gezwungen würde, sich selbst wegen einer von ihm begangenen Steuerstraftat oder Steuerordnungswidrigkeit zu belasten. Dies gilt stets, soweit gegen ihn wegen einer solchen Tat das Strafverfahren eingeleitet worden ist. Der Steuerpflichtige ist hierüber zu belehren, soweit dazu Anlass besteht."
+}
+],
+"auszug": true
+},
+{
 "g": "BGB",
 "nr": "112",
 "titel": "Selbständiger Betrieb eines Erwerbsgeschäfts",
@@ -1509,6 +1587,18 @@ export const NORMEN_AO = [
 {
 "abs": "1",
 "text": "Mit dem Tode einer Person (Erbfall) geht deren Vermögen (Erbschaft) als Ganzes auf eine oder mehrere andere Personen (Erben) über."
+}
+],
+"auszug": true
+},
+{
+"g": "BGB",
+"nr": "839",
+"titel": "Haftung bei Amtspflichtverletzung",
+"abs": [
+{
+"abs": "1",
+"text": "Verletzt ein Beamter vorsätzlich oder fahrlässig die ihm einem Dritten gegenüber obliegende Amtspflicht, so hat er dem Dritten den daraus entstehenden Schaden zu ersetzen. Fällt dem Beamten nur Fahrlässigkeit zur Last, so kann er nur dann in Anspruch genommen werden, wenn der Verletzte nicht auf andere Weise Ersatz zu erlangen vermag."
 }
 ],
 "auszug": true

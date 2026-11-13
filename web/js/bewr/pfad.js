@@ -39,7 +39,7 @@ export const PFAD_BEWR = [
       { art: "erklaerung", titel: "Stichtagsprinzip", text: "Maßgebend sind die Werte **am Stichtag**. Was danach passiert – Kurssturz, Mieterhöhung, Brand – ändert den Wert nicht." },
     ],
     fragen: [
-      { art: "wahl", frage: "Tod am 14.03., Erbschein am 20.05., Steuererklärung am 01.08. Stichtag?", optionen: ["14.03.", "20.05.", "01.08.", "31.12."], richtig: 0, erkl: "§ 9 Abs. 1 Nr. 1, § 11 ErbStG." },
+      { art: "wahl", frage: "Tod am 14.03., Erbschein am 20.05., Steuererklärung am 01.08. Stichtag?", optionen: ["14.03.", "20.05.", "01.08.", "31.12."], richtig: 0, erkl: "§ 9 Abs. 1 Nr. 1 ErbStG, § 11 ErbStG." },
       { art: "wahl", frage: "Notarvertrag mit Auflassung und Eintragungsbewilligung am 10.04., Eintragung am 20.08. Wann ist die Grundstücksschenkung ausgeführt?", optionen: ["10.04.", "20.08.", "Mit Übergang von Nutzen und Lasten", "31.12."], richtig: 0, erkl: "Ausführung, sobald Auflassung und Eintragungsbewilligung vorliegen (§ 9 Abs. 1 Nr. 2 ErbStG)." },
       { art: "wahl", frage: "Die geerbten Aktien verlieren nach dem Todestag 30 %. Folge?", optionen: ["Keine – Stichtagswert bleibt", "Wert sinkt um 30 %", "Steuer wird erlassen", "Neuer Stichtag"], richtig: 0, erkl: "Stichtagsprinzip, § 11 ErbStG." },
     ],
@@ -47,7 +47,7 @@ export const PFAD_BEWR = [
   {
     id: "bew-p-erwerb", titel: "Vom Nachlass zur Bereicherung", kurz: "§ 10 ErbStG", icon: "🧮", normen: ["ErbStG 10 1", "ErbStG 10 5", "ErbStG 10 6a", "ErbStG 10 8"],
     karten: [
-      { art: "erklaerung", titel: "Das Schema", text: "1. Vermögensanfall nach **Steuerwerten**\n2. − Befreiungen (§§ 13, 13a, 13d)\n3. − Nachlassverbindlichkeiten\n4. = **Bereicherung**\n5. − Freibeträge (§§ 16, 17)\n6. = steuerpflichtiger Erwerb, **abgerundet auf volle 100 €**" },
+      { art: "erklaerung", titel: "Das Schema", text: "1. Vermögensanfall nach **Steuerwerten**\n2. − Befreiungen (§§ 13, 13a, 13d ErbStG)\n3. − Nachlassverbindlichkeiten\n4. = **Bereicherung**\n5. − Freibeträge (§§ 16, 17 ErbStG)\n6. = steuerpflichtiger Erwerb, **abgerundet auf volle 100 €**" },
       { art: "erklaerung", titel: "Was abgezogen wird", text: "• Schulden des Erblassers (§ 10 Abs. 5 Nr. 1 ErbStG)\n• Vermächtnisse, geltend gemachte Pflichtteile (Nr. 2)\n• Bestattung, Grabdenkmal, Grabpflege, Abwicklung (Nr. 3) – **ohne Nachweis 15.000 €**" },
       { art: "erklaerung", titel: "Was nicht abgezogen wird", text: "• Kosten der Nachlass**verwaltung**\n• die **eigene** Erbschaftsteuer (§ 10 Abs. 8 ErbStG)\n• Schulden, **soweit** der zugehörige Gegenstand **steuerbefreit** ist (§ 10 Abs. 6a ErbStG) – z. B. nur 90 % der Schuld bei einem § 13d-Grundstück" },
     ],
@@ -115,7 +115,7 @@ export const PFAD_BEWR = [
     id: "bew-p-betrieb", titel: "Betriebe und Anteile verschonen", kurz: "§§ 13a, 13b ErbStG", icon: "🏭", normen: ["ErbStG 13a 1", "ErbStG 13a 2", "ErbStG 13a 10", "ErbStG 13b 1", "ErbStG 13b 2", "ErbStG 13b 7"],
     karten: [
       { art: "erklaerung", titel: "Was begünstigt sein kann", text: "Ganze Betriebe, Teilbetriebe, Mitunternehmeranteile und **Anteile an Kapitalgesellschaften**, wenn der **Erblasser oder Schenker zu mehr als 25 %** beteiligt war und die Gesellschaft Sitz oder Geschäftsleitung im Inland, der EU oder dem EWR hat (§ 13b Abs. 1 ErbStG)." },
-      { art: "erklaerung", titel: "Verwaltungsvermögen", text: "Vermietete Grundstücke, Wertpapiere, Kunst, Finanzmittel über 15 % usw. sind **Verwaltungsvermögen**. Bis **10 %** (vom um es gekürzten Wert) gilt es als **unschädlich**; der Rest ist **schädlich** und voll steuerpflichtig. Ab **90 %** ist gar nichts begünstigt." },
+      { art: "erklaerung", titel: "Verwaltungsvermögen", text: "**Verwaltungsvermögen** sind Dritten zur Nutzung überlassene Grundstücke, Anteile an Kapitalgesellschaften bis 25 %, Kunstgegenstände, Wertpapiere und Finanzmittel, soweit sie 15 % des Unternehmenswerts übersteigen (§ 13b Abs. 4 Nr. 1–5 ErbStG). Bis **10 %** (vom um es gekürzten Wert) gilt es als **unschädlich**; der Rest ist **schädlich** und voll steuerpflichtig. Ab **90 %** ist gar nichts begünstigt." },
       { art: "merksatz", titel: "85 % oder 100 %", text: "**Regelverschonung:** 85 % frei, vom Rest bleiben bis **150.000 €** frei (Abzugsbetrag, schmilzt um 50 % des Mehrbetrags ab). **Optionsverschonung:** 100 % frei, nur bei Verwaltungsvermögen **≤ 20 %**." },
       { art: "beispiel", titel: "Abzugsbetrag", text: "Rest 270.000 €: 150.000 − 50 % × 120.000 = **90.000 €** frei. Rest 450.000 € oder mehr: kein Abzugsbetrag." },
     ],
@@ -183,8 +183,8 @@ export const PFAD_BEWR = [
     karten: [
       { art: "erklaerung", titel: "Der Rechenweg", text: "1. Bodenwert = Fläche × Richtwert\n2. Rohertrag (Jahreskaltmiete ohne Umlagen)\n3. − Bewirtschaftungskosten (Anlage 23)\n4. = Reinertrag − Bodenwert × Liegenschaftszins\n5. = Gebäudereinertrag × **Vervielfältiger** (Anlage 21)\n6. = Gebäudeertragswert + Bodenwert = **Ertragswert**" },
       { art: "erklaerung", titel: "Bewirtschaftungskosten", text: "Wohnen: Verwaltung **230 €** je Wohnung, Instandhaltung **9 €** je m² – beides mit dem **Verbraucherpreisindex** angepasst –, Mietausfall **2 %**. Gewerbe: Verwaltung **3 %**, Mietausfall **4 %** des Rohertrags, Instandhaltung je m² wie Wohnen." },
-      { art: "merksatz", titel: "Restnutzungsdauer", text: "Gesamtnutzungsdauer (meist **80 Jahre**) − Alter, aber **mindestens 30 %** der Gesamtnutzungsdauer (24 Jahre). Bei Abbruchverpflichtung höchstens bis zum Abbruch (§ 185 Abs. 3 BewG)." },
-      { art: "erklaerung", titel: "Liegenschaftszins und § 198", text: "Ohne Wert vom Gutachterausschuss: Mietwohn **3,5 %**, gemischt bis 50 % gewerblich **4,5 %**, darüber **5,0 %**, Geschäft **6,0 %** (§ 188 BewG). Ein niedrigerer Verkehrswert kann durch **Gutachten** oder **Kaufpreis** (± 1 Jahr) nachgewiesen werden (§ 198 BewG)." },
+      { art: "merksatz", titel: "Restnutzungsdauer", text: "Gesamtnutzungsdauer nach Anlage 22 BewG (Wohngebäude **80 Jahre**) − Alter, aber **mindestens 30 %** der Gesamtnutzungsdauer (24 Jahre). Bei Abbruchverpflichtung höchstens bis zum Abbruch (§ 185 Abs. 3 BewG)." },
+      { art: "erklaerung", titel: "Liegenschaftszins und § 198 BewG", text: "Ohne Wert vom Gutachterausschuss: Mietwohn **3,5 %**, gemischt bis 50 % gewerblich **4,5 %**, darüber **5,0 %**, Geschäft **6,0 %** (§ 188 BewG). Ein niedrigerer Verkehrswert kann durch **Gutachten** oder **Kaufpreis** (± 1 Jahr) nachgewiesen werden (§ 198 BewG)." },
     ],
     fragen: [
       { art: "zahl", frage: "Gebäude bezugsfertig 1955, Stichtag 2026, Gesamtnutzungsdauer 80 Jahre. Restnutzungsdauer in Jahren (Eingabe als Zahl)?", cent: 2400, erkl: "80 − 71 = 9 Jahre, mindestens 30 % von 80 = 24 Jahre (§ 185 Abs. 3 S. 6 BewG)." },

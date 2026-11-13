@@ -459,7 +459,7 @@ test("Lernpfade aller Module: jeder Block in sich vollständig", async () => {
     assert.ok(!ids.has(b.id), "doppelt: " + b.id); ids.add(b.id);
     assert.ok(b.karten.length >= 3 && b.fragen.length >= 3, b.id + ": zu wenig Karten oder Fragen");
     for (const r of b.normen) assert.ok(norm(r), `${b.id}: Norm ${r} fehlt`);
-    for (const k of b.karten) assert.ok(["merksatz", "erklaerung", "beispiel", "klausur"].includes(k.art) && k.titel && k.text, b.id);
+    for (const k of b.karten) assert.ok(["merksatz", "erklaerung", "beispiel", "klausur", "begriffe"].includes(k.art) && k.titel && k.text, b.id);
     for (const q of b.fragen) {
       assert.ok(q.frage && q.erkl, b.id);
       if (q.art === "wahl") {
@@ -1317,4 +1317,35 @@ test("Selbstkontrollbogen: Teilpunkte – Bausteine passen, volle Punktzahl erre
     if (b[4]) ((k.tp[id] ||= {})[j] = b[4].map((_, x) => x)); else ((k.haken[id] ||= {})[j] = true);
   }));
   assert.equal(punkte("pr", k), 70);
+});
+
+test("Begriffsverzeichnis: jede zitierte Fundstelle ist als Gesetzestext vorhanden, Überblicke und Lernpfad zeigen Begriffe", async () => {
+  const B = await import("../js/begriffe.js"), N = await import("../js/oer/normtext.js"), L = await import("../js/lernpfad.js");
+  for (const [fach, liste] of Object.entries(B.BEGRIFFE)) for (const [re, name, def] of liste) {
+    assert.ok(re instanceof RegExp && name && def.length > 30, `${fach}: ${name}`);
+    assert.ok(N.normenAusText(def).length > 0, `${fach}: ${name} ohne Fundstelle, die es in der App gibt`);
+    for (const z of N.zitate(def)) {
+      const x = N.norm([z.g, z.nr, z.abs].filter(Boolean).join(" "));
+      assert.ok(x, `${fach}: ${name} zitiert ${z.g} ${z.nr} ${z.abs || ""} – Text fehlt in der App`);
+      if (z.satz && x.absaetze.length === 1) assert.ok(Number(z.satz) <= N.saetze(x.absaetze[0].text).length, `${fach}: ${name} – Satz ${z.satz} gibt es in ${x.label} nicht`);
+    }
+  }
+  assert.deepEqual(B.begriffeIm("ust", "Der Unternehmer liefert im Inland.").map((b) => b.name), ["Unternehmer", "Inland"]);
+  assert.equal(B.begriffeIm("pr", "Der Unternehmer kauft ein.")[0].text.includes("§ 14 Abs. 1 BGB"), true, "Unternehmer im Privatrecht nach BGB");
+  const block = L.PFADE.ust.bloecke[0];
+  assert.equal(block.karten.at(-1).art, "begriffe");
+});
+
+test("Überblick ist mindestens so vollständig wie der Lernpfad: jeder im Lernpfad zitierte Paragraf steht auch in einem Überblick des Moduls", async () => {
+  const L = await import("../js/lernpfad.js"), K = await import("../js/kompakt.js"), N = await import("../js/oer/normtext.js"), kern = await import("../js/kern.js");
+  const para = (text) => new Set(N.normenAusText(text).map((r) => r.split(" ").slice(0, 2).join(" ")));
+  for (const fach of ["ust", "est", "oer", "bsr", "bbf", "ao", "pr", "bewr"]) {
+    const ids = kern.THEMEN.filter((t) => kern.themaIn(t.id, fach)).map((t) => t.id);
+    const ueberblick = para(ids.map((i) => JSON.stringify(K.KOMPAKT[i] || "")).join(" "));
+    for (const b of L.PFADE[fach].bloecke) {
+      const text = JSON.stringify({ k: b.karten.filter((c) => c.art !== "begriffe"), f: b.fragen });
+      const fehlt = [...para(text)].filter((r) => !ueberblick.has(r));
+      assert.deepEqual(fehlt, [], `${fach}/${b.id}: im Lernpfad zitiert, in keinem Überblick`);
+    }
+  }
 });
