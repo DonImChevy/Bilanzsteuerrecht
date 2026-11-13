@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-garderobe-karte",
+    datum: "2026-11-13",
+    titel: "Garderobe auf der Startseite",
+    klein: true,
+    punkte: [
+      ["muenze", "Große Garderoben-Karte", "Direkt unter dem Tagesziel: Taler, dein Guthaben und der Weg in die Garderobe. Auch ein Tipp auf das Maskottchen oben links öffnet sie.", "garderobe"],
+    ],
+  },
+  {
     id: "2026-11-begriffe",
     datum: "2026-11-13",
     titel: "Überblicke: Begriffe und Fundstellen",
