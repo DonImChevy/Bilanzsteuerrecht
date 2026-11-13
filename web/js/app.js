@@ -956,7 +956,6 @@ function tabStart() {
         <div class="grow"><h2>${titel}</h2><div class="zeile-klein">${text}</div>
           <div class="werte">
             <span class="wert-pille"><span class="${tageSerie ? "flamme-an" : ""}">${ic("flamme")}</span>${tageSerie} ${tageSerie === 1 ? "Tag" : "Tage"} in Folge</span>
-            <button class="wert-pille knopf-pille" data-a="garderobe" aria-label="Garderobe öffnen – ${meineKasse().guthaben} Taler">${talerBetrag(meineKasse().guthaben)} Taler</button>
           </div></div>
       </div>
       ${levelZeile(stat)}
