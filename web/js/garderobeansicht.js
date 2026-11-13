@@ -67,8 +67,18 @@ export function garderobeView(z, { outfit, gekauft, guthaben, level, farbwelt = 
     </section>
     <div class="gar-tabs" role="tablist" data-quer="garTabs">${SLOTS.map((s) => `<button role="tab" aria-selected="${slot === s.id}" class="${slot === s.id ? "aktiv" : ""}" data-a="garSlot" data-v="${s.id}">${ic(s.icon, "klein")}${s.name}</button>`).join("")}</div>
     ${slot === "hintergrund" ? `<div class="gruppe-titel" style="margin:4px 0 8px">Farbwelt der App <span class="sub" style="text-transform:none;letter-spacing:0">kostenlos</span></div>
-      <div class="farbwelten">${FARBWELTEN.map((f) => `<button class="farbwelt-karte${farbwelt === f.id ? " aktiv" : ""}" data-a="farbwelt" data-v="${f.id}" aria-pressed="${farbwelt === f.id}" style="--fw:${f.hell};--fw-d:${f.dunkel}">
+      <div class="farbwelten">${FARBWELTEN.filter((f) => !f.premium).map((f) => `<button class="farbwelt-karte${farbwelt === f.id ? " aktiv" : ""}" data-a="farbwelt" data-v="${f.id}" aria-pressed="${farbwelt === f.id}" style="--fw:${f.hell};--fw-d:${f.dunkel}">
         <span class="fw-muster fw-${f.id}" aria-hidden="true"><i></i><i></i><i></i></span><b>${esc(f.name)}</b><small>${esc(f.text)}</small></button>`).join("")}</div>
+      <div class="gruppe-titel" style="margin:16px 0 8px">Premium-Farbgebungen <span class="sub" style="text-transform:none;letter-spacing:0">mit Glanz und Extras</span></div>
+      <div class="fw-premium">${FARBWELTEN.filter((f) => f.premium).map((f) => {
+        const hat = besitzt(f.premium, gekauft), aktiv = farbwelt === f.id && hat, k = kaufbar(f.premium, { gekauft, guthaben, level });
+        const knopf = aktiv ? `<span class="fwp-aktiv">${ic("haken", "klein")} Aktiv</span>`
+          : hat ? `<button class="knopf klein" data-a="farbwelt" data-v="${f.id}">Verwenden</button>`
+          : k.ok ? `<button class="knopf gold klein" data-a="fwVorschau" data-v="${f.id}">${talerBetrag(f.preis, "im-knopf")} · Vorschau</button>`
+          : `<button class="knopf zweit klein" data-a="fwVorschau" data-v="${f.id}">${talerBetrag(f.preis, "im-knopf")} · Vorschau</button>`;
+        return `<div class="fwp-karte${aktiv ? " aktiv" : ""}"><span class="fwp-muster fwp-${f.id}" aria-hidden="true"></span>
+          <div class="fwp-text"><b>${esc(f.name)}</b><span>${esc(f.text)}</span>${knopf}</div></div>`; }).join("")}</div>
+      <div class="gruppe-fuss" style="margin:6px 4px 0">Vorschau: Farbgebung antippen und 30 Sekunden live in der ganzen App testen. Premium-Farbgebungen haben eine feste Helligkeit.</div>
       <div class="gruppe-titel" style="margin:16px 0 8px">Hintergründe</div>` : ""}
     <div class="gar-raster">${karten}</div>
     <div class="gruppe-fuss" style="margin:12px 4px 20px">Für je 10 XP bekommst du einen Taler – alle bisherigen XP zählen mit. ${anzahl} von ${kaufbarGesamt} Artikeln im Schrank. Gekauftes bleibt für immer und wird mit dem Sync-Code auf alle Geräte übertragen.</div>

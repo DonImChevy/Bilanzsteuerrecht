@@ -1,6 +1,6 @@
 // Service Worker: speichert die komplette App für die Offline-Nutzung.
 // Bei jeder inhaltlichen Änderung VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = "bsr-v134";
+const VERSION = "bsr-v135";
 const DATEIEN = [
   "./",
   "./index.html",
@@ -39,7 +39,7 @@ const DATEIEN = [
   "./js/suche.js",
   "./js/schaubilder.js",
   "./js/satz.js",
-  "./fonts/inter-latin-var.woff2", "./fonts/bodoni-moda-latin-var.woff2", "./fonts/bodoni-moda-latin-var-italic.woff2", "./css/edition.css",
+  "./fonts/inter-latin-var.woff2", "./fonts/bodoni-moda-latin-var.woff2", "./fonts/bodoni-moda-latin-var-italic.woff2", "./css/edition.css", "./css/premium.css",
   "./js/schaubilder_daten.js",
   "./js/hoeraudio.js",
   "./js/maskottchen.js",

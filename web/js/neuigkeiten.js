@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-premium-farben",
+    datum: "2026-11-13",
+    titel: "Premium-Farbgebungen",
+    punkte: [
+      ["sterne", "Feingold, Roségold, Opalnacht", "Drei Farbgebungen für je 250 Taler: gebürstetes Gold mit Silber (der Glanz folgt der Handy-Neigung), helles Rosé-Metallic und ein nachtblauer Opal, dessen Farbe langsam wandert. Sie färben Tagesziel, Modulbänder und alle Flächen.", "garderobe", "hintergrund"],
+      ["auge", "30 Sekunden Vorschau", "Antippen und die ganze App live testen – erst danach kaufen. Die Farbgebungen haben eine feste Helligkeit (Feingold und Opalnacht dunkel, Roségold hell).", "garderobe", "hintergrund"],
+    ],
+  },
+  {
     id: "2026-11-garderobe-karte",
     datum: "2026-11-13",
     titel: "Garderobe auf der Startseite",

@@ -1,0 +1,101 @@
+/* Premium-Farbgebungen (250 Taler): Feingold, Roségold, Opalnacht – laden nach edition.css.
+   Jede hat eine feste Helligkeit (JS setzt data-theme), eigene Flächen und eine Metallic-/Opal-Fläche für Tagesziel und Modulbänder.
+   Bewegung (Opal-Wandern, Neigungsglanz) nur bei data-bewegung="an" und data-leistung="voll". */
+
+/* ---------- Auswahl in der Garderobe ---------- */
+.fw-premium { display: grid; gap: 10px; }
+.fwp-karte { display: flex; gap: 14px; align-items: stretch; padding: 12px; border-radius: var(--r-karte, 14px); background: var(--glas); border: 1px solid var(--glas-rand); box-shadow: var(--schatten); }
+.fwp-karte.aktiv { border-color: var(--gold-ton); box-shadow: 0 0 0 2px var(--gold-hauch), var(--schatten); }
+.fwp-muster { flex: none; width: 62px; min-height: 92px; border-radius: 10px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18), 0 6px 14px -8px rgba(0, 0, 0, 0.5); }
+.fwp-feingold { background: linear-gradient(180deg, #f3df9a 0%, #c9a24a 38%, #8f6d22 52%, #d8d9dc 53%, #a9adb4 100%), repeating-linear-gradient(90deg, rgba(255,255,255,.14) 0 1px, transparent 1px 3px); background-blend-mode: normal, soft-light; }
+.fwp-rosegold { background: linear-gradient(180deg, #f1c9c2 0%, #cf9088 46%, #f7ebe6 47%, #f7ebe6 100%); }
+.fwp-opalnacht { background: radial-gradient(90% 60% at 20% 15%, rgba(140, 255, 220, .45), transparent 60%), radial-gradient(80% 60% at 85% 85%, rgba(190, 140, 255, .55), transparent 60%), #0b1230; box-shadow: inset 0 0 0 1.5px rgba(160, 175, 255, 0.7), 0 6px 14px -8px rgba(0, 0, 0, .6); }
+.fwp-text { display: grid; gap: 5px; align-content: start; min-width: 0; flex: 1; }
+.fwp-text b { font-family: var(--serif); font-size: 19px; font-weight: 680; letter-spacing: -0.1px; }
+.fwp-text > span { font-size: 12.5px; color: var(--text2); line-height: 1.35; }
+.fwp-text .knopf { justify-self: start; margin-top: 4px; }
+.knopf.klein { padding: 9px 14px; font-size: 14px; border-radius: 999px; }
+.fwp-aktiv { display: inline-flex; align-items: center; gap: 5px; margin-top: 4px; font-weight: 700; font-size: 13.5px; color: var(--gold-ton); }
+
+/* ---------- Feingold: Schwarz mit gebürstetem Gold und Silber ---------- */
+:root[data-farbwelt="feingold"] {
+  --bg: #0e0c09; --card: #19160f; --card2: rgba(240, 214, 140, 0.07); --text: #f6eed9; --text2: #c4b794; --text3: #a3977c; --line: rgba(240, 214, 140, 0.15);
+  --glas: #19160f; --glas-stark: #211d13; --glas-rand: rgba(240, 214, 140, 0.18); --glas-linie: rgba(240, 214, 140, 0.09);
+  --schatten: 0 1px 0 rgba(255, 240, 200, 0.06) inset, 0 16px 30px -20px rgba(0, 0, 0, 0.9);
+  --gold-ton: #e4c46f; --gold-linie: rgba(228, 196, 111, 0.45); --gold-hauch: rgba(228, 196, 111, 0.12);
+  --folie: linear-gradient(105deg, #a8853f 0%, #f4e2a2 26%, #c9a24a 50%, #fbefc0 74%, #9c7a35 100%);
+  --leinen: #caa24a; --leinen-tief: #8f6d22;
+  --metall: linear-gradient(112deg, #8b6a22 0%, #d9b45a 16%, #f6e6a6 30%, #c49a3c 46%, #f1dc92 62%, #b08a30 80%, #e3c46d 100%);
+  --fw-text-auf-metall: #1d1507;
+}
+:root[data-farbwelt="feingold"] :is(.hero, .modul-banner) {
+  --blattgold: #3a2a08; --elfenbein: #1d1507; color: #1d1507;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0 1px, rgba(0, 0, 0, 0.05) 1px 3px), radial-gradient(60% 120% at var(--glanz-x, 30%) -10%, rgba(255, 255, 255, 0.55), transparent 60%), var(--metall);
+  outline-color: rgba(60, 40, 8, 0.55); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), 0 24px 40px -26px rgba(0, 0, 0, 0.9);
+}
+:root[data-farbwelt="feingold"] .hero .ziel-ring { background: conic-gradient(#2a1d05 calc(var(--p) * 1%), rgba(40, 28, 6, 0.28) 0); }
+:root[data-farbwelt="feingold"] .hero .ziel-ring > div { background: #f1dc92; color: #2a1d05; }
+:root[data-farbwelt="feingold"] .hero .ziel-ring small { color: #2a1d05; }
+:root[data-farbwelt="feingold"] .hero :is(.wert-pille, .lv-zeile), :root[data-farbwelt="feingold"] .modul-banner :is(.zahlen > div, .m-icon, .wechsel) { background: rgba(40, 28, 6, 0.14); box-shadow: inset 0 0 0 1px rgba(40, 28, 6, 0.35); color: #1d1507; }
+:root[data-farbwelt="feingold"] .hero .knopf { background: linear-gradient(180deg, #2b2008, #15100a); color: #f2dd96; box-shadow: inset 0 1px 0 rgba(255, 230, 150, 0.3), 0 12px 22px -12px rgba(0, 0, 0, 0.8); }
+:root[data-farbwelt="feingold"] .hero .lv-balken > span, :root[data-farbwelt="feingold"] .hero .lv-zeile .lv-balken span { background: #2a1d05; }
+:root[data-farbwelt="feingold"] .hero .lv-unten, :root[data-farbwelt="feingold"] .hero .lv-oben span { color: #3a2a08; }
+:root[data-farbwelt="feingold"] .knopf.gold { background: linear-gradient(180deg, #f4e2a2, #c9a24a); color: #1d1507; }
+
+/* ---------- Roségold: helles Rosé-Metallic, Perlen, Kupfer ---------- */
+:root[data-farbwelt="rosegold"] {
+  --bg: #f8ede9; --card: #fffaf8; --card2: #f6e4df; --text: #3b2024; --text2: #8a6068; --text3: #92676f; --line: #ecd3cd;
+  --glas: #fffaf8; --glas-stark: #fffdfc; --glas-rand: rgba(255, 255, 255, 0.95); --glas-linie: rgba(150, 70, 80, 0.09);
+  --schatten: 0 1px 1px rgba(110, 40, 50, 0.04), 0 10px 26px -10px rgba(183, 110, 121, 0.35);
+  --gold-ton: #a8565f; --gold-linie: rgba(168, 86, 95, 0.4); --gold-hauch: rgba(168, 86, 95, 0.1);
+  --folie: linear-gradient(105deg, #b9707a 0%, #f2cfc8 30%, #c98a8c 55%, #f6dcd5 78%, #b06670 100%);
+  --leinen: #c98d8a; --leinen-tief: #a96a6d;
+  --metall: linear-gradient(112deg, #b8737c 0%, #e9b6ae 18%, #f9e3dc 34%, #d39a96 52%, #f0c6bf 70%, #c07f84 100%);
+}
+:root[data-farbwelt="rosegold"] :is(.hero, .modul-banner) {
+  --blattgold: #4a2328; --elfenbein: #3b1a1f; color: #3b1a1f;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.12) 0 1px, transparent 1px 3px), radial-gradient(70% 120% at 25% -10%, rgba(255, 255, 255, 0.6), transparent 60%), var(--metall);
+  outline-color: rgba(90, 40, 48, 0.4); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 22px 36px -24px rgba(150, 70, 80, 0.7);
+}
+:root[data-farbwelt="rosegold"] .hero .ziel-ring { background: conic-gradient(#4a2328 calc(var(--p) * 1%), rgba(74, 35, 40, 0.2) 0); }
+:root[data-farbwelt="rosegold"] .hero .ziel-ring > div { background: #fbeae5; color: #4a2328; }
+:root[data-farbwelt="rosegold"] .hero .ziel-ring small { color: #4a2328; }
+:root[data-farbwelt="rosegold"] .hero :is(.wert-pille, .lv-zeile), :root[data-farbwelt="rosegold"] .modul-banner :is(.zahlen > div, .m-icon, .wechsel) { background: rgba(255, 255, 255, 0.3); box-shadow: inset 0 0 0 1px rgba(90, 40, 48, 0.28); color: #3b1a1f; }
+:root[data-farbwelt="rosegold"] .hero .knopf { background: linear-gradient(180deg, #5a2a31, #3b1a1f); color: #fbe3dc; box-shadow: inset 0 1px 0 rgba(255, 220, 210, 0.3), 0 12px 22px -12px rgba(60, 20, 28, 0.6); }
+:root[data-farbwelt="rosegold"] .hero .lv-balken span { background: #4a2328; }
+:root[data-farbwelt="rosegold"] .hero .lv-unten, :root[data-farbwelt="rosegold"] .hero .lv-oben span { color: #5a2d33; }
+:root[data-farbwelt="rosegold"] .knopf.gold { background: linear-gradient(180deg, #f2cfc8, #c98a8c); color: #3b1a1f; }
+
+/* ---------- Opalnacht: Nachtblau mit wanderndem Opalschimmer ---------- */
+:root[data-farbwelt="opalnacht"] {
+  --bg: #090e1f; --card: #111832; --card2: rgba(160, 175, 255, 0.08); --text: #e9edff; --text2: #a6b0dc; --text3: #8d98c6; --line: rgba(160, 175, 255, 0.16);
+  --glas: #111832; --glas-stark: #172042; --glas-rand: rgba(160, 175, 255, 0.22); --glas-linie: rgba(160, 175, 255, 0.1);
+  --schatten: 0 1px 0 rgba(200, 210, 255, 0.07) inset, 0 16px 30px -18px rgba(0, 0, 0, 0.9);
+  --gold-ton: #a9b6ff; --gold-linie: rgba(169, 182, 255, 0.45); --gold-hauch: rgba(169, 182, 255, 0.12);
+  --folie: linear-gradient(105deg, #7ee3c8 0%, #a9b6ff 40%, #e5a8f2 75%, #8fe9d4 100%);
+  --leinen: #141c3d; --leinen-tief: #0b1129;
+  --opal: linear-gradient(120deg, #86f0cf, #9cb0ff 35%, #d9a6ff 62%, #ffb6d8 82%, #86f0cf);
+}
+:root[data-farbwelt="opalnacht"] :is(.hero, .modul-banner) {
+  --blattgold: #bfc9ff; --elfenbein: #eef1ff; color: #eef1ff;
+  background: radial-gradient(70% 90% at 12% 0%, rgba(126, 227, 200, 0.28), transparent 60%), radial-gradient(70% 90% at 95% 100%, rgba(200, 140, 255, 0.3), transparent 60%), linear-gradient(160deg, #18214a, #0b1129);
+  outline: 0; box-shadow: inset 0 0 0 1.5px rgba(160, 175, 255, 0.65), 0 0 28px -8px rgba(140, 150, 255, 0.55);
+}
+:root[data-farbwelt="opalnacht"] .hero .ziel-ring { background: conic-gradient(#86f0cf calc(var(--p) * 1%), rgba(160, 175, 255, 0.22) 0); }
+:root[data-farbwelt="opalnacht"] .hero .ziel-ring > div { background: #0d1431; color: #cfd7ff; }
+:root[data-farbwelt="opalnacht"] .hero .knopf { background: var(--opal); color: #0b1129; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 12px 24px -12px rgba(140, 150, 255, 0.7); }
+:root[data-farbwelt="opalnacht"] .hero .lv-balken span { background: var(--opal); }
+:root[data-farbwelt="opalnacht"] .knopf.gold { background: var(--opal); color: #0b1129; }
+:root[data-farbwelt="opalnacht"][data-bewegung="an"][data-leistung="voll"] :is(.hero, .modul-banner) { background-size: 100% 100%, 100% 100%, 100% 100%; animation: opalWandern 26s ease-in-out infinite alternate; }
+@keyframes opalWandern { to { background-position: 40% 20%, 60% 80%, 0 0; filter: hue-rotate(28deg); } }
+:root[data-farbwelt="opalnacht"][data-bewegung="an"][data-leistung="voll"] .garderobe-karte .gk-betrag { background: var(--opal); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: opalText 9s linear infinite; }
+@keyframes opalText { to { background-position: 200% 0; } }
+
+/* Garderoben-Karte in den Premium-Welten */
+:root[data-farbwelt="feingold"] .garderobe-karte, :root[data-farbwelt="rosegold"] .garderobe-karte { box-shadow: inset 0 0 0 1.5px var(--gold-linie); }
+:root[data-farbwelt="opalnacht"] .garderobe-karte { box-shadow: inset 0 0 0 1.5px rgba(160, 175, 255, 0.5), 0 0 22px -10px rgba(140, 150, 255, 0.6); }
+
+/* Fortschrittsbalken im Tagesziel auf den hellen Metallflächen sichtbar halten */
+:root[data-farbwelt="feingold"] .hero .lv-balken { background: rgba(40, 28, 6, 0.28); }
+:root[data-farbwelt="rosegold"] .hero .lv-balken { background: rgba(74, 35, 40, 0.22); }
+.hvl-text small { white-space: nowrap; }

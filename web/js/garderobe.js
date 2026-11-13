@@ -23,6 +23,10 @@ export const FARBWELTEN = [
   { id: "standard", name: "Indigo", text: "Standard", hell: "#4f46e5", dunkel: "#8b8cf8" },
   { id: "rosa", name: "Rosa", text: "Helles Rosa", hell: "#e0609a", dunkel: "#f9a8d4" },
   { id: "salbei", name: "Salbei", text: "Gedecktes Grün", hell: "#3f8f6f", dunkel: "#7fd1a8" },
+  // Premium-Farbgebungen (250 Taler, Vorschau 30 s): feste Helligkeit, eigene Metallic- bzw. Opal-Flächen (css/premium.css)
+  { id: "feingold", name: "Feingold", text: "Gold und Silber, gebürstet. Der Glanz folgt der Handy-Neigung.", hell: "#d3ab4f", dunkel: "#e6c46d", premium: "fw-feingold", modus: "dark", preis: 250 },
+  { id: "rosegold", name: "Roségold", text: "Helles Rosé-Metallic mit Perlen und Kupfer statt Alarmrot.", hell: "#b9707a", dunkel: "#d99aa2", premium: "fw-rosegold", modus: "light", preis: 250 },
+  { id: "opalnacht", name: "Opalnacht", text: "Nachtblau mit schillerndem Opal. Die Farbe wandert langsam.", hell: "#8f9bff", dunkel: "#a9b4ff", premium: "fw-opalnacht", modus: "dark", preis: 250 },
 ];
 
 // Standard (kostenlos, immer im Besitz): Brille „Lernbrille“, Metall „Gold“, Hintergrund „Leuchten“
@@ -135,6 +139,10 @@ const K = [
   ["galaxie", "hintergrund", "Galaxie", 800, 0, "Farbiger Nebel mit Sternen"],
   ["schatzkammer", "hintergrund", "Goldmünzen", 900, 15, "Ab Level 15 – verstreute Goldmünzen"],
   ["eigenesbild", "hintergrund", "Eigenes Bild", 1000, 0, "Ein Foto aus deiner Galerie (nur auf diesem Gerät)"],
+  // Premium-Farbgebungen der App (siehe FARBWELTEN) – gehören zum Reiter „Hintergrund & Farben“, haben keinen eigenen Reiter
+  ["fw-feingold", "farbwelt", "Feingold", 250, 0, "Gold und Silber, gebürstet"],
+  ["fw-rosegold", "farbwelt", "Roségold", 250, 0, "Rosé-Metallic mit Perlen"],
+  ["fw-opalnacht", "farbwelt", "Opalnacht", 250, 0, "Nachtblau mit Opalschimmer"],
 ];
 /** Sets: enthalten mehrere Artikel und kosten weniger als die Einzelteile. */
 const PAKETE = { glamour: ["makeup", "wimpern"] };

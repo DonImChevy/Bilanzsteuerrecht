@@ -845,7 +845,16 @@ test("Garderobe: jeder Hintergrund hat ein Muster in style.css, alle außer dem 
   }
   assert.equal(G.artikel("eigenesbild").preis, 1000);
   assert.ok(G.FARBWELTEN.some((f) => f.id === "rosa"));
-  for (const f of G.FARBWELTEN) if (f.id !== "standard") assert.ok(css.includes(`[data-farbwelt="${f.id}"]`), f.id);
+  const prem = fs.readFileSync(new URL("../css/premium.css", import.meta.url), "utf8");
+  for (const f of G.FARBWELTEN) if (f.id !== "standard") assert.ok((f.premium ? prem : css).includes(`[data-farbwelt="${f.id}"]`), f.id);
+  // Premium-Farbgebungen: je ein Artikel zu 250 Taler, feste Helligkeit, Muster in der Garderobe
+  for (const f of G.FARBWELTEN.filter((x) => x.premium)) {
+    assert.equal(G.artikel(f.premium).preis, 250, f.id);
+    assert.ok(f.modus === "light" || f.modus === "dark", f.id);
+    assert.ok(prem.includes(`.fwp-${f.id}`), `Muster fehlt: ${f.id}`);
+    assert.equal(G.besitzt(f.premium, {}), false);
+    assert.equal(G.besitzt(f.premium, { [f.premium]: 1 }), true);
+  }
   // Gekauftes außerhalb des Besitzes fällt auf den Standard zurück
   assert.equal(G.outfitVon({ hintergrund: "neon" }, {}).hintergrund, "leuchten");
   assert.equal(G.outfitVon({ hintergrund: "neon" }, { neon: 1 }).hintergrund, "neon");
