@@ -182,6 +182,8 @@ export function outfitVon(outfit, gekauft) {
 
 const U = 'class="t-umriss"';
 const sw = (w) => `stroke-width="${w}"`;
+/** Linearer Verlauf mit gleichmäßig verteilten Farben (id + Kürzel = Name). */
+const vl = (id, k, farben, { x1 = 0, y1 = 0, x2 = 1, y2 = 0 } = {}) => `<linearGradient id="${id}${k}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}">${farben.map((f, i) => `<stop offset="${(i / (farben.length - 1)).toFixed(2)}" stop-color="${f}"/>`).join("")}</linearGradient>`;
 
 /** Münzmetalle: überschreiben die Taler-Farben. */
 export const METALL = {
@@ -340,64 +342,65 @@ const EDEL_KOERPER = {
 
 /** Kopfbedeckungen (über dem Gesicht gezeichnet). */
 const KOPF = {
-  schirmmuetze: `<path d="M37 30 Q36 9 60 8 Q84 9 83 30Z" fill="#e11d48" ${U} ${sw(2.4)}/>
+  schirmmuetze: `<defs>${vl("gk", "sm", ["#fb7185", "#e11d48", "#9f1239"], { x2: 1, y2: 1 })}${vl("gk", "sb", ["#e11d48", "#881337"], { x2: 0, y2: 1 })}</defs><path d="M37 30 Q36 9 60 8 Q84 9 83 30Z" fill="url(#gksm)" ${U} ${sw(2.4)}/>
     <path d="M60 8 V29 M47 11 Q45 20 46 29 M73 11 Q75 20 74 29" stroke="#9f1239" stroke-width="1.4" fill="none"/>
     <path d="M41 14 Q48 10 56 10" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.45"/>
     <circle cx="60" cy="8.5" r="2.6" fill="#be123c" ${U} ${sw(1.6)}/>
-    <path d="M34 29 Q60 24 86 29 Q90 33 84 35 Q60 31 36 35 Q30 33 34 29Z" fill="#be123c" ${U} ${sw(2.4)}/>`,
-  partyhut: `<path d="M45 29 L60 -6 L75 29Z" fill="#fbbf24" ${U} ${sw(2.4)} stroke-linejoin="round"/>
+    <path d="M34 29 Q60 24 86 29 Q90 33 84 35 Q60 31 36 35 Q30 33 34 29Z" fill="url(#gksb)" ${U} ${sw(2.4)}/>
+    <path d="M38 29.6 Q60 25.6 82 29.6" stroke="#fff" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.4"/>`,
+  partyhut: `<defs>${vl("gk", "ph", ["#fde68a", "#fbbf24", "#d97706"])}</defs><path d="M45 29 L60 -6 L75 29Z" fill="url(#gkph)" ${U} ${sw(2.4)} stroke-linejoin="round"/>
     <clipPath id="ph"><path d="M45 29 L60 -6 L75 29Z"/></clipPath>
     <g clip-path="url(#ph)" stroke-width="5"><path d="M40 22 L80 10 M40 8 L80 -4 M40 36 L80 24" stroke="#ec4899"/></g>
-    <circle cx="51" cy="18" r="1.6" fill="#fff"/><circle cx="66" cy="9" r="1.4" fill="#fff"/><circle cx="63" cy="22" r="1.5" fill="#22d3ee"/>
+    <path d="M66 8 L75 29 L64 29Z" fill="#7c2d12" opacity="0.22" clip-path="url(#ph)"/><path d="M52 24 L59 3" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity="0.4"/><circle cx="51" cy="18" r="1.6" fill="#fff"/><circle cx="66" cy="9" r="1.4" fill="#fff"/><circle cx="63" cy="22" r="1.5" fill="#22d3ee"/>
     <circle cx="60" cy="-7" r="5" fill="#22d3ee" ${U} ${sw(2.2)}/><path d="M57 -9 Q59 -11 61 -10.5" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/>
     <path d="M44 29 Q60 33 76 29" stroke="#ec4899" stroke-width="3.2" fill="none" stroke-linecap="round"/>`,
-  bommelmuetze: `<path d="M36 30 Q35 6 60 5 Q85 6 84 30Z" fill="#2563eb" ${U} ${sw(2.4)}/>
+  bommelmuetze: `<defs>${vl("gk", "bm", ["#60a5fa", "#2563eb", "#1e3a8a"], { x2: 1, y2: 1 })}${vl("gk", "bc", ["#3b82f6", "#1e40af"], { x2: 0, y2: 1 })}${vl("gk", "bp", ["#ffffff", "#cbd5e1"], { x2: 1, y2: 1 })}</defs><path d="M36 30 Q35 6 60 5 Q85 6 84 30Z" fill="url(#gkbm)" ${U} ${sw(2.4)}/>
     <path d="M44 9 Q47 18 46 28 M60 5 V28 M76 9 Q73 18 74 28" stroke="#1e40af" stroke-width="1.5" fill="none"/>
     <path d="M42 13 Q48 8 55 7.5" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.4"/>
-    <rect x="33" y="24" width="54" height="10" rx="5" fill="#1d4ed8" ${U} ${sw(2.4)}/>
+    <rect x="33" y="24" width="54" height="10" rx="5" fill="url(#gkbc)" ${U} ${sw(2.4)}/>
     <path d="M39 25.5 v7 M45 25.5 v7 M51 25.5 v7 M57 25.5 v7 M63 25.5 v7 M69 25.5 v7 M75 25.5 v7 M81 25.5 v7" stroke="#1e3a8a" stroke-width="1.3"/>
-    <circle cx="60" cy="2" r="7" fill="#f8fafc" ${U} ${sw(2.2)}/><path d="M56 -1 l2 2 M62 -2 l1 2.4 M58 4 l2 1 M64 3 l-1 2" stroke="#cbd5e1" stroke-width="1.4" stroke-linecap="round"/>`,
+    <circle cx="60" cy="2" r="7" fill="url(#gkbp)" ${U} ${sw(2.2)}/><path d="M56 -1 l2 2 M62 -2 l1 2.4 M58 4 l2 1 M64 3 l-1 2" stroke="#cbd5e1" stroke-width="1.4" stroke-linecap="round"/>`,
   augenschirm: `<path d="M33 31 Q60 18 87 31" stroke="#1f2937" stroke-width="3.4" fill="none" stroke-linecap="round"/>
     <path d="M32 31 Q60 17 88 31 L83 40 Q60 30 37 40Z" fill="#16a34a" fill-opacity="0.78" ${U} ${sw(2.3)} stroke-linejoin="round"/>
     <path d="M38 33 Q60 24 82 33" stroke="#bbf7d0" stroke-width="1.6" fill="none" opacity="0.7"/>
     <path d="M37 40 Q60 30 83 40" stroke="#14532d" stroke-width="1.4" fill="none"/>`,
-  doktorhut: `<path d="M44 21 L44 30 Q60 35 76 30 L76 21Z" fill="#26283a" ${U} ${sw(2.4)}/>
-    <path d="M28 18 L60 6 L92 18 L60 30Z" fill="#33364c" ${U} ${sw(2.4)} stroke-linejoin="round"/>
+  doktorhut: `<defs>${vl("gk", "dh", ["#565a7c", "#33364c", "#1c1d2b"], { x2: 1, y2: 1 })}${vl("gk", "dg", ["#a16207", "#fde68a", "#ca8a04"])}</defs><path d="M44 21 L44 30 Q60 35 76 30 L76 21Z" fill="#1c1d2b" ${U} ${sw(2.4)}/>
+    <path d="M28 18 L60 6 L92 18 L60 30Z" fill="url(#gkdh)" ${U} ${sw(2.4)} stroke-linejoin="round"/>
     <path d="M36 18 L60 9 L70 13" stroke="#5b5f7a" stroke-width="1.6" fill="none"/>
     <path d="M60 18 Q76 16 86 19 L87 31" stroke="#f6c945" stroke-width="1.8" fill="none" stroke-linecap="round"/>
     <circle cx="60" cy="18" r="2.4" fill="#f6c945" ${U} ${sw(1.2)}/>
-    <path d="M84.5 30 h5 l1 9 h-7Z" fill="#f6c945" ${U} ${sw(1.4)}/><path d="M85.5 33 v5.5 M87 33 v5.5 M88.5 33 v5.5" stroke="#b7791f" stroke-width="0.8"/>`,
-  kopfhoerer: `<path d="M24 60 Q21 13 60 12 Q99 13 96 60" stroke="#1f2937" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+    <path d="M84.5 30 h5 l1 9 h-7Z" fill="url(#gkdg)" ${U} ${sw(1.4)}/><path d="M85.5 33 v5.5 M87 33 v5.5 M88.5 33 v5.5" stroke="#b7791f" stroke-width="0.8"/>`,
+  kopfhoerer: `<defs>${vl("gk", "kh", ["#c4b5fd", "#8b5cf6", "#5b21b6"], { x2: 1, y2: 1 })}</defs><path d="M24 60 Q21 13 60 12 Q99 13 96 60" stroke="#1f2937" stroke-width="5.5" fill="none" stroke-linecap="round"/>
     <path d="M24 60 Q21 13 60 12 Q99 13 96 60" stroke="#475569" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-    <rect x="13" y="49" width="13" height="22" rx="6.5" fill="#8b5cf6" ${U} ${sw(2.4)}/><rect x="94" y="49" width="13" height="22" rx="6.5" fill="#8b5cf6" ${U} ${sw(2.4)}/>
+    <rect x="13" y="49" width="13" height="22" rx="6.5" fill="url(#gkkh)" ${U} ${sw(2.4)}/><rect x="94" y="49" width="13" height="22" rx="6.5" fill="url(#gkkh)" ${U} ${sw(2.4)}/>
     <rect x="16" y="53" width="3" height="10" rx="1.5" fill="#c4b5fd"/><rect x="101" y="53" width="3" height="10" rx="1.5" fill="#c4b5fd"/>`,
-  zylinder: `<path d="M44 26 L46 -4 Q60 -8 74 -4 L76 26Z" fill="#1f2030" ${U} ${sw(2.4)} stroke-linejoin="round"/>
-    <path d="M45 17 Q60 20 75 17 L75.6 24 Q60 27 44.4 24Z" fill="#b91c1c"/>
+  zylinder: `<defs>${vl("gk", "zy", ["#12131d", "#474a66", "#1f2030", "#0c0d14"])}${vl("gk", "zb", ["#7f1d1d", "#ef4444", "#991b1b"])}</defs><path d="M44 26 L46 -4 Q60 -8 74 -4 L76 26Z" fill="url(#gkzy)" ${U} ${sw(2.4)} stroke-linejoin="round"/>
+    <path d="M45 17 Q60 20 75 17 L75.6 24 Q60 27 44.4 24Z" fill="url(#gkzb)"/>
     <path d="M50 -2 L49 15" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity="0.18"/>
     <ellipse cx="60" cy="-4.5" rx="14" ry="3" fill="#2d2f44" ${U} ${sw(1.8)}/>
-    <path d="M30 27 Q60 21 90 27 Q93 31 88 32 Q60 27 32 32 Q27 31 30 27Z" fill="#1f2030" ${U} ${sw(2.4)}/>`,
-  wikingerhelm: `<path d="M38 31 Q38 9 60 8 Q82 9 82 31Z" fill="#9ca3af" ${U} ${sw(2.4)}/>
+    <path d="M30 27 Q60 21 90 27 Q93 31 88 32 Q60 27 32 32 Q27 31 30 27Z" fill="url(#gkzy)" ${U} ${sw(2.4)}/>`,
+  wikingerhelm: `<defs>${vl("gk", "wh", ["#f3f4f6", "#9ca3af", "#4b5563"], { x2: 1, y2: 1 })}${vl("gk", "wb", ["#ca8a04", "#713f12"], { x2: 0, y2: 1 })}${vl("gk", "wo", ["#fffbeb", "#e7cf9a"], { x2: 0, y2: 1 })}</defs><path d="M38 31 Q38 9 60 8 Q82 9 82 31Z" fill="url(#gkwh)" ${U} ${sw(2.4)}/>
     <path d="M60 8 V31" stroke="#6b7280" stroke-width="4"/><path d="M45 13 Q50 10 55 10" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
-    <rect x="35" y="26" width="50" height="7" rx="3" fill="#a16207" ${U} ${sw(2.2)}/>
+    <rect x="35" y="26" width="50" height="7" rx="3" fill="url(#gkwb)" ${U} ${sw(2.2)}/>
     <circle cx="44" cy="29.5" r="1.3" fill="#fde68a"/><circle cx="60" cy="29.5" r="1.3" fill="#fde68a"/><circle cx="76" cy="29.5" r="1.3" fill="#fde68a"/>
-    <path d="M39 22 Q26 20 22 4 Q31 12 41 15Z" fill="#fef3c7" ${U} ${sw(2.2)} stroke-linejoin="round"/>
-    <path d="M81 22 Q94 20 98 4 Q89 12 79 15Z" fill="#fef3c7" ${U} ${sw(2.2)} stroke-linejoin="round"/>
+    <path d="M39 22 Q26 20 22 4 Q31 12 41 15Z" fill="url(#gkwo)" ${U} ${sw(2.2)} stroke-linejoin="round"/>
+    <path d="M81 22 Q94 20 98 4 Q89 12 79 15Z" fill="url(#gkwo)" ${U} ${sw(2.2)} stroke-linejoin="round"/>
     <path d="M28 12 l3 3 M25 7 l3 2 M92 12 l-3 3 M95 7 l-3 2" stroke="#d6b97a" stroke-width="1.3" stroke-linecap="round"/>`,
-  zauberhut: `<path d="M38 28 Q52 20 56 4 Q60 -10 74 -12 Q66 -4 68 8 Q72 20 82 28Z" fill="#6d28d9" ${U} ${sw(2.4)} stroke-linejoin="round"/>
+  zauberhut: `<defs>${vl("gk", "zh", ["#a78bfa", "#6d28d9", "#3b0f8a"])}${vl("gk", "zk", ["#7c3aed", "#4c1d95"], { x2: 0, y2: 1 })}</defs><path d="M38 28 Q52 20 56 4 Q60 -10 74 -12 Q66 -4 68 8 Q72 20 82 28Z" fill="url(#gkzh)" ${U} ${sw(2.4)} stroke-linejoin="round"/>
     <path d="M62 -2 l1.3 2.6 2.9.4 -2.1 2 .5 2.9 -2.6-1.4 -2.6 1.4 .5-2.9 -2.1-2 2.9-.4z" fill="#fde047"/>
     <path d="M52 16 l.9 1.8 2 .3 -1.4 1.4 .3 2 -1.8-1 -1.8 1 .3-2 -1.4-1.4 2-.3z" fill="#fde047"/>
     <circle cx="66" cy="18" r="1.4" fill="#e9d5ff"/><circle cx="58" cy="8" r="1.1" fill="#e9d5ff"/>
-    <path d="M28 28 Q60 21 92 28 Q95 33 89 34 Q60 28 31 34 Q25 33 28 28Z" fill="#5b21b6" ${U} ${sw(2.4)}/>
+    <path d="M28 28 Q60 21 92 28 Q95 33 89 34 Q60 28 31 34 Q25 33 28 28Z" fill="url(#gkzk)" ${U} ${sw(2.4)}/>
     <path d="M40 27 Q60 23 80 27" stroke="#fde047" stroke-width="2.6" fill="none"/>`,
   lorbeerkranz: (() => {
-    const blatt = (x, y, w) => `<ellipse cx="${x}" cy="${y}" rx="5.4" ry="2.5" transform="rotate(${w} ${x} ${y})" fill="#65a30d" ${U} ${sw(1.4)}/>`;
+    const blatt = (x, y, w) => `<ellipse cx="${x}" cy="${y}" rx="5.4" ry="2.5" transform="rotate(${w} ${x} ${y})" fill="url(#gklb)" ${U} ${sw(1.4)}/><path d="M${x - 3.4} ${y} h6.8" transform="rotate(${w} ${x} ${y})" stroke="#365314" stroke-width="0.7" opacity="0.7"/>`;
     const links = [[24, 50, -70], [26, 42, -55], [30, 35, -42], [36, 29, -28], [43, 24, -16], [51, 21, -6]], rechts = links.map(([x, y, w]) => [120 - x, y, -w]);
-    return [...links, ...rechts].map(([x, y, w]) => blatt(x, y, w)).join("") + `<circle cx="60" cy="20" r="2.4" fill="#f59e0b" ${U} ${sw(1.2)}/>`;
+    return [...links, ...rechts].map(([x, y, w]) => blatt(x, y, w)).join("") + `<defs>${vl("gk", "lb", ["#bef264", "#65a30d", "#3f6212"], { x2: 0, y2: 1 })}</defs><circle cx="60" cy="20" r="2.4" fill="#f59e0b" ${U} ${sw(1.2)}/>`;
   })(),
-  krone: `<path d="M37 31 L34 9 L46 19 L60 3 L74 19 L86 9 L83 31Z" fill="#facc15" ${U} ${sw(2.4)} stroke-linejoin="round"/>
+  krone: `<defs>${vl("gk", "kr", ["#a16207", "#fde047", "#eab308", "#fef08a", "#a16207"])}</defs><path d="M37 31 L34 9 L46 19 L60 3 L74 19 L86 9 L83 31Z" fill="url(#gkkr)" ${U} ${sw(2.4)} stroke-linejoin="round"/>
     <path d="M40 27 L39 15 M60 9 L60 18 M80 27 L81 15" stroke="#fef08a" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
-    <rect x="36" y="25" width="48" height="8" rx="2.5" fill="#eab308" ${U} ${sw(2.2)}/>
-    <circle cx="48" cy="29" r="2.3" fill="#ef4444"/><circle cx="60" cy="29" r="2.6" fill="#3b82f6"/><circle cx="72" cy="29" r="2.3" fill="#22c55e"/>
+    <rect x="36" y="25" width="48" height="8" rx="2.5" fill="url(#gkkr)" ${U} ${sw(2.2)}/>
+    <circle cx="48" cy="29" r="2.3" fill="#ef4444" stroke="#7f1d1d" stroke-width="0.7"/><circle cx="60" cy="29" r="2.6" fill="#3b82f6" stroke="#1e3a8a" stroke-width="0.7"/><circle cx="72" cy="29" r="2.3" fill="#22c55e" stroke="#14532d" stroke-width="0.7"/><circle cx="47.3" cy="28.3" r="0.7" fill="#fff" opacity="0.85"/><circle cx="59.2" cy="28.2" r="0.8" fill="#fff" opacity="0.85"/><circle cx="71.3" cy="28.3" r="0.7" fill="#fff" opacity="0.85"/>
     <circle cx="34" cy="8.5" r="2.4" fill="#fde047" ${U} ${sw(1.4)}/><circle cx="60" cy="2.5" r="2.6" fill="#fde047" ${U} ${sw(1.4)}/><circle cx="86" cy="8.5" r="2.4" fill="#fde047" ${U} ${sw(1.4)}/>`,
 };
 
@@ -538,37 +541,90 @@ const GESICHT = {
 
 
 /** Gegenstände in Talers linker Hand (Mittelpunkt = Hand). */
+// Gegenstände in der Hand: (x, y) = Mitte der Hand, id = eindeutiges Kürzel für Verläufe. Gezeichnet wird zwischen Handfläche und Fingern,
+// der Griff läuft deshalb immer durch (x, y). GRIFF = [Richtung "v" senkrecht | "h" waagerecht, Drehung in Grad].
+const GRIFF = { faehnchen: ["v", -4], kaffee: ["v", 0], fueller: ["v", -40], gesetzbuch: ["v", -8], ordner: ["v", -6], taschenrechner: ["v", -6], lupe: ["v", -24], stempel: ["v", 0], pokal: ["v", 0],
+  henkeltasche: ["h", 0], kettentasche: ["h", 0], buegeltasche: ["h", 0] };
+const gross = (x, y, s) => `<g transform="translate(${x} ${y}) scale(1.3) translate(${-x} ${-y})">${s}</g>`;
 const HAND = {
-  faehnchen: (x, y) => `<path d="M${x} ${y + 6} V${y - 26}" stroke="#78350f" stroke-width="2.4" stroke-linecap="round"/>
-    <path d="M${x} ${y - 26} L${x - 17} ${y - 20} L${x} ${y - 13}Z" fill="#4f46e5" ${U} ${sw(1.8)} stroke-linejoin="round"/>
-    <path d="M${x - 5} ${y - 20} l1 2 2 .3 -1.5 1.4 .4 2 -1.9-1 -1.9 1 .4-2 -1.5-1.4 2-.3z" fill="#fde047"/>`,
-  kaffee: (x, y) => `<path d="M${x - 9} ${y - 7} H${x + 4} L${x + 2.6} ${y + 9} Q${x + 2} ${y + 12} ${x - 1} ${y + 12} H${x - 5} Q${x - 8} ${y + 12} ${x - 8.4} ${y + 9}Z" fill="#f8fafc" ${U} ${sw(2)} stroke-linejoin="round"/>
-    <path d="M${x - 8.6} ${y - 1} H${x + 3.4} L${x + 3} ${y + 4} H${x - 8.2}Z" fill="#a16207"/>
-    <path d="M${x - 6} ${y - 11} q-2 -3 0 -6 M${x - 1} ${y - 11} q-2 -3 0 -6" stroke="#94a3b8" stroke-width="1.5" fill="none" stroke-linecap="round"/>`,
-  fueller: (x, y) => `<g transform="rotate(-35 ${x} ${y})"><rect x="${x - 3}" y="${y - 20}" width="6" height="24" rx="2.4" fill="#1e3a8a" ${U} ${sw(1.8)}/>
-    <rect x="${x - 3}" y="${y - 20}" width="6" height="6" rx="2" fill="#facc15"/><path d="M${x - 3} ${y + 4} L${x} ${y + 12} L${x + 3} ${y + 4}Z" fill="#facc15" ${U} ${sw(1.6)} stroke-linejoin="round"/>
-    <path d="M${x} ${y + 6} V${y + 10}" stroke="#713f12" stroke-width="0.9"/></g>`,
-  gesetzbuch: (x, y) => `<rect x="${x - 17}" y="${y - 11}" width="16" height="21" rx="2" fill="#b91c1c" ${U} ${sw(2)}/>
-    <rect x="${x - 3.5}" y="${y - 10}" width="3" height="19" fill="#fef3c7"/>
-    <text x="${x - 9}" y="${y + 3}" text-anchor="middle" font-size="11" font-weight="900" font-family="Georgia, serif" fill="#fde68a">§</text>
-    <path d="M${x - 15} ${y - 7} H${x - 5}" stroke="#fca5a5" stroke-width="1.2"/>`,
-  ordner: (x, y) => `<rect x="${x - 16}" y="${y - 14}" width="13" height="26" rx="1.6" fill="#0369a1" ${U} ${sw(2)}/>
-    <rect x="${x - 14}" y="${y - 10}" width="9" height="9" rx="1" fill="#f8fafc"/><path d="M${x - 12.5} ${y - 7} h6 M${x - 12.5} ${y - 4.5} h4.5" stroke="#64748b" stroke-width="1"/>
-    <circle cx="${x - 9.5}" cy="${y + 5}" r="2.4" fill="#f8fafc" ${U} ${sw(1.2)}/>`,
-  taschenrechner: (x, y) => `<rect x="${x - 17}" y="${y - 12}" width="15" height="22" rx="2.6" fill="#334155" ${U} ${sw(2)}/>
-    <rect x="${x - 15}" y="${y - 10}" width="11" height="5.5" rx="1" fill="#bef264"/>
-    ${[0, 1, 2].flatMap((r) => [0, 1, 2].map((c) => `<rect x="${x - 15 + c * 4}" y="${y - 2.5 + r * 4}" width="3" height="3" rx="0.8" fill="${r === 2 && c === 2 ? "#f97316" : "#cbd5e1"}"/>`)).join("")}`,
-  lupe: (x, y) => `<path d="M${x - 1} ${y + 2} L${x + 5} ${y + 10}" stroke="#78350f" stroke-width="4.4" stroke-linecap="round"/>
-    <circle cx="${x - 7}" cy="${y - 7}" r="9" fill="#bae6fd" fill-opacity="0.45" stroke="#475569" stroke-width="3"/>
-    <path d="M${x - 12} ${y - 10} Q${x - 10} ${y - 13} ${x - 7} ${y - 13}" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>`,
-  stempel: (x, y) => `<ellipse cx="${x - 7}" cy="${y - 15}" rx="5" ry="4.2" fill="#b45309" ${U} ${sw(1.8)}/>
-    <rect x="${x - 9}" y="${y - 12}" width="4" height="9" fill="#92400e" ${U} ${sw(1.4)}/>
-    <rect x="${x - 16}" y="${y - 4}" width="18" height="6" rx="1.6" fill="#78350f" ${U} ${sw(1.8)}/>
-    <rect x="${x - 16}" y="${y + 2}" width="18" height="3" rx="1" fill="#dc2626"/>`,
+  faehnchen: (x, y, id) => `<defs>${vl(id, "fa", ["#4338ca", "#6366f1", "#3730a3", "#4f46e5"])}${vl(id, "fs", ["#5b3a1a", "#a16207", "#5b3a1a"])}</defs>
+    <g transform="rotate(-4 ${x} ${y})">
+    <path d="M${x} ${y + 10} V${y - 31}" stroke="#2b1a0a" stroke-width="4" stroke-linecap="round"/><path d="M${x} ${y + 10} V${y - 31}" stroke="url(#${id}fs)" stroke-width="2.3" stroke-linecap="round"/>
+    <path d="M${x - 0.3} ${y - 29.5} C${x - 5} ${y - 33.5} ${x - 8} ${y - 26.5} ${x - 15} ${y - 29.5} L${x - 13.2} ${y - 18} C${x - 8} ${y - 15} ${x - 5} ${y - 21} ${x - 0.3} ${y - 17}Z" fill="url(#${id}fa)" ${U} ${sw(1.7)} stroke-linejoin="round"/>
+    <path d="M${x - 5.6} ${y - 30} C${x - 6.8} ${y - 26} ${x - 6.4} ${y - 22} ${x - 5.2} ${y - 19}" stroke="#1e1b4b" stroke-opacity="0.35" stroke-width="2" fill="none"/>
+    <path d="M${x - 1.6} ${y - 28.2} C${x - 4.6} ${y - 30.8} ${x - 7.4} ${y - 25.8} ${x - 13.4} ${y - 27.6}" stroke="#fff" stroke-opacity="0.4" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+    <path d="M${x - 9.6} ${y - 26.6} l1 2.1 2.3 .3 -1.7 1.6 .4 2.3 -2-1.1 -2.1 1.1 .4-2.3 -1.6-1.6 2.3-.3z" fill="#fde047" stroke="#a16207" stroke-width="0.6" stroke-linejoin="round"/>
+    <circle cx="${x}" cy="${y - 32}" r="2.3" fill="#facc15" ${U} ${sw(1.3)}/><circle cx="${x - 0.7}" cy="${y - 32.7}" r="0.7" fill="#fff" opacity="0.8"/></g>`,
+  kaffee: (x, y, id) => `<defs>${vl(id, "ka", ["#cbd5e1", "#ffffff", "#f1f5f9", "#94a3b8"])}</defs>
+    <path d="M${x - 5} ${y - 5.5} Q${x + 4.6} ${y - 6.5} ${x + 4.6} ${y} Q${x + 4.6} ${y + 6.5} ${x - 5.6} ${y + 5.5}" stroke="#3a2710" stroke-width="5.4" fill="none" stroke-linecap="round"/>
+    <path d="M${x - 5} ${y - 5.5} Q${x + 4.6} ${y - 6.5} ${x + 4.6} ${y} Q${x + 4.6} ${y + 6.5} ${x - 5.6} ${y + 5.5}" stroke="#f1f5f9" stroke-width="2.8" fill="none" stroke-linecap="round"/>
+    <path d="M${x - 21} ${y - 9.5} H${x - 4.5} L${x - 6} ${y + 9} Q${x - 6.4} ${y + 11.5} ${x - 9} ${y + 11.5} H${x - 16.5} Q${x - 19.1} ${y + 11.5} ${x - 19.5} ${y + 9}Z" fill="url(#${id}ka)" ${U} ${sw(2)} stroke-linejoin="round"/>
+    <ellipse cx="${x - 12.75}" cy="${y - 9.5}" rx="8.25" ry="2.5" fill="#f8fafc" ${U} ${sw(1.7)}/>
+    <ellipse cx="${x - 12.75}" cy="${y - 9.3}" rx="6.5" ry="1.7" fill="#6b3f12"/><path d="M${x - 17} ${y - 9.6} q2 -1 4.4 -.6" stroke="#d6a66a" stroke-width="0.9" fill="none" stroke-linecap="round"/>
+    <path d="M${x - 19.4} ${y - 1} H${x - 5.2} L${x - 5.6} ${y + 4} H${x - 19}Z" fill="var(--taler-gold, #f6b93b)" opacity="0.9"/>
+    <text x="${x - 12.4}" y="${y + 3.2}" text-anchor="middle" font-size="5.4" font-weight="900" font-family="Georgia, serif" fill="#5b3a0a">§</text>
+    <path d="M${x - 18.6} ${y - 6} Q${x - 19} ${y + 3} ${x - 17.6} ${y + 8.6}" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <path d="M${x - 16} ${y - 14} q-2.4 -3 0 -6 q2.4 -3 0 -6 M${x - 10} ${y - 14} q-2.4 -3 0 -6 q2.4 -3 0 -5" stroke="#e2e8f0" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.7"/>`,
+  fueller: (x, y, id) => `<defs>${vl(id, "fu", ["#0f1d4a", "#2c4bb0", "#16286b", "#0b1438"])}${vl(id, "fg", ["#a16207", "#fde68a", "#ca8a04"])}</defs>
+    <g transform="rotate(-40 ${x} ${y})">
+    <rect x="${x - 3.3}" y="${y - 24}" width="6.6" height="33" rx="3" fill="url(#${id}fu)" ${U} ${sw(1.8)}/>
+    <rect x="${x - 3.3}" y="${y - 12.6}" width="6.6" height="2.2" fill="url(#${id}fg)"/><rect x="${x - 3.3}" y="${y + 6}" width="6.6" height="1.8" fill="url(#${id}fg)"/>
+    <path d="M${x + 2.2} ${y - 23} q2.6 .4 2.4 3.4 V${y - 14}" stroke="#3a2710" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M${x + 2.2} ${y - 23} q2.6 .4 2.4 3.4 V${y - 14}" stroke="url(#${id}fg)" stroke-width="1.3" fill="none" stroke-linecap="round"/>
+    <path d="M${x - 2.6} ${y + 9} H${x + 2.6} L${x + 2} ${y + 12} H${x - 2}Z" fill="#111827" ${U} ${sw(1.2)}/>
+    <path d="M${x - 2.4} ${y + 12} H${x + 2.4} Q${x + 2} ${y + 17} ${x} ${y + 20.5} Q${x - 2} ${y + 17} ${x - 2.4} ${y + 12}Z" fill="url(#${id}fg)" ${U} ${sw(1.2)} stroke-linejoin="round"/>
+    <path d="M${x} ${y + 15.2} V${y + 19.6}" stroke="#713f12" stroke-width="0.7"/><circle cx="${x}" cy="${y + 14.6}" r="0.75" fill="#713f12"/>
+    <path d="M${x - 1.6} ${y - 21} V${y + 4.5}" stroke="#fff" stroke-width="1" stroke-linecap="round" opacity="0.45"/></g>`,
+  gesetzbuch: (x, y, id) => `<defs>${vl(id, "gb", ["#7f1d1d", "#b91c1c", "#991b1b"])}</defs>
+    <g transform="rotate(-8 ${x} ${y}) translate(5 1)">
+    <path d="M${x - 21} ${y - 29} H${x - 1.6} Q${x} ${y - 29} ${x} ${y - 27.4} V${y + 3.4} Q${x} ${y + 5} ${x - 1.6} ${y + 5} H${x - 21} Q${x - 23} ${y + 5} ${x - 23} ${y + 3} V${y - 27} Q${x - 23} ${y - 29} ${x - 21} ${y - 29}Z" fill="#fdf6e3" ${U} ${sw(2)} stroke-linejoin="round"/>
+    <path d="M${x - 20} ${y + 2.2} H${x - 1.5} M${x - 20} ${y + 3.6} H${x - 1.5}" stroke="#c9b98f" stroke-width="0.6"/>
+    <path d="M${x - 21} ${y - 29} H${x - 3.6} Q${x - 2} ${y - 29} ${x - 2} ${y - 27.4} V${y - 0.4} Q${x - 2} ${y + 1.2} ${x - 3.6} ${y + 1.2} H${x - 21} Q${x - 23} ${y + 1.2} ${x - 23} ${y - 0.8} V${y - 27} Q${x - 23} ${y - 29} ${x - 21} ${y - 29}Z" fill="url(#${id}gb)" ${U} ${sw(1.6)} stroke-linejoin="round"/>
+    <path d="M${x - 19.4} ${y - 28.4} V${y + 0.6}" stroke="#450a0a" stroke-opacity="0.55" stroke-width="1.5"/>
+    <path d="M${x - 22.2} ${y - 23.5} h2.8 M${x - 22.2} ${y - 21.6} h2.8 M${x - 22.2} ${y - 6} h2.8 M${x - 22.2} ${y - 4.1} h2.8" stroke="#fcd34d" stroke-width="0.9"/>
+    <rect x="${x - 17}" y="${y - 26}" width="12.4" height="24" rx="0.8" fill="none" stroke="#fcd34d" stroke-width="0.7" opacity="0.9"/>
+    <text x="${x - 10.8}" y="${y - 9.4}" text-anchor="middle" font-size="12.5" font-weight="900" font-family="Georgia, serif" fill="#fde68a">§</text>
+    <path d="M${x - 14.6} ${y - 22.2} h7.6" stroke="#fcd34d" stroke-width="0.9" stroke-linecap="round"/>
+    <path d="M${x - 9} ${y + 4.6} v6.4 l-1.6 -1.5 -1.6 1.5 v-6.4z" fill="#facc15" ${U} ${sw(0.9)} stroke-linejoin="round"/>
+    <path d="M${x - 17.8} ${y - 27.6} V${y - 0.4}" stroke="#fff" stroke-opacity="0.22" stroke-width="1.2"/></g>`,
+  ordner: (x, y, id) => `<defs>${vl(id, "or", ["#075985", "#0ea5e9", "#0369a1", "#0c4a6e"])}</defs>
+    <g transform="rotate(-6 ${x} ${y}) translate(4 1)">
+    <rect x="${x - 20}" y="${y - 30}" width="19" height="35" rx="2" fill="#e2e8f0" ${U} ${sw(2)}/>
+    <rect x="${x - 20}" y="${y - 30}" width="15.5" height="35" rx="2" fill="url(#${id}or)" ${U} ${sw(1.6)}/>
+    <path d="M${x - 3} ${y - 27} V${y + 2} M${x - 1.9} ${y - 27} V${y + 2}" stroke="#94a3b8" stroke-width="0.6"/>
+    <rect x="${x - 17.4}" y="${y - 26.4}" width="10.3" height="12.4" rx="1" fill="#f8fafc" stroke="#0c4a6e" stroke-width="0.8"/>
+    <path d="M${x - 15.6} ${y - 23} h6.6 M${x - 15.6} ${y - 20.4} h5 M${x - 15.6} ${y - 17.8} h6" stroke="#64748b" stroke-width="0.9" stroke-linecap="round"/>
+    <circle cx="${x - 12.2}" cy="${y - 5}" r="3" fill="#0c4a6e" stroke="#e2e8f0" stroke-width="1.4"/><circle cx="${x - 12.2}" cy="${y - 5}" r="1.2" fill="#082f49"/>
+    <path d="M${x - 20} ${y + 1.4} h3 M${x - 7.5} ${y + 1.4} h3" stroke="#e2e8f0" stroke-width="1.6"/>
+    <path d="M${x - 18.6} ${y - 28} V${y + 3}" stroke="#fff" stroke-opacity="0.3" stroke-width="1.1"/></g>`,
+  taschenrechner: (x, y, id) => `<defs>${vl(id, "tr", ["#1e293b", "#475569", "#334155"], { x2: 1, y2: 1 })}</defs>
+    <g transform="rotate(-6 ${x} ${y}) translate(5 1)">
+    <rect x="${x - 21}" y="${y - 28}" width="20" height="33" rx="3.2" fill="url(#${id}tr)" ${U} ${sw(2)}/>
+    <rect x="${x - 18.6}" y="${y - 25.4}" width="15.2" height="8" rx="1.2" fill="#d9f99d" stroke="#0f172a" stroke-width="0.9"/>
+    <text x="${x - 4.6}" y="${y - 19.2}" text-anchor="end" font-size="5.6" font-weight="700" font-family="ui-monospace, Menlo, monospace" fill="#1a2e05">19 %</text>
+    <path d="M${x - 18} ${y - 24.6} h14" stroke="#fff" stroke-opacity="0.5" stroke-width="0.7"/>
+    ${[0, 1, 2, 3].flatMap((r) => [0, 1, 2].map((c) => `<rect x="${x - 18.6 + c * 5.4}" y="${y - 14.6 + r * 4.6}" width="4.4" height="3.5" rx="1" fill="${c === 2 ? (r === 3 ? "#f97316" : "#94a3b8") : "#e2e8f0"}" stroke="#0f172a" stroke-width="0.5"/>`)).join("")}
+    <path d="M${x - 19.4} ${y - 24} V${y + 1}" stroke="#fff" stroke-opacity="0.18" stroke-width="1"/></g>`,
+  lupe: (x, y, id) => `<defs>${vl(id, "lu", ["#4a2c0f", "#b45309", "#5b3413"])}${vl(id, "lr", ["#f8fafc", "#64748b", "#e2e8f0", "#475569"], { x2: 1, y2: 1 })}
+      <radialGradient id="${id}lg" cx="0.35" cy="0.3" r="0.8"><stop offset="0" stop-color="#fff" stop-opacity="0.75"/><stop offset="0.5" stop-color="#bae6fd" stop-opacity="0.4"/><stop offset="1" stop-color="#38bdf8" stop-opacity="0.5"/></radialGradient></defs>
+    <g transform="rotate(-24 ${x} ${y})">
+    <rect x="${x - 2.9}" y="${y - 9}" width="5.8" height="21" rx="2.7" fill="url(#${id}lu)" ${U} ${sw(1.7)}/>
+    <rect x="${x - 2.4}" y="${y - 12}" width="4.8" height="4.4" rx="0.9" fill="url(#${id}lr)" ${U} ${sw(1.2)}/>
+    <circle cx="${x}" cy="${y - 22}" r="10" fill="url(#${id}lg)"/>
+    <circle cx="${x}" cy="${y - 22}" r="10" fill="none" ${U} ${sw(5)}/><circle cx="${x}" cy="${y - 22}" r="10" fill="none" stroke="url(#${id}lr)" stroke-width="3"/>
+    <path d="M${x - 5.6} ${y - 26} A7 7 0 0 1 ${x - 0.6} ${y - 29}" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.9"/>
+    <circle cx="${x + 4}" cy="${y - 18}" r="1" fill="#fff" opacity="0.6"/></g>`,
+  stempel: (x, y, id) => `<defs>${vl(id, "st", ["#5b2c0a", "#c2681c", "#7c3d10"])}</defs>
+    <rect x="${x - 2.6}" y="${y - 7}" width="5.2" height="15" fill="url(#${id}st)" ${U} ${sw(1.6)}/>
+    <ellipse cx="${x}" cy="${y - 10.6}" rx="6" ry="5.2" fill="url(#${id}st)" ${U} ${sw(1.8)}/>
+    <path d="M${x - 3.4} ${y - 13} q1.6 -1.8 4 -1.6" stroke="#fff" stroke-width="1.1" fill="none" stroke-linecap="round" opacity="0.6"/>
+    <path d="M${x - 5} ${y + 7.6} H${x + 5} L${x + 11} ${y + 12} V${y + 15.6} H${x - 11} V${y + 12}Z" fill="url(#${id}st)" ${U} ${sw(1.8)} stroke-linejoin="round"/>
+    <path d="M${x - 9.6} ${y + 12.4} H${x + 9.6}" stroke="#fde68a" stroke-opacity="0.5" stroke-width="0.8"/>
+    <rect x="${x - 11.6}" y="${y + 15.6}" width="23.2" height="3.6" rx="1.2" fill="#dc2626" ${U} ${sw(1.5)}/>
+    <path d="M${x - 9} ${y + 21.4} h4 M${x - 3} ${y + 21.4} h7 M${x + 6} ${y + 21.4} h3" stroke="#dc2626" stroke-width="1.1" stroke-linecap="round" opacity="0.55"/>`,
   // Handtaschen: Die Hand (x, y) greift oben Henkel bzw. Kette, die Tasche hängt darunter.
   henkeltasche: (x, y) => {
     const m = x - 2, o = y + 9, u = y + 27;
-    return `<path d="M${m + 6} ${o + 1} Q${m + 6} ${y - 2} ${x} ${y}" stroke="#5b210a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    return gross(x, y, `<path d="M${m + 6} ${o + 1} Q${m + 6} ${y - 2} ${x} ${y}" stroke="#5b210a" stroke-width="2.4" fill="none" stroke-linecap="round"/>
     <path d="M${m - 12} ${o} H${m + 10} L${m + 12.5} ${u - 3} Q${m + 13} ${u} ${m + 10} ${u} H${m - 12} Q${m - 15} ${u} ${m - 14.5} ${u - 3}Z" fill="#b45309" ${U} ${sw(2)} stroke-linejoin="round"/>
     <path d="M${m + 4} ${o} H${m + 10} L${m + 12.5} ${u - 3} Q${m + 13} ${u} ${m + 10} ${u} H${m + 6}Z" fill="#7c2d12" fill-opacity="0.35"/>
     <path d="M${m - 10.5} ${o + 2.4} Q${m - 12} ${o + 9} ${m - 11} ${u - 4}" stroke="#fff" stroke-opacity="0.32" stroke-width="1.6" fill="none" stroke-linecap="round"/>
@@ -577,7 +633,7 @@ const HAND = {
     <rect x="${m - 2.6}" y="${o + 3.4}" width="5.2" height="4.4" rx="1" fill="#facc15" ${U} ${sw(1.1)}/><circle cx="${m}" cy="${o + 5.6}" r="0.9" fill="#a16207"/>
     <circle cx="${m - 10}" cy="${u + 0.6}" r="1.1" fill="#facc15"/><circle cx="${m + 8}" cy="${u + 0.6}" r="1.1" fill="#facc15"/>
     <path d="M${m - 6} ${o + 1} Q${m - 6} ${y - 2} ${x} ${y}" stroke="#7c2d12" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-    <path d="M${m - 5.3} ${o - 1} Q${m - 5.6} ${y - 0.4} ${x - 1} ${y + 0.6}" stroke="#fdba74" stroke-opacity="0.55" stroke-width="0.8" fill="none" stroke-linecap="round"/>`;
+    <path d="M${m - 5.3} ${o - 1} Q${m - 5.6} ${y - 0.4} ${x - 1} ${y + 0.6}" stroke="#fdba74" stroke-opacity="0.55" stroke-width="0.8" fill="none" stroke-linecap="round"/>`);
   },
   kettentasche: (x, y) => {
     const m = x - 2, o = y + 11, u = y + 27, links = [m - 11, o + 0.5], rechts = [m + 11, o + 0.5];
@@ -587,7 +643,7 @@ const HAND = {
       return `<ellipse cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" rx="${i % 2 ? 0.9 : 1.6}" ry="${i % 2 ? 1.6 : 0.9}" fill="none" stroke="${i % 2 ? "#ca8a04" : "#facc15"}" stroke-width="0.9"/>`;
     }).join("");
     const steppung = [-12, -6, 0, 6, 12, 18].map((d) => `<path d="M${m + d - 8} ${o} L${m + d + 8} ${u}" stroke="#4b5563" stroke-width="0.7"/><path d="M${m + d + 8} ${o} L${m + d - 8} ${u}" stroke="#4b5563" stroke-width="0.7"/>`).join("");
-    return `${kette(rechts)}
+    return gross(x, y, `${kette(rechts)}
     <rect x="${m - 12.5}" y="${o}" width="25" height="${u - o}" rx="3" fill="#111827" ${U} ${sw(2)}/>
     <svg x="${m - 12}" y="${o + 0.5}" width="24" height="${u - o - 1}" viewBox="${m - 12} ${o + 0.5} 24 ${u - o - 1}" overflow="hidden">${steppung}</svg>
     <path d="M${m - 12.5} ${o + 3} Q${m} ${o + 12} ${m + 12.5} ${o + 3} V${o + 2} Q${m + 12.5} ${o} ${m + 10} ${o} H${m - 10} Q${m - 12.5} ${o} ${m - 12.5} ${o + 2}Z" fill="#1f2937" ${U} ${sw(1.4)}/>
@@ -595,11 +651,11 @@ const HAND = {
     <rect x="${m - 3.4}" y="${o + 5.2}" width="6.8" height="4.6" rx="1.4" fill="#facc15" ${U} ${sw(1)}/><rect x="${m - 1.6}" y="${o + 6.3}" width="3.2" height="2.4" rx="0.8" fill="#a16207"/>
     <path d="M${m - 10.5} ${u - 3} Q${m - 11} ${o + 13} ${m - 9.5} ${o + 9}" stroke="#fff" stroke-opacity="0.22" stroke-width="1.2" fill="none" stroke-linecap="round"/>
     <circle cx="${links[0]}" cy="${links[1]}" r="1.3" fill="#facc15"/><circle cx="${rechts[0]}" cy="${rechts[1]}" r="1.3" fill="#facc15"/>
-    ${kette(links)}`;
+    ${kette(links)}`);
   },
   buegeltasche: (x, y) => {
     const m = x - 2, o = y + 12, u = y + 28;
-    return `<path d="M${m - 8.5} ${o - 0.5} Q${m - 9} ${y - 2} ${x} ${y} Q${m + 9} ${y - 2} ${m + 8.5} ${o - 0.5}" stroke="#4c0519" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+    return gross(x, y, `<path d="M${m - 8.5} ${o - 0.5} Q${m - 9} ${y - 2} ${x} ${y} Q${m + 9} ${y - 2} ${m + 8.5} ${o - 0.5}" stroke="#4c0519" stroke-width="2.2" fill="none" stroke-linecap="round"/>
     <path d="M${m - 12} ${o} Q${m - 16.5} ${u - 2} ${m - 8} ${u} H${m + 8} Q${m + 16.5} ${u - 2} ${m + 12} ${o}Z" fill="#9f1239" ${U} ${sw(2)} stroke-linejoin="round"/>
     <path d="M${m + 3} ${o + 1} Q${m + 14} ${o + 4} ${m + 10.5} ${u - 0.5} H${m + 7} Q${m + 11} ${o + 8} ${m + 3} ${o + 1}Z" fill="#4c0519" fill-opacity="0.35"/>
     <ellipse cx="${m - 5.5}" cy="${o + 8}" rx="3.2" ry="5" fill="#fff" fill-opacity="0.16" transform="rotate(14 ${m - 5.5} ${o + 8})"/>
@@ -607,12 +663,18 @@ const HAND = {
     <path d="M${m - 12.6} ${o + 1.2} Q${m} ${o - 3.2} ${m + 12.6} ${o + 1.2}" stroke="#ca8a04" stroke-width="3.2" fill="none" stroke-linecap="round"/>
     <path d="M${m - 12.6} ${o + 1.2} Q${m} ${o - 3.2} ${m + 12.6} ${o + 1.2}" stroke="#fde047" stroke-width="1.2" fill="none" stroke-linecap="round"/>
     <circle cx="${m - 1.5}" cy="${o - 3}" r="1.9" fill="#facc15" ${U} ${sw(0.9)}/><circle cx="${m + 1.5}" cy="${o - 3}" r="1.9" fill="#facc15" ${U} ${sw(0.9)}/>
-    <circle cx="${m - 2}" cy="${o - 3.6}" r="0.6" fill="#fff" fill-opacity="0.8"/><circle cx="${m + 1}" cy="${o - 3.6}" r="0.6" fill="#fff" fill-opacity="0.8"/>`;
+    <circle cx="${m - 2}" cy="${o - 3.6}" r="0.6" fill="#fff" fill-opacity="0.8"/><circle cx="${m + 1}" cy="${o - 3.6}" r="0.6" fill="#fff" fill-opacity="0.8"/>`);
   },
-  pokal: (x, y) => `<path d="M${x - 16} ${y - 14} H${x + 2} V${y - 9} Q${x + 2} ${y} ${x - 7} ${y} Q${x - 16} ${y} ${x - 16} ${y - 9}Z" fill="#facc15" ${U} ${sw(2)}/>
-    <path d="M${x - 16} ${y - 12} Q${x - 22} ${y - 12} ${x - 20} ${y - 6} Q${x - 18} ${y - 3} ${x - 15} ${y - 4} M${x + 2} ${y - 12} Q${x + 8} ${y - 12} ${x + 6} ${y - 6} Q${x + 4} ${y - 3} ${x + 1} ${y - 4}" stroke="#ca8a04" stroke-width="2" fill="none"/>
-    <path d="M${x - 9} ${y} h4 v5 h-4z" fill="#eab308"/><rect x="${x - 13}" y="${y + 5}" width="12" height="4" rx="1.2" fill="#a16207" ${U} ${sw(1.6)}/>
-    <path d="M${x - 12} ${y - 11} V${y - 5}" stroke="#fef08a" stroke-width="1.8" stroke-linecap="round"/>`,
+  pokal: (x, y, id) => `<defs>${vl(id, "po", ["#a16207", "#fde047", "#eab308", "#fef08a", "#a16207"])}</defs>
+    <path d="M${x - 10} ${y - 23} Q${x - 19} ${y - 24} ${x - 17} ${y - 15.5} Q${x - 15.4} ${y - 10} ${x - 8} ${y - 10.5} M${x + 10} ${y - 23} Q${x + 19} ${y - 24} ${x + 17} ${y - 15.5} Q${x + 15.4} ${y - 10} ${x + 8} ${y - 10.5}" stroke="#3a2710" stroke-width="4.4" fill="none" stroke-linecap="round"/>
+    <path d="M${x - 10} ${y - 23} Q${x - 19} ${y - 24} ${x - 17} ${y - 15.5} Q${x - 15.4} ${y - 10} ${x - 8} ${y - 10.5} M${x + 10} ${y - 23} Q${x + 19} ${y - 24} ${x + 17} ${y - 15.5} Q${x + 15.4} ${y - 10} ${x + 8} ${y - 10.5}" stroke="#eab308" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <rect x="${x - 2.4}" y="${y - 7}" width="4.8" height="15" fill="url(#${id}po)" ${U} ${sw(1.6)}/>
+    <path d="M${x - 11.6} ${y - 27} H${x + 11.6} V${y - 19} Q${x + 11.6} ${y - 6.5} ${x} ${y - 6.5} Q${x - 11.6} ${y - 6.5} ${x - 11.6} ${y - 19}Z" fill="url(#${id}po)" ${U} ${sw(2)} stroke-linejoin="round"/>
+    <ellipse cx="${x}" cy="${y - 27}" rx="11.6" ry="2.4" fill="#fef9c3" ${U} ${sw(1.6)}/><ellipse cx="${x}" cy="${y - 26.8}" rx="9.4" ry="1.5" fill="#a16207"/>
+    <path d="M${x} ${y - 21.6} l1.5 3 3.3 .5 -2.4 2.3 .6 3.3 -3-1.6 -3 1.6 .6-3.3 -2.4-2.3 3.3-.5z" fill="#fffbeb" stroke="#a16207" stroke-width="0.7" stroke-linejoin="round"/>
+    <path d="M${x - 8.6} ${y - 23.5} Q${x - 9} ${y - 15} ${x - 5.4} ${y - 10.6}" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" opacity="0.75"/>
+    <path d="M${x - 6} ${y + 7.6} H${x + 6} L${x + 7.4} ${y + 11} H${x - 7.4}Z" fill="url(#${id}po)" ${U} ${sw(1.6)} stroke-linejoin="round"/>
+    <rect x="${x - 9.4}" y="${y + 11}" width="18.8" height="4.6" rx="1.2" fill="#5b3413" ${U} ${sw(1.6)}/><rect x="${x - 4.6}" y="${y + 12.2}" width="9.2" height="2.2" rx="0.5" fill="#fde047"/>`,
 };
 
 /** Auren (hinter Taler). */
@@ -641,12 +703,12 @@ export function outfitTeile(o = STANDARD) {
     farben: m ? `--taler-hell:${m[0]};--taler-gold:${m[1]};--taler-tief:${m[2]};--taler-dunkel:${m[3]};` : "",
     edel: EDEL[o.metall] || null, edelAussen: EDEL_AUSSEN[o.metall] || "", koerper: EDEL_KOERPER[o.metall] || null, klasse: EDEL[o.metall] ? `m-${o.metall}` : "",
     hinten: AURA[o.aura] || "",
-    kopf: KOPF[o.kopf] || "",
+    kopf: KOPF[o.kopf] || "", kopfSchatten: !!KOPF[o.kopf] && !["lorbeerkranz", "kopfhoerer", "augenschirm"].includes(o.kopf),
     augen: o.augen in AUGEN ? AUGEN[o.augen] : null,
     hals: HALS[o.hals] || "",
     ohr: OHR[o.ohr] || "",
     kappe: KAPPE[o.maske] ? (id, art) => KAPPE[o.maske](id, art, { rosa: ["makeup", "glamour"].includes(o.gesicht), wimpern: ["wimpern", "glamour"].includes(o.gesicht) }) : null,
     gesicht: GESICHT[o.gesicht] || null,
-    hand: HAND[o.hand] || null,
+    hand: HAND[o.hand] || null, griff: GRIFF[o.hand] || ["v", 0],
   };
 }
