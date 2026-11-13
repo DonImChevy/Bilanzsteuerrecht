@@ -5,6 +5,17 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-taler-neu",
+    datum: "2026-11-13",
+    titel: "Taler neu gezeichnet",
+    klein: true,
+    punkte: [
+      ["muenze", "Mehr Tiefe und echte Hände", "Taler hat einen geprägten Rand, weichere Lichter und Hände mit Daumen. Was er hält, greift er jetzt richtig: Die Finger schließen sich um den Griff, der Gegenstand liegt vor der Münze.", "garderobe", "hand"],
+      ["hut", "Garderobe aufgefrischt", "Hand-Gegenstände, Hüte, Brillen, Halsschmuck, Ohrringe und Auren sind neu gezeichnet – mit Verläufen, Glanz und Schatten.", "garderobe", "kopf"],
+      ["sterne", "Neu im Schrank", "Goldrand- und Cat-Eye-Brille, ein Dienstausweis am Band, Sternchen und Saphirtropfen, die Auren Paragrafen und Münzkreis sowie eine venezianische Maske.", "garderobe", "maske"],
+    ],
+  },
+  {
     id: "2026-11-edition",
     datum: "2026-11-12",
     titel: "Neues Design: die Edition",
