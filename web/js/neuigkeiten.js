@@ -9,7 +9,7 @@ export const NEUIGKEITEN = [
     datum: "2026-11-13",
     titel: "Überblicke: Begriffe und Fundstellen",
     punkte: [
-      ["akte", "Begriffe und ihre Normen", "Jeder Überblick und jeder Lernpfad-Block endet mit den Rechtsbegriffen, die darin vorkommen – jeweils mit der Definition des Gesetzes und der genauen Fundstelle. Der Unternehmer steht in der Umsatzsteuer mit § 2 UStG, im Privatrecht mit § 14 BGB."],
+      ["akte", "Begriffe und ihre Normen", "Jeder Überblick endet mit den Rechtsbegriffen, die darin vorkommen – mit der Definition des Gesetzes und der genauen Fundstelle. Im Lernpfad stehen am Ende jedes Blocks kurz die wichtigsten davon. Der Unternehmer steht in der Umsatzsteuer mit § 2 UStG, im Privatrecht mit § 14 BGB."],
       ["nachschlagen", "Fundstellen überall antippbar", "Alle Paragrafen und Artikel tragen jetzt ihr Gesetz und öffnen den Wortlaut; auch die Zahlen im Überblick nennen ihre Norm."],
       ["sterne", "Überblicke ergänzt", "Die Überblicke enthalten alles, was der Lernpfad erklärt, und gehen darüber hinaus – ergänzt wurden unter anderem Arbeitnehmerbegriff, Ertragshoheit der Steuern, Grundstücksarten und Fremdwährungsschulden."],
     ],
