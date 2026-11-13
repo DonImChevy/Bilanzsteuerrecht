@@ -112,7 +112,6 @@ export function taler(stimmung = "hallo", { groesse = 64, klasse = "", label = "
     <clipPath id="${id}c"><circle cx="60" cy="62" r="34"/></clipPath>
     <g clip-path="url(#${id}c)"><g transform="rotate(24 60 62)"><rect class="t-glanz" x="53" y="12" width="13" height="100" rx="6" fill="#fff"/></g></g>
     <ellipse cx="45.5" cy="42" rx="14" ry="5.6" transform="rotate(-38 45.5 42)" fill="url(#${id}g)" opacity="0.7"/>
-    <circle cx="35.6" cy="54.5" r="1.5" fill="#fff" opacity="0.7"/>
     <text x="60.6" y="41.2" text-anchor="middle" font-size="10.5" font-weight="800" font-family="Georgia, 'Times New Roman', serif" fill="#fff" opacity="0.5">§</text>
     <text x="60" y="40.5" text-anchor="middle" font-size="10.5" font-weight="800" font-family="Georgia, 'Times New Roman', serif" fill="var(--taler-dunkel)" opacity="0.85">§</text>
     <ellipse cx="37.5" cy="71.5" rx="5.2" ry="3.1" fill="var(--taler-wange)" opacity="0.6"/>
