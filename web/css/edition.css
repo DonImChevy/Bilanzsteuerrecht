@@ -364,3 +364,57 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .kk-pfeil { color: var(--gold-ton); }
 .kk-weiter { background: none; font-family: var(--serif); font-style: italic; font-weight: 500; font-size: 15.5px; padding: 12px 18px 14px; }
 .kk-haupt { padding: 18px; }
+
+/* =====================================================================
+   Themen: jedes Kapitel ein eigenes Blatt, rechts der „Überblick“ als kleines Schriftstück
+   ===================================================================== */
+.themen-karten { gap: 14px; padding: 0; background: none; border: 0; border-radius: 0; box-shadow: none; }
+.themen-karte, .themen-karte + .themen-karte { align-items: stretch; padding: 20px 16px 18px 18px; background: var(--glas); border: 1px solid var(--glas-rand); border-radius: var(--r-karte); box-shadow: var(--schatten); }
+.themen-karte .tk-icon { align-self: flex-start; }
+.themen-karte .tk-text { align-self: flex-start; }
+.tk-rechts { align-self: stretch; align-items: stretch; width: 82px; gap: 10px; }
+.tk-status { text-align: center; line-height: 1.1; }
+.tk-status.neu { padding-top: 4px; }
+.tk-lesen { flex: 1; min-height: 78px; padding: 0 6px 9px; flex-direction: column; justify-content: flex-end; align-items: center; gap: 0; overflow: hidden; text-decoration: none; text-align: center;
+  font-size: 10px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; color: var(--text2); border-radius: 3px 12px 3px 3px;
+  background: linear-gradient(225deg, var(--gold-linie) 0 9px, transparent 9.5px), var(--glas-stark); box-shadow: inset 0 0 0 1px var(--gold-linie), 0 8px 14px -10px rgba(0, 0, 0, 0.6); transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s, color 0.2s; }
+.tk-lesen::before { content: ""; position: absolute; left: 11px; right: 11px; top: 13px; bottom: 30px; pointer-events: none;
+  background: linear-gradient(var(--m), var(--m)) 0 0 / 58% 2px no-repeat, repeating-linear-gradient(to bottom, transparent 0 7px, color-mix(in oklab, var(--text) 26%, transparent) 7px 8px); }
+.tk-lesen:active { transform: translateY(1px); color: var(--text); background: linear-gradient(225deg, var(--gold-linie) 0 9px, transparent 9.5px), var(--glas-stark); box-shadow: inset 0 0 0 1px var(--gold-ton); }
+@media (hover: hover) { .tk-lesen:hover { transform: translateY(-2px) rotate(-1deg); color: var(--text); box-shadow: inset 0 0 0 1px var(--gold-ton), 0 14px 18px -12px rgba(0, 0, 0, 0.7); } }
+@media (max-width: 400px) { .themen-karte { gap: 4px 12px; } .tk-rechts { width: 76px; } }
+
+/* =====================================================================
+   Listen in Klausur, Normen und Einstellungen: gesetzte Zeilen statt Kästchen
+   ===================================================================== */
+.liste .zeile { padding: 15px 18px; gap: 14px; }
+.liste .zeile + .zeile::before { left: 18px; right: 18px; }
+.liste .zeile .grow > b:first-child, .liste .zeile .grow > div:first-child:not(.sub) { font-family: var(--serif); font-size: 18px; font-weight: 500 !important; letter-spacing: -0.1px; line-height: 1.2; }
+.liste .zeile .sub { margin-top: 2px; }
+.liste .zeile .symbol { background: none; box-shadow: none; border-radius: 0; width: 34px; height: 34px; font-family: var(--serif); font-size: 21px; font-weight: 500; color: var(--gold-ton); justify-items: start; }
+.liste .zeile .symbol .ic { color: var(--accent); width: 24px; height: 24px; stroke-width: 1.5; }
+.liste .zeile .chev { color: var(--gold-ton); }
+.stepper { border-radius: 8px; background: none; box-shadow: inset 0 0 0 1px var(--glas-rand); }
+.stepper b { font-family: var(--serif); font-size: 19px; font-weight: 500; }
+/* Punkte-Hebel, Probeklausuren, „Vor der Klausur“ */
+.hebel { gap: 0; background: var(--glas); border: 1px solid var(--glas-rand); border-radius: var(--r-karte); box-shadow: var(--schatten); overflow: hidden; }
+.hebel-zeile { padding: 15px 18px; gap: 14px; border: 0; border-radius: 0; background: none; box-shadow: none; }
+.hebel-zeile + .hebel-zeile { border-top: 1px solid var(--glas-linie); }
+.hebel-zeile b { font-family: var(--serif); font-size: 18px; font-weight: 500; letter-spacing: -0.1px; }
+.hebel-nr { width: 26px; height: auto; border-radius: 0; background: none; place-items: start; font-family: var(--serif); font-size: 26px; font-weight: 500; line-height: 1; color: var(--gold-ton); }
+.hebel-balken { height: 2px; border-radius: 0; }
+.ks-start { padding: 22px 20px 18px; border-radius: var(--r-gross); border-color: var(--gold-linie); background: var(--glas); }
+.ks-start-kopf { gap: 8px; }
+.ks-start-kopf b { font-family: var(--serif); font-size: 26px; font-weight: 500; letter-spacing: -0.3px; line-height: 1.1; }
+.ks-feste-titel { font-size: 10.5px; font-weight: 650; letter-spacing: 1.6px; margin-top: 20px; padding-bottom: 8px; border-bottom: 1px solid var(--gold-linie); }
+.ks-feste { gap: 0; }
+.ks-fest { padding: 16px 0; border: 0; border-radius: 0; background: none; box-shadow: none; column-gap: 16px; }
+.ks-fest + .ks-fest { border-top: 1px solid var(--glas-linie); }
+.ks-fest span { font-family: var(--serif); font-size: 17.5px; font-weight: 500; letter-spacing: -0.1px; line-height: 1.22; }
+.ks-fest i { font-style: normal; font-size: 11px; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text3); margin-top: 4px; }
+.km-vorher { padding: 18px; border-radius: var(--r-karte); gap: 16px; }
+.km-vorher b { font-family: var(--serif); font-size: 20px; font-weight: 500; letter-spacing: -0.2px; }
+.km-vorher > .ic { color: var(--gold-ton); }
+.leer-zustand b { font-family: var(--serif); font-size: 20px; font-weight: 500; }
+.liste .zeile .symbol { font-size: 21px !important; }
+.gruppe-titel::before { top: 0.62em; }

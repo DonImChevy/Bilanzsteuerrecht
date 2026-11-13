@@ -118,7 +118,8 @@ Die Schicht liegt in `web/css/edition.css` über `style.css` (oben Werte, darunt
 - **Knopf** (`.knopf`): gefärbtes Leinen mit Lichtkante, drückt 1 px; `.zweit` als Haarlinien-Knopf; im Hero elfenbeinfarben.
 - **Papierkarten** (`.liste`, `.kachel`, `.themen-karte`, `.option`, `.aufgabe`): deckend, Haarlinie, Symbole als Kreis mit Linie.
 - **Menükarte** (`.kachel-grid`): Zeilen auf einem Blatt – Liniensymbol, Serifentitel, Goldpfeil; keine Kachelraster.
-- **Inhaltsverzeichnis** (`.themen-karten`): Kapitelziffer in Gold, Serifentitel, Haarlinien-Fortschritt, „Überblick“ als unterstrichener Verweis.
+- **Kapitelblätter** (`.themen-karte`): je Thema ein eigenes Blatt – Kapitelziffer in Gold, Serifentitel, Haarlinien-Fortschritt; rechts „Überblick“ als kleines Schriftstück (`.tk-lesen`, Eselsohr, Textzeilen), das die Höhe füllt.
+- **Gesetzte Listen** (`.liste .zeile`, `.hebel`, `.ks-fest`): Serifentitel, Goldziffern statt Kästchen, Haarlinien.
 - **Registerreiter** (`.segment`): Text mit Goldlinie unter dem aktiven Reiter, kein Kasten.
 - **Navigation** (`.tabbar`): Lackleiste mit Goldkante, aktiv in Leinen.
 
