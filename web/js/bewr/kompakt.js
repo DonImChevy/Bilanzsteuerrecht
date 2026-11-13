@@ -61,7 +61,7 @@ export const KOMPAKT_BEWR = {
     punkte: [
       "**Nachlassverbindlichkeiten** (§ 10 Abs. 5 ErbStG): Erblasserschulden (Nr. 1), Vermächtnisse, Auflagen, geltend gemachte Pflichtteile (Nr. 2), Bestattung, Grabdenkmal, Grabpflege, Abwicklung (Nr. 3) – **ohne Nachweis 15.000 €**.",
       "**Nicht abzugsfähig:** Kosten der Nachlass**verwaltung**, die **eigene** Erbschaftsteuer (§ 10 Abs. 8 ErbStG), Schulden, soweit der zugehörige Gegenstand **steuerbefreit** ist (§ 10 Abs. 6a ErbStG, ab 2025).",
-      "**§ 13d-Grundstück:** zugehörige Schuld nur zu **90 %** abzugsfähig; bei § 13a im Verhältnis Wert nach/vor Verschonung (§ 10 Abs. 6a S. 2 ErbStG).",
+      "**§ 13d-Grundstück:** zugehörige Schuld nur zu **90 %** abzugsfähig; bei § 13a ErbStG im Verhältnis Wert nach/vor Verschonung (§ 10 Abs. 6a S. 2 ErbStG).",
       "**Grundstücksbezogene Belastungen,** die schon den Grundbesitzwert gemindert haben (z. B. im Gutachten nach § 198 BewG), sind nicht nochmals abziehbar (§ 10 Abs. 6b ErbStG).",
     ],
     fallen: [
@@ -115,9 +115,9 @@ export const KOMPAKT_BEWR = {
     satz: "Zu Wohnzwecken **vermietete** Grundstücke werden nur mit **90 %** angesetzt; bei gemischter Nutzung wird nach Flächen aufgeteilt, und zugehörige Schulden sind nur zu 90 % abzugsfähig.",
     zahlen: [["90 %", "Wertansatz (§ 13d Abs. 1 ErbStG)"]],
     punkte: [
-      "**Voraussetzungen** (§ 13d Abs. 3 ErbStG): bebaut, **zu Wohnzwecken vermietet**, Inland/EU/EWR (Drittstaat nur bei Amtshilfe), **nicht** begünstigtes Betriebsvermögen nach § 13a.",
+      "**Voraussetzungen** (§ 13d Abs. 3 ErbStG): bebaut, **zu Wohnzwecken vermietet**, Inland/EU/EWR (Drittstaat nur bei Amtshilfe), **nicht** begünstigtes Betriebsvermögen nach § 13a ErbStG.",
       "**Aufteilung** des Grundbesitzwerts nach dem Verhältnis der Wohnfläche der vermieteten Wohnungen zur gesamten Wohn-/Nutzfläche; nur der Wohnanteil erhält den Abschlag.",
-      "**Schulden:** soweit das Grundstück befreit ist, nicht abzugsfähig (§ 10 Abs. 6a S. 1 ErbStG) → Schuld × Wert nach / Wert vor § 13d.",
+      "**Schulden:** soweit das Grundstück befreit ist, nicht abzugsfähig (§ 10 Abs. 6a S. 1 ErbStG) → Schuld × Wert nach / Wert vor § 13d ErbStG.",
       "**Weitergabeverpflichtung:** keine Befreiung, soweit das Grundstück an Dritte übertragen werden muss (§ 13d Abs. 2 ErbStG).",
     ],
     fallen: [
@@ -200,7 +200,7 @@ export const KOMPAKT_BEWR = {
     schema: [
       "Benutzbares Gebäude? → bebautes Grundstück (§ 180 BewG)",
       "Grundstücksart nach Wohn- und Nutzfläche bestimmen (§ 181 BewG)",
-      "Verfahren: Vergleichswert (§ 182 Abs. 2, § 183 BewG) – Ertragswert (§ 182 Abs. 3, §§ 184–188 BewG) – Sachwert (§ 182 Abs. 4 BewG)",
+      "Verfahren: Vergleichswert (§ 182 Abs. 2 BewG, § 183 BewG) – Ertragswert (§ 182 Abs. 3 BewG, §§ 184–188 BewG) – Sachwert (§ 182 Abs. 4 BewG)",
     ],
     punkte: [
       "**Vergleichswertverfahren** (§ 183 BewG): Kaufpreise vergleichbarer Grundstücke, vorrangig Vergleichspreise des Gutachterausschusses; alternativ **Vergleichsfaktoren** je m² – beziehen sie sich nur aufs Gebäude, kommt der **Bodenwert** hinzu.",
@@ -216,10 +216,10 @@ export const KOMPAKT_BEWR = {
     satz: "Ertragswert = **Bodenwert + Gebäudeertragswert**; der Gebäudeertragswert ist der um die Bodenwertverzinsung gekürzte Reinertrag, kapitalisiert mit dem **Vervielfältiger** aus Liegenschaftszins und Restnutzungsdauer.",
     zahlen: [["3,5 %", "Liegenschaftszins Mietwohngrundstücke"], ["4,5 %", "gemischt genutzt, gewerblich bis 50 %"], ["5,0 %", "gemischt genutzt, gewerblich über 50 %"], ["6,0 %", "Geschäftsgrundstücke"], ["30 %", "Mindest-Restnutzungsdauer der Gesamtnutzungsdauer"], ["80 Jahre", "Gesamtnutzungsdauer Wohn- und gemischt genutzte Gebäude (Anlage 22)"], ["20 %", "Mietabweichung, ab der die übliche Miete gilt"], ["1 Jahr", "Kaufpreisnachweis vor oder nach dem Stichtag (§ 198 BewG)"]],
     schema: [
-      "Bodenwert = Fläche × Bodenrichtwert (§ 184 Abs. 2, § 179 BewG)",
+      "Bodenwert = Fläche × Bodenrichtwert (§ 184 Abs. 2 BewG, § 179 BewG)",
       "Rohertrag = Jahresnettokaltmiete ohne Umlagen; übliche Miete bei Eigennutzung, Leerstand oder Abweichung > 20 % (§ 186 BewG)",
       "− Bewirtschaftungskosten nach Anlage 23: Verwaltung, Instandhaltung (Wohnen indexiert), Mietausfallwagnis 2 % / 4 % (§ 187 BewG)",
-      "= Reinertrag − Bodenwert × Liegenschaftszins (§ 185 Abs. 2, § 188 BewG) = **Gebäudereinertrag**",
+      "= Reinertrag − Bodenwert × Liegenschaftszins (§ 185 Abs. 2 BewG, § 188 BewG) = **Gebäudereinertrag**",
       "× Vervielfältiger (Anlage 21) nach Liegenschaftszins und Restnutzungsdauer = **Gebäudeertragswert** (§ 185 Abs. 3 BewG)",
       "Bodenwert + Gebäudeertragswert = **Ertragswert**, mindestens Bodenwert (§ 184 Abs. 3 BewG)",
     ],
@@ -241,15 +241,15 @@ export const KLAUSUR_BEWR = {
   titel: "Klausur Bewertungsrecht: so holst du die Punkte",
   aufbau: [
     "**120 Minuten**, ein zusammenhängender Sachverhalt (Erbfall oder Schenkung an mehrere Erwerber). Hilfsmittel: Textausgabe Erbschaftsteuer-/Bewertungsrecht, Erbschaftsteuer-Handbuch, BGB, Wichtige Steuergesetze.",
-    "**Allgemeiner Teil** für alle Erwerber: steuerpflichtiger Vorgang (§ 1, § 3 oder § 7 ErbStG), Entstehung und Stichtag (§§ 9, 11), persönliche Steuerpflicht (§ 2 ErbStG mit § 121 BewG), Steuerklasse und Freibetrag (§§ 15–17), Steuerschuldner (§ 20).",
+    "**Allgemeiner Teil** für alle Erwerber: steuerpflichtiger Vorgang (§ 1 ErbStG, § 3 ErbStG oder § 7 ErbStG), Entstehung und Stichtag (§§ 9, 11 ErbStG), persönliche Steuerpflicht (§ 2 ErbStG mit § 121 BewG), Steuerklasse und Freibetrag (§§ 15–17 ErbStG), Steuerschuldner (§ 20 ErbStG).",
     "**Bewertung** jedes Vermögensgegenstands: Grundbesitzwert im **Ertragswertverfahren** mit Anlagen 21–23, Auslandsgrundstück nach § 31 BewG, festgestellter Anteilswert, Nennwert, Hausrat.",
-    "**Befreiungen:** § 13 Abs. 1 Nr. 1 (Hausrat), Nr. 4a–4c (Familienheim), § 13d (Wohnraum, Aufteilung nach Flächen) mit Schuldenkürzung nach § 10 Abs. 6a, §§ 13a, 13b (Verwaltungsvermögen, Regel- oder Optionsverschonung, Abzugsbetrag).",
-    "**Steuerberechnung** je Erwerber mit Abrundung (§ 10 Abs. 1 S. 6), Steuersatz (§ 19 Abs. 1) und **Härteausgleich** (§ 19 Abs. 3).",
+    "**Befreiungen:** § 13 Abs. 1 Nr. 1 ErbStG (Hausrat), Nr. 4a–4c (Familienheim), § 13d ErbStG (Wohnraum, Aufteilung nach Flächen) mit Schuldenkürzung nach § 10 Abs. 6a ErbStG, §§ 13a, 13b ErbStG (Verwaltungsvermögen, Regel- oder Optionsverschonung, Abzugsbetrag).",
+    "**Steuerberechnung** je Erwerber mit Abrundung (§ 10 Abs. 1 S. 6 ErbStG), Steuersatz (§ 19 Abs. 1 ErbStG) und **Härteausgleich** (§ 19 Abs. 3 ErbStG).",
   ],
   top: ["bew-ertragswert", "bew-pflicht", "bew-betrieb", "bew-wohnraum", "bew-steuer", "bew-klassen", "bew-familienheim", "bew-erwerb"],
   tipps: [
     "Für jeden Erwerber dasselbe Gerüst: Vorgang → Stichtag → Steuerpflicht → Steuerklasse/Freibetrag → Werte → Befreiungen → Schulden → Freibetrag → Abrundung → Steuer.",
-    "Ertragswert sauber in Schritten: jeden Zwischenwert mit Norm (§ 184, § 186, § 187 mit Anlage 23, § 185, § 188, Anlage 21, Anlage 22).",
+    "Ertragswert sauber in Schritten: jeden Zwischenwert mit Norm (§ 184 BewG, § 186 BewG, § 187 BewG mit Anlage 23, § 185 BewG, § 188 BewG, Anlage 21, Anlage 22).",
     "Bei Auslandssachverhalten zuerst prüfen, **wer** Inländer ist – meist entscheidet der Erwerber oder die Fünfjahresfrist.",
     "Ist ein Gutachten oder ein Kaufpreis genannt: an § 198 BewG denken und den niedrigeren Wert ansetzen.",
     "Den Härteausgleich immer prüfen, wenn der Erwerb knapp über 75.000 €, 300.000 € oder 600.000 € liegt.",

@@ -3,7 +3,7 @@
 
 export const KOMPAKT_UST = {
   "ust-grundlagen": {
-    satz: "Die Umsatzsteuer belastet am Ende nur den privaten Verbrauch – Unternehmer schulden sie auf ihre Umsätze und holen sich die gezahlte Steuer über den Vorsteuerabzug zurück (§ 1 Abs. 1 Nr. 1, § 15 Abs. 1 UStG).",
+    satz: "Die Umsatzsteuer belastet am Ende nur den privaten Verbrauch – Unternehmer schulden sie auf ihre Umsätze und holen sich die gezahlte Steuer über den Vorsteuerabzug zurück (§ 1 Abs. 1 Nr. 1 UStG, § 15 Abs. 1 UStG).",
     zahlen: [["19 %", "Regelsteuersatz (§ 12 Abs. 1 UStG)"], ["7 %", "ermäßigter Satz (§ 12 Abs. 2 UStG)"], ["Monat", "Voranmeldungszeitraum, wenn die Steuer des Vorjahres mehr als 9.000 € betrug – sonst das Kalendervierteljahr (§ 18 Abs. 2 S. 1, 2 UStG)"]],
     punkte: [
       "**System:** Allphasen-Netto-Umsatzsteuer mit Vorsteuerabzug – jede Stufe versteuert ihren Umsatz, zieht aber die ihr berechnete Steuer ab (§ 15 UStG). Nur der Endverbraucher bleibt belastet.",
@@ -88,19 +88,19 @@ export const KOMPAKT_UST = {
     fallen: [
       "Nie mit § 4 UStG beginnen – eine Befreiung setzt voraus, dass die Steuerbarkeit bejaht wurde.",
       "Schlagworte wie „Schadensersatz ist nicht steuerbar“ ersetzen nicht die Prüfung der Merkmale (Prüfung nach § 1 Abs. 1 Nr. 1 UStG).",
-      "Auch bei steuerfreien Umsätzen die Bemessungsgrundlage und den Anmeldezeitraum angeben – das gibt Punkte (§ 10 Abs. 1, § 18 Abs. 1 UStG).",
+      "Auch bei steuerfreien Umsätzen die Bemessungsgrundlage und den Anmeldezeitraum angeben – das gibt Punkte (§ 10 Abs. 1 UStG, § 18 Abs. 1 UStG).",
     ],
   },
 
   "ust-befreiung": {
-    satz: "Steuerbefreiungen greifen erst nach bejahter Steuerbarkeit – und bei manchen kann der Unternehmer auf die Befreiung verzichten, um Vorsteuer zu retten (§ 4, § 9 Abs. 1 UStG).",
-    zahlen: [["§ 4 Nr. 12", "Vermietung von Grundstücken"], ["§ 4 Nr. 14", "Heilbehandlungen"], ["§ 9", "Option zur Steuerpflicht"]],
+    satz: "Steuerbefreiungen greifen erst nach bejahter Steuerbarkeit – und bei manchen kann der Unternehmer auf die Befreiung verzichten, um Vorsteuer zu retten (§ 4 UStG, § 9 Abs. 1 UStG).",
+    zahlen: [["§ 4 Nr. 12 UStG", "Vermietung von Grundstücken"], ["§ 4 Nr. 14 UStG", "Heilbehandlungen"], ["§ 9 UStG", "Option zur Steuerpflicht"]],
     punkte: [
       "**§ 4 Nr. 12 a UStG – Vermietung von Grundstücken** ist steuerfrei. **Ausnahmen (S. 2):** kurzfristige Beherbergung (Hotel, **Ferienwohnung**), Vermietung von **Stellplätzen**, Betriebsvorrichtungen → steuerpflichtig. Parkplätze **zusammen mit** der Wohnung/Praxis sind aber Nebenleistung und ebenfalls frei.",
       "**§ 4 Nr. 14 a UStG – Heilbehandlungen** von Ärzten, Heilpraktikern, Physiotherapeuten sind steuerfrei, wenn ein **therapeutisches Ziel** im Vordergrund steht: Vorsorge, Diagnose, Behandlung, Beratung zur Krankheitsvorbeugung.",
       "**Nicht frei** sind z. B. Gutachten für eine **Lebensversicherung** und Schönheitsoperationen ohne medizinischen Grund (kein therapeutisches Ziel) sowie **Tierarztleistungen** (keine Humanmedizin, § 4 Nr. 14 a UStG). Ein im Rahmen der Behandlung verabreichtes Medikament ist Nebenleistung → ebenfalls frei (Abschn. 3.10 Abs. 5 UStAE).",
       "**§ 4 Nr. 9 a UStG:** Umsätze, die unter das Grunderwerbsteuergesetz fallen (Grundstücksverkauf). **§ 4 Nr. 8 UStG:** Geld- und Kreditgeschäfte. **§ 4 Nr. 10, 11 UStG:** Versicherungen und Versicherungsvertreter.",
-      "**§ 4 Nr. 28 UStG:** Verkauf von Gegenständen, die **ausschließlich für steuerfreie Tätigkeiten** nach § 4 Nr. 8–27, 29 genutzt wurden (z. B. Untersuchungsgerät der Ärztin) oder für die der Vorsteuerabzug nach § 15 Abs. 1a ausgeschlossen war – steuerfrei.",
+      "**§ 4 Nr. 28 UStG:** Verkauf von Gegenständen, die **ausschließlich für steuerfreie Tätigkeiten** nach § 4 Nr. 8–27, 29 UStG genutzt wurden (z. B. Untersuchungsgerät der Ärztin) oder für die der Vorsteuerabzug nach § 15 Abs. 1a UStG ausgeschlossen war – steuerfrei.",
       "**Option (§ 9 Abs. 1 UStG):** Verzicht auf die Befreiung bei bestimmten Umsätzen (u. a. Nr. 8, 9a, 12), wenn der Umsatz an einen **anderen Unternehmer für dessen Unternehmen** ausgeführt wird.",
       "**Zusätzlich bei Grundstücksvermietung (§ 9 Abs. 2 UStG):** Option nur, wenn der **Mieter** das Grundstück ausschließlich für Umsätze verwendet, die den Vorsteuerabzug **nicht ausschließen**. Rechtsanwalt, Tischler → ja. **Arzt, Versicherungsvertreter → nein.** Wohnung an Privatleute → nein (kein Unternehmer).",
       "**Folge der Befreiung:** Vorsteuer aus zugehörigen Eingangsleistungen ist ausgeschlossen (§ 15 Abs. 2 S. 1 Nr. 1 UStG).",
@@ -108,7 +108,7 @@ export const KOMPAKT_UST = {
     fallen: [
       "„Alle optimalen Wahlrechte nutzen“ im Vorspann heißt: Option prüfen und – wenn zulässig – ausüben (§ 9 Abs. 1 UStG).",
       "§ 9 Abs. 2 S. 1 UStG stellt auf die Umsätze des **Mieters** ab, nicht auf die des Vermieters.",
-      "Auch steuerfreie Umsätze brauchen Bemessungsgrundlage und Anmeldezeitraum in der Lösung (§ 10 Abs. 1, § 18 Abs. 1 UStG).",
+      "Auch steuerfreie Umsätze brauchen Bemessungsgrundlage und Anmeldezeitraum in der Lösung (§ 10 Abs. 1 UStG, § 18 Abs. 1 UStG).",
     ],
   },
 
@@ -159,7 +159,7 @@ export const KOMPAKT_UST = {
 
   "ust-vorsteuer": {
     satz: "Vorsteuer darf nur abziehen, wer als Unternehmer eine Leistung für sein Unternehmen von einem anderen Unternehmer bezieht und eine ordnungsgemäße Rechnung hat – und nur, soweit er keine steuerfreien Umsätze damit ausführt (§ 15 Abs. 1 S. 1 Nr. 1, Abs. 2 S. 1 Nr. 1 UStG).",
-    zahlen: [["10 %", "Mindestnutzung für Zuordnung (§ 15 Abs. 1 S. 2)"], ["250 €", "Kleinbetragsrechnung brutto (§ 33 UStDV)"], ["50 €", "Geschenkgrenze netto je Empfänger und Jahr (§ 4 Abs. 5 S. 1 Nr. 1 EStG, § 15 Abs. 1a UStG)"]],
+    zahlen: [["10 %", "Mindestnutzung für Zuordnung (§ 15 Abs. 1 S. 2 UStG)"], ["250 €", "Kleinbetragsrechnung brutto (§ 33 UStDV)"], ["50 €", "Geschenkgrenze netto je Empfänger und Jahr (§ 4 Abs. 5 S. 1 Nr. 1 EStG, § 15 Abs. 1a UStG)"]],
     schema: [
       "Leistungsempfänger ist Unternehmer und bezieht für sein Unternehmen (§ 15 Abs. 1 S. 1 Nr. 1 UStG)",
       "Leistung von einem **anderen Unternehmer** (§ 15 Abs. 1 S. 1 Nr. 1 UStG, § 2 Abs. 1 UStG)",
@@ -229,8 +229,8 @@ export const KLAUSUR_UST = {
   titel: "USt-Klausur: so holst du die Punkte",
   aufbau: [
     "**180 Minuten, 4–6 Sachverhalte** mit vorgegebenen Bearbeitungszeiten (15–60 Minuten). Hilfsmittel: USt-Handausgabe, Gesetzestexte, Taschenrechner.",
-    "**Vorspann lesen:** Welche Personen sind zu beurteilen? Welche Normen sind ausgeschlossen (§§ 14c, 19, 20, 25a)? Voranmeldungszeitraum = Kalendermonat. „Optimale Wahlrechte“ = Option prüfen.",
-    "**Pro Umsatz** immer dieselbe Reihenfolge: Steuerbarkeit (Art, Ort) → Steuerpflicht/Option → Bemessungsgrundlage und Steuersatz → Steuerbetrag → Entstehung/Voranmeldungszeitraum → Änderungen (§ 17) → Vorsteuer (Recht, Höhe, Zeitpunkt).",
+    "**Vorspann lesen:** Welche Personen sind zu beurteilen? Welche Normen sind ausgeschlossen (§§ 14c, 19, 20, 25a UStG)? Voranmeldungszeitraum = Kalendermonat. „Optimale Wahlrechte“ = Option prüfen.",
+    "**Pro Umsatz** immer dieselbe Reihenfolge: Steuerbarkeit (Art, Ort) → Steuerpflicht/Option → Bemessungsgrundlage und Steuersatz → Steuerbetrag → Entstehung/Voranmeldungszeitraum → Änderungen (§ 17 UStG) → Vorsteuer (Recht, Höhe, Zeitpunkt).",
   ],
   top: ["ust-befreiung", "ust-vorsteuer", "ust-entstehung", "ust-bmg", "ust-leistung", "ust-ort"],
   tipps: [

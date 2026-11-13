@@ -237,7 +237,7 @@ export const BEISPIELE_UST = {
       sv: "Grafikerin G hatte im Vorjahr 22.000 € Umsatz, im laufenden Jahr erwartet sie 30.000 €. Sie hat nicht auf die Kleinunternehmerregelung verzichtet. Einem Kunden stellt sie trotzdem 1.000 € zzgl. 190 € USt in Rechnung.",
       loesung: [
         "G ist Kleinunternehmerin, da ihr Umsatz im Vorjahr 25.000 € und im laufenden Jahr 100.000 € nicht übersteigt; ihre Umsätze sind steuerfrei (§ 19 Abs. 1 UStG).",
-        "Wegen des unberechtigten Steuerausweises schuldet G 190 € (§ 14c Abs. 2 UStG), Entstehung mit Ausgabe der Rechnung (§ 13 Abs. 1 Nr. 4 UStG). Der Kunde hat keinen Vorsteuerabzug.",
+        "Wegen des unberechtigten Steuerausweises schuldet G 190 € (§ 14c Abs. 2 UStG), Entstehung mit Ausgabe der Rechnung (§ 13 Abs. 1 Nr. 3 UStG). Der Kunde hat keinen Vorsteuerabzug.",
       ],
     },
     {

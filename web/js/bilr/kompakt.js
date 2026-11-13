@@ -50,9 +50,9 @@ export const KOMPAKT_BSR = {
       "**Pflicht (§ 240 HGB):** Inventar bei Beginn des Handelsgewerbes und zum Schluss jedes Geschäftsjahres; Mengen und Werte aller Vermögensgegenstände und Schulden.",
       "**Inventurverfahren (§ 241 HGB):** Stichtagsinventur (zeitnah, i. d. R. ±10 Tage), **verlegte Inventur** (bis 3 Monate vor oder 2 Monate nach dem Stichtag, Wert fortschreiben), **permanente Inventur** (laufende Lagerbuchführung), Stichprobeninventur.",
       "**Körperliche Inventur** für Sachen (zählen, messen, wiegen), **Buchinventur** für Forderungen, Bankguthaben, Schulden (Belege, Kontoauszüge, Saldenbestätigungen) (§ 240 Abs. 1 HGB: „genau zu verzeichnen“).",
-      "**Bilanz (§ 242 Abs. 1 HGB):** Abschluss, der das Verhältnis von Vermögen und Schulden darstellt. Gliederung (§ 247 Abs. 1, § 266 HGB): **Aktiva** Anlagevermögen, Umlaufvermögen, aktive RAP; **Passiva** Eigenkapital, Rückstellungen, Verbindlichkeiten, passive RAP.",
+      "**Bilanz (§ 242 Abs. 1 HGB):** Abschluss, der das Verhältnis von Vermögen und Schulden darstellt. Gliederung (§ 247 Abs. 1 HGB, § 266 HGB): **Aktiva** Anlagevermögen, Umlaufvermögen, aktive RAP; **Passiva** Eigenkapital, Rückstellungen, Verbindlichkeiten, passive RAP.",
       "**Anlagevermögen (§ 247 Abs. 2 HGB):** Gegenstände, die **dauernd** dem Geschäftsbetrieb dienen; alles andere ist Umlaufvermögen (Waren, Forderungen, Bank).",
-      "**Aktivseite** zeigt die Mittelverwendung (Vermögen), **Passivseite** die Mittelherkunft (Kapital). Eigenkapital = Vermögen − Schulden (§ 242 Abs. 1, § 247 Abs. 1 HGB).",
+      "**Aktivseite** zeigt die Mittelverwendung (Vermögen), **Passivseite** die Mittelherkunft (Kapital). Eigenkapital = Vermögen − Schulden (§ 242 Abs. 1 HGB, § 247 Abs. 1 HGB).",
       "**Unterzeichnung** durch den Kaufmann (§ 245 HGB); Aufbewahrung 10 Jahre (§ 257 HGB).",
     ],
     fallen: [
@@ -96,7 +96,7 @@ export const KOMPAKT_BSR = {
     ],
     fallen: [
       "Eigenkapital ist ein Passivkonto – Zugänge im Haben.",
-      "Vorsteuer (Forderung) ist ein Aktivkonto, Umsatzsteuer (Verbindlichkeit) ein Passivkonto (§ 15 Abs. 1, § 13a Abs. 1 Nr. 1 UStG).",
+      "Vorsteuer (Forderung) ist ein Aktivkonto, Umsatzsteuer (Verbindlichkeit) ein Passivkonto (§ 15 Abs. 1 UStG, § 13a Abs. 1 Nr. 1 UStG).",
     ],
   },
 
@@ -129,7 +129,7 @@ export const KOMPAKT_BSR = {
       "**Einlagen (§ 4 Abs. 1 S. 8 EStG):** alle Wirtschaftsgüter, die der Steuerpflichtige dem Betrieb zuführt – gebucht im **Haben** auf Privateinlagen.",
       "**Zahlung einer Betriebsrechnung vom privaten Konto** = Einlage: z. B. Wareneinkauf / Vorsteuer an Privateinlagen (§ 4 Abs. 1 S. 8 EStG).",
       "**Warenentnahme:** Privatentnahmen an Unentgeltliche Wertabgaben und Umsatzsteuer (§ 3 Abs. 1b UStG; Wert nach § 6 Abs. 1 Nr. 4 EStG).",
-      "**Private Steuern** (ESt, Kirchensteuer, Soli) und private Versicherungen über das Betriebskonto = Entnahme (§ 4 Abs. 1 S. 2, § 12 Nr. 3 EStG).",
+      "**Private Steuern** (ESt, Kirchensteuer, Soli) und private Versicherungen über das Betriebskonto = Entnahme (§ 4 Abs. 1 S. 2 EStG, § 12 Nr. 3 EStG).",
       "**Gewinnformel (§ 4 Abs. 1 S. 1 EStG):** Betriebsvermögen Ende − Betriebsvermögen Anfang **+ Entnahmen − Einlagen**.",
     ],
     fallen: [
@@ -182,7 +182,7 @@ export const KOMPAKT_BSR = {
   },
 
   umsatzsteuer: {
-    satz: "In der Buchführung ist die Umsatzsteuer ein durchlaufender Posten: Vorsteuer ist eine Forderung ans Finanzamt, Umsatzsteuer eine Verbindlichkeit – die Differenz ist die Zahllast (§ 13a Abs. 1 Nr. 1, § 15 Abs. 1 UStG).",
+    satz: "In der Buchführung ist die Umsatzsteuer ein durchlaufender Posten: Vorsteuer ist eine Forderung ans Finanzamt, Umsatzsteuer eine Verbindlichkeit – die Differenz ist die Zahllast (§ 13a Abs. 1 Nr. 1 UStG, § 15 Abs. 1 UStG).",
     zahlen: [["19 %", "Regelsatz"], ["7 %", "ermäßigter Satz"], ["USt − VSt", "Zahllast"]],
     punkte: [
       "**Nettomethode:** Erlöse und Einkäufe werden netto gebucht, die Steuer getrennt auf **Vorsteuer** (Aktivkonto) bzw. **Umsatzsteuer** (Passivkonto) (§ 277 Abs. 1 HGB, § 9b Abs. 1 EStG).",
@@ -210,10 +210,10 @@ export const KOMPAKT_BSR = {
     ],
     punkte: [
       "**EBK (Eröffnungsbilanzkonto)** ist das Spiegelbild der Eröffnungsbilanz – Aktiva stehen im Haben, Passiva im Soll, damit die Konten richtig eröffnet werden (Bilanzidentität, § 252 Abs. 1 Nr. 1 HGB).",
-      "**SBK (Schlussbilanzkonto)** sammelt die Schlussbestände – aus ihm wird die Schlussbilanz erstellt. Die Werte müssen mit der Inventur übereinstimmen (§ 240 Abs. 2, § 242 Abs. 1 HGB).",
+      "**SBK (Schlussbilanzkonto)** sammelt die Schlussbestände – aus ihm wird die Schlussbilanz erstellt. Die Werte müssen mit der Inventur übereinstimmen (§ 240 Abs. 2 HGB, § 242 Abs. 1 HGB).",
       "**GuV-Konto:** Aufwand im Soll, Ertrag im Haben; Saldo = Gewinn (im Soll) bzw. Verlust (im Haben) (§ 242 Abs. 2 HGB).",
       "**Privatkonten** werden über das Eigenkapital abgeschlossen, **nicht** über die GuV (§ 4 Abs. 1 S. 1 EStG).",
-      "**Zeitliche Abgrenzung** (RAP, sonstige Forderungen/Verbindlichkeiten) und Abschreibungen werden vor dem Abschluss gebucht (§ 250, § 252 Abs. 1 Nr. 5, § 253 Abs. 3 HGB).",
+      "**Zeitliche Abgrenzung** (RAP, sonstige Forderungen/Verbindlichkeiten) und Abschreibungen werden vor dem Abschluss gebucht (§ 250 HGB, § 252 Abs. 1 Nr. 5 HGB, § 253 Abs. 3 HGB).",
     ],
     fallen: [
       "Das BVK geht ins WEK, nicht in die GuV.",
@@ -413,7 +413,7 @@ export const KOMPAKT_BSR = {
   },
 
   "bsr-abgrenzung": {
-    satz: "Aufwand und Ertrag gehören in das Jahr, das sie wirtschaftlich betreffen: Vorauszahlungen werden über Rechnungsabgrenzung, Nachzahlungen über sonstige Forderungen und Verbindlichkeiten zugeordnet (§ 252 Abs. 1 Nr. 5, § 250 HGB).",
+    satz: "Aufwand und Ertrag gehören in das Jahr, das sie wirtschaftlich betreffen: Vorauszahlungen werden über Rechnungsabgrenzung, Nachzahlungen über sonstige Forderungen und Verbindlichkeiten zugeordnet (§ 252 Abs. 1 Nr. 5 HGB, § 250 HGB).",
     schema: [
       "Zahlung vor dem Stichtag, Aufwand/Ertrag danach? → aktiver/passiver RAP",
       "Aufwand/Ertrag vor dem Stichtag, Zahlung danach? → sonstige Verbindlichkeit/Forderung",
@@ -422,8 +422,8 @@ export const KOMPAKT_BSR = {
     punkte: [
       "**Aktiver RAP (§ 250 Abs. 1 HGB, § 5 Abs. 5 S. 1 Nr. 1 EStG):** **Ausgaben vor** dem Abschlussstichtag, die **Aufwand für eine bestimmte Zeit danach** sind – z. B. Versicherung, Miete, Kfz-Steuer im Voraus.",
       "**Passiver RAP (§ 250 Abs. 2 HGB, § 5 Abs. 5 S. 1 Nr. 2 EStG):** **Einnahmen vor** dem Stichtag, die **Ertrag für eine bestimmte Zeit danach** sind – z. B. im Voraus erhaltene Miete.",
-      "**Sonstige Verbindlichkeit:** Aufwand des alten Jahres, Zahlung erst im neuen Jahr – z. B. **Darlehenszinsen nachschüssig** (Zinsen Juni–Dez. → Zinsaufwand an sonstige Verbindlichkeiten) (§ 246 Abs. 1 S. 1, § 252 Abs. 1 Nr. 5 HGB).",
-      "**Sonstige Forderung:** Ertrag des alten Jahres, Zahlung erst im neuen Jahr – z. B. Zinserträge, Miete für Dezember im Januar erhalten (§ 246 Abs. 1 S. 1, § 252 Abs. 1 Nr. 5 HGB).",
+      "**Sonstige Verbindlichkeit:** Aufwand des alten Jahres, Zahlung erst im neuen Jahr – z. B. **Darlehenszinsen nachschüssig** (Zinsen Juni–Dez. → Zinsaufwand an sonstige Verbindlichkeiten) (§ 246 Abs. 1 S. 1 HGB, § 252 Abs. 1 Nr. 5 HGB).",
+      "**Sonstige Forderung:** Ertrag des alten Jahres, Zahlung erst im neuen Jahr – z. B. Zinserträge, Miete für Dezember im Januar erhalten (§ 246 Abs. 1 S. 1 HGB, § 252 Abs. 1 Nr. 5 HGB).",
       "**Disagio/Damnum (§ 250 Abs. 3 HGB):** handelsrechtlich Wahlrecht, steuerlich **Pflicht** zur Aktivierung als RAP und Auflösung über die Laufzeit.",
       "**Verbindlichkeiten:** mit dem **Erfüllungsbetrag** (§ 253 Abs. 1 S. 2 HGB, § 6 Abs. 1 Nr. 3 EStG); eine steuerliche Abzinsung gibt es seit 2023 nicht mehr.",
       "**Fremdwährung (§ 256a HGB):** Umrechnung zum Devisenkassamittelkurs am Stichtag; bei Restlaufzeit über einem Jahr gelten Anschaffungskosten- und Imparitätsprinzip.",
@@ -436,7 +436,7 @@ export const KOMPAKT_BSR = {
 
   "bsr-entnahme-einlage": {
     satz: "Was den Betrieb für private Zwecke verlässt, wird mit dem Teilwert entnommen – was privat hineinkommt, wird mit dem Teilwert eingelegt; beides ändert den Gewinn nicht unmittelbar, wohl aber die Bewertung (§ 6 Abs. 1 Nr. 4, 5 EStG).",
-    zahlen: [["Teilwert", "Entnahme (§ 6 Abs. 1 Nr. 4)"], ["Teilwert, max. AK", "Einlage innerhalb 3 Jahren (Nr. 5)"], ["1 %", "Bruttolistenpreis je Monat (Pkw > 50 % betrieblich)"]],
+    zahlen: [["Teilwert", "Entnahme (§ 6 Abs. 1 Nr. 4 EStG)"], ["Teilwert, max. AK", "Einlage innerhalb 3 Jahren (Nr. 5)"], ["1 %", "Bruttolistenpreis je Monat (Pkw > 50 % betrieblich)"]],
     punkte: [
       "**Entnahme (§ 4 Abs. 1 S. 2 EStG):** Wirtschaftsgüter (Gegenstände, Geld, **Nutzungen und Leistungen**) für betriebsfremde Zwecke.",
       "**Bewertung (§ 6 Abs. 1 Nr. 4 S. 1 EStG):** **Teilwert** – bei Waren in der Regel der aktuelle Einkaufspreis. Die Umsatzsteuer auf die Entnahme ist ebenfalls Entnahme (§ 12 Nr. 3 EStG).",

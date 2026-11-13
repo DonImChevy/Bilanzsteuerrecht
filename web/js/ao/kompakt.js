@@ -21,11 +21,11 @@ export const KOMPAKT_AO = {
   },
 
   "ao-steuergeheimnis": {
-    satz: "Wer als Amtsträger dienstlich etwas über andere erfährt, darf es weder weitererzählen noch für sich nutzen oder grundlos abrufen – außer eine Erlaubnisnorm des § 30 Abs. 4 oder 5 AO greift.",
+    satz: "Wer als Amtsträger dienstlich etwas über andere erfährt, darf es weder weitererzählen noch für sich nutzen oder grundlos abrufen – außer eine Erlaubnisnorm des § 30 Abs. 4 AO oder 5 AO greift.",
     schema: [
       "Amtsträger (§ 7 AO) oder gleichgestellte Person (§ 30 Abs. 3 AO)?",
       "Geschützte Daten: personenbezogene Daten eines anderen (§ 30 Abs. 2 Nr. 1 AO) oder ein fremdes Betriebs- oder Geschäftsgeheimnis (§ 30 Abs. 2 Nr. 2 AO)?",
-      "Dienstlich bekannt geworden (§ 30 Abs. 2 Nr. 1 a–c AO)?",
+      "Dienstlich bekannt geworden (§ 30 Abs. 2 Nr. 1 a AO–c AO)?",
       "Offenbaren oder verwerten (§ 30 Abs. 2 Nr. 1, 2 AO) oder im automatisierten Verfahren abrufen (§ 30 Abs. 2 Nr. 3 AO)?",
       "Ohne Befugnis – greift keine Erlaubnisnorm? Steuerverfahren (§ 30 Abs. 4 Nr. 1 AO), Gesetz (§ 30 Abs. 4 Nr. 2 AO), Zustimmung (§ 30 Abs. 4 Nr. 3 AO), nichtsteuerliche Straftat (§ 30 Abs. 4 Nr. 4 AO), zwingendes öffentliches Interesse (§ 30 Abs. 4 Nr. 5 AO), falsche Angaben (§ 30 Abs. 5 AO)",
     ],
@@ -181,14 +181,14 @@ export const KOMPAKT_AO = {
       "**§ 127 AO:** Keine Aufhebung allein wegen Verfahrens-, Form- oder örtlicher Zuständigkeitsfehler, wenn in der Sache nichts anderes hätte entschieden werden können – gilt für **gebundene** Verwaltungsakte, nicht für Ermessensentscheidungen (außer Ermessensreduzierung auf null).",
     ],
     fallen: [
-      "Erst § 125 Abs. 2, dann Abs. 3, dann erst die Generalklausel Abs. 1 prüfen.",
+      "Erst § 125 Abs. 2 AO, dann Abs. 3, dann erst die Generalklausel Abs. 1 prüfen.",
       "Örtliche Unzuständigkeit allein führt nie zur Nichtigkeit.",
       "Nichtige Verwaltungsakte lassen sich nicht heilen – §§ 126, 127 AO setzen einen wirksamen Verwaltungsakt voraus.",
     ],
   },
 
   "ao-bekanntgabe": {
-    satz: "Erst die Bekanntgabe macht den Verwaltungsakt wirksam: Die Behörde muss ihn bewusst dem Richtigen zugehen lassen – per Post gilt er am vierten Tag als bekannt gegeben (§ 122 Abs. 1, 2, § 124 Abs. 1 AO).",
+    satz: "Erst die Bekanntgabe macht den Verwaltungsakt wirksam: Die Behörde muss ihn bewusst dem Richtigen zugehen lassen – per Post gilt er am vierten Tag als bekannt gegeben (§ 122 Abs. 1, 2 AO, § 124 Abs. 1 AO).",
     zahlen: [["4 Tage", "Bekanntgabefiktion Inland und Datenabruf (seit 2025)"], ["1 Monat", "Bekanntgabefiktion Ausland"]],
     punkte: [
       "**Bekanntgabewille:** Die Behörde will das „Ob“ und „Wie“. Aufgabe des Willens nur bis zum Verlassen des Machtbereichs (dokumentiert); danach nur Widerruf, der spätestens mit dem Bescheid zugehen muss (auch telefonisch).",
@@ -229,7 +229,7 @@ export const KOMPAKT_AO = {
   "ao-feststellung": {
     satz: "Normalerweise sind Besteuerungsgrundlagen nur Rechenweg im Steuerbescheid; wo mehrere beteiligt sind oder ein anderes Finanzamt zuständig ist, werden sie vorab verbindlich festgestellt (§§ 157 Abs. 2, 179, 180 AO).",
     schema: [
-      "Mehrere Beteiligte, ESt-/KSt-pflichtige Einkünfte? → gesondert und einheitlich (§ 179 Abs. 2 S. 2, § 180 Abs. 1 S. 1 Nr. 2 a AO)",
+      "Mehrere Beteiligte, ESt-/KSt-pflichtige Einkünfte? → gesondert und einheitlich (§ 179 Abs. 2 S. 2 AO, § 180 Abs. 1 S. 1 Nr. 2 a AO)",
       "Ausnahmen: nur ein Beteiligter im Inland steuerpflichtig, Fall geringer Bedeutung (§ 180 Abs. 3 AO)",
       "Eine Person, Gewinneinkünfte, Betriebs-/Tätigkeitsfinanzamt ≠ Wohnsitzfinanzamt? → gesondert (§ 180 Abs. 1 S. 1 Nr. 2 b AO)",
       "Zuständig: § 18 Abs. 1 Nr. 1–4 AO",
