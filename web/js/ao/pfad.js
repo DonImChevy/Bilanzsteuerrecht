@@ -197,6 +197,22 @@ export const PFAD_AO = [
     ],
   },
   {
+    id: "ao-einspruch", titel: "Ist der Einspruch zulässig?", kurz: "§§ 347, 350, 355, 357 AO", icon: "✉️", normen: ["AO 347 1", "AO 357 1", "AO 355 1", "AO 350", "AO 358"],
+    karten: [
+      { art: "merksatz", titel: "Vier Prüfpunkte", text: "Zulässig ist ein Einspruch, wenn er **statthaft** ist, **Form** und **Frist** wahrt und der Einspruchsführer **beschwert** ist. Fehlt ein Punkt, wird er als unzulässig verworfen (§ 358 AO)." },
+      { art: "erklaerung", titel: "Statthaft und beschwert", text: "• **Statthaft**: gegen einen Verwaltungsakt in Abgabenangelegenheiten, z. B. den Steuerbescheid (§ 347 Abs. 1 S. 1 Nr. 1 AO).\n• **Beschwert**: Wer Einspruch einlegt, muss geltend machen, selbst betroffen zu sein – etwa weil die Steuer zu hoch ist (§ 350 AO)." },
+      { art: "erklaerung", titel: "Form – großzügig", text: "Schriftlich, elektronisch oder zur Niederschrift (§ 357 Abs. 1 S. 1 AO). Es muss nur erkennbar sein, **wer** ihn einlegt. „Widerspruch“ statt „Einspruch“ schadet nicht (§ 357 Abs. 1 S. 3 AO). Ein Anruf reicht **nicht**." },
+      { art: "erklaerung", titel: "Frist", text: "**Ein Monat** nach Bekanntgabe (§ 355 Abs. 1 S. 1 AO). Wer die Frist ohne Verschulden versäumt, kann Wiedereinsetzung bekommen (§ 110 Abs. 1 AO)." },
+      { art: "klausur", titel: "Klausurtipp", text: "Jede Voraussetzung **getrennt** prüfen und mit Norm belegen – auch die, die offensichtlich erfüllt ist. Erst danach das Ergebnis: zulässig oder unzulässig." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Über dem Schreiben steht „Widerspruch gegen meinen Steuerbescheid“. Was folgt daraus?", optionen: ["Nichts – die falsche Bezeichnung schadet nicht", "Der Einspruch ist unzulässig", "Das Finanzamt muss das Schreiben zurückschicken", "Es gilt als Antrag auf Fristverlängerung"], richtig: 0, erkl: "§ 357 Abs. 1 S. 3 AO." },
+      { art: "wahl", frage: "Wie kann ein Einspruch **nicht** eingelegt werden?", optionen: ["Telefonisch", "Per E-Mail", "Per Brief ohne Unterschrift", "Zur Niederschrift im Finanzamt"], richtig: 0, erkl: "Schriftlich, elektronisch oder zur Niederschrift (§ 357 Abs. 1 S. 1 AO); eine Unterschrift ist nicht nötig (§ 357 Abs. 1 S. 2 AO)." },
+      { art: "wahl", frage: "Der Einspruch enthält keine Begründung. Ist er deshalb unzulässig?", optionen: ["Nein – die Begründung „soll“ nur angegeben werden", "Ja – ohne Begründung fehlt die Form", "Ja – ohne Begründung fehlt die Beschwer", "Nur bei Steuerbescheiden"], richtig: 0, erkl: "§ 357 Abs. 3 AO ist eine Soll-Vorschrift." },
+      { art: "wahl", frage: "Was prüft man unter „Beschwer“?", optionen: ["Ob der Einspruchsführer geltend macht, selbst betroffen zu sein", "Ob der Einspruch begründet ist", "Ob die Frist gewahrt ist", "Ob das Finanzamt zuständig war"], richtig: 0, erkl: "§ 350 AO." },
+    ],
+  },
+  {
     id: "ao-zahlen", titel: "Entstehung, Fälligkeit, Säumnis", kurz: "§§ 38, 220, 240 AO", icon: "💶", normen: ["AO 38", "AO 220 1", "AO 240 1", "AO 240 3"],
     karten: [
       { art: "merksatz", titel: "Entstehung", text: "Der Anspruch entsteht, **sobald der Tatbestand verwirklicht** ist (§ 38 AO) – der Bescheid stellt ihn nur fest (deklaratorisch). Die ESt entsteht mit Ablauf des Jahres, die LSt mit Zufluss des Lohns." },

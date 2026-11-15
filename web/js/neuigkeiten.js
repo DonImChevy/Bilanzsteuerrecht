@@ -5,6 +5,14 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-ao-einspruch",
+    datum: "2026-11-15",
+    titel: "Abgabenordnung: Zulässigkeit des Einspruchs",
+    punkte: [
+      ["akte", "Neues Thema", "Statthaftigkeit, Form, Frist und Beschwer – so, wie es in den Klausuren 2020, 2021 und 2023 geprüft wurde. Mit Überblick, Lernpfad-Block, Klausurbeispiel und Aufgaben.", "kompakt", "ao-einspruch"],
+    ],
+  },
+  {
     id: "2026-11-altklausuren",
     datum: "2026-11-15",
     titel: "Abgleich mit den Klausuren 2020–2025",

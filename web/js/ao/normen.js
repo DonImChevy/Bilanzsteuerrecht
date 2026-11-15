@@ -1482,6 +1482,17 @@ export const NORMEN_AO = [
 },
 {
 "g": "AO",
+"nr": "350",
+"titel": "Beschwer",
+"abs": [
+{
+"abs": "",
+"text": "Befugt, Einspruch einzulegen, ist nur, wer geltend macht, durch einen Verwaltungsakt oder dessen Unterlassung beschwert zu sein."
+}
+]
+},
+{
+"g": "AO",
 "nr": "356",
 "titel": "Rechtsbehelfsbelehrung",
 "abs": [
@@ -1492,6 +1503,36 @@ export const NORMEN_AO = [
 {
 "abs": "2",
 "text": "Ist die Belehrung unterblieben oder unrichtig erteilt, so ist die Einlegung des Einspruchs nur binnen eines Jahres seit Bekanntgabe des Verwaltungsakts zulässig, es sei denn, dass die Einlegung vor Ablauf der Jahresfrist infolge höherer Gewalt unmöglich war oder schriftlich oder elektronisch darüber belehrt wurde, dass ein Einspruch nicht gegeben sei. § 110 Absatz 2 gilt für den Fall höherer Gewalt sinngemäß."
+}
+]
+},
+{
+"g": "AO",
+"nr": "357",
+"titel": "Einlegung des Einspruchs",
+"abs": [
+{
+"abs": "1",
+"text": "Der Einspruch ist schriftlich oder elektronisch einzureichen oder zur Niederschrift zu erklären. Es genügt, wenn aus dem Einspruch hervorgeht, wer ihn eingelegt hat. Unrichtige Bezeichnung des Einspruchs schadet nicht."
+},
+{
+"abs": "2",
+"text": "Der Einspruch ist bei der Behörde anzubringen, deren Verwaltungsakt angefochten wird oder bei der ein Antrag auf Erlass eines Verwaltungsakts gestellt worden ist. Ein Einspruch, der sich gegen die Feststellung von Besteuerungsgrundlagen oder gegen die Festsetzung eines Steuermessbetrags richtet, kann auch bei der zur Erteilung des Steuerbescheids zuständigen Behörde angebracht werden. Ein Einspruch, der sich gegen einen Verwaltungsakt richtet, den eine Behörde auf Grund gesetzlicher Vorschrift für die zuständige Finanzbehörde erlassen hat, kann auch bei der zuständigen Finanzbehörde angebracht werden. Die schriftliche oder elektronische Anbringung bei einer anderen Behörde ist unschädlich, wenn der Einspruch vor Ablauf der Einspruchsfrist einer der Behörden übermittelt wird, bei der er nach den Sätzen 1 bis 3 angebracht werden kann."
+},
+{
+"abs": "3",
+"text": "Bei der Einlegung soll der Verwaltungsakt bezeichnet werden, gegen den der Einspruch gerichtet ist. Es soll angegeben werden, inwieweit der Verwaltungsakt angefochten und seine Aufhebung beantragt wird. Ferner sollen die Tatsachen, die zur Begründung dienen, und die Beweismittel angeführt werden."
+}
+]
+},
+{
+"g": "AO",
+"nr": "358",
+"titel": "Prüfung der Zulässigkeitsvoraussetzungen",
+"abs": [
+{
+"abs": "",
+"text": "Die zur Entscheidung über den Einspruch berufene Finanzbehörde hat zu prüfen, ob der Einspruch zulässig, insbesondere in der vorgeschriebenen Form und Frist eingelegt ist. Mangelt es an einem dieser Erfordernisse, so ist der Einspruch als unzulässig zu verwerfen."
 }
 ]
 },

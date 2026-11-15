@@ -85,6 +85,7 @@ export const THEMEN = [
   { id: "ao-feststellung", titel: "Gesonderte Feststellung", unter: "Feststellungsfälle, Verfahren, Grundlagen- und Folgebescheid · §§ 179–182 AO", icon: "🧩", fach: "ao" },
   { id: "ao-zustaendigkeit", titel: "Örtliche Zuständigkeit", unter: "Wohnsitz-, Betriebs- und Geschäftsleitungsfinanzamt, Großstadtregelung · §§ 17–29 AO", icon: "🗺️", fach: "ao" },
   { id: "ao-fristen", titel: "Fristen & Wiedereinsetzung", unter: "Fristberechnung, Ereignisfrist, Wiedereinsetzung · §§ 108–110 AO, §§ 187, 188 BGB", icon: "📅", fach: "ao" },
+  { id: "ao-einspruch", titel: "Einspruch: Zulässigkeit", unter: "Statthaftigkeit, Form, Frist, Beschwer · §§ 347, 350, 355, 357, 358 AO", icon: "✉️", fach: "ao" },
   { id: "ao-erhebung", titel: "Entstehung, Fälligkeit, Säumnis", unter: "Entstehung, Fälligkeit, Säumniszuschlag, Schonfrist · §§ 38, 218, 220, 240 AO", icon: "💶", fach: "ao" },
   // Privatrecht (GS I, Kapitel 1–12 der Lernlandkarte bis zur Klausur)
   { id: "pr-grundlagen", titel: "Privatrecht im Rechtssystem", unter: "Abgrenzung zum öffentlichen Recht, Aufbau des BGB, Bezug zum Steuerrecht", icon: "🏛️", fach: "pr" },

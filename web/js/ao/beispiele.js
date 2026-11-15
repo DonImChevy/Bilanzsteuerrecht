@@ -158,6 +158,20 @@ export const BEISPIELE_AO = {
       ],
     },
   ],
+  "ao-einspruch": [
+    {
+      titel: "„Widerspruch“ per E-Mail",
+      sv: "Der Einkommensteuerbescheid 2025 von Jonas (festgesetzte Steuer 6.400 €, mit Rechtsbehelfsbelehrung) wird am Donnerstag, 05.03.2026, im Inland zur Post gegeben. Am 08.04.2026 schreibt Jonas dem Finanzamt eine E-Mail mit dem Betreff „Widerspruch gegen meinen Steuerbescheid 2025“: Die Steuer sei zu hoch. Eine Begründung und eine Unterschrift fehlen.",
+      aufgabe: "Ist der Einspruch zulässig?",
+      loesung: [
+        "Statthaft: Der Steuerbescheid ist ein Verwaltungsakt in Abgabenangelegenheiten (§ 347 Abs. 1 S. 1 Nr. 1 AO, § 118 S. 1 AO).",
+        "Form: E-Mail = elektronisch (§ 357 Abs. 1 S. 1 AO); Jonas ist als Absender erkennbar (§ 357 Abs. 1 S. 2 AO). Die Bezeichnung „Widerspruch“ schadet nicht (§ 357 Abs. 1 S. 3 AO); die Begründung ist nicht zwingend (§ 357 Abs. 3 AO). Eingelegt beim Finanzamt, das den Bescheid erlassen hat (§ 357 Abs. 2 S. 1 AO).",
+        "Frist: Bekanntgabe am vierten Tag nach Aufgabe zur Post = Montag, 09.03.2026 (§ 122 Abs. 2 Nr. 1 AO). Beginn 10.03.2026, 0 Uhr (§ 108 Abs. 1 AO i. V. m. § 187 Abs. 1 BGB), Ende Donnerstag, 09.04.2026, 24 Uhr (§ 355 Abs. 1 S. 1 AO, § 188 Abs. 2 BGB). Der 08.04.2026 liegt in der Frist.",
+        "Beschwer: Jonas ist Adressat und macht geltend, die Steuer sei zu hoch festgesetzt (§ 350 AO).",
+        "Der Einspruch ist zulässig (§ 358 S. 1 AO).",
+      ],
+    },
+  ],
   "ao-erhebung": [
     {
       titel: "Säumniszuschläge",
