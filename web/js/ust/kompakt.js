@@ -12,6 +12,7 @@ export const KOMPAKT_UST = {
       "**Unternehmenseinheit (§ 2 Abs. 1 S. 2 UStG):** Ein Unternehmer hat nur **ein** Unternehmen – Arztpraxis und vermietete Ferienwohnung gehören zusammen. Leistungen zwischen den Betriebsteilen sind **nicht steuerbare Innenumsätze**.",
       "**Rahmen des Unternehmens (§ 1 Abs. 1 Nr. 1 S. 1 UStG):** Dazu gehören **Grundgeschäfte** (der eigentliche Unternehmenszweck), **Hilfsgeschäfte** (z. B. der Verkauf von Anlagevermögen wie dem alten Praxisgerät) und **Nebengeschäfte** (vgl. Abschn. 2.7 Abs. 2 UStAE).",
       "**Inland (§ 1 Abs. 2 S. 1 UStG):** das Gebiet der Bundesrepublik Deutschland ohne Büsingen, Helgoland und die Freihäfen. Nur Umsätze, deren Ort im Inland liegt, sind steuerbar.",
+      "**Ausland, Gemeinschaftsgebiet, Drittland:** Ausland ist alles, was nicht Inland ist (§ 1 Abs. 2 S. 2 UStG). Das **Gemeinschaftsgebiet** umfasst das Inland und die übrigen EU-Mitgliedstaaten; Monaco gilt als Frankreich (§ 1 Abs. 2a S. 1, 2 UStG). Alles andere ist **Drittlandsgebiet** – auch Helgoland und Büsingen (§ 1 Abs. 2a S. 3 UStG).",
       "**Beginn und Ende:** Die Unternehmereigenschaft beginnt mit der ersten nach außen erkennbaren Vorbereitungshandlung (z. B. Kauf der Ladeneinrichtung) und endet erst, wenn der Unternehmer alle Rechtsbeziehungen abgewickelt hat, die mit dem Betrieb zusammenhängen (vgl. § 2 Abs. 1 UStG, Abschn. 2.6 Abs. 1, 6 UStAE).",
       "**Steuerschuldner** ist grundsätzlich der leistende Unternehmer (§ 13a Abs. 1 Nr. 1 UStG); er berechnet die Steuer selbst und übermittelt die Voranmeldung bis zum **10. Tag nach Ablauf** des Voranmeldungszeitraums (§ 18 Abs. 1 S. 1 UStG).",
     ],
@@ -117,6 +118,7 @@ export const KOMPAKT_UST = {
     zahlen: [["÷ 1,19", "Brutto → Netto bei 19 % (§ 10 Abs. 1 S. 2 UStG, § 12 Abs. 1 UStG)"], ["× 19/119", "Steuer aus Brutto (§ 12 Abs. 1 UStG)"], ["× 7/107", "Steuer aus Brutto bei 7 % (§ 12 Abs. 2 UStG)"]],
     punkte: [
       "**Entgelt (§ 10 Abs. 1 S. 2 UStG):** alles, was den Wert der Gegenleistung bildet, die der Unternehmer vom Empfänger oder von einem Dritten erhält – **abzüglich der gesetzlich geschuldeten Umsatzsteuer**.",
+      "**Freiwillige Zahlungen:** Zahlt der Kunde dem Unternehmer freiwillig mehr (Trinkgeld, „stimmt so“), gehört das zum Entgelt (Abschn. 10.1 Abs. 5 S. 1 UStAE). Trinkgeld an **angestelltes Personal** gehört nicht zum Entgelt des Unternehmers (Abschn. 10.1 Abs. 5 S. 3 UStAE).",
       "**Durchlaufende Posten (§ 10 Abs. 1 S. 4 UStG)** gehören nicht dazu – Beträge, die der Unternehmer im Namen und für Rechnung eines anderen vereinnahmt (z. B. Zulassungsgebühren im Namen des Kunden).",
       "**Regelsatz 19 % (§ 12 Abs. 1 UStG).** **7 % (§ 12 Abs. 2 UStG)** u. a. für Gegenstände der **Anlage 2** (Lebensmittel, Bücher, **Zeitungen**), kurzfristige **Beherbergung** (Nr. 11) und **Restaurant- und Verpflegungsleistungen** (Nr. 15) – **Getränke bleiben 19 %**.",
       "**Getränke in Anlage 2:** Milch und Milchmischgetränke sind ermäßigt; **Säfte, Cola, Wein, Bier, Kaffee als Getränk** sind 19 %. Kaffee**bohnen** sind Lebensmittel → 7 %.",
