@@ -337,7 +337,7 @@ export const KOMPAKT_EST = {
   },
   "est-gewinn": {
     satz: "Freiberufler ohne Buchführungspflicht ermitteln ihren Gewinn als Überschuss der Betriebseinnahmen über die Betriebsausgaben (§ 4 Abs. 3 S. 1 EStG) – in der Klausur wird ein vorläufiger Gewinn Schritt für Schritt korrigiert.",
-    zahlen: [["1 %", "des Bruttolistenpreises je Monat (Privatnutzung) (§ 6 Abs. 1 Nr. 4 S. 2 EStG)"], ["0,03 %", "je Monat und Entfernungskilometer (Wohnung–Betrieb) (§ 4 Abs. 5 S. 1 Nr. 6 S. 3 EStG)"], ["0,38 €", "Entfernungspauschale je km (gegenrechnen) (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG)"], ["50 %", "betriebliche Nutzung → notwendiges Betriebsvermögen (R 4.2 Abs. 1 S. 4 EStR)"], ["5 Jahre", "Vorauszahlungen darüber verteilen (§ 11 Abs. 2 S. 3 EStG)"]],
+    zahlen: [["1 %", "des Bruttolistenpreises je Monat (Privatnutzung) (§ 6 Abs. 1 Nr. 4 S. 2 EStG)"], ["0,03 %", "je Monat und Entfernungskilometer (Wohnung–Betrieb) (§ 4 Abs. 5 S. 1 Nr. 6 S. 3 EStG)"], ["0,38 €", "Entfernungspauschale je km (gegenrechnen) (§ 9 Abs. 1 S. 3 Nr. 4 S. 2 EStG)"], ["50 %", "betriebliche Nutzung → notwendiges Betriebsvermögen (R 4.2 Abs. 1 S. 4 EStR)"], ["5 Jahre", "Vorauszahlungen darüber verteilen (§ 11 Abs. 2 S. 3 EStG)"], ["50 €", "Geschenk je Empfänger und Jahr, Freigrenze (§ 4 Abs. 5 S. 1 Nr. 1 S. 2 EStG)"], ["70 %", "abziehbarer Teil der Bewirtung (§ 4 Abs. 5 S. 1 Nr. 2 S. 1 EStG)"]],
     schema: [
       "Einkunftsart (§ 18 Abs. 1 Nr. 1 EStG) und Gewinnermittlungsart (§ 4 Abs. 3 EStG) begründen",
       "Vorläufiger Gewinn",
@@ -352,6 +352,10 @@ export const KOMPAKT_EST = {
       "**Darlehen:** Auszahlung und Tilgung bleiben außer Ansatz; nur die **Zinsen** sind Betriebsausgaben (§ 4 Abs. 4 EStG).",
       "**Umlaufvermögen** ist bei Zahlung Betriebsausgabe – Diebstahl oder Verderb führen nicht zu einem zweiten Abzug.",
       "**Nicht abziehbar:** ESt-Vorauszahlungen (§ 12 Nr. 3 EStG) – nur korrigieren, wenn sie als Betriebsausgabe gebucht sind.",
+      "**Geschenke an Geschäftsfreunde (§ 4 Abs. 5 S. 1 Nr. 1 EStG):** abziehbar nur, wenn die Anschaffungskosten je Empfänger im Jahr **50 €** nicht übersteigen – Freigrenze: bei 50,01 € ist alles nicht abziehbar.",
+      "**Bewirtung aus geschäftlichem Anlass (§ 4 Abs. 5 S. 1 Nr. 2 EStG):** nur **70 %** der angemessenen und nachgewiesenen Aufwendungen sind abziehbar.",
+      "**Verpflegung des Unternehmers (§ 4 Abs. 5 S. 1 Nr. 5 EStG):** nur die Pauschalen des § 9 Abs. 4a EStG (14 € / 28 €), nie die tatsächlichen Kosten.",
+      "**Einlagen** (§ 4 Abs. 1 S. 8 EStG): Geldeinlagen sind keine Betriebseinnahmen → keine Korrektur.",
       "**Entnahmen** (§ 4 Abs. 1 S. 2 EStG) als fiktive Betriebseinnahme: Sachen mit dem Teilwert (§ 6 Abs. 1 Nr. 4 S. 1 EStG); **Geldentnahmen** ohne Korrektur.",
       "**Pkw über 50 % betrieblich:** Privatnutzung nach der **1 %-Regelung** (§ 6 Abs. 1 Nr. 4 S. 2 EStG) vom Bruttolistenpreis bei Erstzulassung inkl. Sonderausstattung, auf volle 100 € abgerundet – Kaufpreis, Rabatt und Gebrauchtwagenpreis zählen nicht. Fahrtenbuch nur, wenn ganzjährig ordnungsgemäß (§ 6 Abs. 1 Nr. 4 S. 3 EStG).",
       "**Wege Wohnung–Betrieb (§ 4 Abs. 5 S. 1 Nr. 6 S. 3 EStG):** 0,03 % × Listenpreis × km × Monate − Entfernungspauschale = nicht abziehbare Betriebsausgaben → Gewinn erhöhen. Danach die **Kostendeckelung** prüfen (pauschale Werte höchstens Gesamtkosten des Kfz).",
