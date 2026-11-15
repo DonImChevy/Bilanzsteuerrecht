@@ -332,6 +332,9 @@ export const KOMPAKT_BSR = {
     punkte: [
       "**Definition (§ 255 Abs. 1 HGB):** Aufwendungen, um einen Vermögensgegenstand zu erwerben und in einen **betriebsbereiten Zustand** zu versetzen, soweit sie ihm einzeln zugeordnet werden können – maßgeblich auch steuerlich (§ 6 Abs. 1 Nr. 1 EStG).",
       "**Vorsteuer (§ 9b Abs. 1 EStG):** gehört nicht zu den AK, soweit sie abziehbar ist. Nicht abziehbare Vorsteuer erhöht die AK.",
+      "**Immaterielle Wirtschaftsgüter (z. B. Software):** steuerlich nur aktivieren, wenn **entgeltlich erworben** (§ 5 Abs. 2 EStG); handelsrechtlich Wahlrecht für selbst geschaffene (§ 248 Abs. 2 S. 1 HGB).",
+      "**Software – was sind AK?** Kaufpreis, Installation und Einrichtung sowie die Beratung zur Auswahl (§ 255 Abs. 1 S. 1, 2 HGB). **Schulung und Wartung** sind sofort abziehbare Betriebsausgaben (§ 4 Abs. 4 EStG).",
+      "**Software – AfA:** handelsrechtlich über die Nutzungsdauer, zeitanteilig (§ 253 Abs. 3 S. 1, 2 HGB); steuerlich darf eine Nutzungsdauer von **einem Jahr** angesetzt werden (BMF vom 22.02.2022, Rn. 1) → Erinnerungswert 1 €.",
       "**Minderungen** (Rabatt, Skonto, Boni, Zuschüsse) senken die AK – **Skonto erst, wenn er tatsächlich in Anspruch genommen wird** (§ 255 Abs. 1 S. 3 HGB).",
       "**Keine AK:** **Finanzierungskosten** (Zinsen, Notar- und Grundbuchkosten für das Darlehen bzw. die Grundschuld), **Kfz-Steuer**, Versicherung, Kosten der laufenden Nutzung, Gemeinkosten (nicht vom Begriff des § 255 Abs. 1 S. 1 HGB erfasst).",
       "**Zahlung vom Privatkonto** ändert die AK nicht – sie wird als Einlage gegengebucht (§ 4 Abs. 1 S. 8 EStG).",
@@ -386,6 +389,7 @@ export const KOMPAKT_BSR = {
       "**Lineare AfA (§ 7 Abs. 1 S. 1, 2 EStG):** gleichmäßig über die **betriebsgewöhnliche Nutzungsdauer** (amtliche AfA-Tabellen, z. B. Pkw 6 Jahre, Büromöbel 13 Jahre, Computer 1 Jahr).",
       "**Monatsgenau (§ 7 Abs. 1 S. 4 EStG):** Im Jahr der Anschaffung vermindert sich die AfA um 1/12 für jeden vollen Monat vor dem Anschaffungsmonat – der Anschaffungsmonat zählt voll. Anschaffung 19.11. → 2/12.",
       "**Handelsrecht (§ 253 Abs. 3 S. 1, 2 HGB):** planmäßige Abschreibung über die voraussichtliche Nutzungsdauer – Pflicht.",
+      "**Leistungs-AfA (§ 7 Abs. 1 S. 6 EStG):** Bei beweglichem Anlagevermögen darf statt linear nach der Leistung abgeschrieben werden (z. B. Lkw nach gefahrenen Kilometern), wenn das wirtschaftlich begründet ist und die Jahresleistung nachgewiesen wird: AK × Jahresleistung ÷ Gesamtleistung.",
       "**GWG (§ 6 Abs. 2 S. 1 EStG):** abnutzbare, bewegliche, **selbständig nutzbare** Wirtschaftsgüter mit AK **bis 800 € netto** – Wahlrecht, sie im Anschaffungsjahr voll abzusetzen.",
       "**Nicht selbständig nutzbar** ist, was nur zusammen mit anderen Wirtschaftsgütern genutzt werden kann und technisch darauf abgestimmt ist (§ 6 Abs. 2 S. 2, 3 EStG) – z. B. Monitor, Drucker, Maus eines PCs oder einzelne Regalelemente.",
       "**Sammelposten (§ 6 Abs. 2a EStG):** WG über 250 € bis 1.000 € können wahlweise in einen jahrgangsbezogenen Pool, der **5 Jahre mit je 20 %** aufgelöst wird – unabhängig von Abgang oder Nutzungsdauer. Das Wahlrecht gilt einheitlich für alle WG des Jahres.",

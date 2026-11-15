@@ -311,6 +311,38 @@ const gwg = {
   },
 };
 
+const software = {
+  id: "bsr-k-software", titel: "Neue Lagerverwaltungs-Software – immaterielles Wirtschaftsgut", teil: 2, min: 30,
+  erzeugen(r) {
+    const [name] = r.wahl(NAMEN), was = r.wahl(BRANCHE);
+    const S = r.zahl(30, 60) * 100, I = r.zahl(5, 9) * 100, B = r.zahl(4, 8) * 100, Sch = r.zahl(2, 4) * 100, W = r.zahl(4, 8) * 10, m = r.zahl(9, 11);
+    const ak = S + I + B, sofort = Sch + W, netto = S + I + Sch + W, monate = 13 - m, afaHB = r2(ak / 5 * monate / 12), afa = ak - 1;
+    return {
+      sv: `${name} handelt mit ${was}. Für die Auswahl einer Lagerverwaltungs-Software beauftragte sie einen externen Berater, der am ${tag(5, m)} dafür ${e(B)} zzgl. 19 % USt berechnete. Die sofortige Banküberweisung wurde gebucht: Beratungskosten ${e(B * 1.19)} an Bank ${e(B * 1.19)}.\nAm ${tag(20, m)} lieferte der Anbieter die Software, richtete sie ein und nahm sie in Betrieb. Seine Rechnung vom selben Tag: Software ${e(S)}, Installation und Einrichtung ${e(I)}, Anwenderschulung ${e(Sch)}, Wartungsgebühr für ${MONAT[m - 1]} laut Wartungsvertrag ${e(W)} – zusammen ${e(netto)} zzgl. ${e(netto * 0.19)} USt. Der Rechnungsbetrag wurde sofort vom Bankkonto überwiesen, aber noch nicht gebucht. Die betriebsgewöhnliche Nutzungsdauer der Software beträgt fünf Jahre.`,
+      aufgaben: [...AUFGABE_TEIL2.slice(0, 2), "Geben Sie den Bilanzansatz der Software zum 31.12.2026 an."],
+      loesung: [
+        `Die Software ist ein entgeltlich erworbenes immaterielles Wirtschaftsgut des abnutzbaren Anlagevermögens → zu aktivieren (§ 246 Abs. 1 S. 1 HGB, § 247 Abs. 2 HGB, § 5 Abs. 2 EStG); Zugang mit Lieferung im ${MONAT[m - 1]} (§ 9a EStDV).`,
+        `Anschaffungskosten (§ 255 Abs. 1 HGB, § 6 Abs. 1 Nr. 1 S. 1 EStG), ohne abziehbare Vorsteuer (§ 9b Abs. 1 EStG): Kaufpreis ${e(S)} + Installation und Einrichtung ${e(I)} (Betriebsbereitschaft) + Beratung ${e(B)} (Anschaffungsnebenkosten, § 255 Abs. 1 S. 2 HGB) = ${e(ak)}.`,
+        `Schulung und Wartung dienen nicht dem Erwerb → sofort abziehbare Betriebsausgaben (§ 4 Abs. 4 EStG): ${e(sofort)}.`,
+        `Handelsrechtlich planmäßige Abschreibung über fünf Jahre, zeitanteilig (§ 253 Abs. 3 S. 1, 2 HGB): ${e(ak)} / 5 × ${monate}/12 = ${e(afaHB)}.`,
+        `Steuerlich darf für Software eine Nutzungsdauer von einem Jahr zugrunde gelegt werden (BMF vom 22.02.2022, Rn. 1, 5) – das ergibt den niedrigsten Gewinn: AfA ${e(afa)}, Erinnerungswert 1 €. Handels- und Steuerbilanz weichen insoweit voneinander ab.`,
+        BS(`Immaterielle Vermögensgegenstände ${e(B)} und Vorsteuer ${e(B * 0.19)} an Beratungskosten ${e(B * 1.19)}`, B * 1.19),
+        BS(`Immaterielle Vermögensgegenstände ${e(S + I)}, Sonstige betriebliche Aufwendungen ${e(sofort)} und Vorsteuer ${e(netto * 0.19)} an Bank ${e(netto * 1.19)}`, -sofort),
+        BS(`AfA ${e(afa)} an Immaterielle Vermögensgegenstände ${e(afa)}`, -afa),
+        `Bilanzansatz Software 31.12.2026 (Steuerbilanz): 1,00 €.`,
+      ],
+      bewertung: [[2, "Immaterielles Wirtschaftsgut, entgeltlich erworben, abnutzbares Anlagevermögen, Zugang", `Aktivierungspflicht (§ 246 Abs. 1 S. 1 HGB, § 5 Abs. 2 EStG), Zugang ${MONAT[m - 1]}`],
+        [3, "Anschaffungskosten: Kaufpreis, Installation, Beratung – netto", `${e(S)} + ${e(I)} + ${e(B)} = ${e(ak)} (§ 255 Abs. 1 S. 1, 2 HGB, § 9b Abs. 1 EStG)`],
+        [1.5, "Schulung und Wartung sind keine Anschaffungskosten", `Betriebsausgaben ${e(sofort)} (§ 4 Abs. 4 EStG)`],
+        [1.5, "Handelsrecht: planmäßige Abschreibung zeitanteilig", `${e(ak)} / 5 × ${monate}/12 = ${e(afaHB)} (§ 253 Abs. 3 S. 1, 2 HGB)`],
+        [2, "Steuerrecht: Nutzungsdauer ein Jahr als Wahlrecht, Abweichung von der Handelsbilanz", `AfA ${e(afa)}, Erinnerungswert 1 € (BMF vom 22.02.2022)`],
+        [4, "Buchungen mit Gewinnauswirkung", `Berater ${g(B * 1.19)}, Rechnung ${g(-sofort)}, AfA ${g(-afa)} (jeweils GuV = BVV)`],
+        [1, "Bilanzansatz", "Software 1,00 €"]],
+      zahlen: [{ frage: "Anschaffungskosten der Software", wert: ak, einheit: "€", toleranz: 1, p: 0 }],
+    };
+  },
+};
+
 const anzahlung = {
   id: "bsr-k-anzahlung", titel: "Anzahlung eines Kunden vor dem Jahreswechsel", teil: 2, min: 15,
   erzeugen(r) {
@@ -394,4 +426,4 @@ const entnahme = {
   },
 };
 
-export const SV_BSR = [warenkonten, kennzahlen, lohn, warenkauf, umtausch, grundstueck, darlehen, firmenwagen, gwg, anzahlung, rap, rueckstellung, entnahme];
+export const SV_BSR = [warenkonten, kennzahlen, lohn, warenkauf, umtausch, grundstueck, darlehen, firmenwagen, gwg, software, anzahlung, rap, rueckstellung, entnahme];

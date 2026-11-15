@@ -73,6 +73,21 @@ const grundlagen = [
       { text: "Ein Getränkehändler verkauft seinen alten Lieferwagen an einen Gebrauchtwagenhändler.", richtig: 1, erkl: "Veräußerung von Anlagevermögen → Hilfsgeschäft, steuerbar und steuerpflichtig (keine Befreiung).", normen: ["UStG 2 1"] },
       { text: "Eine Physiotherapeutin behandelt einen Privatpatienten.", richtig: 0, erkl: "Heilbehandlung ist die eigentliche berufliche Tätigkeit → Grundgeschäft (steuerfrei nach § 4 Nr. 14 a UStG).", normen: ["UStG 2 1", "UStG 4"] },
     ]),
+  F("ust-gebiet-fall", "ust-grundlagen", "Zu welchem Gebiet im Sinne des § 1 Abs. 2, 2a UStG gehört der Ort?",
+    ["Inland", "Übriges Gemeinschaftsgebiet", "Drittlandsgebiet"], [
+      { text: "Güstrow (Mecklenburg-Vorpommern)", richtig: 0, erkl: "Gebiet der Bundesrepublik Deutschland ohne die in § 1 Abs. 2 S. 1 UStG genannten Ausnahmen → Inland.", normen: ["UStG 1 2"] },
+      { text: "Ein Flugzeug auf dem Flug von Hamburg nach München", richtig: 0, erkl: "Der Flug verlässt das Bundesgebiet nicht → Inland (§ 1 Abs. 2 S. 1 UStG). Ausgenommen sind nur deutsche Luftfahrzeuge in Gebieten, die zu keinem Zollgebiet gehören.", normen: ["UStG 1 2"] },
+      { text: "Die Insel Helgoland", richtig: 2, erkl: "Helgoland ist vom Inland ausgenommen (§ 1 Abs. 2 S. 1 UStG) und damit Ausland (§ 1 Abs. 2 S. 2 UStG). Weil das Gemeinschaftsgebiet nur das Inland und die übrigen Mitgliedstaaten umfasst (§ 1 Abs. 2a S. 1 UStG), ist Helgoland Drittlandsgebiet (§ 1 Abs. 2a S. 3 UStG).", normen: ["UStG 1 2", "UStG 1 2a"] },
+      { text: "Büsingen am Hochrhein", richtig: 2, erkl: "Büsingen ist vom Inland ausgenommen (§ 1 Abs. 2 S. 1 UStG) → Ausland und Drittlandsgebiet (§ 1 Abs. 2 S. 2, Abs. 2a S. 3 UStG).", normen: ["UStG 1 2", "UStG 1 2a"] },
+      { text: "Ein deutsches Schiff auf hoher See", richtig: 2, erkl: "Deutsche Schiffe in Gebieten, die zu keinem Zollgebiet gehören, sind kein Inland (§ 1 Abs. 2 S. 1 UStG) → Ausland und Drittlandsgebiet (§ 1 Abs. 2a S. 3 UStG).", normen: ["UStG 1 2", "UStG 1 2a"] },
+      { text: "Prag (Tschechien) – auch das Gelände der deutschen Botschaft dort", richtig: 1, erkl: "Tschechien ist Mitgliedstaat der EU → übriges Gemeinschaftsgebiet (§ 1 Abs. 2a S. 1 UStG). Eine deutsche Botschaft im Ausland gehört nicht zum Gebiet der Bundesrepublik und ist kein Inland.", normen: ["UStG 1 2a"] },
+      { text: "Wien (Österreich)", richtig: 1, erkl: "Mitgliedstaat der EU → übriges Gemeinschaftsgebiet (§ 1 Abs. 2a S. 1 UStG).", normen: ["UStG 1 2a"] },
+      { text: "Das Fürstentum Monaco", richtig: 1, erkl: "Monaco gilt als Gebiet der Französischen Republik (§ 1 Abs. 2a S. 2 UStG) → übriges Gemeinschaftsgebiet.", normen: ["UStG 1 2a"] },
+      { text: "Zürich (Schweiz)", richtig: 2, erkl: "Die Schweiz ist kein Mitgliedstaat der EU → Drittlandsgebiet (§ 1 Abs. 2a S. 3 UStG).", normen: ["UStG 1 2a"] },
+      { text: "Oslo (Norwegen)", richtig: 2, erkl: "Norwegen ist kein Mitgliedstaat der EU → Drittlandsgebiet (§ 1 Abs. 2a S. 3 UStG).", normen: ["UStG 1 2a"] },
+      { text: "Der Berg Athos (Griechenland)", richtig: 2, erkl: "Der Berg Athos gehört zwar zu Griechenland, gilt nach dem Gemeinschaftsrecht aber nicht als Inland dieses Mitgliedstaats (§ 1 Abs. 2a S. 1 UStG, vgl. Abschn. 1.10 Abs. 1 UStAE) → Drittlandsgebiet.", normen: ["UStG 1 2a"] },
+      { text: "Die Kanarischen Inseln (Spanien)", richtig: 2, erkl: "Die Kanarischen Inseln gelten nach dem Gemeinschaftsrecht nicht als Inland Spaniens (§ 1 Abs. 2a S. 1 UStG, vgl. Abschn. 1.10 Abs. 1 UStAE) → Drittlandsgebiet.", normen: ["UStG 1 2a"] },
+    ]),
 ];
 
 // ======================================================================= Lieferung und sonstige Leistung, Einheitlichkeit
@@ -190,7 +205,7 @@ const entgelt = [
     { norm: ["UStG 1"], s: ["steuerbar", "befreiung|steuerfrei", "bemessungsgrundlage", "entsteh", "vorsteuer"] }),
   F("ust-steuerbar-fall", "ust-entgelt", "Ist der Vorgang beim zu beurteilenden Unternehmer steuerbar nach § 1 Abs. 1 Nr. 1 UStG?",
     ["Steuerbar", "Nicht steuerbar"], [
-      { text: "Ein Kunde überweist dem Händler neben dem Restkaufpreis 200 € Mahngebühren.", richtig: 1, erkl: "Mahngebühren sind echter Schadensersatz (Abschn. 1.3 Abs. 3 UStAE) – keine Gegenleistung für eine Leistung des Händlers.", normen: ["UStG 1 1"] },
+      { text: "Ein Kunde überweist dem Händler neben dem Restkaufpreis 200 € Mahngebühren.", richtig: 1, erkl: "Mahngebühren sind echter Schadensersatz (Abschn. 1.3 Abs. 6 UStAE) – keine Gegenleistung für eine Leistung des Händlers.", normen: ["UStG 1 1"] },
       { text: "Eine Hausärztin verkauft ihr gebrauchtes Untersuchungsgerät an einen Kollegen.", richtig: 0, erkl: "Hilfsgeschäft im Rahmen des Unternehmens, Lieferung gegen Entgelt im Inland → steuerbar (aber steuerfrei nach § 4 Nr. 28 UStG).", normen: ["UStG 1 1", "UStG 4"] },
       { text: "Eine Einzelhändlerin nutzt das Erdgeschoss ihres eigenen Geschäftshauses für ihren Laden und überweist dafür monatlich „Miete“ auf ihr Vermietungskonto.", richtig: 1, erkl: "Nicht steuerbarer Innenumsatz innerhalb desselben Unternehmens.", normen: ["UStG 2 1"] },
       { text: "Ein Händler verkauft Tischsets an einen Bauunternehmer, der damit Kunden beschenken will.", richtig: 0, erkl: "Lieferung gegen Entgelt im Inland im Rahmen des Unternehmens → steuerbar und steuerpflichtig (19 %). Die Verwendung beim Käufer ist für den Händler unerheblich.", normen: ["UStG 1 1"] },
@@ -288,6 +303,17 @@ const bmg = [
       ["Die Umsatzsteuer gehört zur Bemessungsgrundlage.", "Bei einem Bruttopreis ist die Umsatzsteuer mit 19 % des Bruttobetrags zu berechnen.", "Teilzahlungszuschläge mindern das Entgelt.", "Getränke unterliegen grundsätzlich dem ermäßigten Steuersatz."],
       "Welche Aussagen zur Bemessungsgrundlage sind richtig?"),
     { norm: ["UStG 10"], s: ["entgelt", "gegenleistung", "abzueglich|ohne umsatzsteuer|herausrechn|119|1 19", "7|ermaessig", "19|regelsteuersatz"] }),
+  F("ust-entgelt-umfang-fall", "ust-bmg", "Gehört der Betrag zum Entgelt für die Leistung des zu beurteilenden Unternehmers (§ 10 Abs. 1 S. 2 UStG)?",
+    ["Gehört zum Entgelt", "Gehört nicht zum Entgelt"], [
+      { text: "Ein Tierarzt berechnet für eine Behandlung 100 €. Die Kundin gibt ihm 120 € und will kein Wechselgeld. Zu beurteilen sind die zusätzlichen 20 €.", richtig: 0, erkl: "Freiwillig an den Unternehmer selbst gezahlte Beträge gehören zum Entgelt, wenn sie mit der Leistung innerlich verknüpft sind (§ 10 Abs. 1 S. 2 UStG, Abschn. 10.1 Abs. 5 S. 1 UStAE). Bemessungsgrundlage: 120 € abzüglich der darin enthaltenen Umsatzsteuer.", normen: ["UStG 10 1"] },
+      { text: "Eine Einzelunternehmerin repariert bei einer Kundin die Nähmaschine und verlangt 80 €. Die Kundin ist begeistert und gibt ihr 100 €. Zu beurteilen sind die zusätzlichen 20 €.", richtig: 0, erkl: "Die freiwillige Mehrzahlung geht an die leistende Unternehmerin und hängt mit ihrer Leistung zusammen → Teil des Entgelts (§ 10 Abs. 1 S. 2 UStG, Abschn. 10.1 Abs. 5 S. 1 UStAE).", normen: ["UStG 10 1"] },
+      { text: "Nach einer Feier im Restaurant gibt die Gastgeberin dem angestellten Restaurantleiter 100 € Trinkgeld. Zu beurteilen ist die Restaurantinhaberin.", richtig: 1, erkl: "Freiwillige Trinkgelder an das Personal gehören nicht zum Entgelt für die Leistung des Unternehmers (Abschn. 10.1 Abs. 5 S. 3 UStAE) – die Inhaberin erhält den Betrag nicht.", normen: ["UStG 10 1"] },
+      { text: "Auf der Hotelrechnung steht ein Bedienungszuschlag von 10 %, den der Gast mitbezahlt. Zu beurteilen ist der Hotelier.", richtig: 0, erkl: "Ein vom Unternehmer berechneter Bedienungszuschlag ist Teil des Entgelts, auch wenn er ihn an das Personal weitergibt (Abschn. 10.1 Abs. 5 S. 2 UStAE).", normen: ["UStG 10 1"] },
+      { text: "Ein Kunde zahlt verspätet und überweist deshalb zusätzlich 10 € Mahngebühr an die Händlerin.", richtig: 1, erkl: "Mahngebühren sind echter Schadensersatz – es fehlt die Leistung der Händlerin, für die sie gezahlt werden (§ 1 Abs. 1 Nr. 1 S. 1 UStG, Abschn. 1.3 Abs. 6 UStAE).", normen: ["UStG 1 1", "UStG 10 1"] },
+      { text: "Eine Onlinehändlerin berechnet neben dem Kaufpreis 5 € Versandpauschale.", richtig: 0, erkl: "Der Versand ist Nebenleistung zur Lieferung und teilt deren Schicksal; die Pauschale gehört zum Entgelt (§ 10 Abs. 1 S. 2 UStG, vgl. Abschn. 3.10 Abs. 5 UStAE).", normen: ["UStG 10 1"] },
+      { text: "Feriengäste lassen dem Vermieter 100 € da, weil sie den Teppich der Ferienwohnung verschmutzt haben.", richtig: 1, erkl: "Die Gäste gleichen einen Schaden aus. Der Vermieter erbringt dafür keine Leistung → echter Schadensersatz, nicht steuerbar (§ 1 Abs. 1 Nr. 1 S. 1 UStG, Abschn. 1.3 Abs. 1 UStAE).", normen: ["UStG 1 1"] },
+      { text: "Eine Händlerin gewährt im Januar 10 % Rabatt auf den ganzen Einkauf. Zu beurteilen ist der nicht gezahlte Rabattbetrag.", richtig: 1, erkl: "Entgelt ist nur, was der Unternehmer tatsächlich erhält oder erhalten soll (§ 10 Abs. 1 S. 2 UStG). Der sofort abgezogene Rabatt gehört nicht dazu – Bemessungsgrundlage ist der geminderte Preis ohne Umsatzsteuer.", normen: ["UStG 10 1"] },
+    ]),
   F("ust-satz", "ust-bmg", "Welcher Steuersatz gilt für die Lieferung?",
     ["19 % (§ 12 Abs. 1 UStG)", "7 % (§ 12 Abs. 2 Nr. 1 UStG i. V. m. Anlage 2)"],
     WAREN.map(([w, s, grund]) => ({ text: `Ein Einzelhändler verkauft ${w} an einen Kunden.`, richtig: s === 19 ? 0 : 1, erkl: `${s} %: ${grund}.`, normen: ["UStG 12 1", "UStG 12 2"] }))),

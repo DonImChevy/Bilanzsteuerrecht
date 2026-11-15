@@ -5,6 +5,25 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-ao-einspruch",
+    datum: "2026-11-15",
+    titel: "Abgabenordnung: Zulässigkeit des Einspruchs",
+    punkte: [
+      ["akte", "Neues Thema", "Statthaftigkeit, Form, Frist und Beschwer – so, wie es in den Klausuren 2020, 2021 und 2023 geprüft wurde. Mit Überblick, Lernpfad-Block, Klausurbeispiel und Aufgaben.", "kompakt", "ao-einspruch"],
+    ],
+  },
+  {
+    id: "2026-11-altklausuren",
+    datum: "2026-11-15",
+    titel: "Abgleich mit den Klausuren 2020–2025",
+    klein: true,
+    punkte: [
+      ["klausur", "Bilanzrecht: Software in der Probeklausur", "Probeklausur C enthält jetzt einen Sachverhalt zur Anschaffung einer Software (immaterielles Wirtschaftsgut, Nebenkosten, Schulung und Wartung, Abschreibung). Dazu neu: Leistungs-AfA beim Lkw."],
+      ["haken", "Umsatzsteuer: Gebiete und Trinkgeld", "Neue Aufgaben zu Inland, Gemeinschaftsgebiet und Drittland sowie zur Frage, was zum Entgelt gehört – freiwillige Mehrzahlung, Trinkgeld ans Personal, Mahngebühr, Rabatt."],
+      ["haken", "Einkommensteuer: Geschenke und Bewirtung", "In der Gewinnermittlung kommen Geschenke an Geschäftsfreunde (50 €), Bewirtung (70 %), Verpflegung des Unternehmers und Geldeinlagen dazu."],
+    ],
+  },
+  {
     id: "2026-11-premium-farben",
     datum: "2026-11-13",
     titel: "Premium-Farbgebungen",

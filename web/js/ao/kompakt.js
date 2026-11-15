@@ -294,6 +294,36 @@ export const KOMPAKT_AO = {
       "Wiedereinsetzung gibt es nicht für behördliche Fristen – dort hilft § 109 AO.",
     ],
   },
+  "ao-einspruch": {
+    satz: "Der Einspruch ist zulässig, wenn er **statthaft** ist, **Form und Frist** wahrt und der Einspruchsführer **beschwert** ist – fehlt eines davon, wird er als unzulässig verworfen (§ 358 AO).",
+    zahlen: [["1 Monat", "Einspruchsfrist nach Bekanntgabe (§ 355 Abs. 1 S. 1 AO)"], ["1 Jahr", "Frist bei fehlender oder unrichtiger Rechtsbehelfsbelehrung (§ 356 Abs. 2 S. 1 AO)"], ["4 Punkte", "Statthaftigkeit, Form, Frist, Beschwer (§ 358 S. 1 AO)"]],
+    schema: [
+      "Statthaftigkeit: Verwaltungsakt in Abgabenangelegenheiten? (§ 347 Abs. 1 S. 1 Nr. 1 AO)",
+      "Form: schriftlich, elektronisch oder zur Niederschrift, Absender erkennbar (§ 357 Abs. 1 S. 1, 2 AO)",
+      "Richtige Behörde: die den Verwaltungsakt erlassen hat (§ 357 Abs. 2 S. 1 AO)",
+      "Frist: ein Monat nach Bekanntgabe (§ 355 Abs. 1 S. 1 AO) – sonst Wiedereinsetzung prüfen (§ 110 AO)",
+      "Beschwer: Einspruchsführer macht geltend, in seinen Rechten verletzt zu sein (§ 350 AO)",
+      "Ergebnis: zulässig → Begründetheit prüfen; unzulässig → verwerfen (§ 358 S. 2 AO)",
+    ],
+    punkte: [
+      "**Statthaft (§ 347 Abs. 1 S. 1 Nr. 1 AO):** Der Einspruch richtet sich gegen einen **Verwaltungsakt in Abgabenangelegenheiten** (§ 118 S. 1 AO) – z. B. Steuerbescheid, Verspätungszuschlag, Zwangsgeldfestsetzung.",
+      "**Form (§ 357 Abs. 1 S. 1 AO):** schriftlich, elektronisch (auch einfache E-Mail) oder zur Niederschrift beim Finanzamt. Ein **Anruf** genügt nicht.",
+      "**Kein Formzwang im Detail:** Es genügt, wenn hervorgeht, **wer** den Einspruch einlegt – eine Unterschrift ist nicht nötig (§ 357 Abs. 1 S. 2 AO). Eine falsche Bezeichnung wie „Widerspruch“ schadet nicht (§ 357 Abs. 1 S. 3 AO).",
+      "**Begründung:** soll angegeben werden, ist aber keine Zulässigkeitsvoraussetzung (§ 357 Abs. 3 AO).",
+      "**Richtige Behörde (§ 357 Abs. 2 S. 1 AO):** das Finanzamt, das den Bescheid erlassen hat. Geht der Einspruch bei einer anderen Behörde ein, ist das unschädlich, wenn er noch **innerhalb der Frist** weitergeleitet wird (§ 357 Abs. 2 S. 4 AO).",
+      "**Frist (§ 355 Abs. 1 S. 1 AO):** ein Monat nach Bekanntgabe; berechnet nach § 108 Abs. 1 AO i. V. m. §§ 187, 188 BGB. Fällt das Ende auf Samstag, Sonntag oder Feiertag, endet sie am nächsten Werktag (§ 108 Abs. 3 AO).",
+      "**Ohne Rechtsbehelfsbelehrung** beginnt die Monatsfrist nicht; der Einspruch ist dann binnen **eines Jahres** seit Bekanntgabe möglich (§ 356 Abs. 1, Abs. 2 S. 1 AO).",
+      "**Frist versäumt:** Wiedereinsetzung, wenn die Frist **ohne Verschulden** versäumt wurde – Antrag und Nachholung binnen eines Monats nach Wegfall des Hindernisses (§ 110 Abs. 1, 2 AO).",
+      "**Beschwer (§ 350 AO):** Der Einspruchsführer muss geltend machen, durch den Verwaltungsakt beschwert zu sein – persönlich (er ist Adressat) und sachlich (z. B. Steuer zu hoch festgesetzt).",
+      "**Zusammenveranlagte Ehegatten:** Jeder Ehegatte ist Adressat des Bescheids und selbst beschwert (vgl. § 350 AO). Legen beide Einspruch ein, liegen zwei Einsprüche vor.",
+    ],
+    fallen: [
+      "Den Einspruch als unzulässig ansehen, weil „Widerspruch“ darübersteht (§ 357 Abs. 1 S. 3 AO).",
+      "Eine fehlende Begründung oder Unterschrift als Formfehler werten (§ 357 Abs. 1 S. 2, Abs. 3 AO).",
+      "Nach Fristablauf sofort „unzulässig“ schreiben, ohne die Wiedereinsetzung zu prüfen (§ 110 Abs. 1 AO).",
+      "Die Punkte vermischen – in der Klausur jede Voraussetzung getrennt prüfen und mit Norm belegen (§ 358 S. 1 AO).",
+    ],
+  },
 
   "ao-erhebung": {
     satz: "Steueransprüche entstehen kraft Gesetzes, werden nach den Einzelsteuergesetzen fällig – und wer zu spät zahlt, schuldet automatisch Säumniszuschläge (§§ 38, 220, 240 AO).",
@@ -323,7 +353,7 @@ export const KLAUSUR_AO = {
     "**Hilfsmittel:** Gesetzestexte (AO, BGB-Auszug) – jede Aussage mit der genauen Fundstelle belegen (§, Abs., S., Nr.).",
     "**Fallaufbau:** Obersatz kurz („I könnte das Steuergeheimnis nach § 30 Abs. 1 AO verletzt haben.“), dann Merkmal für Merkmal mit Norm und Sachverhalt, Ergebnis.",
   ],
-  top: ["ao-feststellung", "ao-ermittlung", "ao-erklaerung", "ao-zustaendigkeit", "ao-bekanntgabe", "ao-fristen", "ao-steuergeheimnis"],
+  top: ["ao-feststellung", "ao-ermittlung", "ao-erklaerung", "ao-zustaendigkeit", "ao-bekanntgabe", "ao-fristen", "ao-einspruch", "ao-steuergeheimnis"],
   tipps: [
     "Fristen immer in drei Schritten aufschreiben: Ereignis/Beginn – Dauer – Ende, jeweils mit Norm und Wochentag.",
     "Bei der Bekanntgabe zuerst die vier Tage zählen, dann Wochenende und Feiertag prüfen (§ 108 Abs. 3 AO).",

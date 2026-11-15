@@ -341,6 +341,36 @@ const fristen = [
 ];
 
 // ======================================================================= Entstehung, Fälligkeit, Säumniszuschlag
+const einspruch = [
+  A("ao-einspruch-zulaessigkeit", "ao-einspruch",
+    "Welche Voraussetzungen muss ein Einspruch erfüllen, damit er zulässig ist? Nennen Sie die Prüfpunkte mit Normen.",
+    "• Statthaftigkeit: Einspruch gegen einen Verwaltungsakt in Abgabenangelegenheiten (§ 347 Abs. 1 S. 1 Nr. 1 AO).\n• Form: schriftlich, elektronisch oder zur Niederschrift (§ 357 Abs. 1 S. 1 AO); es muss erkennbar sein, wer ihn einlegt (§ 357 Abs. 1 S. 2 AO); eine unrichtige Bezeichnung schadet nicht (§ 357 Abs. 1 S. 3 AO).\n• Anbringung bei der Behörde, die den Verwaltungsakt erlassen hat (§ 357 Abs. 2 S. 1 AO).\n• Frist: ein Monat nach Bekanntgabe (§ 355 Abs. 1 S. 1 AO); bei unverschuldeter Versäumung Wiedereinsetzung (§ 110 Abs. 1 AO).\n• Beschwer: Der Einspruchsführer macht geltend, durch den Verwaltungsakt beschwert zu sein (§ 350 AO).\n• Folge: Fehlt eine Voraussetzung, wird der Einspruch als unzulässig verworfen (§ 358 S. 2 AO).",
+    ["AO 347 1", "AO 357 1", "AO 357 2", "AO 355 1", "AO 350", "AO 358"],
+    M(["Statthaft ist der Einspruch gegen Verwaltungsakte in Abgabenangelegenheiten.", "Der Einspruch kann schriftlich, elektronisch oder zur Niederschrift eingelegt werden.", "Die Einspruchsfrist beträgt einen Monat nach Bekanntgabe.", "Der Einspruchsführer muss geltend machen, beschwert zu sein."],
+      ["Ein Einspruch ohne Begründung ist unzulässig.", "Ein Einspruch ohne Unterschrift ist unzulässig.", "Der Einspruch kann telefonisch eingelegt werden.", "Die Bezeichnung als „Widerspruch“ macht den Einspruch unzulässig."],
+      "Welche Aussagen zur Zulässigkeit des Einspruchs sind richtig?"),
+    { norm: ["AO 347", "AO 357", "AO 355", "AO 350"], s: ["statthaft|verwaltungsakt", "schriftlich|elektronisch|niederschrift", "monat", "beschwer"] }),
+  F("ao-einspruch-form-fall", "ao-einspruch", "Wahrt das Schreiben die Form des Einspruchs (§ 357 Abs. 1 AO)?",
+    ["Ja – Form gewahrt", "Nein – Form nicht gewahrt"], [
+      { text: "Eine Steuerpflichtige schickt dem Finanzamt eine einfache E-Mail: „Hiermit lege ich Einspruch gegen meinen Einkommensteuerbescheid 2025 ein.“", richtig: 0, erkl: "Elektronisch eingereicht (§ 357 Abs. 1 S. 1 AO); die Absenderin ist erkennbar (§ 357 Abs. 1 S. 2 AO).", normen: ["AO 357 1"] },
+      { text: "Ein Steuerpflichtiger ruft seine Sachbearbeiterin an und erklärt, er lege Einspruch ein. Sie notiert nichts.", richtig: 1, erkl: "Ein Anruf ist weder schriftlich noch elektronisch noch eine Erklärung zur Niederschrift (§ 357 Abs. 1 S. 1 AO).", normen: ["AO 357 1"] },
+      { text: "Ein Brief mit Absender, aber ohne Unterschrift: „Widerspruch gegen meinen Steuerbescheid – die Steuer ist zu hoch.“", richtig: 0, erkl: "Schriftlich, der Absender geht hervor (§ 357 Abs. 1 S. 1, 2 AO) – eine Unterschrift ist nicht nötig. Die Bezeichnung „Widerspruch“ schadet nicht (§ 357 Abs. 1 S. 3 AO).", normen: ["AO 357 1"] },
+      { text: "Ein Steuerpflichtiger erscheint im Finanzamt und erklärt seinen Einspruch; der Bearbeiter nimmt die Erklärung schriftlich auf.", richtig: 0, erkl: "Erklärung zur Niederschrift (§ 357 Abs. 1 S. 1 AO).", normen: ["AO 357 1"] },
+      { text: "Im Briefkasten des Finanzamts liegt ein Zettel ohne Namen, Anschrift und Steuernummer: „Ich bin mit meinem Bescheid nicht einverstanden.“", richtig: 1, erkl: "Aus dem Einspruch muss hervorgehen, wer ihn eingelegt hat (§ 357 Abs. 1 S. 2 AO) – das ist hier nicht erkennbar.", normen: ["AO 357 1"] },
+      { text: "Eine Steuerpflichtige schreibt fristgerecht: „Ich lege Einspruch ein. Die Begründung reiche ich nach.“", richtig: 0, erkl: "Die Begründung soll angegeben werden, ist aber keine Zulässigkeitsvoraussetzung (§ 357 Abs. 3 AO).", normen: ["AO 357 1", "AO 357 3"] },
+    ]),
+  F("ao-einspruch-punkt-fall", "ao-einspruch", "An welcher Zulässigkeitsvoraussetzung scheitert der Einspruch – oder ist er zulässig? Unterstellen Sie, dass alle nicht genannten Voraussetzungen erfüllt sind.",
+    ["Zulässig", "Nicht statthaft", "Frist versäumt", "Keine Beschwer"], [
+      { text: "Ein Steuerpflichtiger legt Einspruch gegen ein Schreiben ein, in dem das Finanzamt ihn nur an die Abgabe seiner Steuererklärung erinnert.", richtig: 1, erkl: "Die Erinnerung regelt nichts und ist kein Verwaltungsakt (§ 118 S. 1 AO) → Einspruch nicht statthaft (§ 347 Abs. 1 S. 1 Nr. 1 AO).", normen: ["AO 347 1", "AO 118"] },
+      { text: "Der Bescheid mit Rechtsbehelfsbelehrung gilt am 09.03.2026 als bekannt gegeben. Der Einspruch geht am 14.04.2026 ein; Gründe für die Verspätung gibt es nicht.", richtig: 2, erkl: "Die Monatsfrist endete am 09.04.2026 (§ 355 Abs. 1 S. 1 AO, § 108 Abs. 1 AO i. V. m. § 188 Abs. 2 BGB). Ohne unverschuldetes Hindernis keine Wiedereinsetzung (§ 110 Abs. 1 AO).", normen: ["AO 355 1", "AO 110 1"] },
+      { text: "Der Bescheid enthält keine Rechtsbehelfsbelehrung. Der Einspruch geht drei Monate nach der Bekanntgabe ein.", richtig: 0, erkl: "Ohne Belehrung beginnt die Monatsfrist nicht; der Einspruch ist binnen eines Jahres seit Bekanntgabe zulässig (§ 356 Abs. 1, Abs. 2 S. 1 AO).", normen: ["AO 356"] },
+      { text: "Ein Steuerpflichtiger legt Einspruch gegen den Steuerbescheid seines Nachbarn ein, weil er dessen Steuer für zu niedrig hält.", richtig: 3, erkl: "Er ist nicht Adressat und nicht in eigenen Rechten betroffen → keine Beschwer (§ 350 AO).", normen: ["AO 350"] },
+      { text: "Eine Steuerpflichtige legt fristgerecht per Brief Einspruch gegen die Festsetzung eines Verspätungszuschlags ein.", richtig: 0, erkl: "Die Festsetzung ist ein Verwaltungsakt in Abgabenangelegenheiten (§ 347 Abs. 1 S. 1 Nr. 1 AO); sie ist als Adressatin beschwert (§ 350 AO).", normen: ["AO 347 1", "AO 350"] },
+      { text: "Ein Steuerpflichtiger versäumt die Frist um eine Woche, weil er nach einem Unfall im Krankenhaus lag. Drei Tage nach der Entlassung legt er Einspruch ein und schildert den Grund.", richtig: 0, erkl: "Frist ohne Verschulden versäumt; die Handlung wird binnen eines Monats nach Wegfall des Hindernisses nachgeholt → Wiedereinsetzung (§ 110 Abs. 1, 2 AO).", normen: ["AO 110 1", "AO 110 2"] },
+      { text: "Ein Einspruch gegen den Bescheid des Finanzamts A geht am letzten Tag der Frist versehentlich beim Finanzamt B ein und wird erst zwei Tage später weitergeleitet.", richtig: 2, erkl: "Anzubringen ist der Einspruch bei der Behörde, die den Verwaltungsakt erlassen hat (§ 357 Abs. 2 S. 1 AO). Der Eingang bei einer anderen Behörde wahrt die Frist nur, wenn er noch vor Fristablauf übermittelt wird (§ 357 Abs. 2 S. 4 AO).", normen: ["AO 357 2"] },
+    ]),
+];
+
 const erhebung = [
   A("ao-entstehung", "ao-erhebung",
     "Wann entstehen Ansprüche aus dem Steuerschuldverhältnis? Welche Bedeutung hat die Festsetzung? Nennen Sie Beispiele.",
@@ -406,4 +436,4 @@ const fall2 = A("ao-fall-bescheid", "ao-bekanntgabe",
   { norm: ["AO 122", "AO 355"], s: ["gemeinsame anschrift|122 abs 7", "vierten tag", "23 11", "23 12", "begruendung", "nachgeholt|126"] },
   { fall: true });
 
-export const AO_TEIL2 = [...va, ...wirksam, ...bekannt, fall2, ...vorbehalt, ...feststellung, ...zustaendig, ...fristen, ...erhebung, fall1];
+export const AO_TEIL2 = [...va, ...wirksam, ...bekannt, fall2, ...vorbehalt, ...feststellung, ...zustaendig, ...fristen, ...einspruch, ...erhebung, fall1];
