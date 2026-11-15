@@ -617,6 +617,15 @@ export const STICHWORTE = {
     "Vorsteuerkorrektur erfolgsneutral · GWG und AfA mindern den Gewinn",
     "Schrank: AK abzüglich AfA · Notebook voll abgeschrieben",
   ],
+  "bsr-k-software": [
+    "immaterielles Wirtschaftsgut · entgeltlich erworben · abnutzbares Anlagevermögen · Zugang mit Lieferung",
+    "Kaufpreis · Installation und Einrichtung (Betriebsbereitschaft) · Beratung als Anschaffungsnebenkosten · ohne abziehbare Vorsteuer",
+    "Schulung und Wartung dienen nicht dem Erwerb · sofort abziehbare Betriebsausgaben",
+    "planmäßige Abschreibung über die Nutzungsdauer · zeitanteilig ab dem Monat der Anschaffung",
+    "Nutzungsdauer ein Jahr für Software (Wahlrecht) · niedrigster Gewinn · Handels- und Steuerbilanz weichen ab",
+    "Beratungskosten umbuchen erhöht den Gewinn · Schulung, Wartung und AfA mindern ihn",
+    "Erinnerungswert 1 €",
+  ],
   "bsr-k-anzahlung": [
     "Lieferung erst 2027 · schwebendes Geschäft · Gewinn erst mit Lieferung realisiert (Realisationsprinzip)",
     "Anzahlung = Verbindlichkeit (erhaltene Anzahlungen) · Ausweis netto",

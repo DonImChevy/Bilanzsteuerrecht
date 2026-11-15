@@ -471,4 +471,8 @@ export const TEILPUNKTE = {
     1: [["AK höchstens 800 €", 1], ["selbständig nutzbar", 0.5], ["Sofortabzug (§ 6 Abs. 2 EStG)", 1]],
     4: [["Vorsteuer erfolgsneutral", 0.5], ["GWG als Aufwand", 0.5], ["AfA Schrank als Aufwand", 1]],
   },
+  "bsr-k-software": {
+    1: [["Kaufpreis", 0.5], ["Installation und Einrichtung", 1], ["Beratung als Nebenkosten", 1], ["ohne Vorsteuer", 0.5]],
+    5: [["Berater umgebucht", 1.5], ["Rechnung des Anbieters", 1.5], ["AfA der Software", 1]],
+  },
 };

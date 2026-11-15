@@ -219,6 +219,21 @@ export const NORMEN_BILR = [
 },
 {
 "g": "HGB",
+"nr": "248",
+"titel": "Bilanzierungsverbote und -wahlrechte",
+"abs": [
+{
+"abs": "1",
+"text": "In die Bilanz dürfen nicht als Aktivposten aufgenommen werden:\n1. Aufwendungen für die Gründung eines Unternehmens,\n2. Aufwendungen für die Beschaffung des Eigenkapitals und\n3. Aufwendungen für den Abschluss von Versicherungsverträgen."
+},
+{
+"abs": "2",
+"text": "Selbst geschaffene immaterielle Vermögensgegenstände des Anlagevermögens können als Aktivposten in die Bilanz aufgenommen werden. Nicht aufgenommen werden dürfen selbst geschaffene Marken, Drucktitel, Verlagsrechte, Kundenlisten oder vergleichbare immaterielle Vermögensgegenstände des Anlagevermögens."
+}
+]
+},
+{
+"g": "HGB",
 "nr": "250",
 "titel": "Rechnungsabgrenzungsposten",
 "abs": [
@@ -490,6 +505,10 @@ export const NORMEN_BILR = [
 {
 "abs": "1",
 "text": "Bei Gewerbetreibenden, die auf Grund gesetzlicher Vorschriften verpflichtet sind, Bücher zu führen und regelmäßig Abschlüsse zu machen, oder die ohne eine solche Verpflichtung Bücher führen und regelmäßig Abschlüsse machen, ist für den Schluss des Wirtschaftsjahres das Betriebsvermögen anzusetzen (§ 4 Absatz 1 Satz 1), das nach den handelsrechtlichen Grundsätzen ordnungsmäßiger Buchführung auszuweisen ist, es sei denn, im Rahmen der Ausübung eines steuerlichen Wahlrechts wird oder wurde ein anderer Ansatz gewählt. Voraussetzung für die Ausübung steuerlicher Wahlrechte ist, dass die Wirtschaftsgüter, die nicht mit dem handelsrechtlich maßgeblichen Wert in der steuerlichen Gewinnermittlung ausgewiesen werden, in besondere, laufend zu führende Verzeichnisse aufgenommen werden. In den Verzeichnissen sind der Tag der Anschaffung oder Herstellung, die Anschaffungs- oder Herstellungskosten, die Vorschrift des ausgeübten steuerlichen Wahlrechts und die vorgenommenen Abschreibungen nachzuweisen."
+},
+{
+"abs": "2",
+"text": "Für immaterielle Wirtschaftsgüter des Anlagevermögens ist ein Aktivposten nur anzusetzen, wenn sie entgeltlich erworben wurden."
 },
 {
 "abs": "5",
