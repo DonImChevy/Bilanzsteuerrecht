@@ -389,6 +389,7 @@ export const KOMPAKT_BSR = {
       "**Lineare AfA (§ 7 Abs. 1 S. 1, 2 EStG):** gleichmäßig über die **betriebsgewöhnliche Nutzungsdauer** (amtliche AfA-Tabellen, z. B. Pkw 6 Jahre, Büromöbel 13 Jahre, Computer 1 Jahr).",
       "**Monatsgenau (§ 7 Abs. 1 S. 4 EStG):** Im Jahr der Anschaffung vermindert sich die AfA um 1/12 für jeden vollen Monat vor dem Anschaffungsmonat – der Anschaffungsmonat zählt voll. Anschaffung 19.11. → 2/12.",
       "**Handelsrecht (§ 253 Abs. 3 S. 1, 2 HGB):** planmäßige Abschreibung über die voraussichtliche Nutzungsdauer – Pflicht.",
+      "**Leistungs-AfA (§ 7 Abs. 1 S. 6 EStG):** Bei beweglichem Anlagevermögen darf statt linear nach der Leistung abgeschrieben werden (z. B. Lkw nach gefahrenen Kilometern), wenn das wirtschaftlich begründet ist und die Jahresleistung nachgewiesen wird: AK × Jahresleistung ÷ Gesamtleistung.",
       "**GWG (§ 6 Abs. 2 S. 1 EStG):** abnutzbare, bewegliche, **selbständig nutzbare** Wirtschaftsgüter mit AK **bis 800 € netto** – Wahlrecht, sie im Anschaffungsjahr voll abzusetzen.",
       "**Nicht selbständig nutzbar** ist, was nur zusammen mit anderen Wirtschaftsgütern genutzt werden kann und technisch darauf abgestimmt ist (§ 6 Abs. 2 S. 2, 3 EStG) – z. B. Monitor, Drucker, Maus eines PCs oder einzelne Regalelemente.",
       "**Sammelposten (§ 6 Abs. 2a EStG):** WG über 250 € bis 1.000 € können wahlweise in einen jahrgangsbezogenen Pool, der **5 Jahre mit je 20 %** aufgelöst wird – unabhängig von Abgang oder Nutzungsdauer. Das Wahlrecht gilt einheitlich für alle WG des Jahres.",

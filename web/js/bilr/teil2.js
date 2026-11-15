@@ -324,6 +324,14 @@ const afa = [
       afaa,
       `Buchwert nach planmäßiger AfA bis zum Schadenstag: ${eur(ak)} − AfA 04 ${eur(Math.round(ak / nd))} − AfA 05 (6/12) ${eur(Math.round(ak / nd / 2))} = ${eur(Math.round(bw))}.\nAfaA (§ 7 Abs. 1 S. 7 EStG) = ${schaden} % von ${eur(Math.round(bw))} = ${eur(Math.round(afaa))}. Nach der Reparatur in 06 ist entsprechend zuzuschreiben.`);
   }),
+  V("t2-afa-leistung", "bsr-afa", (r) => {
+    const ak = r.betrag(120000, 180000, 4000), gesamt = 400000, km = r.wahl([72000, 80000, 88000, 96000]), m = r.zahl(3, 6);
+    const linear = ak / 5 * monate(m) / 12, leistung = ak * km / gesamt;
+    return rechnen("t2-afa-leistung", "bsr-afa",
+      `Ein Händler schafft im ${MONAT[m - 1]} einen Lkw an (Anschaffungskosten ${eur(ak)} netto, Nutzungsdauer 5 Jahre). Die Gesamtfahrleistung schätzt er sachgerecht auf ${gesamt.toLocaleString("de-DE")} km; bis zum 31.12. ist der Lkw laut Kilometerzähler ${km.toLocaleString("de-DE")} km gefahren. Der Gewinn soll möglichst niedrig sein.\n\nWie hoch ist die höchstmögliche AfA im Jahr der Anschaffung (in €)?`,
+      leistung,
+      `Linear, zeitanteilig (§ 7 Abs. 1 S. 1, 4 EStG): ${eur(ak)} / 5 × ${monate(m)}/12 = ${eur(Math.round(linear))}.\nNach Maßgabe der Leistung (§ 7 Abs. 1 S. 6 EStG): ${eur(ak)} × ${km.toLocaleString("de-DE")} / ${gesamt.toLocaleString("de-DE")} = ${eur(Math.round(leistung))}.\nDie Leistungs-AfA ist bei beweglichem Anlagevermögen zulässig, wenn sie wirtschaftlich begründet ist und die Leistung des Jahres nachgewiesen wird (hier: Kilometerzähler). Sie ist höher → ${eur(Math.round(leistung))}. Eine Kürzung um Monate gibt es dabei nicht – die Leistung des Jahres zählt.`);
+  }),
 ];
 
 // Anlagengitter (Anlagenspiegel, § 284 Abs. 3 HGB): Entwicklung von AK und kumulierter AfA
