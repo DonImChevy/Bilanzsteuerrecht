@@ -26,7 +26,7 @@ export const KOMPAKT_AO = {
     schema: [
       "Amtsträger (§ 7 AO) oder gleichgestellte Person (§ 30 Abs. 3 AO)?",
       "Geschützte Daten: personenbezogene Daten eines anderen (§ 30 Abs. 2 Nr. 1 AO) oder ein fremdes Betriebs- oder Geschäftsgeheimnis (§ 30 Abs. 2 Nr. 2 AO)?",
-      "Dienstlich bekannt geworden (§ 30 Abs. 2 Nr. 1 a AO–c AO)?",
+      "Dienstlich bekannt geworden (§ 30 Abs. 2 Nr. 1 a–c AO)?",
       "Offenbaren oder verwerten (§ 30 Abs. 2 Nr. 1, 2 AO) oder im automatisierten Verfahren abrufen (§ 30 Abs. 2 Nr. 3 AO)?",
       "Ohne Befugnis – greift keine Erlaubnisnorm? Steuerverfahren (§ 30 Abs. 4 Nr. 1 AO), Gesetz (§ 30 Abs. 4 Nr. 2 AO), Zustimmung (§ 30 Abs. 4 Nr. 3 AO), nichtsteuerliche Straftat (§ 30 Abs. 4 Nr. 4 AO), zwingendes öffentliches Interesse (§ 30 Abs. 4 Nr. 5 AO), falsche Angaben (§ 30 Abs. 5 AO)",
     ],

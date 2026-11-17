@@ -1015,6 +1015,40 @@ test("Profi-Stimme: Audio nur bei passender Prüfsumme, Zeitmarken je Punkt", as
   }
 });
 
+test("Sprechtext für die Profi-Stimme: Zahlen ausgeschrieben, Zitatlisten flüssig, nichts übrig", async () => {
+  const { fuerStimme, zahlwort, ordnungsstamm, pfeileMarkieren } = await import("../../tools/sprechtext.mjs");
+  const { hoerSegmente, hoerGruppen, hoerHash, stimmeVon } = await import("../js/vorlesen.js");
+  const { KOMPAKT } = await import("../js/kompakt.js");
+  assert.deepEqual([1, 21, 101, 122, 1001, 2026, 12400, 2500000].map(zahlwort),
+    ["eins", "einundzwanzig", "hunderteins", "hundertzweiundzwanzig", "tausendeins", "zweitausendsechsundzwanzig", "zwölftausendvierhundert", "zwei Millionen fünfhunderttausend"]);
+  assert.deepEqual([1, 3, 4, 20, 31].map(ordnungsstamm), ["erst", "dritt", "viert", "zwanzigst", "einunddreißigst"]);
+  const f = (t) => fuerStimme(t);
+  assert.equal(f("Paragrafen 122, 122 a, 183 Abgabenordnung"), "Paragrafen hundertzweiundzwanzig, hundertzweiundzwanzig a und hundertdreiundachtzig Abgabenordnung");
+  assert.equal(f("Gilt er als bekannt gegeben, Paragraf 122 Absatz 1, 2 Abgabenordnung, Paragraf 124 Absatz 1 Abgabenordnung."),
+    "Gilt er als bekannt gegeben, Paragraf hundertzweiundzwanzig Absatz eins und zwei sowie Paragraf hundertvierundzwanzig Absatz eins Abgabenordnung.");
+  assert.equal(f("Volljährige, Nummer 1, ; beschränkt"), "Volljährige, Nummer eins; beschränkt");
+  assert.equal(f("Beginn 10.03.2026, 0 Uhr; am 4. Tag, bis 31.07.02"), "Beginn zehnter März zweitausendsechsundzwanzig, null Uhr; am vierten Tag, bis einunddreißigsten Juli null zwei");
+  assert.equal(f("0,25 %: je Monat, höchstens 25.000 €, die 17-jährige"), "Null Komma zwei fünf Prozent: je Monat, höchstens fünfundzwanzigtausend Euro, die siebzehnjährige");
+  assert.equal(f("Steuer oder nicht?. Erstens: Welcher Anspruch?, Paragraf 37 Abgabenordnung"), "Steuer oder nicht? Erstens: Welcher Anspruch? Paragraf siebenunddreißig Abgabenordnung");
+  assert.equal(f(pfeileMarkieren("Entstehung → Festsetzung → Erhebung; Treuhand → Treugeber")), "Entstehung, dann Festsetzung, dann Erhebung; Treuhand: Treugeber");
+  assert.equal(f("Abschreibung 7/12, Artikel 73/74 Grundgesetz, 380 €/m², 200-m²-Grenze, plus ½, Mai–Dezember, Kasse +, Bank −."),
+    "Abschreibung sieben Zwölftel, Artikel dreiundsiebzig und vierundsiebzig Grundgesetz, dreihundertachtzig Euro je Quadratmeter, zweihundert-Quadratmeter-Grenze, plus ein halb, Mai bis Dezember, Kasse plus, Bank minus.");
+  // Über alle Überblicke: keine Ziffern, Normzeichen, Pfeile oder Satzzeichen-Reste mehr im Sprechtext
+  for (const id of Object.keys(KOMPAKT)) for (const g of hoerGruppen(hoerSegmente(pfeileMarkieren(KOMPAKT[id]), THEMA[id]))) {
+    const t = fuerStimme(g.text);
+    // nur Buchstaben, Leerraum, Satzzeichen, Bindestrich und Apostroph („H's“) – keine Ziffern, Brüche, Rechen- oder Normzeichen
+    const rest = /[^\p{L}\s,.;:?!'’-]|[,;:]\s*[,;:?!]|\p{Ll}\.\p{Ll}/u;
+    assert.ok(!rest.test(t), `${id}: ${t.match(new RegExp(".{0,30}(?:" + rest.source + ").{0,20}", "u"))?.[0]}`);
+  }
+  // Pfeile markieren ändert nur die Pfeile – Gruppen (Zeitmarken) bleiben gleich
+  const k = KOMPAKT["ao-tilgung"], th = THEMA["ao-tilgung"];
+  assert.deepEqual(hoerGruppen(hoerSegmente(pfeileMarkieren(k), th)).map((g) => g.ziel), hoerGruppen(hoerSegmente(k, th)).map((g) => g.ziel));
+  // Prüfsumme hängt an der Stimme der Datei
+  const seg = hoerSegmente(k, th);
+  assert.notEqual(hoerHash(seg, "Theo"), hoerHash(seg, "Cedar"));
+  assert.ok(["Theo", "Cedar"].includes(stimmeVon("ao-tilgung")) && stimmeVon("gibtsnicht") === "Cedar");
+});
+
 test("Klausursimulation: Sachverhalte rechnen für jeden Startwert sauber, Notentabelle", async () => {
   const { SIM, inhalt, note, zahlStimmt } = await import("../js/klausursim.js");
   for (const [fach, d] of Object.entries(SIM)) for (const sv of d.pool) for (let seed = 1; seed <= (sv.fest ? 1 : 60); seed++) {

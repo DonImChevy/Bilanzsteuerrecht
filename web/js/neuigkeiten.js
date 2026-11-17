@@ -24,6 +24,15 @@ export const NEUIGKEITEN = [
     ],
   },
   {
+    id: "2026-11-sprecher-theo",
+    datum: "2026-11-17",
+    titel: "Neuer Sprecher: Theo",
+    punkte: [
+      ["play", "Ruhig wie ein Dozent", "Die Überblicke liest jetzt Theo – eine deutsche Lehrerstimme. Paragrafen, Beträge und Daten spricht er flüssig aus („Paragraf hundertzweiundzwanzig Absatz eins und zwei Abgabenordnung“), ohne Stocken vor dem Gesetz.", "kompakt", "ao-bekanntgabe"],
+      ["haken", "In allen Modulen", "Alle 109 Überblicke – von Bilanzrecht bis Bewertungsrecht – sind neu vertont, zusammen gut elf Stunden. Bewertungsrecht gibt es damit zum ersten Mal zum Anhören."],
+    ],
+  },
+  {
     id: "2026-11-satznummern",
     datum: "2026-11-17",
     titel: "Gesetzestexte mit Satznummern",

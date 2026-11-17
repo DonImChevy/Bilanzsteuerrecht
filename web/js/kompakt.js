@@ -108,7 +108,7 @@ export function kompaktView(id, h) {
   const info = vorlesenMoeglich() ? hoerInfo(id, hoerSegmente(k, t)) : null;
   const hoeren = info ? `<button class="hoer-start${an ? " an" : ""}" data-a="hoeren" data-v="${id}" aria-label="Überblick anhören">
       <span class="hs-welle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-      <span class="hs-text"><b>${an ? "Wird vorgelesen" : "Anhören"}</b><span>ca. ${info.min} Min. · ${info.profi ? "Sprecher Cedar" : "Gerätestimme, Normen ausgeschrieben"}</span></span></button>` : "";
+      <span class="hs-text"><b>${an ? "Wird vorgelesen" : "Anhören"}</b><span>ca. ${info.min} Min. · ${info.profi ? `Sprecher ${info.stimme}` : "Gerätestimme, Normen ausgeschrieben"}</span></span></button>` : "";
   const kern = abdecken(`<p class="km-satz" data-hoer="satz">${kompaktInline(k.satz)}</p>
       ${k.zahlen?.length ? `<div class="km-zahlen">${k.zahlen.map(([w, b], i) => `<div data-hoer="zahlen-${i}"><b>${h.abdecken?.an ? `<mark class="km km-wert">${esc(w)}</mark>` : esc(w)}</b><span>${h.abdecken?.an ? kompaktInline(b).replace(/<\/?mark[^>]*>/g, "") : kompaktInline(b)}</span></div>`).join("")}</div>` : ""}
       ${abschnitt("km-schema", "Prüfungsschema", k.schema?.length ? `<ol class="km-schritte">${k.schema.map((s, i) => `<li data-hoer="schema-${i}">${kompaktInline(s)}</li>`).join("")}</ol>` : "")}

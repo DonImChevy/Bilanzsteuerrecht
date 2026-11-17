@@ -116,9 +116,14 @@ export function hoerSegmente(k, thema) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Profi-Stimme: vorab erzeugte Audiodateien (tools/vorlesen_audio.mjs, OpenAI gpt-4o-mini-tts, Stimme „Cedar“).
+// Profi-Stimme: vorab erzeugte Audiodateien (tools/vorlesen_audio.mjs). STIMME = Stimme für neu vertonte Themen
+// (ElevenLabs „Theo“); jede Datei führt ihre Stimme in HOER_AUDIO[id].st mit (fehlt = „Cedar“, OpenAI), damit ältere
+// Vertonungen gültig bleiben, bis ihr Modul neu vertont ist.
 // Gruppen = aufeinanderfolgende Segmente mit gleichem Ziel – je Gruppe eine Zeitmarke zum Mitlesen.
-export const STIMME = { name: "Cedar", version: 1 };
+export const STIMME = { name: "Theo", version: 1 };
+export const ALTE_STIMME = "Cedar";
+/** Name der Stimme, mit der ein Thema vertont ist. */
+export const stimmeVon = (id) => HOER_AUDIO[id]?.st || ALTE_STIMME;
 export function hoerGruppen(seg) {
   const g = [];
   for (const s of seg) {
@@ -129,9 +134,9 @@ export function hoerGruppen(seg) {
   return g;
 }
 /** Prüfsumme über Stimme und Text: Audio passt nur, solange sich der Überblick nicht geändert hat. */
-export function hoerHash(seg) {
+export function hoerHash(seg, stimme = STIMME.name) {
   let h = 0x811c9dc5;
-  const t = `${STIMME.name}|${STIMME.version}|` + seg.map((s) => s.ziel + "|" + s.pause + "|" + s.text).join("\n");
+  const t = `${stimme}|${STIMME.version}|` + seg.map((s) => s.ziel + "|" + s.pause + "|" + s.text).join("\n");
   for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
   return h.toString(36);
 }
@@ -160,11 +165,11 @@ export const hoertGerade = (id) => P.an && (!id || P.id === id);
 export const hoertModul = () => P.an && !!P.liste;
 
 /** Vertonte Datei zum Thema – nur wenn sie zum aktuellen Text passt (sonst Gerätestimme). */
-export function audioFuer(id, seg) { const a = HOER_AUDIO[id]; return a && a.h === hoerHash(seg) ? a : null; }
-/** Für den Knopf: Profi-Stimme vorhanden? Dauer in Minuten. */
+export function audioFuer(id, seg) { const a = HOER_AUDIO[id]; return a && a.h === hoerHash(seg, stimmeVon(id)) ? a : null; }
+/** Für den Knopf: Profi-Stimme vorhanden (und welche)? Dauer in Minuten. */
 export function hoerInfo(id, seg) {
   const a = audioFuer(id, seg);
-  return a ? { profi: true, min: Math.max(1, Math.round(a.d / 60 / P.tempoAudio)) } : { profi: false, min: hoerMinuten(seg, P.tempo) };
+  return a ? { profi: true, stimme: stimmeVon(id), min: Math.max(1, Math.round(a.d / 60 / P.tempoAudio)) } : { profi: false, min: hoerMinuten(seg, P.tempo) };
 }
 
 let stimme = null;
@@ -216,7 +221,7 @@ function ersatzStimme(abZiel) {
 function mediaSession() {
   if (typeof navigator === "undefined" || !navigator.mediaSession) return;
   try {
-    navigator.mediaSession.metadata = new MediaMetadata({ title: P.titel || "Überblick", artist: "Finanzwirt-Trainer · Kompaktwissen", album: STIMME.name });
+    navigator.mediaSession.metadata = new MediaMetadata({ title: P.titel || "Überblick", artist: "Finanzwirt-Trainer · Kompaktwissen", album: P.modus === "audio" ? stimmeVon(P.id) : "Gerätestimme" });
     navigator.mediaSession.setActionHandler("play", () => fortsetzen());
     navigator.mediaSession.setActionHandler("pause", () => pause());
     navigator.mediaSession.setActionHandler("previoustrack", () => springen(-1));
@@ -419,7 +424,7 @@ export function leisteAktualisieren(rollen = false) {
   const punkte = [...new Set(P.teile.map((x) => x.ziel))], nr = punkte.indexOf(t.ziel) + 1;
   const modul = P.liste ? ` · Thema ${P.liste.indexOf(P.id) + 1}/${P.liste.length}` : "";
   el.hidden = false;
-  el.innerHTML = `<div class="hl-info"><b>${P.pausiert ? "Pausiert" : "Wird vorgelesen"}${P.modus === "audio" ? ` <em class="hl-stimme">${STIMME.name}</em>` : ""}</b><span>${t.teil || ""} · ${nr}/${punkte.length}${modul}</span>
+  el.innerHTML = `<div class="hl-info"><b>${P.pausiert ? "Pausiert" : "Wird vorgelesen"}${P.modus === "audio" ? ` <em class="hl-stimme">${stimmeVon(P.id)}</em>` : ""}</b><span>${t.teil || ""} · ${nr}/${punkte.length}${modul}</span>
       <div class="hl-balken"><i style="width:${fortschritt()}%"></i></div></div>
     <div class="hl-knoepfe">
       <button class="hl-k" data-a="hoerSprung" data-v="-1" aria-label="Vorheriger Punkt">${sym("zurueck")}</button>
