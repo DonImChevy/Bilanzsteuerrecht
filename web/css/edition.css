@@ -445,3 +445,7 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 .garderobe-karte .gk-betrag { flex: none; display: flex; flex-direction: column; align-items: flex-end; font-family: var(--serif); font-size: 22px; font-weight: 680; color: var(--gold-ton); line-height: 1; }
 .garderobe-karte .gk-betrag small { font: 600 10px "Inter", sans-serif; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-top: 3px; }
 .garderobe-karte > .ic { flex: none; color: var(--gold-ton); }
+
+/* Satznummern im Gesetzestext (hochgestellt wie in Gesetzessammlungen; Sätze einer Nummer zählen innerhalb der Nummer) */
+sup.satz-nr { font-size: 0.68em; line-height: 0; vertical-align: 0.42em; font-weight: 650; font-variant-numeric: tabular-nums; color: var(--text3); margin-right: 0.18em; user-select: none; }
+mark.norm-hl sup.satz-nr { color: var(--text2); }
