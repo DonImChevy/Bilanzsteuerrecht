@@ -15,7 +15,7 @@ import { BEISPIELE_BEWR } from "./bewr/beispiele.js";
 import { BEISPIELE_BSR } from "./bilr/beispiele.js";
 import { BEISPIELE_EST } from "./est/beispiele.js";
 import { BEISPIELE_OER } from "./oer/beispiele.js";
-import { normenAusText, norm } from "./oer/normtext.js";
+import { normenAusText, norm, KUERZEL } from "./oer/normtext.js";
 import { begriffeIm } from "./begriffe.js";
 
 const BEISPIELE = { ...BEISPIELE_BSR, ...BEISPIELE_OER, ...BEISPIELE_EST, ...BEISPIELE_UST, ...BEISPIELE_BBF, ...BEISPIELE_AO, ...BEISPIELE_PR, ...BEISPIELE_BEWR };
@@ -39,7 +39,7 @@ import { typografie } from "./satz.js";
 
 const dauerText = (min) => min < 90 ? `${min} Min.` : `${String(Math.round(min / 6) / 10).replace(".", ",")} Std.`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const ZITAT = /(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|EStDV|LStDV|VwZG|GOBT|GmbHG|ErbStG|BewG)\b|\bR \d+[a-z]?(?: Abs\. \d+)? EStR\b/g;
+const ZITAT = new RegExp(String.raw`(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:GG|${KUERZEL})\b|\bR \d+[a-z]?(?:\.\d+[a-z]?)?(?: Abs\. \d+)? EStR\b`, "g");
 
 /** Fließtext: **fett** wird zum Textmarker, Normzitate werden antippbar (öffnen den Gesetzestext). */
 export function kompaktInline(text) {

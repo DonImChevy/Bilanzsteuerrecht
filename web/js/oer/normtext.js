@@ -11,6 +11,10 @@ import { NORMEN_GOBT } from "./gobt.js";
 import { NORMEN_PR } from "../pr/normen.js";
 import { NORMEN_BEW } from "../bewr/normen.js";
 import { LISTENENDE } from "./listenende.js";
+import { NORMEN_ZITIERT, IM_TAB } from "./normen_zitiert.js";
+
+/** Gesetzeskürzel, deren Paragrafen in der App nachgeschlagen werden können (für Zitate „§ … AO“). */
+export const KUERZEL = "HGB|AO|EStG|EStDV|UStG|UStDV|BWahlG|PartG|LStDV|GOBT|BGB|GmbHG|ErbStG|BewG|VwZG|KStG|GrEStG|AktG|StGB|FGO|BVerfGG";
 
 // Ein Paragraf kann in mehreren Modulen vorkommen (z. B. § 12 EStG): Absätze werden vereinigt,
 // faecher nennt die Module, in deren Nachschlagen-Liste er erscheint.
@@ -27,6 +31,17 @@ for (const [fach, liste] of [["oer", [...NORMEN_OER, ...NORMEN_GOBT]], ["bsr", [
     da.auszug = da.auszug && n.auszug;
     da.titel ||= n.titel;
   }
+}
+// Zitierte Normen, die sonst fehlen (normen_zitiert.js), und zusätzliche Einträge im Normen-Tab eines Moduls
+for (const n of NORMEN_ZITIERT) {
+  const k = `${n.g} ${n.nr}`;
+  if (!INDEX.has(k)) INDEX.set(k, { ...n, faecher: [...n.faecher] });
+}
+for (const [fach, refs] of Object.entries(IM_TAB)) for (const ref of refs) {
+  const n = INDEX.get(ref);
+  if (!n || n.faecher.includes(fach)) continue;
+  n.faecherBasis ||= [...n.faecher];
+  n.faecher.push(fach);
 }
 const NORMEN = [...INDEX.values()];
 
@@ -88,7 +103,7 @@ export function normenAusText(text) {
     const ref = m[2] && norm(`GG ${nr} ${m[2]}`) ? `GG ${nr} ${m[2]}` : `GG ${nr}`;
     if (!refs.includes(ref) && !refs.includes(`GG ${nr}`)) refs.push(ref);
   }
-  for (const m of String(text).matchAll(/§§?[\s\u00a0]*([^§]*?)[\s\u00a0](HGB|AO|EStG|UStG|BWahlG|PartG|LStDV|GOBT|BGB|GmbHG|ErbStG|BewG)\b/g)) {
+  for (const m of String(text).matchAll(new RegExp(String.raw`§§?[\s\u00a0]*([^§]*?)[\s\u00a0](${KUERZEL})\b`, "g"))) {
     const g = m[2];
     let vorher = null;
     for (const teil of m[1].split(/,|\bi\.\s?V\.\s?m\.|\bund\b/)) {
@@ -129,7 +144,7 @@ export function zitate(text) {
   const s = String(text);
   for (const m of s.matchAll(/Präambel\s+(?:Satz|S\.)\s*(\d+)/g)) erg.push({ g: "GG", nr: "Präambel", abs: null, satz: m[1], nummern: [] });
   for (const m of s.matchAll(new RegExp(String.raw`Art\.\s*(\d+[a-z]?)` + MODS, "g"))) lesen("GG", m[1], m[2]);
-  for (const m of s.matchAll(new RegExp(String.raw`§\s*(\d+[a-z]?)` + MODS + String.raw`\s*(?:des\s+)?(HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|GmbHG|ErbStG|BewG)\b`, "g"))) lesen(m[3], m[1], m[2]);
+  for (const m of s.matchAll(new RegExp(String.raw`§\s*(\d+[a-z]?)` + MODS + String.raw`\s*(?:des\s+)?(GG|${KUERZEL})\b`, "g"))) lesen(m[3], m[1], m[2]);
   return erg;
 }
 

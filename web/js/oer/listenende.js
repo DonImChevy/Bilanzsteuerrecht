@@ -67,6 +67,9 @@ export const LISTENENDE = {
 "AO 347 1": [
 "ist als Rechtsbehelf der Einspruch statthaft."
 ],
+"AO 52 2": [
+"Sofern der von der Körperschaft verfolgte"
+],
 "AO 82 1": [
 "Dem Beteiligten steht gleich, wer durch"
 ],
@@ -109,6 +112,9 @@ export const LISTENENDE = {
 "BGB 434 3": [
 "Zu der üblichen Beschaffenheit nach Satz"
 ],
+"BGB 543 2": [
+"Im Falle des Satzes 1 Nr."
+],
 "BGB 622 5": [
 "Bei der Feststellung der Zahl der"
 ],
@@ -123,6 +129,9 @@ export const LISTENENDE = {
 ],
 "BWahlG 18 4": [
 "Die Feststellung ist vom Bundeswahlleiter in"
+],
+"BWahlG 3 1": [
+"Bei Ermittlung der Bevölkerungszahlen bleiben Ausländer"
 ],
 "BWahlG 34 2": [
 "Der Wähler faltet daraufhin den Stimmzettel"
@@ -151,6 +160,9 @@ export const LISTENENDE = {
 "BewG 186 2": [
 "ist die übliche Miete anzusetzen. Die"
 ],
+"EStDV 56": [
+"Eine Steuererklärung ist außerdem abzugeben, wenn"
+],
 "EStG 1 2": [
 "sowie zu ihrem Haushalt gehörende Angehörige,"
 ],
@@ -160,11 +172,17 @@ export const LISTENENDE = {
 "fördern oder",
 "Abziehbare Zuwendungen, die die Höchstbeträge nach"
 ],
+"EStG 13 4": [
+"bleibt der Entnahme- oder Veräußerungsgewinn ebenfalls"
+],
 "EStG 13a 1": [
 "Satz 1 ist auch anzuwenden, wenn"
 ],
 "EStG 15 1": [
 "Satz 1 Nummer 2 und 3"
+],
+"EStG 17 2a": [
+"Eine gesellschaftsrechtliche Veranlassung liegt regelmäßig vor,"
 ],
 "EStG 19 1": [
 "Es ist gleichgültig, ob es sich"
@@ -207,6 +225,12 @@ export const LISTENENDE = {
 "bezogen, so ist auf das nach",
 "§ 2a Absatz 2a und §"
 ],
+"EStG 34g": [
+"Die Ermäßigung beträgt 50 Prozent der"
+],
+"EStG 35 1": [
+"Der Ermäßigungshöchstbetrag ist wie folgt zu"
+],
 "EStG 38 1": [
 "In den Fällen der internationalen Arbeitnehmerentsendung"
 ],
@@ -216,11 +240,23 @@ export const LISTENENDE = {
 "EStG 4 5": [
 "Das Abzugsverbot gilt nicht, soweit die"
 ],
+"EStG 41a 1": [
+"Die Lohnsteuer-Anmeldung ist nach amtlich vorgeschriebenem"
+],
 "EStG 43a 1": [
 "Im Fall einer Kirchensteuerpflicht ermäßigt sich"
 ],
 "EStG 5 5": [
 "Der Ansatz eines Rechnungsabgrenzungspostens kann unterbleiben,"
+],
+"EStG 51 2": [
+"Rechtsverordnungen auf Grund dieser Ermächtigung bedürfen"
+],
+"EStG 51 3": [
+"Rechtsverordnungen auf Grund dieser Ermächtigung bedürfen"
+],
+"EStG 51a 2c": [
+"Die Daten gemäß Nummer 3 sind"
 ],
 "EStG 7 4": [
 "der Anschaffungs- oder Herstellungskosten; Absatz 1"
@@ -269,6 +305,9 @@ export const LISTENENDE = {
 "HGB 264 1": [
 "unter der Bilanz angeben."
 ],
+"HGB 284 3": [
+"Sind in die Herstellungskosten Zinsen für"
+],
 "PartG 10 3": [
 "Im Falle der Enthebung von Parteiämtern"
 ],
@@ -280,6 +319,15 @@ export const LISTENENDE = {
 ],
 "PartG 6 3": [
 "mitzuteilen. Änderungen zu Satz 1 Nr."
+],
+"StGB 130 1": [
+"wird mit Freiheitsstrafe von drei Monaten"
+],
+"StGB 355 1": [
+"offenbart oder verwertet, wird mit Freiheitsstrafe"
+],
+"UStDV 33": [
+"Die §§ 31 und 32 sind"
 ],
 "UStG 10 4": [
 "Die Umsatzsteuer gehört nicht zur Bemessungsgrundlage."
@@ -313,6 +361,12 @@ export const LISTENENDE = {
 ],
 "UStG 20": [
 "die Steuer nicht nach den vereinbarten"
+],
+"UStG 24 1": [
+"Die Befreiungen nach § 4 mit"
+],
+"UStG 24 2": [
+"Zum land- und forstwirtschaftlichen Betrieb gehören"
 ],
 "UStG 3 1b": [
 "Voraussetzung ist, dass der Gegenstand oder"

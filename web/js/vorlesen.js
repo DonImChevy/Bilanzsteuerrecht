@@ -12,6 +12,7 @@ const GESETZ = {
   EStH: "Einkommensteuer-Hinweise", LStR: "Lohnsteuer-Richtlinien", LStH: "Lohnsteuer-Hinweise", BRKG: "Bundesreisekostengesetz",
   BVerfGG: "Bundesverfassungsgerichtsgesetz", StPO: "Strafprozessordnung", KStG: "Körperschaftsteuergesetz", GewStG: "Gewerbesteuergesetz",
   GrEStG: "Grunderwerbsteuergesetz", BewG: "Bewertungsgesetz", ErbStG: "Erbschaftsteuergesetz", GoBD: "G o B D", GmbHG: "GmbH-Gesetz", AktG: "Aktiengesetz", EnWG: "Energiewirtschaftsgesetz",
+  FGO: "Finanzgerichtsordnung", StGB: "Strafgesetzbuch",
 };
 // Fachkürzel → ausgesprochen (nur eindeutige; Rechtsformen wie GmbH liest die Stimme selbst richtig)
 const KUERZEL = {

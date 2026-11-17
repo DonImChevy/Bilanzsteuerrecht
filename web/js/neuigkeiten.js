@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-normen-vollstaendig",
+    datum: "2026-11-17",
+    titel: "Normen-Tab: jede zitierte Norm im Wortlaut",
+    klein: true,
+    punkte: [
+      ["haken", "Alle zitierten Paragrafen nachschlagen", "Jede Norm, die ein Modul in Überblicken, Aufgaben, Lernpfad oder Probeklausuren zitiert, steht jetzt im Normen-Tab dieses Moduls – 51 Paragrafen kamen neu hinzu (u. a. BVerfGG, StGB, KStG, UStDV, FGO, weitere Artikel des GG und Paragrafen von EStG, AO und BGB). Auch diese Zitate lassen sich jetzt antippen."],
+    ],
+  },
+  {
     id: "2026-11-satznummern",
     datum: "2026-11-17",
     titel: "Gesetzestexte mit Satznummern",

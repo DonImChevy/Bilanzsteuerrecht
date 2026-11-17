@@ -1383,3 +1383,16 @@ test("Gesetzestext: Satznummern zählen wie im Gesetz (Sätze einer Nummer inner
     assert.ok(!norm(`${g} ${nr} ${abs}`).absaetze[0].text.replace(/\s+/g, " ").includes(anfang), f);
   }
 });
+
+test("Normen-Tab: jede Norm, die ein Modul zitiert, steht im Normen-Tab dieses Moduls (sonst tools/zitierte_normen.mjs + tools/xml_normen.py laufen lassen)", async () => {
+  const { zitateJeModul } = await import("../../tools/zitate.mjs");
+  const { NORMEN } = await import("../js/oer/normtext.js");
+  const { OHNE_QUELLE } = await import("../js/oer/normen_zitiert.js");
+  const { KOMPAKT } = await import("../js/kompakt.js");
+  const wurzel = new URL("../..", import.meta.url).pathname;
+  const idx = new Map(NORMEN.map((n) => [`${n.g} ${n.nr}`, n]));
+  for (const [fach, z] of Object.entries(zitateJeModul(wurzel, KOMPAKT, THEMEN))) {
+    const fehlt = [...z.keys()].filter((k) => !idx.get(k)?.faecher.includes(fach) && !(OHNE_QUELLE[fach] || []).includes(k));
+    assert.deepEqual(fehlt, [], `${fach}: zitiert, aber nicht im Normen-Tab`);
+  }
+});

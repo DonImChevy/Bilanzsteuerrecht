@@ -2027,8 +2027,18 @@ const GESETZE = {
 const nrKey = (nr) => { const m = String(nr).match(/^(\d+)(.*)$/); return m ? [Number(m[1]), m[2]] : [-1, String(nr)]; };
 const nrVergleich = (a, b) => { const [x, xs] = nrKey(a.nr), [y, ys] = nrKey(b.nr); return x - y || xs.localeCompare(ys); };
 const normenVon = (fach) => NORMEN.filter((n) => n.faecher.includes(fach)).sort(nrVergleich);
-/** Gesetze eines Moduls, deren Text in der App vorliegt. */
-const gesetzeFuer = (fach) => (GESETZE[fach] || []).filter(([g]) => normenVon(fach).some((n) => n.g === g));
+/** Titel aller Gesetze – für Gesetze, die ein Modul nur zitiert (normen_zitiert.js), in der Reihenfolge der Anzeige. */
+const GESETZ_TITEL = [["GG", "Grundgesetz (GG)"], ["BWahlG", "Bundeswahlgesetz (BWahlG)"], ["PartG", "Parteiengesetz (PartG)"], ["GOBT", "Geschäftsordnung des Bundestages (GOBT)"], ["BVerfGG", "Bundesverfassungsgerichtsgesetz (BVerfGG)"],
+  ["HGB", "Handelsgesetzbuch (HGB)"], ["AktG", "Aktiengesetz (AktG)"], ["GmbHG", "GmbH-Gesetz (GmbHG)"], ["AO", "Abgabenordnung (AO)"], ["FGO", "Finanzgerichtsordnung (FGO)"], ["VwZG", "Verwaltungszustellungsgesetz (VwZG)"],
+  ["EStG", "Einkommensteuergesetz (EStG)"], ["EStDV", "Einkommensteuer-Durchführungsverordnung (EStDV)"], ["EStR", "Einkommensteuer-Richtlinien (EStR)"], ["LStDV", "Lohnsteuer-Durchführungsverordnung (LStDV)"], ["KStG", "Körperschaftsteuergesetz (KStG)"],
+  ["UStG", "Umsatzsteuergesetz (UStG)"], ["UStDV", "Umsatzsteuer-Durchführungsverordnung (UStDV)"], ["ErbStG", "Erbschaftsteuer- und Schenkungsteuergesetz (ErbStG)"], ["BewG", "Bewertungsgesetz (BewG)"], ["GrEStG", "Grunderwerbsteuergesetz (GrEStG)"],
+  ["BGB", "Bürgerliches Gesetzbuch (BGB)"], ["StGB", "Strafgesetzbuch (StGB)"]];
+/** Gesetze eines Moduls, deren Text in der App vorliegt: erst die des Moduls, dann die nur zitierten. */
+const gesetzeFuer = (fach) => {
+  const eigene = GESETZE[fach] || [];
+  const weitere = GESETZ_TITEL.filter(([g]) => !eigene.some(([e]) => e === g));
+  return [...eigene, ...weitere].filter(([g]) => normenVon(fach).some((n) => n.g === g));
+};
 
 function normenListe() {
   const q = norma(state.normSuche.trim());
