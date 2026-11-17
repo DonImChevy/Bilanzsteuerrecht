@@ -482,3 +482,36 @@ mark.norm-hl sup.satz-nr { color: var(--text2); }
 .gb-nachbar, .gb-imgesetz { border: 1px solid var(--gold-linie); background: var(--gold-hauch); color: var(--text); border-radius: 999px;
   padding: 8px 12px; font: inherit; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; }
 .gb-imgesetz { display: inline-flex; align-items: center; gap: 6px; background: none; }
+
+/* =====================================================================
+   Themen als Kapitel: die ganze Karte öffnet den Überblick (erst lesen), rechts das Blatt als Zeichen dafür.
+   Fußzeile über die volle Breite: Fortschritt als Haarlinie, darunter „60 % · 24 Aufgaben“ und der ruhige Knopf „Üben“.
+   ===================================================================== */
+.themen-karte.kapitel { display: grid; grid-template-columns: 34px minmax(0, 1fr) 76px; grid-template-areas: "nr text rechts" "nr fuss fuss";
+  column-gap: 14px; row-gap: 16px; align-items: start; cursor: pointer; padding-bottom: 14px; }
+.kapitel .tk-icon { grid-area: nr; }
+.kapitel .tk-text { grid-area: text; }
+.kapitel .tk-rechts { grid-area: rechts; align-self: start; width: auto; }
+.kapitel .tk-blatt { flex: none; min-height: 72px; pointer-events: none; letter-spacing: 1px; }
+.kapitel .tk-fuss { grid-area: fuss; margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; row-gap: 10px; column-gap: 12px; }
+.kapitel .tk-balken { grid-column: 1 / -1; height: 2px; }
+.kapitel .tk-n { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.kapitel .tk-n .tk-status { font-family: var(--serif); font-size: 17px; font-weight: 680; letter-spacing: 0; text-transform: none; color: var(--farbe); padding: 0; min-width: 0; }
+.kapitel .tk-n .tk-status.neu { font-family: "Inter", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: var(--gold-ton); }
+@media (hover: hover) {
+  .kapitel:hover .tk-blatt { transform: translateY(-2px) rotate(-1deg); color: var(--text); box-shadow: inset 0 0 0 1px var(--gold-ton), 0 14px 18px -12px rgba(0, 0, 0, 0.7); }
+}
+.kapitel:active .tk-blatt { transform: translateY(1px); box-shadow: inset 0 0 0 1px var(--gold-ton); }
+.tk-ueben { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 7px; min-height: 38px; padding: 7px 16px 7px 13px;
+  border-radius: 999px; font: inherit; font-size: 14px; font-weight: 650; color: var(--accent); background: transparent;
+  border: 1px solid color-mix(in oklab, var(--m) 55%, transparent); cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, color 0.2s, border-color 0.2s; }
+.tk-ueben .ic { width: 12px; height: 12px; }
+.tk-ueben:active { transform: translateY(1px); background: var(--accent-weak); }
+@media (hover: hover) { .tk-ueben:hover { background: var(--fill); color: var(--elfenbein); border-color: transparent; } }
+.tk-ueben:focus-visible { outline: 2.5px solid var(--m); outline-offset: 2px; }
+@media (max-width: 400px) {
+  .themen-karte.kapitel { grid-template-columns: 28px minmax(0, 1fr) 68px; column-gap: 12px; }
+  .kapitel .tk-blatt { min-height: 64px; font-size: 9px; letter-spacing: 0.7px; padding-inline: 4px; }
+}
+:root[data-bewegung="aus"] .kapitel .tk-blatt, :root[data-bewegung="aus"] .tk-ueben { transition: none; transform: none !important; }

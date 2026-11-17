@@ -1642,12 +1642,15 @@ function themenListe() {
   return `<div class="themen-karten">${liste.map((t, i) => {
     const z = zaehler(t.id), q2 = quote(z), n = vorlagenFuer(t.id).length, p = Math.round(q2 * 100);
     const status = z.b ? `<span class="tk-status" style="--farbe:${farbe(q2)}">${p} %</span>` : `<span class="tk-status neu">neu</span>`;
-    const lesen = KOMPAKT[t.id] ? `<button class="tk-lesen" data-a="kompakt" data-v="${t.id}" aria-label="Zusammenfassung ${esc(t.titel)} lesen">${ic("akte", "klein")}Überblick</button>` : "";
-    return `<div class="themen-karte${z.b ? "" : " frisch"}" style="--farbe:${z.b ? farbe(q2) : "var(--m)"};--i:${Math.min(i, 12)}">
+    // Kapitel: die Karte öffnet den Überblick (erst lesen), „Üben“ ist ein eigener Knopf in der Fußzeile
+    const ueberblick = !!KOMPAKT[t.id];
+    const blatt = ueberblick ? `<span class="tk-lesen tk-blatt" aria-hidden="true">${ic("akte", "klein")}Überblick</span>` : "";
+    const ueben = ueberblick ? `<button class="tk-ueben" data-a="thema" data-v="${t.id}" aria-label="${esc(t.titel)}: ${aufgabenN(n)} üben">${ic("play", "klein fill")}Üben</button>` : "";
+    return `<div class="themen-karte kapitel${z.b ? "" : " frisch"}" style="--farbe:${z.b ? farbe(q2) : "var(--m)"};--i:${Math.min(i, 12)}">
       <span class="tk-icon">${t.icon}<i>${i + 1}</i></span>
-      <span class="tk-text"><button class="tk-haupt" data-a="thema" data-v="${t.id}"><b>${esc(t.titel)}</b></button><span class="sub">${esc(t.unter)}</span>
-        <span class="tk-fuss"><span class="tk-balken"><span style="width:${z.b ? Math.max(p, 4) : 0}%"></span></span><span class="tk-n">${aufgabenN(n)}</span></span></span>
-      <span class="tk-rechts">${status}${lesen}</span></div>`;
+      <span class="tk-text"><button class="tk-haupt" data-a="${ueberblick ? "kompakt" : "thema"}" data-v="${t.id}" aria-label="${esc(t.titel)} – ${ueberblick ? "Überblick lesen" : "üben"}"><b>${esc(t.titel)}</b></button><span class="sub">${esc(t.unter)}</span></span>
+      ${ueberblick ? `<span class="tk-rechts">${blatt}</span>` : `<span class="tk-rechts">${status}</span>`}
+      <span class="tk-fuss"><span class="tk-balken"><span style="width:${z.b ? Math.max(p, 4) : 0}%"></span></span><span class="tk-n">${ueberblick ? status : ""}${aufgabenN(n)}</span>${ueben}</span></div>`;
   }).join("")}</div>`;
 }
 

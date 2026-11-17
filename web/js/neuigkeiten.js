@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-kapitel",
+    datum: "2026-11-17",
+    titel: "Themen: erst lesen, dann üben",
+    klein: true,
+    punkte: [
+      ["akte", "Karte öffnet den Überblick", "Ein Tipp auf ein Thema öffnet jetzt seinen Überblick – üben startest du mit dem Knopf „Üben“ in der Karte oder am Ende des Überblicks mit „Jetzt üben“."],
+    ],
+  },
+  {
     id: "2026-11-gesetzbuch",
     datum: "2026-11-17",
     titel: "Das Gesetzbuch in der App",
