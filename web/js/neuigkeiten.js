@@ -10,7 +10,7 @@ export const NEUIGKEITEN = [
     titel: "Themen: erst lesen, dann üben",
     klein: true,
     punkte: [
-      ["akte", "Karte öffnet den Überblick", "Ein Tipp auf ein Thema öffnet jetzt seinen Überblick – üben startest du mit dem Knopf „Üben“ in der Karte oder am Ende des Überblicks mit „Jetzt üben“."],
+      ["akte", "Links lesen, rechts üben", "Jede Themenkarte ist jetzt zweigeteilt: Links öffnest du den Überblick, rechts in der eigenen Spalte mit Fortschrittsring startest du die Aufgaben."],
     ],
   },
   {
