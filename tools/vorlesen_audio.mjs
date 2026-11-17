@@ -1,7 +1,11 @@
-// Vertont das Kompaktwissen mit der OpenAI-Sprachausgabe (gpt-4o-mini-tts, Stimme „Cedar“) → web/audio/<thema>.m4a
-// und schreibt web/js/hoeraudio.js (Prüfsumme, Dauer und Zeitmarken je Thema zum Mitlesen).
+// Vertont das Kompaktwissen → web/audio/<thema>.m4a und schreibt web/js/hoeraudio.js (Prüfsumme, Dauer und
+// Zeitmarken je Thema zum Mitlesen). Anbieter:
+//   ElevenLabs (Standard): ELEVEN_STIMME=<voice_id> [ELEVEN_MODELL=eleven_multilingual_v2] – Schlüssel als Netzwerk-Secret
+//     für api.elevenlabs.io im Header xi-api-key (ohne Präfix). Stimmen auflisten: … vorlesen_audio.mjs --stimmen
+//   OpenAI: ANBIETER=openai (gpt-4o-mini-tts, Stimme aus STIMME in vorlesen.js) – Secret für api.openai.com (Bearer).
 // Aufruf (der API-Schlüssel wird vom Proxy der Umgebung eingesetzt, steht nie im Repo):
-//   NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt node tools/vorlesen_audio.mjs [cacheordner] [thema …]
+//   NODE_USE_ENV_PROXY=1 NODE_EXTRA_CA_CERTS=/root/.ccr/ca-bundle.crt ELEVEN_STIMME=… node tools/vorlesen_audio.mjs [cacheordner] [thema …]
+// Der Anzeigename der Stimme steht in STIMME (web/js/vorlesen.js); eine Änderung dort vertont alle Themen neu.
 // Nur Themen, deren Text sich geändert hat (Prüfsumme), werden neu erzeugt; Abschnitte liegen im Cache (Hash → mp3).
 import "../web/js/kern.js";
 import { KOMPAKT } from "../web/js/kompakt.js";
@@ -17,22 +21,46 @@ const [cache = "/tmp/vorlesen-cache", ...nur] = process.argv.slice(2);
 const AUDIO = path.join(WURZEL, "web/audio"), INDEX = path.join(WURZEL, "web/js/hoeraudio.js");
 const ANWEISUNG = "Sprich Deutsch wie ein erfahrener, sympathischer Dozent an einer Finanzhochschule, der einer Studentin den Stoff vor der Klausur erklärt: ruhig, klar, natürlich betont, leicht warm, mit kurzen Pausen zwischen den Punkten. Fachbegriffe und Paragrafen deutlich, aber nicht abgehackt. Nicht übertrieben, nicht roboterhaft, kein Werbeton.";
 const RATE = 24000;
+const ANBIETER = process.env.ANBIETER || "elevenlabs";
+const ELEVEN = { stimme: process.env.ELEVEN_STIMME, modell: process.env.ELEVEN_MODELL || "eleven_multilingual_v2" };
+if (process.argv[2] === "--stimmen") {
+  // Verfügbare Stimmen des Kontos (inkl. aus der Voice Library hinzugefügter) – zum Aussuchen von ELEVEN_STIMME
+  const r = await fetch("https://api.elevenlabs.io/v2/voices?page_size=100", { headers: { "xi-api-key": "proxy-injected" } });
+  if (!r.ok) { console.error(`Stimmen ${r.status}: ${(await r.text()).slice(0, 300)}`); process.exit(1); }
+  for (const v of (await r.json()).voices) console.log(`${v.voice_id}  ${v.name}  ${Object.values(v.labels || {}).join(", ")}`);
+  process.exit(0);
+}
+if (ANBIETER === "elevenlabs" && !ELEVEN.stimme) { console.error("ELEVEN_STIMME fehlt (voice_id, siehe --stimmen)"); process.exit(1); }
 fs.mkdirSync(cache, { recursive: true }); fs.mkdirSync(AUDIO, { recursive: true });
 
 const alt = fs.existsSync(INDEX) ? JSON.parse(fs.readFileSync(INDEX, "utf8").replace(/^[\s\S]*?= /, "").replace(/;\s*$/, "")) : {};
-const hash = (t) => crypto.createHash("sha1").update(STIMME.name + "|" + ANWEISUNG + "|" + t).digest("hex").slice(0, 16);
+const hash = (t) => crypto.createHash("sha1").update((ANBIETER === "elevenlabs" ? `eleven|${ELEVEN.stimme}|${ELEVEN.modell}` : STIMME.name + "|" + ANWEISUNG) + "|" + t).digest("hex").slice(0, 16);
 
-async function sprechen(text) {
+/** Eine Anfrage beim Anbieter; liefert die Antwort (mp3). vorher/nachher: Nachbartext für gleichmäßige Betonung (ElevenLabs). */
+function anfrage(text, vorher, nachher) {
+  if (ANBIETER === "elevenlabs") {
+    return fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN.stimme}?output_format=mp3_44100_128`, {
+      method: "POST", headers: { "Content-Type": "application/json", "xi-api-key": "proxy-injected" },
+      body: JSON.stringify({
+        text, model_id: ELEVEN.modell, previous_text: vorher || undefined, next_text: nachher || undefined,
+        voice_settings: { stability: 0.55, similarity_boost: 0.8, style: 0.15, use_speaker_boost: true, speed: 1 },
+      }),
+    });
+  }
+  return fetch("https://api.openai.com/v1/audio/speech", {
+    method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer proxy-injected" },
+    body: JSON.stringify({ model: "gpt-4o-mini-tts", voice: STIMME.name.toLowerCase(), input: text, instructions: ANWEISUNG, response_format: "mp3" }),
+  });
+}
+
+async function sprechen(text, vorher, nachher) {
   const datei = path.join(cache, hash(text) + ".mp3");
   if (fs.existsSync(datei)) return datei;
   for (let versuch = 1; ; versuch++) {
-    const r = await fetch("https://api.openai.com/v1/audio/speech", {
-      method: "POST", headers: { "Content-Type": "application/json", Authorization: "Bearer proxy-injected" },
-      body: JSON.stringify({ model: "gpt-4o-mini-tts", voice: STIMME.name.toLowerCase(), input: text, instructions: ANWEISUNG, response_format: "mp3" }),
-    }).catch((e) => ({ ok: false, status: 0, text: async () => String(e) }));
+    const r = await anfrage(text, vorher, nachher).catch((e) => ({ ok: false, status: 0, text: async () => String(e) }));
     if (r.ok) { fs.writeFileSync(datei, Buffer.from(await r.arrayBuffer())); return datei; }
     const fehler = await r.text();
-    if (versuch >= 5 || r.status === 400 || /insufficient_quota/.test(fehler)) throw new Error(`TTS ${r.status}: ${fehler.slice(0, 200)}`);
+    if (versuch >= 5 || [400, 401, 402, 403, 404, 422].includes(r.status) || /insufficient_quota|quota_exceeded/.test(fehler)) throw new Error(`TTS ${r.status}: ${fehler.slice(0, 200)}`);
     await new Promise((ok) => setTimeout(ok, 2000 * versuch));
   }
 }
@@ -42,8 +70,8 @@ const dauer = (wav) => (fs.statSync(wav).size - 44) / (RATE * 2);
 async function thema(id, gruppen) {
   // Abschnitte parallel erzeugen (höchstens 6 gleichzeitig)
   const dateien = new Array(gruppen.length); let naechste = 0;
-  await Promise.all(Array.from({ length: 6 }, async () => {
-    while (naechste < gruppen.length) { const i = naechste++; dateien[i] = await sprechen(gruppen[i].text); }
+  await Promise.all(Array.from({ length: ANBIETER === "elevenlabs" ? 2 : 6 }, async () => {
+    while (naechste < gruppen.length) { const i = naechste++; dateien[i] = await sprechen(gruppen[i].text, gruppen[i - 1]?.text, gruppen[i + 1]?.text); }
   }));
   const tmp = fs.mkdtempSync(path.join(cache, "t-"));
   const liste = [], marken = []; let t = 0;
@@ -88,6 +116,6 @@ console.log(`fertig: ${Object.keys(neu).length} Themen mit Audio, neu vertont ${
 
 function kopf() {
   return "// Automatisch erzeugt (tools/vorlesen_audio.mjs) – nicht von Hand ändern.\n" +
-    `// Vorab vertonte Überblicke (OpenAI gpt-4o-mini-tts, Stimme ${STIMME.name}): Prüfsumme h, Dauer d (s), Größe s (Bytes), Zeitmarken m [[Sekunde, data-hoer]].\n` +
+    `// Vorab vertonte Überblicke (${ANBIETER === "elevenlabs" ? `ElevenLabs ${ELEVEN.modell}` : "OpenAI gpt-4o-mini-tts"}, Stimme ${STIMME.name}): Prüfsumme h, Dauer d (s), Größe s (Bytes), Zeitmarken m [[Sekunde, data-hoer]].\n` +
     "export const HOER_AUDIO = ";
 }
