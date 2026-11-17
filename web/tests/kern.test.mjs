@@ -1358,3 +1358,28 @@ test("Überblick ist mindestens so vollständig wie der Lernpfad: jeder im Lernp
     }
   }
 });
+
+test("Gesetzestext: Satznummern zählen wie im Gesetz (Sätze einer Nummer innerhalb der Nummer, nach der Aufzählung weiter im Absatz)", async () => {
+  const { norm, satzMarken, LISTENENDE_FEHLT } = await import("../js/oer/normtext.js");
+  const marken = (ref) => { const a = norm(ref).absaetze[0]; return { a, ...satzMarken(a.text, a.enden || []) }; };
+  const satzAb = ({ a, marken: m }, ebene, nr) => a.text.slice(m.find((x) => x.ebene === ebene && x.nr === nr).pos).slice(0, 30);
+  // § 39 Abs. 2 AO: ein Satz auf Absatzebene (keine Nummer), Nr. 1 hat zwei Sätze
+  const ao39 = marken("AO 39 2");
+  assert.ok(!ao39.marken.some((x) => x.ebene === "abs"));
+  assert.match(satzAb(ao39, "nr", 2), /^Bei Treuhandverhältnissen/);
+  // § 15 Abs. 1 UStG: „Die Ausübung …“ ist Nr. 1 Satz 2, „Nicht als für das Unternehmen …“ ist Abs. 1 Satz 2
+  const ust15 = marken("UStG 15 1");
+  assert.match(satzAb(ust15, "abs", 2), /^Nicht als für das Unternehmen/);
+  assert.match(satzAb(ust15, "nr", 2), /^Die Ausübung des Vorsteuer/);
+  // ohne Aufzählung: einfach durchgezählt
+  const ao122 = marken("AO 122 1");
+  assert.deepEqual(ao122.marken.map((x) => x.nr), [1, 2, 3, 4]);
+  assert.match(satzAb(ao122, "abs", 2), /^§ 34 Absatz 2/);
+  // ein einzelner Satz bekommt keine Nummer
+  assert.equal(marken("AO 39 1").marken.length, 0);
+  // nicht gefundene Aufzählungsenden nur dort, wo der Auszug den Satz gar nicht enthält
+  for (const f of LISTENENDE_FEHLT) {
+    const [g, nr, abs] = f.split(":")[0].split(" "), anfang = f.split(": ")[1];
+    assert.ok(!norm(`${g} ${nr} ${abs}`).absaetze[0].text.replace(/\s+/g, " ").includes(anfang), f);
+  }
+});

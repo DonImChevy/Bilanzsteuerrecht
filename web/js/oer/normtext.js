@@ -10,6 +10,7 @@ import { NORMEN_AO } from "../ao/normen.js";
 import { NORMEN_GOBT } from "./gobt.js";
 import { NORMEN_PR } from "../pr/normen.js";
 import { NORMEN_BEW } from "../bewr/normen.js";
+import { LISTENENDE } from "./listenende.js";
 
 // Ein Paragraf kann in mehreren Modulen vorkommen (z. B. § 12 EStG): Absätze werden vereinigt,
 // faecher nennt die Module, in deren Nachschlagen-Liste er erscheint.
@@ -28,6 +29,29 @@ for (const [fach, liste] of [["oer", [...NORMEN_OER, ...NORMEN_GOBT]], ["bsr", [
   }
 }
 const NORMEN = [...INDEX.values()];
+
+/** Wo nach einer Aufzählung wieder Sätze des Absatzes folgen (listenende.js), beginnt eine neue Zeile;
+ *  `enden` hält diese Stellen fest – satzMarken() zählt dort wieder auf Absatzebene. */
+const LISTENENDE_FEHLT = [];
+for (const n of NORMEN) {
+  n.abs = n.abs.map((a) => {
+    const anfaenge = LISTENENDE[`${n.g} ${n.nr} ${a.abs}`.trim()];
+    if (!anfaenge) return a;
+    let text = a.text;
+    const enden = [];
+    for (const anfang of anfaenge) {
+      const muster = new RegExp(String.raw`(\s)(` + anfang.split(" ").map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join(String.raw`\s+`) + ")", "g");
+      const ab = text.search(/\n(?:\d+[a-z]?\.|[a-z]\)) /);
+      let m = null;
+      for (const x of text.matchAll(muster)) if (ab >= 0 && x.index > ab && !enden.includes(x.index + 1)) { m = x; break; }
+      if (!m) { LISTENENDE_FEHLT.push(`${n.g} ${n.nr} ${a.abs}: ${anfang}`); continue; }
+      if (m[1] !== "\n") text = text.slice(0, m.index) + "\n" + text.slice(m.index + 1);
+      enden.push(m.index + 1);
+    }
+    return { ...a, text, enden };
+  });
+}
+export { LISTENENDE_FEHLT };
 
 export function norm(ref) {
   const [g, nr, abs, satz] = ref.split(" ");
@@ -134,3 +158,53 @@ export function saetze(text) {
   }
   return teile;
 }
+
+const NUMMER = /^(\d+[a-z]?)\.\s/, BUCHST = /^([a-z]{1,2})\)\s/;
+/**
+ * Satznummern eines Absatzes, wie in Gesetzessammlungen: Sätze des Absatzes zählen durch (eine Aufzählung
+ * gehört zu dem Satz, der sie einleitet); Sätze innerhalb einer Nummer zählen innerhalb der Nummer
+ * (§ 39 Abs. 2 Nr. 1 S. 2 AO). `enden` = Stellen, an denen nach einer Aufzählung der Absatz weitergeht.
+ * Ergebnis: marken [{pos, nr, ebene: "abs"|"nr"}] (nur, wo es mindestens zwei Sätze gibt) und
+ * absSaetze [[start, ende], …] = die Sätze auf Absatzebene (für das Hervorheben von „Satz 2“).
+ */
+export function satzMarken(text, enden = []) {
+  const starts = saetze(text).map(([s]) => s).filter((s) => s < text.length);
+  const zeilen = [];
+  let p = 0;
+  for (const l of text.split("\n")) { zeilen.push([p, l]); p += l.length + 1; }
+  // Ebene je Zeile: "abs" oder Nummer der Aufzählung (Index), "…" = Auslassung
+  let ebene = "abs", posten = -1, inNummer = false;
+  const art = zeilen.map(([s, l]) => {
+    if (NUMMER.test(l)) { posten++; inNummer = true; ebene = posten; return { s, l, ebene, kopf: (l.match(NUMMER)[0] + (l.slice(l.match(NUMMER)[0].length).match(BUCHST)?.[0] || "")).length }; }
+    if (BUCHST.test(l)) { if (!inNummer) { posten++; ebene = posten; } return { s, l, ebene, kopf: inNummer ? 0 : l.match(BUCHST)[0].length, buchst: inNummer }; }
+    if (l.startsWith("…")) { inNummer = false; return { s, l, ebene: "aus" }; }
+    if (enden.includes(s)) { ebene = "abs"; inNummer = false; }
+    return { s, l, ebene };
+  });
+  const ebeneVon = (pos) => { let e = art[0]; for (const z of art) if (z.s <= pos) e = z; return e; };
+  const abs = [], nr = new Map();
+  const erster = text.search(/\S/);
+  if (erster >= 0) abs.push(erster);
+  for (const s of starts) {
+    if (s === erster) continue;
+    const z = ebeneVon(s);
+    if (z.ebene === "aus") continue;
+    if (z.ebene === "abs") abs.push(s);
+    else { if (!nr.has(z.ebene)) nr.set(z.ebene, []); nr.get(z.ebene).push(s); }
+  }
+  const marken = [];
+  if (abs.length > 1) abs.forEach((pos, i) => marken.push({ pos, nr: i + 1, ebene: "abs" }));
+  // Nummern: erster Satz beginnt nach „1. “ (bzw. „a) “), weitere an ihren Satzanfängen
+  const kopfZeile = new Map();
+  for (const z of art) if (typeof z.ebene === "number" && !z.buchst && !kopfZeile.has(z.ebene)) kopfZeile.set(z.ebene, z);
+  for (const [e, liste] of nr) {
+    const k = kopfZeile.get(e);
+    if (!k) continue;
+    const alle = [k.s + k.kopf, ...liste.filter((s) => s > k.s + k.kopf)];
+    if (alle.length > 1) alle.forEach((pos, i) => marken.push({ pos, nr: i + 1, ebene: "nr" }));
+  }
+  marken.sort((a, b) => a.pos - b.pos);
+  const absSaetze = abs.map((s, i) => [s, i + 1 < abs.length ? abs[i + 1] : text.length]);
+  return { marken, absSaetze };
+}
+

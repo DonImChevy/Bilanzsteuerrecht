@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-satznummern",
+    datum: "2026-11-17",
+    titel: "Gesetzestexte mit Satznummern",
+    klein: true,
+    punkte: [
+      ["haken", "Satz 1, Satz 2 … auf einen Blick", "Jeder Gesetzestext zeigt jetzt hochgestellte Satznummern wie in der Gesetzessammlung. Sätze innerhalb einer Nummer zählen innerhalb der Nummer (z. B. § 39 Abs. 2 Nr. 1 S. 2 AO); was nach einer Aufzählung folgt, steht in einer eigenen Zeile."],
+    ],
+  },
+  {
     id: "2026-11-ao-tilgung",
     datum: "2026-11-17",
     titel: "Abgabenordnung: zwei neue Themen",

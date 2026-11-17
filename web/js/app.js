@@ -2,7 +2,7 @@ import * as G from "./geld.js";
 import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
 import { THEMEN, THEMA, themenFuer, pruefungsThemen, gleichbleibendErzeugen, imTeil, themaIn, vorlageIn, NICHT_IN, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
 import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer, FALL_IDS, neueZiehung, BUCHUNGS_ARTEN, buchungsAnzahl } from "./katalog.js";
-import { norm, NORMEN, zitate, saetze } from "./oer/normtext.js";
+import { norm, NORMEN, zitate, satzMarken } from "./oer/normtext.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
@@ -2051,21 +2051,28 @@ function tabNormen() {
     <div id="normListe">${normenListe()}</div>`;
 }
 
-/** Text eines Absatzes; die in der Aufgabe zitierten Sätze bzw. Nummern werden hervorgehoben. */
+/** Text eines Absatzes mit Satznummern; die in der Aufgabe zitierten Sätze bzw. Nummern werden hervorgehoben. */
 function absatzHtml(n, a, zs) {
   const g = n.ref.split(" ")[0], nr = n.ref.split(" ")[1];
   const passend = zs.filter((z) => z.g === g && z.nr === nr && (z.abs ? z.abs === a.abs : a.abs === "" || n.absaetze.length === 1));
   const nummern = passend.flatMap((z) => z.nummern), satzNr = passend.map((z) => z.satz).filter(Boolean);
-  const text = a.text, html = (t) => esc(t).replace(/\n/g, "<br>");
+  const { marken, absSaetze } = satzMarken(a.text, a.enden || []);
+  // Satznummern als Platzhalter in den Rohtext (überstehen esc und Markierung), am Ende als <sup>
+  let text = a.text;
+  for (const m of [...marken].reverse()) text = text.slice(0, m.pos) + `\u0001${m.nr}\u0002` + text.slice(m.pos);
+  const verschoben = (pos) => pos + marken.filter((m) => m.pos < pos).reduce((s, m) => s + String(m.nr).length + 2, 0);
+  const ohneMarke = (l) => l.replace(/\u0001\d+\u0002/g, "");
+  const html = (t) => esc(t).replace(/\n/g, "<br>");
   const mark = (t) => `<mark class="norm-hl">${html(t)}</mark>`;
   let inhalt = html(text), treffer = false;
   if (nummern.length) {
     // Aufzählung: Zeilen der zitierten Nummern (bei „9a“ nur Buchstabe a der Nr. 9)
     let aktuell = null;
     const zeilen = text.split("\n").map((l) => {
-      const m = l.match(/^(\d+[a-z]?)\.\s/);
-      if (m) aktuell = m[1]; else if (l.startsWith("…")) aktuell = null;
-      const buchst = l.match(/^(?:\d+[a-z]?\.\s)?([a-z])\)/)?.[1];
+      const r = ohneMarke(l);
+      const m = r.match(/^(\d+[a-z]?)\.\s/);
+      if (m) aktuell = m[1]; else if (r.startsWith("…")) aktuell = null;
+      const buchst = r.match(/^(?:\d+[a-z]?\.\s)?([a-z])\)/)?.[1];
       const an = nummern.some((x) => {
         const [, basis, b] = x.match(/^(\d+)([a-z]?)$/) || [];
         return aktuell === x || (b && aktuell === basis && buchst === b);
@@ -2075,17 +2082,19 @@ function absatzHtml(n, a, zs) {
     });
     inhalt = zeilen.join("<br>");
   } else if (satzNr.length) {
-    const teile = saetze(text);
+    // „Satz 2“ = zweiter Satz auf Absatzebene (eine Aufzählung gehört zu ihrem Satz)
     let pos = 0, out = "";
-    teile.forEach(([s0, e0], i) => {
-      out += html(text.slice(pos, s0));
-      out += satzNr.includes(String(i + 1)) ? ((treffer = true), mark(text.slice(s0, e0))) : html(text.slice(s0, e0));
-      pos = e0;
+    absSaetze.forEach(([s0, e0], i) => {
+      const s = verschoben(s0), e = verschoben(e0);
+      out += html(text.slice(pos, s));
+      out += satzNr.includes(String(i + 1)) ? ((treffer = true), mark(text.slice(s, e))) : html(text.slice(s, e));
+      pos = e;
     });
     inhalt = out + html(text.slice(pos));
   } else if (passend.length && n.absaetze.length > 1) {
     inhalt = mark(text); treffer = true;
   }
+  inhalt = inhalt.replace(/\u0001(\d+)\u0002/g, '<sup class="satz-nr">$1</sup>');
   return { html: `<p>${a.abs ? `<b>(${a.abs})</b> ` : ""}${normTabelle(inhalt)}</p>`, treffer };
 }
 /** Zeilen mit „ | “ (Tabelle im Gesetz, z. B. § 19 Abs. 2 EStG) als Raster; Markierungen bleiben erhalten. */
@@ -2771,7 +2780,7 @@ function sheetView() {
     inhalt = r2 ? `<div class="sub" style="margin:2px 4px 6px">Einkommensteuer-Richtlinien · ${esc(n.titel)}</div>
       ${r2View(sh.ref.split(" ")[2], kompaktInline)}`
       : `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
-      ${(schema ? n.absaetze.filter((a) => a.abs === "1") : n.absaetze).map((a) => `<p style="margin:8px 0;line-height:1.55">${a.abs ? `<b>(${a.abs})</b> ` : ""}${normTabelle(esc(a.text).replace(/\n/g, "<br>"))}</p>`).join("")}</span></div></div>
+      ${(schema ? n.absaetze.filter((a) => a.abs === "1") : n.absaetze).map((a) => absatzHtml(n, a, []).html.replace("<p>", '<p style="margin:8px 0;line-height:1.55">')).join("")}</span></div></div>
       ${schema ? gliederungView() : ""}
       <div class="mk-norm-fuss">${alsKarteKnopf("norm", sh.ref)}</div>
       <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: ${r2 ? "Amtliches Einkommensteuer-Handbuch des BMF (esth.bundesfinanzministerium.de), Ausgabe 2025" : "www.gesetze-im-internet.de"}</div>`;
