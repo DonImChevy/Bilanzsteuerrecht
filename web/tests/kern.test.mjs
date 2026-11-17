@@ -1396,3 +1396,37 @@ test("Normen-Tab: jede Norm, die ein Modul zitiert, steht im Normen-Tab dieses M
     assert.deepEqual(fehlt, [], `${fach}: zitiert, aber nicht im Normen-Tab`);
   }
 });
+
+test("Gesetzbuch: vollständige Gesetze laden, Gliederung, Suche, Satznummern, Index-Prüfsumme", async () => {
+  const fs = await import("node:fs"), crypto = await import("node:crypto");
+  const wurzel = new URL("../", import.meta.url);
+  const { GESETZBUCH } = await import("../js/gesetzbuch_index.js");
+  for (const e of GESETZBUCH) {
+    const roh = fs.readFileSync(new URL(`gesetze/${e.g}.json`, wurzel), "utf8");
+    assert.equal(crypto.createHash("sha1").update(roh).digest("hex").slice(0, 10), e.v, `${e.g}: Prüfsumme veraltet – tools/gesetzbuch.py neu laufen lassen`);
+    assert.equal(JSON.parse(roh).n.length, e.n);
+  }
+  const altFetch = globalThis.fetch;
+  globalThis.fetch = async (u) => { const datei = new URL(String(u).replace(/^\.\//, "").replace(/\?.*$/, ""), wurzel); return { ok: fs.existsSync(datei), status: 200, json: async () => JSON.parse(fs.readFileSync(datei, "utf8")) }; };
+  try {
+    const GB = await import("../js/gesetzbuch.js");
+    const { norm, satzMarken } = await import("../js/oer/normtext.js");
+    assert.equal(norm("AO 233a"), null, "vor dem Laden unbekannt");
+    const ao = await GB.ladeGesetz("AO");
+    assert.ok(ao.normen.length > 450 && norm("AO 233a"), "nach dem Laden antippbar");
+    // Gliederung: „Fünfter Teil – Erhebungsverfahren“ umfasst § 240
+    const teil5 = [...ao.baum.values()].find((k) => k.bez === "Fünfter Teil");
+    assert.ok(teil5 && ao.normen[teil5.von].nr <= "218" && teil5.kinder.length > 0);
+    const j240 = ao.pos.get("240");
+    assert.ok(j240 >= teil5.von && j240 <= teil5.bis);
+    // Suche: Nummer zuerst, Wörter im Titel vor Wörtern im Text
+    assert.equal(ao.normen[GB.sucheImGesetz(ao, "§ 240")[0].j].nr, "240");
+    assert.equal(ao.normen[GB.sucheImGesetz(ao, "Säumniszuschläge")[0].j].nr, "240");
+    // vollständiger Text ersetzt den Auszug, Satznummern auch nach Aufzählungen (§ 15 Abs. 1 UStG)
+    await GB.ladeGesetz("UStG");
+    const u = norm("UStG 15 1").absaetze[0];
+    const m = satzMarken(u.text, u.enden);
+    assert.match(u.text.slice(m.marken.find((x) => x.ebene === "abs" && x.nr === 2).pos), /^Nicht als für das Unternehmen/);
+    assert.ok(!norm("UStG 4").auszug);
+  } finally { globalThis.fetch = altFetch; }
+});

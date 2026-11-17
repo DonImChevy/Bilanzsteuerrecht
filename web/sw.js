@@ -1,6 +1,6 @@
 // Service Worker: speichert die komplette App für die Offline-Nutzung.
 // Bei jeder inhaltlichen Änderung VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = "bsr-v142";
+const VERSION = "bsr-v143";
 const DATEIEN = [
   "./",
   "./index.html",
@@ -74,6 +74,8 @@ const DATEIEN = [
   "./js/oer/normtext.js",
   "./js/oer/listenende.js",
   "./js/oer/normen_zitiert.js",
+  "./js/gesetzbuch.js",
+  "./js/gesetzbuch_index.js",
   "./js/oer/fragen.js",
   "./js/oer/grafik.js",
   "./js/oer/uebertragung.js",
@@ -151,10 +153,24 @@ self.addEventListener("message", (e) => { if (e.data === "version") e.source?.po
 self.addEventListener("activate", (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== "bsr-audio").map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== "bsr-audio" && k !== "bsr-gesetze").map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
+
+async function gesetzAntwort(anfrage) {
+  const cache = await caches.open("bsr-gesetze");
+  const da = await cache.match(anfrage.url);
+  if (da) return da;
+  const antwort = await fetch(anfrage);
+  if (antwort.ok) {
+    // ältere Fassungen desselben Gesetzes entfernen
+    const pfad = new URL(anfrage.url).pathname;
+    for (const k of await cache.keys()) if (new URL(k.url).pathname === pfad) await cache.delete(k);
+    await cache.put(anfrage.url, antwort.clone());
+  }
+  return antwort;
+}
 
 // Netz zuerst (immer die aktuelle Version, wenn online), bei Offline oder nach 3 s der Speicher.
 async function audioAntwort(anfrage) {
@@ -174,6 +190,8 @@ self.addEventListener("fetch", (e) => {
   // Vertonte Überblicke: offline gespeicherte (Cache „bsr-audio“, Knopf „Offline speichern“) mit Teilanfragen (Range)
   // ausliefern, damit Springen funktioniert; alles andere direkt aus dem Netz.
   if (url.pathname.includes("/audio/")) { e.respondWith(audioAntwort(e.request)); return; }
+  // Gesetzbuch: Datei je Gesetz und Fassung (?v=…) – einmal geladen, bleibt sie im Cache „bsr-gesetze“ (auch über Updates)
+  if (url.pathname.includes("/gesetze/")) { e.respondWith(gesetzAntwort(e.request)); return; }
   e.respondWith((async () => {
     const cache = await caches.open(VERSION);
     const ausCache = () => cache.match(e.request, { ignoreSearch: true })

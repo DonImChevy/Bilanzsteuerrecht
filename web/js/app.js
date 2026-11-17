@@ -3,6 +3,7 @@ import { KONTEN, KLASSEN, KLASSEN_TITEL, kontenInKlasse, K } from "./konten.js";
 import { THEMEN, THEMA, themenFuer, pruefungsThemen, gleichbleibendErzeugen, imTeil, themaIn, vorlageIn, NICHT_IN, Zufall, bewerte, leereAntwort, neueZeile, istLeer, loesungText, typBezeichnung } from "./kern.js";
 import { fragen, klausur, vorlagenFuer, ALLE, kartenFuer, FALL_IDS, neueZiehung, BUCHUNGS_ARTEN, buchungsAnzahl } from "./katalog.js";
 import { norm, NORMEN, zitate, satzMarken } from "./oer/normtext.js";
+import { GESETZBUCH, imGesetzbuch, gesetzGeladen, ladeGesetz, sucheImGesetz, offlineStand, alleOffline } from "./gesetzbuch.js";
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
@@ -340,6 +341,8 @@ const state = {
   suchFach: null, // Suche: Filter auf ein Modul (Chips)
   themenFilter: "",
   normSuche: "",
+  gb: null, // Gesetzbuch: {g, k (Gliederungsknoten, -1 = Anfang), q (Suche), fehler}
+  gbOffline: null, // {da, alle, laeuft}
   kontoSuche: "",
   bilrAnsicht: "konten", // Bilanzrecht-Nachschlagen: "konten" | "gesetze"
   sitzung: null,
@@ -1511,6 +1514,12 @@ function suchErgebnisse(q) {
     html += `<button class="norm-vorschau" data-a="normDetail" data-v="${n.g} ${n.nr}"><span class="nv-kopf"><b>${esc(label)}</b>${n.titel ? ` · ${esc(n.titel)}` : ""}</span>
       <span class="nv-text">${esc(text.slice(0, 320))}${text.length > 320 ? " …" : ""}</span><span class="nv-mehr">Ganzen Wortlaut lesen ${ic("pfeil", "klein")}</span></button>`;
   }
+  else if (zitat && (zitat[3] || zitat[1] === "art")) {
+    // Paragraf noch nicht geladen, sein Gesetz steht aber im Gesetzbuch: direkt dorthin
+    const gb = GESETZBUCH.find((e) => zitat[1] === "art" ? e.g === "GG" : e.g.toLowerCase() === zitat[3].toLowerCase());
+    if (gb) html += `<button class="norm-vorschau" data-a="normDetail" data-v="${gb.g} ${zitat[2]}"><span class="nv-kopf"><b>${esc(gbLabel(gb.g, zitat[2]))} ${esc(gb.g)}</b> · ${esc(gb.titel)}</span>
+      <span class="nv-mehr">Im Gesetzbuch öffnen ${ic("pfeil", "klein")}</span></button>`;
+  }
   // Filter nach Modul, sobald Treffer aus mehreren Modulen kommen
   const chips = faecher.size > 1 || filter ? `<div class="such-chips" data-quer="suchChips"><button class="chip ${!filter ? "aktiv" : ""}" data-a="suchFach" data-v="">Alle</button>${MODULE.filter((m) => faecher.has(m.id)).map((m) => `<button class="chip ${filter === m.id ? "aktiv" : ""}" data-a="suchFach" data-v="${m.id}" style="--mc:${m.farbe}">${esc(m.kurz)}</button>`).join("")}</div>` : "";
   // Reihenfolge: Zusammenfassungen, Lernpfad, dann der Rest
@@ -1987,6 +1996,7 @@ function tabKarten() {
 // ======================= Tab: Nachschlagen =======================
 /** Bilanzrecht: Kontenplan und Gesetzestexte in einem Reiter. */
 function tabNachschlagenBilr() {
+  if (state.gb) return gesetzbuchView();
   const ansicht = gesetzeFuer("bsr").length ? state.bilrAnsicht : "konten";
   const segment = gesetzeFuer("bsr").length ? `<div class="modus-karte" style="margin:4px 0 12px"><div class="segment">${[["konten", "tkonto", "Kontenplan"], ["gesetze", "waage", "Gesetze"]].map(([id, i, t]) =>
     `<button data-a="bilrAnsicht" data-v="${id}" class="${ansicht === id ? "aktiv" : ""}">${ic(i, "klein")}${t}</button>`).join("")}</div></div>` : "";
@@ -1994,7 +2004,8 @@ function tabNachschlagenBilr() {
     return `${seitenKopf("Nachschlagen")}${segment}
       <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="Suchen, z. B. Vorsteuer, § 17, Skonto" autocomplete="off" value="${esc(state.normSuche)}"></div>
       <div class="gruppe-fuss" style="margin:0 4px 4px">Die in den Aufgaben zitierten Vorschriften im Wortlaut – lange Paragrafen als Auszug.</div>
-      <div id="normListe">${normenListe()}</div>`;
+      <div id="normListe">${normenListe()}</div>
+      ${gesetzbuchKarten("bsr")}`;
   }
   return `${seitenKopf("Nachschlagen")}${segment}${kompaktZeile()}${kontenInhalt()}`;
 }
@@ -2053,12 +2064,85 @@ function normenListe() {
   return html || `<div class="leer-zustand">${ic("suche")}<div><b>Keine Vorschrift gefunden</b></div></div>`;
 }
 
+// ======================= Gesetzbuch (vollständige Gesetze) =======================
+const gbLabel = (g, nr) => (g === "GG" ? (nr === "Präambel" ? "Präambel" : `Art. ${nr}`) : `§ ${nr}`);
+const kbText = (kb) => (kb >= 1024 ? `${(kb / 1024).toFixed(1).replace(".", ",")} MB` : `${kb} KB`);
+/** Lädt ein Gesetz im Hintergrund; zeigt danach das noch offene Norm-Blatt bzw. Gesetzbuch neu an. */
+function gbNachladen(g, ref) {
+  ladeGesetz(g).then(() => {
+    if ((state.sheet?.art === "norm" && state.sheet.ref === ref) || state.gb?.g === g) render();
+  }).catch(() => {
+    if (state.sheet?.art === "norm" && state.sheet.ref === ref) { state.sheet.fehler = true; render(); }
+    if (state.gb?.g === g) { state.gb.fehler = true; render(); }
+  });
+}
+/** Im Norm-Blatt: zum Paragrafen davor/danach blättern und die Stelle im Gesetz öffnen. */
+function gbBlaettern(g, nr) {
+  const gz = gesetzGeladen(g), j = gz?.pos.get(nr);
+  if (j === undefined) return "";
+  const n = (k) => gz.normen[k];
+  const knopf = (k, pfeil) => (k < 0 || k >= gz.normen.length ? "<span></span>"
+    : `<button class="gb-nachbar" data-a="normDetail" data-v="${g} ${n(k).nr}">${pfeil === "‹" ? `‹ ${gbLabel(g, n(k).nr)}` : `${gbLabel(g, n(k).nr)} ›`}</button>`);
+  return `<div class="gb-blaettern">${knopf(j - 1, "‹")}<button class="gb-imgesetz" data-a="gbOeffnen" data-v="${g}|${n(j).gl}">${ic("akte", "klein")}Im Gesetz</button>${knopf(j + 1, "›")}</div>`;
+}
+/** Normen-Tab: alle Gesetze vollständig – erst die des Moduls, dann die übrigen. */
+function gesetzbuchKarten(fach) {
+  const eigene = (GESETZE[fach] || []).map(([g]) => g).filter((g) => imGesetzbuch(g));
+  const karte = (e) => `<button class="zeile gb-band" data-a="gesetzbuch" data-v="${e.g}"><span class="gb-ruecken">${esc(e.g)}</span><span class="grow"><b>${esc(e.titel)}</b><div class="sub">${e.n} ${e.g === "GG" ? "Artikel" : "Paragrafen"} · vollständig</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`;
+  const weitere = GESETZBUCH.filter((e) => !eigene.includes(e.g));
+  if (!state.gbOffline) offlineStand().then((s) => { state.gbOffline = s; gbOfflineAktualisieren(); }).catch(() => {});
+  return `<div class="gruppe gb-regal"><div class="gruppe-titel">Gesetzbuch – vollständige Gesetze</div>
+    <div class="gruppe-fuss" style="margin:0 4px 8px">Der amtliche Wortlaut aller Paragrafen mit Gliederung und Satznummern – zum Nachschlagen wie im Gesetzbuch.</div>
+    <div class="liste">${eigene.map((g) => karte(imGesetzbuch(g))).join("")}</div>
+    ${weitere.length ? `<details class="gb-weitere"><summary>Weitere Gesetze (${weitere.length})</summary><div class="liste">${weitere.map(karte).join("")}</div></details>` : ""}
+    <div id="gbOfflineZeile">${gbOfflineZeile()}</div></div>`;
+}
+/** Knopf bzw. Hinweis „Alle Gesetze offline speichern“ (Stand aus dem Cache). */
+function gbOfflineZeile() {
+  const o = state.gbOffline, kb = GESETZBUCH.reduce((s, e) => s + e.kb, 0);
+  if (o && o.da === o.alle && !o.laeuft) return `<div class="gb-offline fertig">${ic("haken", "klein")}Alle ${o.alle} Gesetze sind offline gespeichert.</div>`;
+  return `<button class="gb-offline" data-a="gbOffline"${o?.laeuft ? " disabled" : ""}>${ic("install", "klein")}${o?.laeuft ? `Speichere … ${o.da} von ${o.alle}` : `Alle Gesetze offline speichern (${kbText(kb)})${o?.da ? ` · ${o.da} von ${o.alle} schon da` : ""}`}</button>`;
+}
+const gbOfflineAktualisieren = () => { const el = document.getElementById("gbOfflineZeile"); if (el) el.innerHTML = gbOfflineZeile(); };
+/** Ganzes Gesetz: Gliederung zum Durchblättern oder Suche im Wortlaut. */
+function gesetzbuchView() {
+  const { g, q = "" } = state.gb, e = imGesetzbuch(g), gz = gesetzGeladen(g);
+  if (!gz && !state.gb.fehler) gbNachladen(g);
+  return `${modulLeiste()}<div class="gb-kopf"><button class="link gb-zurueck" data-a="gbZurueck">${ic("zurueck", "klein")}Normen</button>
+      <h1 class="titel gb-titel">${esc(e.titel)}</h1>
+      <div class="sub">${esc(g)} · ${e.n} ${g === "GG" ? "Artikel" : "Paragrafen"}${e.stand ? ` · ${esc(e.stand.replace(/^Stand:\s*/, "Stand: "))}` : ""}</div></div>
+    <div class="filter-suche"><input type="search" id="gbSuche" data-fokus="gbSuche" placeholder="Im ${esc(g)} suchen – Wort oder ${g === "GG" ? "Artikel" : "§"}-Nummer" autocomplete="off" value="${esc(q)}"></div>
+    <div id="gbListe">${gz ? gbListe() : state.gb.fehler ? `<div class="leer-zustand">${ic("info")}<div><b>Konnte nicht geladen werden</b></div><div class="sub">Ohne Internet erst nach „Alle Gesetze offline speichern“.</div></div>` : `<div class="leer-zustand">${ic("akte")}<div><b>${esc(g)} wird geladen …</b></div><div class="sub">${kbText(e.kb)} – danach auch offline verfügbar.</div></div>`}</div>
+    <div class="gruppe-fuss">Quelle: www.gesetze-im-internet.de (amtliche Fassung).</div>`;
+}
+function gbListe() {
+  const { g, k = -1, q = "" } = state.gb, gz = gesetzGeladen(g);
+  const zeile = (n) => `<button class="zeile" data-a="normDetail" data-v="${g} ${n.nr}"><span class="symbol gb-nr">${esc(gbLabel(g, n.nr))}</span><span class="grow"><div class="gb-ntitel">${esc(n.titel || n.abs[0]?.text.slice(0, 80) + " …")}</div></span><span class="chev">${ic("pfeil", "klein")}</span></button>`;
+  if (q.trim().length >= 2 || /^\s*(?:§|art)?\.?\s*\d/i.test(q)) {
+    const erg = sucheImGesetz(gz, q);
+    if (!erg.length) return `<div class="leer-zustand">${ic("suche")}<div><b>Nichts gefunden</b></div></div>`;
+    return `<div class="liste">${erg.map(({ j, stelle }) => { const n = gz.normen[j]; return `<button class="zeile" data-a="normDetail" data-v="${g} ${n.nr}"><span class="symbol gb-nr">${esc(gbLabel(g, n.nr))}</span><span class="grow"><div class="gb-ntitel">${esc(n.titel || "")}</div>${stelle ? `<div class="sub">… ${esc(stelle)} …</div>` : ""}</span><span class="chev">${ic("pfeil", "klein")}</span></button>`; }).join("")}</div>`;
+  }
+  const knoten = gz.baum.get(k) || gz.baum.get(-1);
+  const pfad = [];
+  for (let x = knoten; x && x.i !== -1; x = gz.baum.get(x.eltern)) pfad.unshift(x);
+  const spanne = (x) => (x.von === undefined ? "" : x.von === x.bis ? gbLabel(g, gz.normen[x.von].nr) : `${g === "GG" ? "Art." : "§§"} ${gz.normen[x.von].nr}–${gz.normen[x.bis].nr}`);
+  const krumen = pfad.length ? `<nav class="gb-pfad"><button data-a="gbKnoten" data-v="-1">${esc(g)}</button>${pfad.map((x, i) => `<span>›</span>${i === pfad.length - 1 ? `<b>${esc(x.bez)}</b>` : `<button data-a="gbKnoten" data-v="${x.i}">${esc(x.bez)}</button>`}`).join("")}</nav>
+    ${knoten.titel ? `<h3 class="gb-abschnitt">${esc(knoten.bez)} · ${esc(knoten.titel)}</h3>` : ""}` : "";
+  const kinder = knoten.kinder.map((i) => gz.baum.get(i));
+  return `${krumen}
+    ${kinder.length ? `<div class="liste">${kinder.map((x) => `<button class="zeile gb-gl" data-a="gbKnoten" data-v="${x.i}"><span class="grow"><b>${esc(x.bez)}</b>${x.titel ? `<div class="sub">${esc(x.titel)}</div>` : ""}</span><span class="gb-spanne">${esc(spanne(x))}</span><span class="chev">${ic("pfeil", "klein")}</span></button>`).join("")}</div>` : ""}
+    ${knoten.normen.length ? `<div class="liste"${kinder.length ? ' style="margin-top:12px"' : ""}>${knoten.normen.map((j) => zeile(gz.normen[j])).join("")}</div>` : ""}`;
+}
+
 function tabNormen() {
+  if (state.gb) return gesetzbuchView();
   return `
     ${seitenKopf("Normen", "Alle lehrplanrelevanten Vorschriften im Wortlaut – auch offline.")}
     ${kompaktZeile()}
     <div class="filter-suche"><input type="search" id="normSuche" data-fokus="normSuche" placeholder="${state.fach === "est" ? "Suchen, z. B. Entfernungspauschale, § 11, Wohnsitz" : state.fach === "ust" ? "Suchen, z. B. Vorsteuer, § 4, Kleinunternehmer" : state.fach === "ao" ? "Suchen, z. B. Bekanntgabe, § 122, Steuergeheimnis" : state.fach === "pr" ? "Suchen, z. B. Vollmacht, § 433, Anfechtung" : state.fach === "bewr" ? "Suchen, z. B. Freibetrag, § 13d, Ertragswert" : "Suchen, z. B. Bundesrat, Art. 63, Wahlrecht"}" autocomplete="off" value="${esc(state.normSuche)}"></div>
-    <div id="normListe">${normenListe()}</div>`;
+    <div id="normListe">${normenListe()}</div>
+    ${gesetzbuchKarten(state.fach)}`;
 }
 
 /** Text eines Absatzes mit Satznummern; die in der Aufgabe zitierten Sätze bzw. Nummern werden hervorgehoben. */
@@ -2782,6 +2866,15 @@ function sheetView() {
       <div class="gruppe"><div class="gruppe-titel">Buchungsregel</div><div class="liste"><div class="zeile"><span class="grow">${esc(k.regel)}${k.hinweis ? `<div class="sub" style="margin-top:6px">${esc(k.hinweis)}</div>` : ""}</span></div></div></div>`;
   } else if (sh.art === "norm") {
     const n = norm(sh.ref);
+    const [gRef, nrRef] = sh.ref.split(" ");
+    // Gesetzbuch: vollständigen Text nachladen (ersetzt Auszüge) – und Paragrafen, die bisher fehlten
+    if (imGesetzbuch(gRef) && !gesetzGeladen(gRef)) gbNachladen(gRef, sh.ref);
+    if (!n) {
+      titel = `${gbLabel(gRef, nrRef)} ${gRef}`;
+      inhalt = sh.fehler || !imGesetzbuch(gRef)
+        ? `<div class="leer-zustand">${ic("info")}<div><b>Nicht verfügbar</b></div><div class="sub">${imGesetzbuch(gRef) ? "Das Gesetz konnte nicht geladen werden – ohne Internet erst nach „Alle Gesetze offline speichern“." : "Dieser Text ist in der App nicht enthalten."}</div></div>`
+        : `<div class="leer-zustand">${ic("akte")}<div><b>Gesetz wird geladen …</b></div></div>`;
+    } else {
     titel = n.label;
     // § 266 HGB: Absatz 1 als Text, das Gliederungsschema (Abs. 2, 3) als Grafik
     const schema = sh.ref.startsWith("HGB 266");
@@ -2792,8 +2885,10 @@ function sheetView() {
       : `<div class="liste"><div class="zeile"><span class="grow">${n.titel ? `<b>${esc(n.titel)}</b>` : ""}
       ${(schema ? n.absaetze.filter((a) => a.abs === "1") : n.absaetze).map((a) => absatzHtml(n, a, []).html.replace("<p>", '<p style="margin:8px 0;line-height:1.55">')).join("")}</span></div></div>
       ${schema ? gliederungView() : ""}
+      ${gbBlaettern(gRef, nrRef)}
       <div class="mk-norm-fuss">${alsKarteKnopf("norm", sh.ref)}</div>
       <div class="gruppe-fuss">${n.auszug ? "Auszug – weitere Absätze bzw. Nummern sind nicht abgedruckt. " : ""}Quelle: ${r2 ? "Amtliches Einkommensteuer-Handbuch des BMF (esth.bundesfinanzministerium.de), Ausgabe 2025" : "www.gesetze-im-internet.de"}</div>`;
+    }
   } else if (sh.art === "schaubild") {
     const sb = SB.schaubilderVon(sh.id)[sh.i];
     titel = sb ? sb.titel : "Schaubild";
@@ -3029,7 +3124,7 @@ function zeile(id) {
 
 function fachSetzen(v) {
   if (!MODUL[v] || MODUL[v].bald) return;
-  if (state.fach !== v) { state.kartenThemen = new Set(); state.themenFilter = ""; state.normSuche = ""; state.kontoSuche = ""; }
+  if (state.fach !== v) { state.kartenThemen = new Set(); state.themenFilter = ""; state.normSuche = ""; state.kontoSuche = ""; state.gb = null; }
   state.fach = v;
   schreib("bsr.fach", v);
 }
@@ -3155,6 +3250,24 @@ const AKTIONEN = {
   korrigieren: () => korrigieren(s().review ?? s().index),
   selbstReview: (v) => selbstBewerten(s().review, v === "1"),
   normDetail: (v) => { state.sheet = { art: "norm", ref: v }; render(); },
+  gesetzbuch: (g) => { state.gb = { g, k: -1, q: "" }; render(); window.scrollTo(0, 0); },
+  gbKnoten: (v) => { state.gb.k = Number(v); state.gb.q = ""; render(); window.scrollTo(0, 0); },
+  gbZurueck: () => { state.gb = null; render(); },
+  gbOeffnen: (v) => {
+    const [g, k] = v.split("|");
+    state.sheet = null;
+    state.tab = "nachschlagen";
+    if (buchungsFach(state.fach)) state.bilrAnsicht = "gesetze";
+    state.gb = { g, k: Number(k), q: "" };
+    render(); window.scrollTo(0, 0);
+  },
+  gbOffline: async () => {
+    state.gbOffline = { da: 0, alle: GESETZBUCH.length, laeuft: true }; render();
+    await alleOffline((n, alle) => { state.gbOffline = { da: n, alle, laeuft: n < alle }; gbOfflineAktualisieren(); });
+    state.gbOffline = await offlineStand().catch(() => ({ da: 0, alle: GESETZBUCH.length }));
+    toast(state.gbOffline.da === state.gbOffline.alle ? "Alle Gesetze sind offline gespeichert." : "Nicht alle Gesetze konnten gespeichert werden – später erneut versuchen.");
+    render();
+  },
   // Schaubild zum Kompaktwissen (wird nicht vorgelesen)
   schaubild: (v) => { const [id, i] = String(v).split("|"); state.sheet = { art: "schaubild", id, i: Number(i) || 0 }; render(); document.querySelector(".sheet .vb-inhalt")?.scrollTo(0, 0); },
   review: (v) => { s().review = Number(v); render(); scrollOben(); },
@@ -3870,6 +3983,9 @@ app.addEventListener("input", (e) => {
   } else if (t.id === "themenFilter") {
     state.themenFilter = t.value;
     document.getElementById("themenListe").innerHTML = themenListe();
+  } else if (t.id === "gbSuche" && state.gb) {
+    state.gb.q = t.value;
+    if (gesetzGeladen(state.gb.g)) document.getElementById("gbListe").innerHTML = gbListe();
   } else if (t.id === "normSuche") {
     state.normSuche = t.value;
     document.getElementById("normListe").innerHTML = normenListe();

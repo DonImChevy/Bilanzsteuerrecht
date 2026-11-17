@@ -223,3 +223,17 @@ export function satzMarken(text, enden = []) {
   return { marken, absSaetze };
 }
 
+
+/**
+ * Vollständige Gesetze (gesetzbuch.js): geladene Paragrafen in den Index aufnehmen. Vorhandene Einträge
+ * bekommen den vollständigen, amtlichen Text (statt Auszug); neue erscheinen in keinem Normen-Tab (faecher leer).
+ */
+export function registriere(liste) {
+  for (const n of liste) {
+    const k = `${n.g} ${n.nr}`, da = INDEX.get(k);
+    if (da) { da.abs = n.abs; da.auszug = false; da.voll = true; da.titel ||= n.titel; continue; }
+    const neu = { g: n.g, nr: n.nr, titel: n.titel, abs: n.abs, faecher: [], voll: true };
+    INDEX.set(k, neu);
+    NORMEN.push(neu);
+  }
+}

@@ -5,6 +5,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-gesetzbuch",
+    datum: "2026-11-17",
+    titel: "Das Gesetzbuch in der App",
+    punkte: [
+      ["akte", "19 Gesetze vollständig", "AO, EStG, UStG, HGB, BGB, GG und alle weiteren Gesetze deiner Module – jeder Paragraf im amtlichen Wortlaut, mit Gliederung, Satznummern und Suche. Zu finden in jedem Modul im Normen-Tab unter „Gesetzbuch“."],
+      ["pfeil", "Blättern wie im Buch", "Im Gesetzestext springst du zum Paragrafen davor oder danach oder öffnest die Stelle im Gesetz. Jedes Zitat lässt sich antippen – auch Paragrafen, die bisher fehlten."],
+      ["install", "Auch ohne Internet", "„Alle Gesetze offline speichern“ legt alle Gesetze aufs Gerät (rund 6 MB) – ideal zum Lernen unterwegs."],
+    ],
+  },
+  {
     id: "2026-11-normen-vollstaendig",
     datum: "2026-11-17",
     titel: "Normen-Tab: jede zitierte Norm im Wortlaut",

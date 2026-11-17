@@ -449,3 +449,36 @@ button.zeile:active, button.karte-btn:active { background: var(--gold-hauch); }
 /* Satznummern im Gesetzestext (hochgestellt wie in Gesetzessammlungen; Sätze einer Nummer zählen innerhalb der Nummer) */
 sup.satz-nr { font-size: 0.68em; line-height: 0; vertical-align: 0.42em; font-weight: 650; font-variant-numeric: tabular-nums; color: var(--text3); margin-right: 0.18em; user-select: none; }
 mark.norm-hl sup.satz-nr { color: var(--text2); }
+
+/* ===== Gesetzbuch: vollständige Gesetze als Bände im Regal ===== */
+.gb-regal .liste { gap: 0; }
+.gb-band { gap: 12px; }
+.gb-ruecken { flex: none; width: 46px; height: 58px; display: grid; place-items: center; border-radius: 3px 5px 5px 3px;
+  font-family: var(--serif); font-weight: 680; font-size: 12.5px; letter-spacing: 0.2px; color: var(--blattgold);
+  background: var(--gewebe), linear-gradient(90deg, var(--leinen-tief) 0 6px, var(--leinen) 6px 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18), inset 6px 0 0 -5px color-mix(in oklab, var(--blattgold) 60%, transparent), 0 6px 12px -8px rgba(0, 0, 0, 0.55);
+  writing-mode: vertical-rl; transform: rotate(180deg); }
+.gb-weitere { margin-top: 10px; }
+.gb-weitere > summary { cursor: pointer; padding: 10px 4px; font-weight: 600; color: var(--text2); list-style: none; }
+.gb-weitere > summary::before { content: "▸ "; color: var(--gold-ton); }
+.gb-weitere[open] > summary::before { content: "▾ "; }
+.gb-offline { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; margin-top: 12px; padding: 12px 14px;
+  border-radius: 12px; border: 1px dashed var(--gold-linie); background: var(--gold-hauch); color: var(--text); font: inherit; font-weight: 600; font-size: 15px; }
+.gb-offline[disabled] { opacity: 0.75; }
+.gb-offline.fertig { border-style: solid; color: var(--text2); font-weight: 550; }
+.gb-kopf { margin: 4px 4px 12px; }
+.gb-zurueck { display: inline-flex; align-items: center; gap: 4px; padding: 6px 0; font-size: 16px; }
+.gb-titel { font-size: clamp(24px, 6.4vw, 32px); line-height: 1.12; margin: 6px 0 6px; }
+.gb-pfad { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; margin: 2px 4px 10px; font-size: 14px; color: var(--text3); }
+.gb-pfad button { background: none; border: 0; padding: 4px 0; color: var(--m); font: inherit; font-weight: 600; cursor: pointer; }
+.gb-pfad b { color: var(--text); font-weight: 650; }
+.gb-abschnitt { font-family: var(--serif); font-weight: 680; font-size: 19px; line-height: 1.25; margin: 4px 4px 12px; color: var(--text); }
+.gb-gl .sub { white-space: normal; }
+.gb-spanne { flex: none; font-size: 12.5px; color: var(--text3); font-variant-numeric: tabular-nums; white-space: nowrap; margin-left: 8px; }
+#gbListe .zeile .symbol.gb-nr { flex: none; width: 4.4em !important; height: auto; min-height: 34px; padding: 0 2px; font-size: 17px !important; white-space: nowrap; }
+.gb-ntitel { font-weight: 550; line-height: 1.3; }
+.gb-blaettern { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px; margin: 12px 0 4px; }
+.gb-blaettern > :first-child { justify-self: start; } .gb-blaettern > :last-child { justify-self: end; }
+.gb-nachbar, .gb-imgesetz { border: 1px solid var(--gold-linie); background: var(--gold-hauch); color: var(--text); border-radius: 999px;
+  padding: 8px 12px; font: inherit; font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+.gb-imgesetz { display: inline-flex; align-items: center; gap: 6px; background: none; }
