@@ -1639,7 +1639,6 @@ function themenListe() {
   const q = norma(state.themenFilter.trim());
   const liste = themenImTeil(state.fach).filter((t) => !q || norma(`${t.titel} ${t.unter}`).includes(q));
   if (!liste.length) return `<div class="leer-zustand" style="padding:20px">${ic("suche")}<div class="sub">Kein Thema gefunden.</div></div>`;
-  const stil = (() => { try { return localStorage.getItem("bsr.themenStil") || "a"; } catch (_) { return "a"; } })();
   const daten = liste.map((t, i) => {
     const z = zaehler(t.id), q2 = quote(z), n = vorlagenFuer(t.id).length, p = Math.round(q2 * 100);
     return { t, i, z, n, p, f: z.b ? farbe(q2) : "var(--m)", ueberblick: !!KOMPAKT[t.id],
@@ -1648,22 +1647,7 @@ function themenListe() {
   const lesenA = (d) => (d.ueberblick ? "kompakt" : "thema");
   // Fortschrittsring als SVG (Umfang 2πr bei r = 21 ≈ 131,9)
   const ring = (d, kl) => `<span class="${kl}${d.z.b ? "" : " neu"}"><svg viewBox="0 0 48 48" aria-hidden="true"><circle class="rg-spur" cx="24" cy="24" r="21"/>${d.z.b ? `<circle class="rg-wert" cx="24" cy="24" r="21" stroke-dasharray="${(131.95 * Math.max(d.p, 2) / 100).toFixed(1)} 132"/>` : ""}</svg><span>${d.z.b ? `${d.p}<small>%</small>` : "neu"}</span></span>`;
-  if (stil === "b") {
-    // B – Inhaltsverzeichnis: Zeile = Kapitel (öffnet den Überblick), darunter zwei Textlinks
-    return `<div class="themen-karten tkb-liste">${daten.map((d) => `<div class="tkb" style="--farbe:${d.f};--i:${Math.min(d.i, 12)}">
-      <button class="tkb-zeile" data-a="${lesenA(d)}" data-v="${d.t.id}"><span class="tkb-nr">${d.i + 1}</span>
-        <span class="tkb-mitte"><span class="tkb-kopf"><b>${esc(d.t.titel)}</b><span class="tkb-punkte" aria-hidden="true"></span>${d.status}</span><span class="sub">${esc(d.t.unter)}</span></span></button>
-      <div class="tkb-links">${d.ueberblick ? `<button data-a="kompakt" data-v="${d.t.id}">${ic("akte", "klein")}Überblick</button>` : ""}<button data-a="thema" data-v="${d.t.id}">${ic("play", "klein fill")}Üben <span>${aufgabenN(d.n)}</span></button>
-        <span class="tkb-balken"><span style="width:${d.z.b ? Math.max(d.p, 3) : 0}%"></span></span></div></div>`).join("")}</div>`;
-  }
-  if (stil === "c") {
-    // C – Kachelraster: Kachel mit Fortschrittsring, unten Doppelknopf „Lesen | Üben“
-    return `<div class="themen-karten tkc-raster">${daten.map((d) => `<div class="tkc" style="--farbe:${d.f};--p:${d.z.b ? d.p : 0};--i:${Math.min(d.i, 12)}">
-      <div class="tkc-kopf"><span class="tkc-nr">${d.i + 1}</span>${ring(d, "tkc-ring")}</div>
-      <b class="tkc-titel">${esc(d.t.titel)}</b><span class="sub">${esc(d.t.unter)}</span>
-      <div class="tkc-knoepfe">${d.ueberblick ? `<button class="tkc-lesen" data-a="kompakt" data-v="${d.t.id}">${ic("akte", "klein")}Lesen</button>` : ""}<button class="tkc-ueben" data-a="thema" data-v="${d.t.id}">${ic("play", "klein fill")}Üben<small>${d.n}</small></button></div></div>`).join("")}</div>`;
-  }
-  // A – zweigeteilte Karte: links lesen, rechts abgetrennt üben (mit Fortschrittsring)
+  // Zweigeteilte Karte: links lesen (öffnet den Überblick), rechts abgetrennt üben (mit Fortschrittsring)
   return `<div class="themen-karten tka-liste">${daten.map((d) => `<div class="tka" style="--farbe:${d.f};--p:${d.z.b ? d.p : 0};--i:${Math.min(d.i, 12)}">
     <button class="tka-lesen" data-a="${lesenA(d)}" data-v="${d.t.id}"><span class="tka-nr">${d.i + 1}</span><span class="tka-text"><b>${esc(d.t.titel)}</b><span class="sub">${esc(d.t.unter)}</span>
       ${d.ueberblick ? `<span class="tka-hinweis">${ic("akte", "klein")}Überblick lesen<span aria-hidden="true"> ›</span></span>` : ""}</span></button>
