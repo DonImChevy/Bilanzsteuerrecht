@@ -1287,6 +1287,28 @@ export const NORMEN_AO = [
 },
 {
 "g": "AO",
+"nr": "330",
+"titel": "Ersatzvornahme",
+"abs": [
+{
+"abs": "",
+"text": "Wird die Verpflichtung, eine Handlung vorzunehmen, deren Vornahme durch einen anderen möglich ist (vertretbare Handlung), nicht erfüllt, so kann die Vollstreckungsbehörde einen anderen mit der Vornahme der Handlung auf Kosten des Pflichtigen beauftragen."
+}
+]
+},
+{
+"g": "AO",
+"nr": "331",
+"titel": "Unmittelbarer Zwang",
+"abs": [
+{
+"abs": "",
+"text": "Führen das Zwangsgeld oder die Ersatzvornahme nicht zum Ziel oder sind sie untunlich, so kann die Finanzbehörde den Pflichtigen zur Handlung, Duldung oder Unterlassung zwingen oder die Handlung selbst vornehmen."
+}
+]
+},
+{
+"g": "AO",
 "nr": "332",
 "titel": "Androhung der Zwangsmittel",
 "abs": [
@@ -1327,6 +1349,10 @@ export const NORMEN_AO = [
 {
 "abs": "1",
 "text": "Ist ein gegen eine natürliche Person festgesetztes Zwangsgeld uneinbringlich, so kann das Amtsgericht auf Antrag der Finanzbehörde nach Anhörung des Pflichtigen Ersatzzwangshaft anordnen, wenn bei Androhung des Zwangsgelds hierauf hingewiesen worden ist. Ordnet das Amtsgericht Ersatzzwangshaft an, so hat es einen Haftbefehl auszufertigen, in dem die antragstellende Behörde, der Pflichtige und der Grund der Verhaftung zu bezeichnen sind."
+},
+{
+"abs": "3",
+"text": "Die Ersatzzwangshaft beträgt mindestens einen Tag, höchstens zwei Wochen. Die Vollziehung der Ersatzzwangshaft richtet sich nach den § 802g Absatz 2 und § 802h der Zivilprozessordnung und den §§ 171 bis 175 und 179 bis 186 des Strafvollzugsgesetzes."
 }
 ],
 "auszug": true
