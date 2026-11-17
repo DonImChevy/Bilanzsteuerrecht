@@ -498,7 +498,7 @@ mark.norm-hl sup.satz-nr { color: var(--text2); }
 .tka-ring.neu > span { font-family: "Inter", sans-serif; font-size: 9.5px; font-weight: 700; letter-spacing: 1.3px; text-transform: uppercase; color: var(--gold-ton); }
 
 .themen-karten.tka-liste { display: grid; gap: 14px; padding: 0; background: none; border: 0; box-shadow: none; }
-.tka { display: grid; grid-template-columns: minmax(0, 1fr) 132px; background: var(--glas); border: 1px solid var(--glas-rand); border-radius: var(--r-karte); box-shadow: var(--schatten); overflow: hidden; }
+.tka { display: grid; grid-template-columns: minmax(0, 1fr) 132px; background: var(--glas); border: 1px solid var(--gold-linie); border-radius: var(--r-karte); box-shadow: var(--schatten); overflow: hidden; }
 .tka-lesen { display: flex; gap: 14px; align-items: flex-start; text-align: left; padding: 20px 18px 18px 20px; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; }
 .tka-nr { flex: none; min-width: 28px; font-family: var(--serif); font-size: 30px; font-weight: 580; line-height: 0.95; color: var(--gold-ton); }
 .tka-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
@@ -506,7 +506,7 @@ mark.norm-hl sup.satz-nr { color: var(--text2); }
 .tka-text .sub { font-size: 13px; line-height: 1.35; }
 .tka-hinweis { margin-top: 10px; display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; font-weight: 650; color: var(--accent); }
 .tka-hinweis .ic { width: 15px; height: 15px; }
-.tka-ueben { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; padding: 16px 10px; border: 0; border-left: 1px solid var(--glas-linie);
+.tka-ueben { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; padding: 16px 10px; border: 0; border-left: 1px solid var(--gold-linie);
   background: var(--gold-hauch); color: var(--text); font: inherit; cursor: pointer; transition: background 0.2s; }
 .tka-ring { width: 56px; height: 56px; }
 .tka-label { display: inline-flex; align-items: center; gap: 5px; font-size: 15px; font-weight: 700; color: var(--accent); }
