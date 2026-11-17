@@ -57,6 +57,7 @@ const ZITATWORT = "(?:Paragraf|Paragrafen|Absatz|Absätze|Satz|Sätze|Nummer|Num
 /** Text aus sprechbar() → flüssiger Sprechtext für die Profi-Stimme. */
 export function fuerStimme(text) {
   let s = String(text);
+  s = s.replace(/\/\s?m²/g, " je Quadratmeter").replace(/m²/g, "Quadratmeter").replace(/m³/g, "Kubikmeter");
   // Monatskürzel; Trenner „·“ (aus sprechbar als „. klein“) als Komma
   s = s.replace(/\b(Jan|Feb|Aug|Sept?|Okt|Nov|Dez)\./g, (m, k) => ({ Jan: "Januar", Feb: "Februar", Aug: "August", Sep: "September", Sept: "September", Okt: "Oktober", Nov: "November", Dez: "Dezember" })[k]);
   s = s.replace(/(\p{L})\. (?=\p{Ll})/gu, "$1, ");
@@ -78,6 +79,16 @@ export function fuerStimme(text) {
   s = s.replace(/\bAbschn\./g, "Abschnitt").replace(/\bRz\./g, "Randziffer").replace(/\bTz\./g, "Textziffer");
   // Gliederungsnummern „Richtlinie 4.2“, „Abschnitt 3.10“ → „vier Punkt zwei“
   s = s.replace(/\b(Richtlinie|Richtlinien|Hinweis|Abschnitt|Abschnitte|Randnummer|Randziffer|Textziffer) (\d+(?: ?[a-z])?(?:\.\d+)+)(?!\d)/g, (m, w, n) => `${w} ${n.split(".").join(" Punkt ")}`);
+  // Brüche, Flächen, Rechenzeichen ohne Zahl dahinter („Kasse +, Bank −“), Wort–Wort, Sonderzeichen
+  const NENNER = (n) => n === 2 ? "halb" : (ordnungsstamm(n) + "el").replace(/^./, (c) => c.toUpperCase());
+  s = s.replace(/\bV ?\+ ?V\b/g, "Vermietung und Verpachtung").replace(/½/g, " 1/2").replace(/⅓/g, " 1/3").replace(/⅔/g, " 2/3").replace(/¼/g, " 1/4").replace(/¾/g, " 3/4")
+    .replace(new RegExp(`(${ZITATWORT}) (\\d+)\\/(\\d+)`, "g"), "$1 $2 und $3")
+    .replace(/(\d+)\/(\d+)(?!\d)/g, (m, z, n) => Number(n) <= 12 && Number(n) > 1 ? `${Number(z) === 1 ? "ein" : zahlwort(z)} ${NENNER(Number(n))}` : `${z} durch ${n}`)
+    .replace(/(\p{L})\/(?=\s?\d)/gu, "$1 durch ").replace(/(\p{L})\/(?=\p{L})/gu, "$1 oder ")
+    .replace(/(^|\s)\+(?=[\s,.;:]|$)/g, "$1plus").replace(/(^|\s)[−-](?=[,.;:]|$)/g, "$1minus")
+    .replace(/(Januar|Februar|März|April|Mai|Juni|Juli|August|September|Oktober|November|Dezember)[–—](?=\p{L})/gu, "$1 bis ")
+    .replace(/(\p{L})[–—](?=\p{L})/gu, "$1 und ")
+    .replace(/\s*↔\s*/g, " gegenüber ").replace(/\s*÷\s*/g, " geteilt durch ").replace(/[‚‘›‹«»]/g, "");
   // 4. Daten: „31.12.2026“, „01.08.02“, „31.07.“ → „einunddreißigster Juli …“
   s = s.replace(/(^|[^\d.,])(\d{1,2})\.(\d{1,2})\.(\d{4}|\d{2}(?!\d))?(?!\d)(?!,\d)/g, (m, a, t, mo, j, pos, ganz) => {
     if (Number(mo) < 1 || Number(mo) > 12 || Number(t) < 1 || Number(t) > 31) return m;

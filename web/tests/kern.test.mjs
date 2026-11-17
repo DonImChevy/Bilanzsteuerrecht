@@ -1031,10 +1031,14 @@ test("Sprechtext für die Profi-Stimme: Zahlen ausgeschrieben, Zitatlisten flüs
   assert.equal(f("0,25 %: je Monat, höchstens 25.000 €, die 17-jährige"), "Null Komma zwei fünf Prozent: je Monat, höchstens fünfundzwanzigtausend Euro, die siebzehnjährige");
   assert.equal(f("Steuer oder nicht?. Erstens: Welcher Anspruch?, Paragraf 37 Abgabenordnung"), "Steuer oder nicht? Erstens: Welcher Anspruch? Paragraf siebenunddreißig Abgabenordnung");
   assert.equal(f(pfeileMarkieren("Entstehung → Festsetzung → Erhebung; Treuhand → Treugeber")), "Entstehung, dann Festsetzung, dann Erhebung; Treuhand: Treugeber");
+  assert.equal(f("Abschreibung 7/12, Artikel 73/74 Grundgesetz, 380 €/m², 200-m²-Grenze, plus ½, Mai–Dezember, Kasse +, Bank −."),
+    "Abschreibung sieben Zwölftel, Artikel dreiundsiebzig und vierundsiebzig Grundgesetz, dreihundertachtzig Euro je Quadratmeter, zweihundert-Quadratmeter-Grenze, plus ein halb, Mai bis Dezember, Kasse plus, Bank minus.");
   // Über alle Überblicke: keine Ziffern, Normzeichen, Pfeile oder Satzzeichen-Reste mehr im Sprechtext
   for (const id of Object.keys(KOMPAKT)) for (const g of hoerGruppen(hoerSegmente(pfeileMarkieren(KOMPAKT[id]), THEMA[id]))) {
     const t = fuerStimme(g.text);
-    assert.ok(!/[0-9§%€→⟶]|[,;:]\s*[,;:?!]|\p{Ll}\.\p{Ll}/u.test(t), `${id}: ${t.match(/.{0,30}(?:[0-9§%€→⟶]|[,;:]\s*[,;:?!]|\p{Ll}\.\p{Ll}).{0,20}/u)?.[0]}`);
+    // nur Buchstaben, Leerraum, Satzzeichen, Bindestrich und Apostroph („H's“) – keine Ziffern, Brüche, Rechen- oder Normzeichen
+    const rest = /[^\p{L}\s,.;:?!'’-]|[,;:]\s*[,;:?!]|\p{Ll}\.\p{Ll}/u;
+    assert.ok(!rest.test(t), `${id}: ${t.match(new RegExp(".{0,30}(?:" + rest.source + ").{0,20}", "u"))?.[0]}`);
   }
   // Pfeile markieren ändert nur die Pfeile – Gruppen (Zeitmarken) bleiben gleich
   const k = KOMPAKT["ao-tilgung"], th = THEMA["ao-tilgung"];
