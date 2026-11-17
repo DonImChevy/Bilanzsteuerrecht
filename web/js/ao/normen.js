@@ -1699,5 +1699,27 @@ export const NORMEN_AO = [
 "text": "Lässt sich die formgerechte Zustellung eines Dokuments nicht nachweisen oder ist es unter Verletzung zwingender Zustellungsvorschriften zugegangen, gilt es als in dem Zeitpunkt zugestellt, in dem es dem Empfangsberechtigten tatsächlich zugegangen ist, im Fall des § 5 Abs. 5 in dem Zeitpunkt, in dem der Empfänger das Empfangsbekenntnis zurückgesendet hat."
 }
 ]
+},
+{
+"g": "AO",
+"nr": "43",
+"titel": "Steuerschuldner, Steuervergütungsgläubiger",
+"abs": [
+{
+"abs": "",
+"text": "Die Steuergesetze bestimmen, wer Steuerschuldner oder Gläubiger einer Steuervergütung ist. Sie bestimmen auch, ob ein Dritter die Steuer für Rechnung des Steuerschuldners zu entrichten hat."
+}
+]
+},
+{
+"g": "AO",
+"nr": "359",
+"titel": "Beteiligte",
+"abs": [
+{
+"abs": "",
+"text": "Beteiligte am Verfahren sind:\n1. wer den Einspruch eingelegt hat (Einspruchsführer),\n2. wer zum Verfahren hinzugezogen worden ist."
+}
+]
 }
 ];

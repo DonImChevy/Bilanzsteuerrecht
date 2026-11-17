@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-ao-vollstaendig",
+    datum: "2026-11-17",
+    titel: "Abgabenordnung: Überblicke Absatz für Absatz vervollständigt",
+    klein: true,
+    punkte: [
+      ["akte", "Alle Themen der AO durchgesehen", "Jeder Überblick wurde mit seinen Paragrafen Absatz für Absatz abgeglichen. Neu sind u. a. Steuerschuldner (§ 43 AO), Gesamtschuldner, Ende der Vertretung, Beweismittel und Auskunftsersuchen, Inhalt der Steuererklärung, Teilnichtigkeit, Bekanntgabe per Datenabruf, Ergänzungsbescheid, behördliche Fristen und die Beteiligten im Einspruchsverfahren.", "kompakt", "ao-ermittlung"],
+    ],
+  },
+  {
     id: "2026-11-ao-einspruch",
     datum: "2026-11-15",
     titel: "Abgabenordnung: Zulässigkeit des Einspruchs",
