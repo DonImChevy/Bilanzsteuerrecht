@@ -47,7 +47,7 @@ if (process.argv[2] === "--stimmen") {
 if (ANBIETER === "elevenlabs" && !ELEVEN.stimme) { console.error("ELEVEN_STIMME fehlt (voice_id, siehe --stimmen)"); process.exit(1); }
 fs.mkdirSync(cache, { recursive: true }); fs.mkdirSync(AUDIO, { recursive: true });
 
-const alt = fs.existsSync(INDEX) ? JSON.parse(fs.readFileSync(INDEX, "utf8").replace(/^[\s\S]*?= /, "").replace(/;\s*$/, "")) : {};
+const alt = fs.existsSync(INDEX) ? JSON.parse(fs.readFileSync(INDEX, "utf8").replace(/^[\s\S]*?HOER_AUDIO = /, "").replace(/;\s*$/, "")) : {};
 const hash = (t) => crypto.createHash("sha1").update((ANBIETER === "elevenlabs" ? `eleven|${ELEVEN.stimme}|${ELEVEN.modell}` : STIMME.name + "|" + ANWEISUNG) + "|" + t).digest("hex").slice(0, 16);
 
 /** Eine Anfrage beim Anbieter; liefert die Antwort (mp3). vorher/nachher: Nachbartext für gleichmäßige Betonung (ElevenLabs). */
@@ -156,6 +156,6 @@ else if (ANBIETER === "elevenlabs") console.log("Keine Pausen mitten im Satz.");
 function kopf() {
   return "// Automatisch erzeugt (tools/vorlesen_audio.mjs) – nicht von Hand ändern.\n" +
     `// Vorab vertonte Überblicke (ElevenLabs ${ELEVEN.modell} bzw. OpenAI gpt-4o-mini-tts): Prüfsumme h, Dauer d (s), Größe s (Bytes),\n` +
-    `// Zeitmarken m [[Sekunde, data-hoer]], Stimme st (fehlt = ${ALTE_STIMME}).\n` +
+    `// Zeitmarken m [[Sekunde, data-hoer]], Stimme st (ohne st: ${ALTE_STIMME}).\n` +
     "export const HOER_AUDIO = ";
 }
