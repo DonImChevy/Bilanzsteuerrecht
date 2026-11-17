@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-icon-rathaus",
+    datum: "2026-11-17",
+    titel: "Neues App-Icon",
+    klein: true,
+    punkte: [
+      ["haken", "Das Hamburger Rathaus", "Das Icon zeigt jetzt das Hamburger Rathaus im goldenen Art-déco-Bogen – mit § auf der Turmuhr. Steht auf deinem Home-Bildschirm noch das alte Icon, entferne die App dort und füge sie über „Zum Home-Bildschirm“ neu hinzu."],
+    ],
+  },
+  {
     id: "2026-11-kapitel",
     datum: "2026-11-17",
     titel: "Themen: erst lesen, dann üben",

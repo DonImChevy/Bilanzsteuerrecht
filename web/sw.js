@@ -1,6 +1,6 @@
 // Service Worker: speichert die komplette App für die Offline-Nutzung.
 // Bei jeder inhaltlichen Änderung VERSION erhöhen, damit Geräte das Update laden.
-const VERSION = "bsr-v148";
+const VERSION = "bsr-v149";
 const DATEIEN = [
   "./",
   "./index.html",
@@ -136,6 +136,7 @@ const DATEIEN = [
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/apple-touch-icon.png",
+  "./icons/icon-maskable-512.png",
 ];
 
 self.addEventListener("install", (e) => {
