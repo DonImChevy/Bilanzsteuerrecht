@@ -5,6 +5,24 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-ao-tilgung",
+    datum: "2026-11-17",
+    titel: "Abgabenordnung: zwei neue Themen",
+    punkte: [
+      ["akte", "Steuerschuldverhältnis und Zurechnung", "Welche Ansprüche es gibt, wem ein Wirtschaftsgut steuerlich gehört (Treuhand, Sicherungseigentum), was bei verbotenen, unwirksamen und Scheingeschäften gilt und wann ein Missbrauch vorliegt.", "kompakt", "ao-schuldverhaeltnis"],
+      ["haken", "Stundung, Zahlung, Aufrechnung, Erlass", "Wann gestundet oder erlassen wird, an welchem Tag eine Zahlung als entrichtet gilt (Scheck: drei Tage nach Eingang), die Tilgungsreihenfolge und die Grenzen der Aufrechnung – mit Lernpfad, Aufgaben und Klausurbeispiel.", "kompakt", "ao-tilgung"],
+    ],
+  },
+  {
+    id: "2026-11-ao-vollstaendig",
+    datum: "2026-11-17",
+    titel: "Abgabenordnung: Überblicke Absatz für Absatz vervollständigt",
+    klein: true,
+    punkte: [
+      ["akte", "Alle Themen der AO durchgesehen", "Jeder Überblick wurde mit seinen Paragrafen Absatz für Absatz abgeglichen. Neu sind u. a. Steuerschuldner (§ 43 AO), Gesamtschuldner, Ende der Vertretung, Beweismittel und Auskunftsersuchen, Inhalt der Steuererklärung, Teilnichtigkeit, Bekanntgabe per Datenabruf, Ergänzungsbescheid, behördliche Fristen und die Beteiligten im Einspruchsverfahren.", "kompakt", "ao-ermittlung"],
+    ],
+  },
+  {
     id: "2026-11-ao-einspruch",
     datum: "2026-11-15",
     titel: "Abgabenordnung: Zulässigkeit des Einspruchs",

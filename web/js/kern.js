@@ -75,6 +75,7 @@ export const THEMEN = [
   { id: "ao-grundlagen", titel: "Grundlagen & Steuerbegriff", unter: "Anwendungsbereich, Steuerbegriff, Einteilung, Nebenleistungen · §§ 1, 3 AO", icon: "📘", fach: "ao" },
   { id: "ao-steuergeheimnis", titel: "Steuergeheimnis", unter: "Amtsträger, geschützte Daten, Offenbarungsbefugnisse · §§ 7, 30 AO", icon: "🤫", fach: "ao" },
   { id: "ao-beteiligte", titel: "Beteiligte & Vertreter", unter: "Beteiligte, Handlungsfähigkeit, Bevollmächtigte, Gesamtschuldner · §§ 33–36, 44, 78–80 AO", icon: "👥", fach: "ao" },
+  { id: "ao-schuldverhaeltnis", titel: "Steuerschuldverhältnis & Zurechnung", unter: "Ansprüche, wirtschaftliches Eigentum, Scheingeschäft, Missbrauch, Erlöschen · §§ 37, 39–42, 47 AO", icon: "🔗", fach: "ao" },
   { id: "ao-ermittlung", titel: "Ermittlungsverfahren", unter: "Untersuchungsgrundsatz, Mitwirkungspflichten, Auskunftsverweigerung · §§ 85, 88, 90–104 AO", icon: "🔎", fach: "ao" },
   { id: "ao-erklaerung", titel: "Steuererklärung & Verspätungszuschlag", unter: "Erklärungspflicht, Fristen, Berichtigung, Verspätungszuschlag · §§ 149–153 AO", icon: "📝", fach: "ao" },
   { id: "ao-zwang", titel: "Zwangsgeld & Schätzung", unter: "Zwangsmittel, Androhung, Zwangsgeld, Schätzung · §§ 162, 328–335 AO", icon: "⚖️", fach: "ao" },
@@ -87,6 +88,7 @@ export const THEMEN = [
   { id: "ao-fristen", titel: "Fristen & Wiedereinsetzung", unter: "Fristberechnung, Ereignisfrist, Wiedereinsetzung · §§ 108–110 AO, §§ 187, 188 BGB", icon: "📅", fach: "ao" },
   { id: "ao-einspruch", titel: "Einspruch: Zulässigkeit", unter: "Statthaftigkeit, Form, Frist, Beschwer · §§ 347, 350, 355, 357, 358 AO", icon: "✉️", fach: "ao" },
   { id: "ao-erhebung", titel: "Entstehung, Fälligkeit, Säumnis", unter: "Entstehung, Fälligkeit, Säumniszuschlag, Schonfrist · §§ 38, 218, 220, 240 AO", icon: "💶", fach: "ao" },
+  { id: "ao-tilgung", titel: "Stundung, Zahlung, Aufrechnung, Erlass", unter: "Stundung, Tag der Zahlung, Tilgungsreihenfolge, Aufrechnung, Erlass, Zahlungsverjährung · §§ 222, 224–228 AO", icon: "🤝", fach: "ao" },
   // Privatrecht (GS I, Kapitel 1–12 der Lernlandkarte bis zur Klausur)
   { id: "pr-grundlagen", titel: "Privatrecht im Rechtssystem", unter: "Abgrenzung zum öffentlichen Recht, Aufbau des BGB, Bezug zum Steuerrecht", icon: "🏛️", fach: "pr" },
   { id: "pr-anspruch", titel: "Anspruchsaufbau & Gutachtenstil", unter: "Anspruchsgrundlage, Prüfungsreihenfolge, Einwendungen und Einreden, Gutachtenstil", icon: "🧭", fach: "pr" },

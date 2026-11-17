@@ -373,9 +373,12 @@ export const NORMEN_AO = [
 {
 "abs": "1",
 "text": "Ansprüche aus dem Steuerschuldverhältnis sind der Steueranspruch, der Steuervergütungsanspruch, der Haftungsanspruch, der Anspruch auf eine steuerliche Nebenleistung, der Erstattungsanspruch nach Absatz 2 sowie die in Einzelsteuergesetzen geregelten Steuererstattungsansprüche."
+},
+{
+"abs": "2",
+"text": "Ist eine Steuer, eine Steuervergütung, ein Haftungsbetrag oder eine steuerliche Nebenleistung ohne rechtlichen Grund gezahlt oder zurückgezahlt worden, so hat derjenige, auf dessen Rechnung die Zahlung bewirkt worden ist, an den Leistungsempfänger einen Anspruch auf Erstattung des gezahlten oder zurückgezahlten Betrags. Dies gilt auch dann, wenn der rechtliche Grund für die Zahlung oder Rückzahlung später wegfällt. Im Fall der Abtretung, Verpfändung oder Pfändung richtet sich der Anspruch auch gegen den Abtretenden, Verpfänder oder Pfändungsschuldner."
 }
-],
-"auszug": true
+]
 },
 {
 "g": "AO",
@@ -1697,6 +1700,193 @@ export const NORMEN_AO = [
 {
 "abs": "",
 "text": "Lässt sich die formgerechte Zustellung eines Dokuments nicht nachweisen oder ist es unter Verletzung zwingender Zustellungsvorschriften zugegangen, gilt es als in dem Zeitpunkt zugestellt, in dem es dem Empfangsberechtigten tatsächlich zugegangen ist, im Fall des § 5 Abs. 5 in dem Zeitpunkt, in dem der Empfänger das Empfangsbekenntnis zurückgesendet hat."
+}
+]
+},
+{
+"g": "AO",
+"nr": "43",
+"titel": "Steuerschuldner, Steuervergütungsgläubiger",
+"abs": [
+{
+"abs": "",
+"text": "Die Steuergesetze bestimmen, wer Steuerschuldner oder Gläubiger einer Steuervergütung ist. Sie bestimmen auch, ob ein Dritter die Steuer für Rechnung des Steuerschuldners zu entrichten hat."
+}
+]
+},
+{
+"g": "AO",
+"nr": "359",
+"titel": "Beteiligte",
+"abs": [
+{
+"abs": "",
+"text": "Beteiligte am Verfahren sind:\n1. wer den Einspruch eingelegt hat (Einspruchsführer),\n2. wer zum Verfahren hinzugezogen worden ist."
+}
+]
+},
+{
+"g": "AO",
+"nr": "39",
+"titel": "Zurechnung",
+"abs": [
+{
+"abs": "1",
+"text": "Wirtschaftsgüter sind dem Eigentümer zuzurechnen."
+},
+{
+"abs": "2",
+"text": "Abweichend von Absatz 1 gelten die folgenden Vorschriften:\n1. Übt ein anderer als der Eigentümer die tatsächliche Herrschaft über ein Wirtschaftsgut in der Weise aus, dass er den Eigentümer im Regelfall für die gewöhnliche Nutzungsdauer von der Einwirkung auf das Wirtschaftsgut wirtschaftlich ausschließen kann, so ist ihm das Wirtschaftsgut zuzurechnen. Bei Treuhandverhältnissen sind die Wirtschaftsgüter dem Treugeber, beim Sicherungseigentum dem Sicherungsgeber und beim Eigenbesitz dem Eigenbesitzer zuzurechnen.\n2. Wirtschaftsgüter, die mehreren zur gesamten Hand oder einer rechtsfähigen Personengesellschaft zustehen, werden den Beteiligten oder Gesellschaftern anteilig zugerechnet, soweit eine getrennte Zurechnung für die Besteuerung erforderlich ist. Rechtsfähige Personengesellschaften gelten für Zwecke der Ertragsbesteuerung als Gesamthand und deren Vermögen als Gesamthandsvermögen."
+}
+]
+},
+{
+"g": "AO",
+"nr": "40",
+"titel": "Gesetz- oder sittenwidriges Handeln",
+"abs": [
+{
+"abs": "",
+"text": "Für die Besteuerung ist es unerheblich, ob ein Verhalten, das den Tatbestand eines Steuergesetzes ganz oder zum Teil erfüllt, gegen ein gesetzliches Gebot oder Verbot oder gegen die guten Sitten verstößt."
+}
+]
+},
+{
+"g": "AO",
+"nr": "41",
+"titel": "Unwirksame Rechtsgeschäfte",
+"abs": [
+{
+"abs": "1",
+"text": "Ist ein Rechtsgeschäft unwirksam oder wird es unwirksam, so ist dies für die Besteuerung unerheblich, soweit und solange die Beteiligten das wirtschaftliche Ergebnis dieses Rechtsgeschäfts gleichwohl eintreten und bestehen lassen. Dies gilt nicht, soweit sich aus den Steuergesetzen etwas anderes ergibt."
+},
+{
+"abs": "2",
+"text": "Scheingeschäfte und Scheinhandlungen sind für die Besteuerung unerheblich. Wird durch ein Scheingeschäft ein anderes Rechtsgeschäft verdeckt, so ist das verdeckte Rechtsgeschäft für die Besteuerung maßgebend."
+}
+]
+},
+{
+"g": "AO",
+"nr": "42",
+"titel": "Missbrauch von rechtlichen Gestaltungsmöglichkeiten",
+"abs": [
+{
+"abs": "1",
+"text": "Durch Missbrauch von Gestaltungsmöglichkeiten des Rechts kann das Steuergesetz nicht umgangen werden. Ist der Tatbestand einer Regelung in einem Einzelsteuergesetz erfüllt, die der Verhinderung von Steuerumgehungen dient, so bestimmen sich die Rechtsfolgen nach jener Vorschrift. Anderenfalls entsteht der Steueranspruch beim Vorliegen eines Missbrauchs im Sinne des Absatzes 2 so, wie er bei einer den wirtschaftlichen Vorgängen angemessenen rechtlichen Gestaltung entsteht."
+},
+{
+"abs": "2",
+"text": "Ein Missbrauch liegt vor, wenn eine unangemessene rechtliche Gestaltung gewählt wird, die beim Steuerpflichtigen oder einem Dritten im Vergleich zu einer angemessenen Gestaltung zu einem gesetzlich nicht vorgesehenen Steuervorteil führt. Dies gilt nicht, wenn der Steuerpflichtige für die gewählte Gestaltung außersteuerliche Gründe nachweist, die nach dem Gesamtbild der Verhältnisse beachtlich sind."
+}
+]
+},
+{
+"g": "AO",
+"nr": "47",
+"titel": "Erlöschen",
+"abs": [
+{
+"abs": "",
+"text": "Ansprüche aus dem Steuerschuldverhältnis erlöschen insbesondere durch Zahlung (§§ 224, 224a, 225), Aufrechnung (§ 226), Erlass (§§ 163, 227), Verjährung (§§ 169 bis 171, §§ 228 bis 232), ferner durch Eintritt der Bedingung bei auflösend bedingten Ansprüchen."
+}
+]
+},
+{
+"g": "AO",
+"nr": "222",
+"titel": "Stundung",
+"abs": [
+{
+"abs": "",
+"text": "Die Finanzbehörden können Ansprüche aus dem Steuerschuldverhältnis ganz oder teilweise stunden, wenn die Einziehung bei Fälligkeit eine erhebliche Härte für den Schuldner bedeuten würde und der Anspruch durch die Stundung nicht gefährdet erscheint. Die Stundung soll in der Regel nur auf Antrag und gegen Sicherheitsleistung gewährt werden. Steueransprüche gegen den Steuerschuldner können nicht gestundet werden, soweit ein Dritter (Entrichtungspflichtiger) die Steuer für Rechnung des Steuerschuldners zu entrichten, insbesondere einzubehalten und abzuführen hat. Die Stundung des Haftungsanspruchs gegen den Entrichtungspflichtigen ist ausgeschlossen, soweit er Steuerabzugsbeträge einbehalten oder Beträge, die eine Steuer enthalten, eingenommen hat."
+}
+]
+},
+{
+"g": "AO",
+"nr": "224",
+"titel": "Leistungsort, Tag der Zahlung",
+"abs": [
+{
+"abs": "1",
+"text": "Zahlungen an Finanzbehörden sind an die zuständige Kasse zu entrichten. Außerhalb des Kassenraums können Zahlungsmittel nur einem Amtsträger übergeben werden, der zur Annahme von Zahlungsmitteln außerhalb des Kassenraums besonders ermächtigt worden ist und sich hierüber ausweisen kann."
+},
+{
+"abs": "2",
+"text": "Eine wirksam geleistete Zahlung gilt als entrichtet:\n1. bei Übergabe oder Übersendung von Zahlungsmitteln am Tag des Eingangs, bei Hingabe oder Übersendung von Schecks jedoch drei Tage nach dem Tag des Eingangs,\n2. bei Überweisung oder Einzahlung auf ein Konto der Finanzbehörde und bei Einzahlung mit Zahlschein an dem Tag, an dem der Betrag der Finanzbehörde gutgeschrieben wird,\n3. bei Vorliegen eines SEPA-Lastschriftmandats am Fälligkeitstag."
+},
+{
+"abs": "3",
+"text": "Zahlungen der Finanzbehörden sind unbar zu leisten. Das Bundesministerium der Finanzen und die für die Finanzverwaltung zuständigen obersten Landesbehörden können für ihre Geschäftsbereiche Ausnahmen zulassen. Als Tag der Zahlung gilt bei Überweisung oder Zahlungsanweisung der dritte Tag nach der Hingabe oder Absendung des Auftrags an das Kreditinstitut oder, wenn der Betrag nicht sofort abgebucht werden soll, der dritte Tag nach der Abbuchung."
+},
+{
+"abs": "4",
+"text": "Die zuständige Kasse kann für die Übergabe von Zahlungsmitteln gegen Quittung geschlossen werden. Absatz 2 Nummer 1 gilt entsprechend, wenn bei der Schließung von Kassen nach Satz 1 am Ort der Kasse eine oder mehrere Zweiganstalten der Deutschen Bundesbank oder, falls solche am Ort der Kasse nicht bestehen, ein oder mehrere Kreditinstitute ermächtigt werden, für die Kasse Zahlungsmittel gegen Quittung anzunehmen."
+}
+]
+},
+{
+"g": "AO",
+"nr": "225",
+"titel": "Reihenfolge der Tilgung",
+"abs": [
+{
+"abs": "1",
+"text": "Schuldet ein Steuerpflichtiger mehrere Beträge und reicht bei freiwilliger Zahlung der gezahlte Betrag nicht zur Tilgung sämtlicher Schulden aus, so wird die Schuld getilgt, die der Steuerpflichtige bei der Zahlung bestimmt."
+},
+{
+"abs": "2",
+"text": "Trifft der Steuerpflichtige keine Bestimmung, so werden mit einer freiwilligen Zahlung, die nicht sämtliche Schulden deckt, zunächst die Geldbußen, sodann nacheinander die Zwangsgelder, die Steuerabzugsbeträge, die übrigen Steuern, die Kosten, die Verspätungszuschläge, die Zinsen und die Säumniszuschläge getilgt. Innerhalb dieser Reihenfolge sind die einzelnen Schulden nach ihrer Fälligkeit zu ordnen; bei gleichzeitig fällig gewordenen Beträgen und bei den Säumniszuschlägen bestimmt die Finanzbehörde die Reihenfolge der Tilgung."
+},
+{
+"abs": "3",
+"text": "Wird die Zahlung im Verwaltungsweg erzwungen (§ 249) und reicht der verfügbare Betrag nicht zur Tilgung aller Schulden aus, derentwegen die Vollstreckung oder die Verwertung der Sicherheiten erfolgt ist, so bestimmt die Finanzbehörde die Reihenfolge der Tilgung."
+}
+]
+},
+{
+"g": "AO",
+"nr": "226",
+"titel": "Aufrechnung",
+"abs": [
+{
+"abs": "1",
+"text": "Für die Aufrechnung mit Ansprüchen aus dem Steuerschuldverhältnis sowie für die Aufrechnung gegen diese Ansprüche gelten sinngemäß die Vorschriften des bürgerlichen Rechts, soweit nichts anderes bestimmt ist."
+},
+{
+"abs": "2",
+"text": "Mit Ansprüchen aus dem Steuerschuldverhältnis kann nicht aufgerechnet werden, wenn sie durch Verjährung oder Ablauf einer Ausschlussfrist erloschen sind."
+},
+{
+"abs": "3",
+"text": "Die Steuerpflichtigen können gegen Ansprüche aus dem Steuerschuldverhältnis nur mit unbestrittenen oder rechtskräftig festgestellten Gegenansprüchen aufrechnen."
+},
+{
+"abs": "4",
+"text": "Für die Aufrechnung gilt als Gläubiger oder Schuldner eines Anspruchs aus dem Steuerschuldverhältnis auch die Körperschaft, die die Steuer verwaltet."
+}
+]
+},
+{
+"g": "AO",
+"nr": "227",
+"titel": "Erlass",
+"abs": [
+{
+"abs": "",
+"text": "Die Finanzbehörden können Ansprüche aus dem Steuerschuldverhältnis ganz oder zum Teil erlassen, wenn deren Einziehung nach Lage des einzelnen Falls unbillig wäre; unter den gleichen Voraussetzungen können bereits entrichtete Beträge erstattet oder angerechnet werden."
+}
+]
+},
+{
+"g": "AO",
+"nr": "228",
+"titel": "Gegenstand der Verjährung, Verjährungsfrist",
+"abs": [
+{
+"abs": "",
+"text": "Ansprüche aus dem Steuerschuldverhältnis unterliegen einer besonderen Zahlungsverjährung. Die Verjährungsfrist beträgt fünf Jahre, in Fällen der §§ 370, 373 oder 374 zehn Jahre."
 }
 ]
 }
