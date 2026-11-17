@@ -15,7 +15,8 @@ import { BEISPIELE_BEWR } from "./bewr/beispiele.js";
 import { BEISPIELE_BSR } from "./bilr/beispiele.js";
 import { BEISPIELE_EST } from "./est/beispiele.js";
 import { BEISPIELE_OER } from "./oer/beispiele.js";
-import { normenAusText, norm } from "./oer/normtext.js";
+import { normenAusText, norm, KUERZEL } from "./oer/normtext.js";
+import { imGesetzbuch } from "./gesetzbuch.js";
 import { begriffeIm } from "./begriffe.js";
 
 const BEISPIELE = { ...BEISPIELE_BSR, ...BEISPIELE_OER, ...BEISPIELE_EST, ...BEISPIELE_UST, ...BEISPIELE_BBF, ...BEISPIELE_AO, ...BEISPIELE_PR, ...BEISPIELE_BEWR };
@@ -39,7 +40,7 @@ import { typografie } from "./satz.js";
 
 const dauerText = (min) => min < 90 ? `${min} Min.` : `${String(Math.round(min / 6) / 10).replace(".", ",")} Std.`;
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const ZITAT = /(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|EStDV|LStDV|VwZG|GOBT|GmbHG|ErbStG|BewG)\b|\bR \d+[a-z]?(?: Abs\. \d+)? EStR\b/g;
+const ZITAT = new RegExp(String.raw`(?:§§?|Art\.|Präambel)\s?[^§*():;„“<>]{0,48}?\b(?:GG|${KUERZEL})\b|\bR \d+[a-z]?(?:\.\d+[a-z]?)?(?: Abs\. \d+)? EStR\b`, "g");
 
 /** Fließtext: **fett** wird zum Textmarker, Normzitate werden antippbar (öffnen den Gesetzestext). */
 export function kompaktInline(text) {
@@ -49,12 +50,18 @@ export function kompaktInline(text) {
 }
 
 /** Normzitate in bereits maskiertem HTML antippbar machen (nur Normen, deren Text in der App steht). */
+/** Zitat eines Paragrafen, den die App noch nicht kennt, dessen Gesetz aber im Gesetzbuch steht (wird beim Antippen geladen). */
+function gesetzbuchRef(m) {
+  const x = /^(?:§§?|Art\.)\s?(\d+[a-z]?)\b[\s\S]*?\b([A-Za-zÄÖÜäöü]+)$/.exec(m.replace(/&amp;/g, "&"));
+  return x && imGesetzbuch(x[2]) ? `${x[2]} ${x[1]}` : null;
+}
+
 export function normenVerlinken(h) {
   return h.replace(ZITAT, (m) => {
     // BGB, EStDV und VwZG erkennt normenAusText nicht – einfache Zitate („§ 449 BGB“, „§ 8 VwZG“) direkt auflösen
     const einfach = /^§\s?(\d+[a-z]?)(?:\s+Abs\.\s?(\d+))?.*\b(BGB|EStDV|VwZG|GmbHG)$/.exec(m);
     const ref = einfach ? [`${einfach[3]} ${einfach[1]}${einfach[2] ? " " + einfach[2] : ""}`, `${einfach[3]} ${einfach[1]}`].find((r) => norm(r))
-      : normenAusText(m.replace(/&amp;/g, "&"))[0];
+      : normenAusText(m.replace(/&amp;/g, "&"))[0] || gesetzbuchRef(m);
     return ref ? `<span class="km-norm" role="button" tabindex="0" data-a="normDetail" data-v="${esc(ref)}">${m}</span>` : m;
   });
 }
@@ -101,7 +108,7 @@ export function kompaktView(id, h) {
   const info = vorlesenMoeglich() ? hoerInfo(id, hoerSegmente(k, t)) : null;
   const hoeren = info ? `<button class="hoer-start${an ? " an" : ""}" data-a="hoeren" data-v="${id}" aria-label="Überblick anhören">
       <span class="hs-welle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-      <span class="hs-text"><b>${an ? "Wird vorgelesen" : "Anhören"}</b><span>ca. ${info.min} Min. · ${info.profi ? "Sprecher Cedar" : "Gerätestimme, Normen ausgeschrieben"}</span></span></button>` : "";
+      <span class="hs-text"><b>${an ? "Wird vorgelesen" : "Anhören"}</b><span>ca. ${info.min} Min. · ${info.profi ? `Sprecher ${info.stimme}` : "Gerätestimme, Normen ausgeschrieben"}</span></span></button>` : "";
   const kern = abdecken(`<p class="km-satz" data-hoer="satz">${kompaktInline(k.satz)}</p>
       ${k.zahlen?.length ? `<div class="km-zahlen">${k.zahlen.map(([w, b], i) => `<div data-hoer="zahlen-${i}"><b>${h.abdecken?.an ? `<mark class="km km-wert">${esc(w)}</mark>` : esc(w)}</b><span>${h.abdecken?.an ? kompaktInline(b).replace(/<\/?mark[^>]*>/g, "") : kompaktInline(b)}</span></div>`).join("")}</div>` : ""}
       ${abschnitt("km-schema", "Prüfungsschema", k.schema?.length ? `<ol class="km-schritte">${k.schema.map((s, i) => `<li data-hoer="schema-${i}">${kompaktInline(s)}</li>`).join("")}</ol>` : "")}

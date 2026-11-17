@@ -5,6 +5,34 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-kapitel",
+    datum: "2026-11-17",
+    titel: "Themen: erst lesen, dann üben",
+    klein: true,
+    punkte: [
+      ["akte", "Karte öffnet den Überblick", "Ein Tipp auf ein Thema öffnet jetzt seinen Überblick – üben startest du mit dem Knopf „Üben“ in der Karte oder am Ende des Überblicks mit „Jetzt üben“."],
+    ],
+  },
+  {
+    id: "2026-11-gesetzbuch",
+    datum: "2026-11-17",
+    titel: "Das Gesetzbuch in der App",
+    punkte: [
+      ["akte", "19 Gesetze vollständig", "AO, EStG, UStG, HGB, BGB, GG und alle weiteren Gesetze deiner Module – jeder Paragraf im amtlichen Wortlaut, mit Gliederung, Satznummern und Suche. Zu finden in jedem Modul im Normen-Tab unter „Gesetzbuch“."],
+      ["pfeil", "Blättern wie im Buch", "Im Gesetzestext springst du zum Paragrafen davor oder danach oder öffnest die Stelle im Gesetz. Jedes Zitat lässt sich antippen – auch Paragrafen, die bisher fehlten."],
+      ["install", "Auch ohne Internet", "„Alle Gesetze offline speichern“ legt alle Gesetze aufs Gerät (rund 6 MB) – ideal zum Lernen unterwegs."],
+    ],
+  },
+  {
+    id: "2026-11-normen-vollstaendig",
+    datum: "2026-11-17",
+    titel: "Normen-Tab: jede zitierte Norm im Wortlaut",
+    klein: true,
+    punkte: [
+      ["haken", "Alle zitierten Paragrafen nachschlagen", "Jede Norm, die ein Modul in Überblicken, Aufgaben, Lernpfad oder Probeklausuren zitiert, steht jetzt im Normen-Tab dieses Moduls – 51 Paragrafen kamen neu hinzu (u. a. BVerfGG, StGB, KStG, UStDV, FGO, weitere Artikel des GG und Paragrafen von EStG, AO und BGB). Auch diese Zitate lassen sich jetzt antippen."],
+    ],
+  },
+  {
     id: "2026-11-sprecher-theo",
     datum: "2026-11-17",
     titel: "Neuer Sprecher: Theo",

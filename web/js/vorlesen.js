@@ -12,6 +12,7 @@ const GESETZ = {
   EStH: "Einkommensteuer-Hinweise", LStR: "Lohnsteuer-Richtlinien", LStH: "Lohnsteuer-Hinweise", BRKG: "Bundesreisekostengesetz",
   BVerfGG: "Bundesverfassungsgerichtsgesetz", StPO: "Strafprozessordnung", KStG: "Körperschaftsteuergesetz", GewStG: "Gewerbesteuergesetz",
   GrEStG: "Grunderwerbsteuergesetz", BewG: "Bewertungsgesetz", ErbStG: "Erbschaftsteuergesetz", GoBD: "G o B D", GmbHG: "GmbH-Gesetz", AktG: "Aktiengesetz", EnWG: "Energiewirtschaftsgesetz",
+  FGO: "Finanzgerichtsordnung", StGB: "Strafgesetzbuch",
 };
 // Fachkürzel → ausgesprochen (nur eindeutige; Rechtsformen wie GmbH liest die Stimme selbst richtig)
 const KUERZEL = {
@@ -165,10 +166,10 @@ export const hoertModul = () => P.an && !!P.liste;
 
 /** Vertonte Datei zum Thema – nur wenn sie zum aktuellen Text passt (sonst Gerätestimme). */
 export function audioFuer(id, seg) { const a = HOER_AUDIO[id]; return a && a.h === hoerHash(seg, stimmeVon(id)) ? a : null; }
-/** Für den Knopf: Profi-Stimme vorhanden? Dauer in Minuten. */
+/** Für den Knopf: Profi-Stimme vorhanden (und welche)? Dauer in Minuten. */
 export function hoerInfo(id, seg) {
   const a = audioFuer(id, seg);
-  return a ? { profi: true, min: Math.max(1, Math.round(a.d / 60 / P.tempoAudio)) } : { profi: false, min: hoerMinuten(seg, P.tempo) };
+  return a ? { profi: true, stimme: stimmeVon(id), min: Math.max(1, Math.round(a.d / 60 / P.tempoAudio)) } : { profi: false, min: hoerMinuten(seg, P.tempo) };
 }
 
 let stimme = null;

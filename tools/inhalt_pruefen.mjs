@@ -9,6 +9,8 @@ import { KOMPAKT } from "../web/js/kompakt.js";
 import { PFADE } from "../web/js/lernpfad.js";
 import { norm } from "../web/js/oer/normtext.js";
 import { BEGRIFFE as GLOSSAR } from "../web/js/begriffe.js";
+import { OHNE_QUELLE } from "../web/js/oer/normen_zitiert.js";
+import { zitate } from "./zitate.mjs";
 
 const GESETZE = "HGB|AO|EStG|UStG|BWahlG|PartG|GG|BGB|EStDV|LStDV|VwZG|GOBT|GmbHG|ErbStG|BewG|UStDV";
 /** Alle zitierten Paragrafen eines Textes als „Gesetz Nr“ (auch aus „§§ 14, 14a UStG“ und „Art. 20, 28 GG“). */
@@ -211,7 +213,8 @@ function pruefe(fach, name, text) {
   // Ein Begriff gilt als erklärt, wenn seine Norm im Text steht oder das Begriffsverzeichnis (begriffe.js) ihn mit dieser Norm führt
   const imGlossar = zitierte((GLOSSAR[fach] || []).map((b) => b[2]).join(" "));
   for (const [re, normen, bez] of BEGRIFFE[fach] || []) if (re.test(text) && !normen.some((n) => z.has(n) || imGlossar.has(n))) meldungen.push(`BEGRIFF  ${bez}`);
-  for (const ref of z) { const [g] = ref.split(" "); if (!["EStDV", "LStDV", "VwZG", "GOBT", "UStDV"].includes(g) && !norm(ref)) meldungen.push(`NORM     ${ref} fehlt als Gesetzestext`); }
+  const ohneQuelle = new Set(Object.values(OHNE_QUELLE).flat());
+  for (const ref of new Set(zitate(text))) if (!norm(ref) && !ohneQuelle.has(ref)) meldungen.push(`NORM     ${ref} fehlt als Gesetzestext`);
   for (const m of text.matchAll(UNSCHARF)) meldungen.push(`UNSCHARF „${m[0]}“ – …${text.slice(Math.max(0, m.index - 40), m.index + 30).replace(/\n/g, " ")}…`);
   return meldungen.length ? [`■ ${name}`, ...meldungen.map((m) => "    " + m)] : [];
 }
