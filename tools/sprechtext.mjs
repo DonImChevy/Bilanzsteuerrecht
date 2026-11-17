@@ -66,6 +66,7 @@ export function fuerStimme(text) {
   s = s.replace(/:\s*:/g, ":").replace(/\s*,\s*([:;?!])/g, "$1").replace(/([?!])\s*[.,:]/g, "$1").replace(/([.:;])\s*,/g, "$1")
     .replace(/:\s*\?/g, "?").replace(/\s+([,.;:?!])/g, "$1").replace(/,{2,}/g, ",").replace(/\.{2,}(?!\.)/g, ".")
     .replace(/…/g, " und so weiter").replace(/\s*≠\s*/g, " ungleich ").replace(/\s*×\s*,?\s*/g, " mal ")
+    .replace(/\s*[–—]\s*(?=[,.;:?!)])/g, "").replace(/,\s*,/g, ",")
     .replace(/\s+[−–]\s+/g, " minus ").replace(/(\p{L})-\/(\p{L})/gu, "$1- oder $2");
   // 2. Aufzählungen wie „(1) … (2) …“ → „erstens … zweitens …“ (nur einzelne Ziffern zwischen Kommas, ohne Zitatwort davor)
   const ORD = ["", "erstens", "zweitens", "drittens", "viertens", "fünftens", "sechstens", "siebtens", "achtens", "neuntens"];
