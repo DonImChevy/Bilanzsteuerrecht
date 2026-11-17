@@ -77,6 +77,40 @@ export const KOMPAKT_AO = {
     ],
   },
 
+  "ao-schuldverhaeltnis": {
+    satz: "Aus dem Steuerschuldverhältnis entstehen Ansprüche in beide Richtungen – und besteuert wird nach dem wirtschaftlichen Gehalt: wem ein Wirtschaftsgut wirtschaftlich gehört und was tatsächlich gewollt ist, nicht was zum Schein vereinbart wurde (§§ 37, 39, 41 AO).",
+    zahlen: [["5", "Arten von Ansprüchen aus dem Steuerschuldverhältnis (§ 37 Abs. 1 AO)"]],
+    schema: [
+      "Welcher Anspruch? (§ 37 Abs. 1 AO)",
+      "Entstanden? (§ 38 AO)",
+      "Wem zuzurechnen? Eigentümer oder wirtschaftlicher Eigentümer (§ 39 AO)",
+      "Was gilt steuerlich? Verbotenes (§ 40 AO), Unwirksames und Scheingeschäfte (§ 41 AO), Missbrauch (§ 42 AO)",
+      "Schon erloschen? (§ 47 AO)",
+    ],
+    punkte: [
+      "**Ansprüche (§ 37 Abs. 1 AO):** Steueranspruch, Steuervergütungsanspruch, Haftungsanspruch, Anspruch auf eine steuerliche Nebenleistung und Erstattungsanspruch – dazu die Erstattungsansprüche der Einzelsteuergesetze.",
+      "**In beide Richtungen:** Auch der Steuerpflichtige kann Gläubiger sein – z. B. beim Erstattungs- oder Vergütungsanspruch (vgl. § 37 Abs. 1 AO).",
+      "**Erstattungsanspruch (§ 37 Abs. 2 AO):** Wurde ohne rechtlichen Grund gezahlt, gibt es das Geld zurück – auch wenn der Grund später wegfällt, etwa weil der Bescheid herabgesetzt wird. Berechtigt ist, auf wessen Rechnung gezahlt wurde.",
+      "**Entstehung (§ 38 AO):** sobald der gesetzliche Tatbestand verwirklicht ist; Einzelheiten unter „Entstehung, Fälligkeit, Säumnis“.",
+      "**Zurechnung – Grundsatz (§ 39 Abs. 1 AO):** Wirtschaftsgüter sind dem **Eigentümer** zuzurechnen.",
+      "**Wirtschaftliches Eigentum (§ 39 Abs. 2 Nr. 1 S. 1 AO):** Übt ein anderer die tatsächliche Herrschaft so aus, dass er den Eigentümer für die gewöhnliche Nutzungsdauer wirtschaftlich ausschließen kann, wird ihm das Wirtschaftsgut zugerechnet.",
+      "**Gesetzliche Beispiele (§ 39 Abs. 2 Nr. 1 S. 2 AO):** Treuhand → **Treugeber**, Sicherungseigentum → **Sicherungsgeber**, Eigenbesitz → **Eigenbesitzer** (z. B. der Käufer bei Kauf unter Eigentumsvorbehalt).",
+      "**Gesamthand und Personengesellschaften (§ 39 Abs. 2 Nr. 2 AO):** Die Wirtschaftsgüter werden den Beteiligten anteilig zugerechnet, soweit die Besteuerung das erfordert.",
+      "**Verbotenes Handeln (§ 40 AO):** Ob ein Verhalten gegen ein Gesetz oder die guten Sitten verstößt, ist für die Besteuerung unerheblich – auch Einkünfte aus Schwarzarbeit oder Hehlerei sind steuerpflichtig.",
+      "**Unwirksame Rechtsgeschäfte (§ 41 Abs. 1 AO):** unerheblich, solange die Beteiligten das wirtschaftliche Ergebnis eintreten und bestehen lassen – z. B. ein formnichtiger Grundstückskauf, der trotzdem durchgeführt wird.",
+      "**Scheingeschäfte (§ 41 Abs. 2 AO):** bleiben für die Besteuerung außer Betracht; verdeckt das Scheingeschäft ein anderes, wird das **verdeckte** besteuert – z. B. der tatsächlich gezahlte statt des beurkundeten Kaufpreises.",
+      "**Missbrauch (§ 42 Abs. 2 S. 1 AO):** eine unangemessene rechtliche Gestaltung, die zu einem gesetzlich nicht vorgesehenen Steuervorteil führt. Kein Missbrauch, wenn der Steuerpflichtige beachtliche außersteuerliche Gründe nachweist (§ 42 Abs. 2 S. 2 AO).",
+      "**Folge eines Missbrauchs (§ 42 Abs. 1 S. 3 AO):** Der Anspruch entsteht so, wie er bei einer angemessenen Gestaltung entstanden wäre. Besondere Missbrauchsvorschriften der Einzelsteuergesetze gehen vor (§ 42 Abs. 1 S. 2 AO).",
+      "**Erlöschen (§ 47 AO):** vor allem durch Zahlung (§ 224 AO), Aufrechnung (§ 226 AO), Erlass (§ 227 AO) und Verjährung (§ 228 AO) – ferner durch Eintritt einer auflösenden Bedingung.",
+    ],
+    fallen: [
+      "Sicherungsübereignung: Die Bank wird Eigentümerin, steuerlich zugerechnet wird der Lkw aber weiter dem Unternehmer (§ 39 Abs. 2 Nr. 1 S. 2 AO).",
+      "Verbotene Geschäfte sind nicht steuerfrei (§ 40 AO).",
+      "Beim Scheingeschäft nicht „keine Steuer“ schreiben – das verdeckte Geschäft wird besteuert (§ 41 Abs. 2 S. 2 AO).",
+      "Steuern sparen allein ist kein Missbrauch – die Gestaltung muss unangemessen sein (§ 42 Abs. 2 S. 1 AO).",
+    ],
+  },
+
   "ao-ermittlung": {
     satz: "Das Finanzamt ermittelt von Amts wegen, der Beteiligte muss mitwirken – wer nicht mitwirkt, riskiert Zwangsmittel, Schätzung oder gestrichene Kosten (§§ 88, 90, 162 AO).",
     punkte: [
@@ -390,6 +424,42 @@ export const KOMPAKT_AO = {
       "Säumniszuschlag (1 %, Monat, Zahlung) nicht mit Verspätungszuschlag (0,25 %, Erklärung) verwechseln.",
       "Der Rückstand wird **ab**gerundet, auf durch 50 € teilbare Beträge.",
       "Der Steuerbescheid lässt die Steuer nicht entstehen – er stellt sie nur fest.",
+    ],
+  },
+
+  "ao-tilgung": {
+    satz: "Ein fälliger Anspruch erlischt vor allem durch Zahlung oder Aufrechnung; wer vorübergehend nicht zahlen kann, beantragt Stundung, und wem die Einziehung unbillig wäre, dem kann sie erlassen werden (§§ 47, 222, 224, 226, 227 AO).",
+    zahlen: [["3 Tage", "nach Eingang gilt ein Scheck als entrichtet (§ 224 Abs. 2 Nr. 1 AO)"], ["5 Jahre", "Zahlungsverjährung, bei Steuerhinterziehung 10 Jahre (§ 228 S. 2 AO)"]],
+    schema: [
+      "Anspruch aus dem Steuerschuldverhältnis (§ 37 Abs. 1 AO)",
+      "Kein Fall eines Entrichtungspflichtigen, z. B. Lohnsteuer (§ 222 S. 3 AO)",
+      "Einziehung bei Fälligkeit wäre eine erhebliche Härte (§ 222 S. 1 AO)",
+      "Anspruch durch die Stundung nicht gefährdet (§ 222 S. 1 AO)",
+      "In der Regel Antrag und Sicherheitsleistung (§ 222 S. 2 AO)",
+      "Ermessen: ganz oder teilweise, z. B. in Raten (§ 222 S. 1 AO)",
+    ],
+    punkte: [
+      "**Stundung (§ 222 S. 1 AO):** Die Fälligkeit wird hinausgeschoben, wenn die Einziehung bei Fälligkeit eine **erhebliche Härte** wäre und der Anspruch **nicht gefährdet** erscheint. Das Finanzamt entscheidet nach Ermessen, ganz oder teilweise.",
+      "**Erhebliche Härte:** z. B. vorübergehende Zahlungsschwierigkeiten ohne eigenes Verschulden oder eine Erstattung, die in Kürze ansteht (vgl. § 222 S. 1 AO).",
+      "**Antrag und Sicherheit (§ 222 S. 2 AO):** Gestundet wird in der Regel nur auf Antrag und gegen Sicherheitsleistung.",
+      "**Keine Stundung bei Abzugsteuern:** Behält ein Dritter die Steuer ein und führt sie ab, z. B. der Arbeitgeber die Lohnsteuer, kann sie dem Steuerschuldner nicht gestundet werden (§ 222 S. 3 AO); auch dem Entrichtungspflichtigen nicht, soweit er sie einbehalten hat (§ 222 S. 4 AO).",
+      "**Folge:** Während der Stundung ist der Anspruch nicht fällig – Säumniszuschläge entstehen nicht (vgl. § 240 Abs. 1 S. 1 AO); stattdessen werden in der Regel Stundungszinsen erhoben.",
+      "**Wohin zahlen (§ 224 Abs. 1 AO):** an die zuständige Kasse; außerhalb des Kassenraums nur an besonders ermächtigte Amtsträger, die sich ausweisen können.",
+      "**Tag der Zahlung (§ 224 Abs. 2 AO):** Bargeld am Tag des Eingangs, **Scheck drei Tage nach Eingang** (Nr. 1); **Überweisung** am Tag der Gutschrift (Nr. 2); **SEPA-Lastschrift** am Fälligkeitstag (Nr. 3).",
+      "**Tilgungsreihenfolge (§ 225 Abs. 1 AO):** Reicht eine freiwillige Zahlung nicht für alle Schulden, bestimmt der Steuerpflichtige, was getilgt wird.",
+      "**Ohne Bestimmung (§ 225 Abs. 2 AO):** Geldbußen → Zwangsgelder → Steuerabzugsbeträge → übrige Steuern → Kosten → Verspätungszuschläge → Zinsen → Säumniszuschläge; innerhalb einer Gruppe nach Fälligkeit.",
+      "**Aufrechnung (§ 226 Abs. 1 AO):** Es gelten die BGB-Vorschriften sinngemäß – gegenseitige, gleichartige Forderungen; die eigene muss fällig, die andere erfüllbar sein (§ 387 BGB).",
+      "**Grenzen der Aufrechnung:** nicht mit verjährten Ansprüchen (§ 226 Abs. 2 AO). Der Steuerpflichtige kann nur mit **unbestrittenen** oder **rechtskräftig festgestellten** Gegenansprüchen aufrechnen (§ 226 Abs. 3 AO).",
+      "**Wer ist Gläubiger? (§ 226 Abs. 4 AO):** Auch die Körperschaft, die die Steuer verwaltet – deshalb kann das Finanzamt z. B. eine ESt-Erstattung mit einer USt-Schuld verrechnen.",
+      "**Erlass (§ 227 AO):** wenn die Einziehung nach Lage des Einzelfalls **unbillig** wäre – sachlich (das Ergebnis widerspricht dem Zweck des Gesetzes) oder persönlich (die Existenz steht auf dem Spiel). Schon Gezahltes kann erstattet werden.",
+      "**Stundung oder Erlass?** Die Stundung schiebt nur hinaus (vorübergehende Härte), der Erlass lässt den Anspruch erlöschen (§ 47 AO).",
+      "**Zahlungsverjährung (§ 228 AO):** Die Frist beträgt fünf Jahre, bei Steuerhinterziehung zehn Jahre (§ 228 S. 2 AO); der Anspruch erlischt (§ 47 AO). Beginn und Unterbrechung gehören zu Modul 2.",
+    ],
+    fallen: [
+      "Ohne bewilligte Stundung entstehen bei verspäteter Zahlung Säumniszuschläge (§ 240 Abs. 1 S. 1 AO) – ein bloßer Antrag schützt nicht.",
+      "Lohnsteuer kann dem Arbeitnehmer nicht gestundet werden (§ 222 S. 3 AO).",
+      "Bei Scheckzahlung gibt es keine Schonfrist (§ 240 Abs. 3 S. 2 AO) – und der Scheck gilt erst drei Tage nach Eingang als entrichtet (§ 224 Abs. 2 Nr. 1 AO).",
+      "Mit einer bestrittenen Forderung kann der Steuerpflichtige nicht aufrechnen (§ 226 Abs. 3 AO).",
     ],
   },
 };

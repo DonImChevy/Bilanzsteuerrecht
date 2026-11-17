@@ -49,6 +49,22 @@ export const PFAD_AO = [
     ],
   },
   {
+    id: "ao-schuld", titel: "Wem gehört es steuerlich?", kurz: "§§ 37, 39–42 AO", icon: "🔗", normen: ["AO 37 1", "AO 39 1", "AO 39 2", "AO 41 2", "AO 42 2"],
+    karten: [
+      { art: "merksatz", titel: "Wirtschaftlich gedacht", text: "Steuerlich zählt der **wirtschaftliche Gehalt**: Wem ein Wirtschaftsgut wirtschaftlich gehört, dem wird es zugerechnet (§ 39 AO). Was nur zum Schein vereinbart ist, zählt nicht (§ 41 Abs. 2 AO)." },
+      { art: "erklaerung", titel: "Zurechnung", text: "• Grundsatz: dem **Eigentümer** (§ 39 Abs. 1 AO).\n• Ausnahme: Wer den Eigentümer für die gewöhnliche Nutzungsdauer wirtschaftlich ausschließt, ist **wirtschaftlicher Eigentümer** (§ 39 Abs. 2 Nr. 1 S. 1 AO).\n• Treuhand → Treugeber, Sicherungseigentum → Sicherungsgeber, Eigenbesitz → Eigenbesitzer (§ 39 Abs. 2 Nr. 1 S. 2 AO)." },
+      { art: "erklaerung", titel: "Verboten, unwirksam, zum Schein", text: "• Verbotenes Handeln wird trotzdem besteuert (§ 40 AO).\n• Ein unwirksames Geschäft zählt, solange das wirtschaftliche Ergebnis bestehen bleibt (§ 41 Abs. 1 AO).\n• Scheingeschäfte zählen nicht – besteuert wird das **verdeckte** Geschäft (§ 41 Abs. 2 AO)." },
+      { art: "erklaerung", titel: "Missbrauch", text: "Eine **unangemessene** Gestaltung, die zu einem gesetzlich nicht vorgesehenen Steuervorteil führt (§ 42 Abs. 2 S. 1 AO). Dann wird so besteuert, als wäre angemessen gestaltet worden (§ 42 Abs. 1 S. 3 AO)." },
+      { art: "beispiel", titel: "Sicherungsübereignung", text: "Ein Bäcker übereignet seinen Lieferwagen der Bank zur Sicherheit für einen Kredit und fährt ihn weiter. Die Bank ist Eigentümerin – zugerechnet wird der Wagen aber dem **Bäcker** als Sicherungsgeber (§ 39 Abs. 2 Nr. 1 S. 2 AO)." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Wem ist sicherungsübereignetes Betriebsvermögen steuerlich zuzurechnen?", optionen: ["Dem Sicherungsgeber", "Der Bank als Sicherungsnehmerin", "Beiden je zur Hälfte", "Niemandem bis zur Rückzahlung"], richtig: 0, erkl: "§ 39 Abs. 2 Nr. 1 S. 2 AO." },
+      { art: "wahl", frage: "Ein Händler verkauft verbotene Ware mit Gewinn. Ist der Gewinn steuerpflichtig?", optionen: ["Ja – Gesetzesverstöße sind für die Besteuerung unerheblich", "Nein – verbotene Geschäfte werden nicht besteuert", "Nur, wenn er verurteilt wird", "Nur zur Hälfte"], richtig: 0, erkl: "§ 40 AO." },
+      { art: "wahl", frage: "Im Kaufvertrag steht 200.000 €, tatsächlich wurden 260.000 € gezahlt. Was wird besteuert?", optionen: ["Das verdeckte Geschäft über 260.000 €", "Der beurkundete Preis von 200.000 €", "Gar nichts – der Vertrag ist ein Scheingeschäft", "Der Mittelwert"], richtig: 0, erkl: "§ 41 Abs. 2 S. 2 AO." },
+      { art: "wahl", frage: "Wann liegt kein Missbrauch vor, obwohl die Gestaltung Steuern spart?", optionen: ["Wenn beachtliche außersteuerliche Gründe nachgewiesen werden", "Wenn der Steuerberater sie empfohlen hat", "Wenn die Ersparnis unter 1.000 € liegt", "Nie"], richtig: 0, erkl: "§ 42 Abs. 2 S. 2 AO." },
+    ],
+  },
+  {
     id: "ao-ermitteln", titel: "Ermitteln und mitwirken", kurz: "§§ 88, 90, 93, 101 AO", icon: "🔎", normen: ["AO 88 1", "AO 90 1", "AO 93 1", "AO 101 1", "AO 102 1"],
     karten: [
       { art: "merksatz", titel: "Zwei Seiten", text: "Das Finanzamt ermittelt **von Amts wegen** – auch Günstiges (§ 88 Abs. 1 AO). Der Beteiligte muss **mitwirken**: Tatsachen offenlegen, Beweismittel nennen (§ 90 Abs. 1 AO)." },
@@ -225,6 +241,23 @@ export const PFAD_AO = [
       { art: "zahl", frage: "Rückstand 10.049 €, ein angefangener Monat Säumnis. Säumniszuschlag in €?", cent: 10000, erkl: "Abgerundet 10.000 € × 1 % = 100 €." },
       { art: "wahl", frage: "Wann entsteht die Einkommensteuer 2026?", optionen: ["Mit Ablauf des 31.12.2026", "Mit Bekanntgabe des Bescheids", "Mit Abgabe der Erklärung", "Am 01.01.2026"], richtig: 0, erkl: "§ 38 AO i. V. m. § 36 Abs. 1 EStG." },
       { art: "wahl", frage: "Muss ein Säumniszuschlag durch Bescheid festgesetzt werden?", optionen: ["Nein – er entsteht kraft Gesetzes", "Ja, immer", "Nur über 100 €", "Nur bei der Umsatzsteuer"], richtig: 0, erkl: "§ 240 Abs. 1 AO, § 218 Abs. 1 S. 1 AO." },
+    ],
+  },
+  {
+    id: "ao-tilgen", titel: "Stunden, zahlen, aufrechnen, erlassen", kurz: "§§ 222, 224–227 AO", icon: "🤝", normen: ["AO 222", "AO 224 2", "AO 226 3", "AO 227"],
+    karten: [
+      { art: "merksatz", titel: "Vier Wege", text: "**Stundung** schiebt die Fälligkeit hinaus (§ 222 AO). **Zahlung** und **Aufrechnung** lassen den Anspruch erlöschen (§ 47 AO), ebenso der **Erlass** bei Unbilligkeit (§ 227 AO)." },
+      { art: "erklaerung", titel: "Stundung", text: "• Voraussetzung: **erhebliche Härte** bei Einziehung zur Fälligkeit und Anspruch **nicht gefährdet** (§ 222 S. 1 AO).\n• In der Regel auf Antrag und gegen Sicherheit (§ 222 S. 2 AO).\n• Nicht bei Lohnsteuer und anderen Abzugsteuern (§ 222 S. 3 AO)." },
+      { art: "erklaerung", titel: "Tag der Zahlung", text: "• Bargeld: Tag des Eingangs.\n• **Scheck: drei Tage nach Eingang** (§ 224 Abs. 2 Nr. 1 AO).\n• Überweisung: Tag der Gutschrift (§ 224 Abs. 2 Nr. 2 AO).\n• SEPA-Lastschrift: Fälligkeitstag (§ 224 Abs. 2 Nr. 3 AO)." },
+      { art: "erklaerung", titel: "Aufrechnung und Erlass", text: "• Aufrechnen nach BGB-Regeln (§ 226 Abs. 1 AO) – der Steuerpflichtige nur mit **unbestrittenen** oder rechtskräftig festgestellten Forderungen (§ 226 Abs. 3 AO).\n• Erlass, wenn die Einziehung im Einzelfall **unbillig** wäre (§ 227 AO)." },
+      { art: "beispiel", titel: "Scheck kurz vor Fälligkeit", text: "USt-Vorauszahlung fällig Mittwoch, 10.06.2026; der Scheck geht am Dienstag, 09.06., ein. Er gilt am Freitag, 12.06., als entrichtet (§ 224 Abs. 2 Nr. 1 AO) – zwei Tage zu spät, ohne Schonfrist (§ 240 Abs. 3 S. 2 AO): ein Monat Säumniszuschlag." },
+    ],
+    fragen: [
+      { art: "wahl", frage: "Wann gilt eine Überweisung an das Finanzamt als entrichtet?", optionen: ["Am Tag der Gutschrift auf dem Konto des Finanzamts", "Am Tag des Überweisungsauftrags", "Drei Tage nach dem Auftrag", "Am Fälligkeitstag"], richtig: 0, erkl: "§ 224 Abs. 2 Nr. 2 AO." },
+      { art: "wahl", frage: "Kann einem Arbeitnehmer die Lohnsteuer gestundet werden?", optionen: ["Nein – der Arbeitgeber behält sie als Entrichtungspflichtiger ein", "Ja, bei erheblicher Härte", "Ja, aber nur gegen Sicherheit", "Nur bis zu sechs Monaten"], richtig: 0, erkl: "§ 222 S. 3 AO." },
+      { art: "wahl", frage: "Ein Unternehmer will mit einer Forderung gegen das Land aufrechnen, die das Land bestreitet. Geht das?", optionen: ["Nein – nur mit unbestrittenen oder rechtskräftig festgestellten Forderungen", "Ja, jede Forderung genügt", "Ja, wenn sie höher ist als die Steuer", "Nur mit Zustimmung des Steuerberaters"], richtig: 0, erkl: "§ 226 Abs. 3 AO." },
+      { art: "wahl", frage: "Was unterscheidet den Erlass von der Stundung?", optionen: ["Der Erlass lässt den Anspruch erlöschen, die Stundung schiebt nur die Fälligkeit hinaus", "Der Erlass ist nur vorläufig", "Die Stundung gibt es nur bei Unbilligkeit", "Es gibt keinen Unterschied"], richtig: 0, erkl: "§ 47 AO, § 222 S. 1 AO, § 227 AO." },
+      { art: "zahl", frage: "Rückstand 3.260 €, Scheck gilt zwei Tage nach Fälligkeit als entrichtet. Säumniszuschlag in €?", cent: 3250, erkl: "Keine Schonfrist bei Scheck (§ 240 Abs. 3 S. 2 AO): abgerundet 3.250 € × 1 % = 32,50 €." },
     ],
   },
 ];

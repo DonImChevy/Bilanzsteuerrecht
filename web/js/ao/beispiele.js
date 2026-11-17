@@ -158,6 +158,18 @@ export const BEISPIELE_AO = {
       ],
     },
   ],
+  "ao-schuldverhaeltnis": [
+    {
+      titel: "Lieferwagen bei der Bank, Preis im Vertrag zu niedrig",
+      sv: "Bäckermeisterin Rita übereignet ihren betrieblichen Lieferwagen der Sparkasse zur Sicherheit für einen Kredit und fährt ihn weiter für Auslieferungen. Außerdem verkauft sie ein privates Grundstück an ihren Nachbarn. Im notariellen Vertrag stehen 150.000 €; vereinbart und gezahlt wurden 190.000 €.",
+      aufgabe: "Wem ist der Lieferwagen steuerlich zuzurechnen, und welcher Kaufpreis ist für die Besteuerung maßgebend?",
+      loesung: [
+        "Lieferwagen: Eigentümerin ist die Sparkasse; beim Sicherungseigentum wird das Wirtschaftsgut aber dem Sicherungsgeber zugerechnet (§ 39 Abs. 2 Nr. 1 S. 2 AO) → Rita.",
+        "Kaufpreis: Die Beurkundung über 150.000 € ist ein Scheingeschäft und für die Besteuerung unerheblich (§ 41 Abs. 2 S. 1 AO).",
+        "Maßgebend ist das verdeckte Geschäft über 190.000 € (§ 41 Abs. 2 S. 2 AO).",
+      ],
+    },
+  ],
   "ao-einspruch": [
     {
       titel: "„Widerspruch“ per E-Mail",
@@ -181,6 +193,19 @@ export const BEISPIELE_AO = {
         "Nicht bis zum Ablauf des Fälligkeitstags entrichtet → Säumniszuschläge gem. § 240 Abs. 1 S. 1 AO; die Schonfrist (§ 240 Abs. 3 AO) ist überschritten.",
         "Angefangene Monate: 11.06.–10.07., 11.07.–10.08., 11.08.–10.09. = 3.",
         "Rückstand abgerundet auf volle 50 €: 4.550 € → 3 × 1 % × 4.550 € = 136,50 €.",
+      ],
+    },
+  ],
+  "ao-tilgung": [
+    {
+      titel: "Scheck und Aufrechnung",
+      sv: "Die Umsatzsteuer-Vorauszahlung von Unternehmer Paul über 3.260 € ist am Mittwoch, 10.06.2026, fällig. Paul gibt am Dienstag, 09.06.2026, einen Scheck in den Briefkasten des Finanzamts. Im Juli wird ihm eine Einkommensteuer-Erstattung von 1.500 € festgesetzt; zugleich ist ein Verspätungszuschlag von 300 € fällig, den das Finanzamt gegen die Erstattung aufrechnet.",
+      aufgabe: "Sind Säumniszuschläge entstanden? Ist die Aufrechnung zulässig?",
+      loesung: [
+        "Der Scheck gilt drei Tage nach Eingang als entrichtet (§ 224 Abs. 2 Nr. 1 AO) = Freitag, 12.06.2026 – nach Ablauf des Fälligkeitstags.",
+        "Bei Scheckzahlung gilt die Schonfrist nicht (§ 240 Abs. 3 S. 2 AO) → ein angefangener Monat: 3.250 € × 1 % = 32,50 € (§ 240 Abs. 1 S. 1 AO).",
+        "Aufrechnung: Erstattung und Verspätungszuschlag sind gegenseitige, gleichartige Geldforderungen aus dem Steuerschuldverhältnis (§ 37 Abs. 1 AO); es gelten die BGB-Regeln sinngemäß (§ 226 Abs. 1 AO i. V. m. § 387 BGB).",
+        "Der Verspätungszuschlag ist fällig, die Erstattung erfüllbar → Aufrechnung zulässig; erstattet werden 1.200 €. Der Anspruch erlischt insoweit (§ 47 AO).",
       ],
     },
   ],

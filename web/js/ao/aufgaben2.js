@@ -415,6 +415,81 @@ const erhebung = [
     ]),
 ];
 
+// ======================================================================= Steuerschuldverhältnis, Zurechnung, Erlöschen
+const schuld = [
+  A("ao-anspruch-arten", "ao-schuldverhaeltnis",
+    "Welche Ansprüche aus dem Steuerschuldverhältnis nennt § 37 AO? Wann besteht ein Erstattungsanspruch, und wodurch erlöschen die Ansprüche?",
+    "• Ansprüche aus dem Steuerschuldverhältnis (§ 37 Abs. 1 AO): Steueranspruch, Steuervergütungsanspruch, Haftungsanspruch, Anspruch auf eine steuerliche Nebenleistung (§ 3 Abs. 4 AO), Erstattungsanspruch nach § 37 Abs. 2 AO und die Steuererstattungsansprüche der Einzelsteuergesetze.\n• Erstattungsanspruch (§ 37 Abs. 2 AO): Wurde eine Steuer, Vergütung, Haftungsschuld oder Nebenleistung ohne rechtlichen Grund gezahlt, kann derjenige, auf dessen Rechnung gezahlt wurde, sie zurückverlangen – auch wenn der Grund später wegfällt (z. B. Herabsetzung der Steuer im Einspruchsverfahren).\n• Erlöschen (§ 47 AO): insbesondere durch Zahlung (§ 224 AO), Aufrechnung (§ 226 AO), Erlass (§ 227 AO), Verjährung (§ 228 AO) und Eintritt einer auflösenden Bedingung.",
+    ["AO 37 1", "AO 37 2", "AO 47"],
+    M(["Der Haftungsanspruch ist ein Anspruch aus dem Steuerschuldverhältnis.", "Der Erstattungsanspruch steht dem zu, auf dessen Rechnung gezahlt wurde.", "Fällt der rechtliche Grund für eine Zahlung später weg, entsteht ein Erstattungsanspruch.", "Ein Anspruch erlischt auch durch Aufrechnung."],
+      ["Steuerliche Nebenleistungen sind keine Ansprüche aus dem Steuerschuldverhältnis.", "Ein Erstattungsanspruch setzt voraus, dass schon bei Zahlung kein Grund bestand.", "Eine Stundung lässt den Anspruch erlöschen.", "Nur das Finanzamt kann Gläubiger eines Steueranspruchs sein – Erstattungen sind Billigkeitsleistungen."],
+      "Welche Aussagen zum Steuerschuldverhältnis sind richtig?"),
+    { norm: ["AO 37", "AO 47"], s: ["steueranspruch", "verguetung", "haftung", "nebenleistung", "ohne rechtlichen grund", "zahlung", "aufrechnung", "erlass"] }),
+  A("ao-zurechnung", "ao-schuldverhaeltnis",
+    "Wem sind Wirtschaftsgüter nach § 39 AO zuzurechnen? Erläutern Sie das wirtschaftliche Eigentum und nennen Sie die gesetzlichen Beispiele.",
+    "• Grundsatz: Wirtschaftsgüter sind dem Eigentümer zuzurechnen (§ 39 Abs. 1 AO).\n• Wirtschaftliches Eigentum (§ 39 Abs. 2 Nr. 1 S. 1 AO): Übt ein anderer als der Eigentümer die tatsächliche Herrschaft so aus, dass er den Eigentümer im Regelfall für die gewöhnliche Nutzungsdauer von der Einwirkung wirtschaftlich ausschließen kann, ist ihm das Wirtschaftsgut zuzurechnen.\n• Gesetzliche Beispiele (§ 39 Abs. 2 Nr. 1 S. 2 AO):\n  – Treuhand → Treugeber,\n  – Sicherungseigentum → Sicherungsgeber,\n  – Eigenbesitz → Eigenbesitzer (z. B. Käufer unter Eigentumsvorbehalt).\n• Gesamthand und rechtsfähige Personengesellschaften: anteilige Zurechnung an die Beteiligten, soweit für die Besteuerung erforderlich (§ 39 Abs. 2 Nr. 2 AO).",
+    ["AO 39 1", "AO 39 2"],
+    M(["Grundsätzlich wird ein Wirtschaftsgut dem Eigentümer zugerechnet.", "Beim Sicherungseigentum wird das Wirtschaftsgut dem Sicherungsgeber zugerechnet.", "Bei der Treuhand wird das Treugut dem Treugeber zugerechnet.", "Wirtschaftlicher Eigentümer ist, wer den Eigentümer für die gewöhnliche Nutzungsdauer ausschließen kann."],
+      ["Beim Sicherungseigentum wird das Wirtschaftsgut der Bank zugerechnet.", "Bei der Treuhand wird das Treugut dem Treuhänder zugerechnet.", "Zugerechnet wird immer dem zivilrechtlichen Eigentümer.", "Ein Käufer unter Eigentumsvorbehalt kann das Wirtschaftsgut erst nach voller Zahlung zugerechnet bekommen."],
+      "Welche Aussagen zur Zurechnung sind richtig?"),
+    { norm: ["AO 39"], s: ["eigentuemer", "nutzungsdauer", "treugeber", "sicherungsgeber", "eigenbesitz"] }),
+  F("ao-zurechnung-fall", "ao-schuldverhaeltnis", "Wem ist das Wirtschaftsgut steuerlich zuzurechnen?", null, [
+      { text: "Die Tischlerin Tina übereignet ihre Kreissäge der Volksbank zur Sicherheit für einen Kredit und arbeitet weiter mit ihr.", optionen: ["Tina", "Der Volksbank", "Beiden anteilig", "Niemandem bis zur Tilgung"], richtig: 0, erkl: "Sicherungseigentum → Sicherungsgeber (§ 39 Abs. 2 Nr. 1 S. 2 AO).", normen: ["AO 39 2"] },
+      { text: "Rechtsanwalt Rolf hält Aktien im eigenen Namen, aber treuhänderisch für seine Mandantin Mia; Weisungen und Erträge stehen Mia zu.", optionen: ["Mia", "Rolf", "Beiden anteilig", "Der Bank, die das Depot führt"], richtig: 0, erkl: "Treuhand → Treugeber (§ 39 Abs. 2 Nr. 1 S. 2 AO).", normen: ["AO 39 2"] },
+      { text: "Ben kauft eine Maschine unter Eigentumsvorbehalt, nutzt sie im Betrieb und zahlt in Raten. Das Eigentum geht erst mit der letzten Rate über.", optionen: ["Ben", "Dem Verkäufer", "Beiden anteilig", "Erst nach der letzten Rate Ben"], richtig: 0, erkl: "Ben ist Eigenbesitzer → ihm wird die Maschine zugerechnet (§ 39 Abs. 2 Nr. 1 S. 2 AO).", normen: ["AO 39 2"] },
+      { text: "Carla mietet für drei Jahre einen Kopierer, dessen gewöhnliche Nutzungsdauer sieben Jahre beträgt. Danach gibt sie ihn zurück.", optionen: ["Dem Vermieter", "Carla", "Beiden anteilig", "Niemandem"], richtig: 0, erkl: "Carla schließt den Eigentümer nicht für die gewöhnliche Nutzungsdauer aus → Grundsatz: Eigentümer (§ 39 Abs. 1 AO, § 39 Abs. 2 Nr. 1 S. 1 AO).", normen: ["AO 39 1", "AO 39 2"] },
+    ]),
+  F("ao-gestaltung-fall", "ao-schuldverhaeltnis", "Wie ist der Vorgang steuerlich zu behandeln?", null, [
+      { text: "Dennis verdient nebenbei mit nicht angemeldeter Schwarzarbeit 12.000 €.", optionen: ["Die Einnahmen sind steuerpflichtig – der Verstoß ist unerheblich", "Steuerfrei, weil das Geschäft verboten ist", "Nur steuerpflichtig, wenn er erwischt wird", "Steuerpflichtig erst nach einem Urteil"], richtig: 0, erkl: "§ 40 AO.", normen: ["AO 40"] },
+      { text: "Eva verkauft Frank ein Grundstück per privatem, nicht beurkundetem Vertrag. Beide führen das Geschäft durch; Frank zahlt, nutzt das Grundstück und vermietet es.", optionen: ["Das Geschäft wird besteuert, weil das wirtschaftliche Ergebnis besteht", "Unbeachtlich, weil der Vertrag formnichtig ist", "Nur Eva wird besteuert", "Erst nach Beurkundung zu beachten"], richtig: 0, erkl: "Unwirksam, aber wirtschaftlich vollzogen (§ 41 Abs. 1 S. 1 AO).", normen: ["AO 41 1"] },
+      { text: "Im notariellen Vertrag steht ein Kaufpreis von 300.000 €; mündlich vereinbart und gezahlt wurden 380.000 €.", optionen: ["Maßgebend ist das verdeckte Geschäft über 380.000 €", "Maßgebend sind die beurkundeten 300.000 €", "Keine Besteuerung, weil Scheingeschäft", "Maßgebend ist der Verkehrswert laut Gutachten"], richtig: 0, erkl: "Das Scheingeschäft ist unerheblich, das verdeckte Geschäft maßgebend (§ 41 Abs. 2 AO).", normen: ["AO 41 2"] },
+      { text: "Ein Unternehmer schaltet ohne wirtschaftlichen Grund mehrere eigene Gesellschaften hintereinander, nur damit ein Umsatz steuerlich günstiger wird. Außersteuerliche Gründe kann er nicht nennen.", optionen: ["Missbrauch – besteuert wird wie bei angemessener Gestaltung", "Zulässige Steuerplanung", "Scheingeschäft – gar keine Besteuerung", "Verbotenes Handeln – unbeachtlich"], richtig: 0, erkl: "Unangemessene Gestaltung mit gesetzlich nicht vorgesehenem Steuervorteil (§ 42 Abs. 2 S. 1 AO) → Besteuerung wie bei angemessener Gestaltung (§ 42 Abs. 1 S. 3 AO).", normen: ["AO 42 1", "AO 42 2"] },
+    ]),
+];
+
+// ======================================================================= Stundung, Zahlung, Aufrechnung, Erlass
+const tilgung = [
+  A("ao-stundung-erlass", "ao-tilgung",
+    "Unter welchen Voraussetzungen kann das Finanzamt eine Steuer stunden? Wie unterscheidet sich der Erlass?",
+    "Stundung (§ 222 AO):\n• Anspruch aus dem Steuerschuldverhältnis (§ 37 Abs. 1 AO).\n• Die Einziehung bei Fälligkeit wäre eine erhebliche Härte für den Schuldner (§ 222 S. 1 AO), z. B. vorübergehende Zahlungsschwierigkeiten ohne eigenes Verschulden.\n• Der Anspruch erscheint durch die Stundung nicht gefährdet (§ 222 S. 1 AO).\n• In der Regel nur auf Antrag und gegen Sicherheitsleistung (§ 222 S. 2 AO).\n• Ausgeschlossen, soweit ein Dritter die Steuer einbehält und abführt, z. B. Lohnsteuer (§ 222 S. 3 AO).\n• Ermessen: ganz oder teilweise; die Fälligkeit wird hinausgeschoben, es entstehen keine Säumniszuschläge.\nErlass (§ 227 AO): Die Einziehung wäre nach Lage des einzelnen Falls unbillig (sachlich oder persönlich). Der Anspruch erlischt (§ 47 AO); bereits Gezahltes kann erstattet werden.",
+    ["AO 222", "AO 227", "AO 47"],
+    M(["Eine Stundung setzt eine erhebliche Härte bei Einziehung zur Fälligkeit voraus.", "Der Anspruch darf durch die Stundung nicht gefährdet erscheinen.", "Lohnsteuer kann dem Arbeitnehmer nicht gestundet werden.", "Durch den Erlass erlischt der Anspruch."],
+      ["Eine Stundung lässt den Anspruch erlöschen.", "Eine Stundung wird stets ohne Antrag gewährt.", "Ein Erlass setzt nur voraus, dass der Steuerpflichtige wenig verdient.", "Bereits gezahlte Steuern können nie erlassen werden."],
+      "Welche Aussagen zu Stundung und Erlass sind richtig?"),
+    { norm: ["AO 222", "AO 227"], s: ["erhebliche haerte", "nicht gefaehrdet", "antrag", "sicherheit", "lohnsteuer|einbehalt", "unbillig", "erlisch"] }),
+  F("ao-zahlungstag-fall", "ao-tilgung", "An welchem Tag gilt die Zahlung als entrichtet (§ 224 Abs. 2 AO)?", null, [
+      { text: "Gina zahlt ihre fällige Einkommensteuer am Montag, 16.03.2026, bar an der Kasse des Finanzamts ein.", optionen: ["Montag, 16.03.2026", "Donnerstag, 19.03.2026", "Am Tag der Buchung im Haushalt", "Am nächsten Werktag"], richtig: 0, erkl: "Bargeld: Tag des Eingangs (§ 224 Abs. 2 Nr. 1 AO).", normen: ["AO 224 2"] },
+      { text: "Hannes wirft am Dienstag, 09.06.2026, einen Scheck in den Briefkasten des Finanzamts; er geht am selben Tag ein.", optionen: ["Freitag, 12.06.2026", "Dienstag, 09.06.2026", "Mittwoch, 10.06.2026", "Am Tag der Gutschrift auf dem Konto"], richtig: 0, erkl: "Scheck: drei Tage nach dem Tag des Eingangs (§ 224 Abs. 2 Nr. 1 AO).", normen: ["AO 224 2"] },
+      { text: "Ida erteilt ihrer Bank am Montag den Überweisungsauftrag; dem Konto des Finanzamts wird der Betrag am Mittwoch gutgeschrieben.", optionen: ["Am Mittwoch – Tag der Gutschrift", "Am Montag – Tag des Auftrags", "Drei Tage nach dem Auftrag", "Am Tag der Abbuchung bei Ida"], richtig: 0, erkl: "Überweisung: Tag der Gutschrift (§ 224 Abs. 2 Nr. 2 AO).", normen: ["AO 224 2"] },
+      { text: "Jakob hat dem Finanzamt ein SEPA-Lastschriftmandat erteilt. Die Umsatzsteuer-Vorauszahlung ist am 10.08.2026 fällig; abgebucht wird am 12.08.2026.", optionen: ["Am Fälligkeitstag, 10.08.2026", "Am 12.08.2026", "Drei Tage nach Fälligkeit", "Mit Eingang der Voranmeldung"], richtig: 0, erkl: "SEPA-Lastschrift: am Fälligkeitstag (§ 224 Abs. 2 Nr. 3 AO).", normen: ["AO 224 2"] },
+    ]),
+  F("ao-tilgung-fall", "ao-tilgung", "Wie ist der Fall zu beurteilen?", null, [
+      { text: "Arbeitnehmerin Klara bittet das Finanzamt, die Lohnsteuer auf ihr Dezembergehalt zu stunden, weil sie hohe Arztrechnungen hat.", optionen: ["Keine Stundung möglich – Lohnsteuer behält der Arbeitgeber ein", "Stundung möglich bei erheblicher Härte", "Stundung nur gegen Sicherheit", "Erlass statt Stundung zwingend"], richtig: 0, erkl: "§ 222 S. 3 AO.", normen: ["AO 222"] },
+      { text: "Lars schuldet 900 € Einkommensteuer, 100 € Verspätungszuschlag und 40 € Säumniszuschläge. Er überweist 950 € ohne Bestimmung.", optionen: ["Getilgt werden 900 € Steuer und 50 € Verspätungszuschlag", "Getilgt werden zuerst die Säumniszuschläge", "Getilgt wird anteilig", "Das Finanzamt muss die Zahlung zurückweisen"], richtig: 0, erkl: "Reihenfolge ohne Bestimmung: Steuern vor Verspätungszuschlägen vor Säumniszuschlägen (§ 225 Abs. 2 S. 1 AO).", normen: ["AO 225 2"] },
+      { text: "Mona hat eine unbestrittene Erstattung von 1.200 € Einkommensteuer; zugleich ist ihre USt-Vorauszahlung von 800 € fällig. Das Finanzamt erklärt die Aufrechnung.", optionen: ["Zulässig – 400 € werden erstattet", "Unzulässig, weil es verschiedene Steuerarten sind", "Unzulässig ohne Monas Zustimmung", "Zulässig, aber nur bis 500 €"], richtig: 0, erkl: "Gegenseitige, gleichartige Geldforderungen (§ 226 Abs. 1 AO i. V. m. § 387 BGB); Gläubiger ist auch die Körperschaft, die die Steuer verwaltet (§ 226 Abs. 4 AO).", normen: ["AO 226 1", "AO 226 4", "BGB 387"] },
+      { text: "Niko rechnet gegen seine Gewerbesteuer-Nachzahlung beim Finanzamt mit einer Werklohnforderung gegen das Land auf, die das Land bestreitet.", optionen: ["Unzulässig – nur unbestrittene oder rechtskräftig festgestellte Forderungen", "Zulässig, weil das Land Schuldner ist", "Zulässig nach § 387 BGB ohne Einschränkung", "Zulässig, wenn die Forderung älter ist"], richtig: 0, erkl: "§ 226 Abs. 3 AO.", normen: ["AO 226 3"] },
+      { text: "Olga kann eine Steuernachzahlung von 6.000 € zum Fälligkeitstag nicht zahlen, weil ein großer Kunde verspätet zahlt; das Geld kommt sicher in zwei Monaten. Sie beantragt rechtzeitig Hilfe.", optionen: ["Stundung – vorübergehende erhebliche Härte", "Erlass – Einziehung unbillig", "Aufrechnung mit der Kundenforderung", "Nichts – nur Säumniszuschläge möglich"], richtig: 0, erkl: "Vorübergehende Härte, Anspruch nicht gefährdet → Stundung (§ 222 S. 1 AO); ein Erlass (§ 227 AO) setzt dauerhafte Unbilligkeit voraus.", normen: ["AO 222", "AO 227"] },
+    ]),
+  R("ao-scheck-saeumnis", "ao-tilgung", (r) => {
+    let faellig, eingang, entrichtet;
+    do {
+      faellig = werktag(tagUTC(2026, r.zahl(1, 10), r.zahl(5, 15)));
+      eingang = plusTage(faellig, r.zahl(-2, 70));
+      entrichtet = plusTage(eingang, 3);
+    } while (istFrei(eingang) || istFrei(entrichtet) || reformationstag(entrichtet) || reformationstag(eingang));
+    const betrag = r.zahl(600, 20000) + (r.zahl(0, 1) ? r.zahl(1, 99) / 100 : 0);
+    const abgerundet = Math.floor(betrag / 50) * 50;
+    let n = 0;
+    while (plusTage(plusMonate(faellig, n), 1) <= entrichtet) n++;
+    return {
+      text: `Die Umsatzsteuer-Vorauszahlung des Unternehmers Udo Uhl über ${eur(betrag)} ist am ${lang(faellig)} fällig. Udo zahlt mit Scheck; der Scheck geht am ${lang(eingang)} beim Finanzamt ein.\n\nWie hoch sind die entstandenen Säumniszuschläge (in €)?`,
+      cent: abgerundet * n,
+      erklaerung: `• Ein Scheck gilt drei Tage nach dem Tag des Eingangs als entrichtet (§ 224 Abs. 2 Nr. 1 AO): ${lang(entrichtet)}.\n• Säumnis ab ${kurz(plusTage(faellig, 1))}; bei Scheckzahlung gibt es keine Schonfrist (§ 240 Abs. 3 S. 2 AO).\n• Angefangene Monate: ${n}.\n• Rückstand abgerundet auf volle 50 €: ${eur(abgerundet)} → ${n} × 1 % = ${eur(abgerundet * n / 100)}.`,
+      normen: ["AO 224 2", "AO 240 1", "AO 240 3"],
+    };
+  }),
+];
+
 // ======================================================================= Klausurfälle
 const fall1 = A("ao-fall-geheimnis", "ao-steuergeheimnis",
   `Klausurfall – Steuergeheimnis und Auskunft.\nSteuerinspektorin Ina (I) bearbeitet im Finanzamt Lübeck die Einkommensteuererklärung des Zahnarztes Dr. Zahn (Z). Dabei fällt ihr auf, dass Z hohe Bewirtungskosten für „Geschäftsessen mit Max Mohr“ geltend macht.\n1. Am Abend erzählt I ihrem Ehemann, Z verdiene „über 400.000 € im Jahr“.\n2. I schreibt Max Mohr (M), einen Bekannten von Z, an und fragt, ob die Essen geschäftlich waren. Z selbst hatte sie zuvor nicht gefragt.\n3. M ist der Bruder der Ehefrau von Z. Er antwortet ausführlich, ohne belehrt worden zu sein.\n\nAufgabe: Beurteilen Sie die Sachverhalte nach der AO.`,
@@ -436,4 +511,4 @@ const fall2 = A("ao-fall-bescheid", "ao-bekanntgabe",
   { norm: ["AO 122", "AO 355"], s: ["gemeinsame anschrift|122 abs 7", "vierten tag", "23 11", "23 12", "begruendung", "nachgeholt|126"] },
   { fall: true });
 
-export const AO_TEIL2 = [...va, ...wirksam, ...bekannt, fall2, ...vorbehalt, ...feststellung, ...zustaendig, ...fristen, ...einspruch, ...erhebung, fall1];
+export const AO_TEIL2 = [...va, ...wirksam, ...bekannt, fall2, ...vorbehalt, ...feststellung, ...zustaendig, ...fristen, ...einspruch, ...erhebung, ...schuld, ...tilgung, fall1];
