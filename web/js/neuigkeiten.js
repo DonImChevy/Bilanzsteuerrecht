@@ -5,6 +5,16 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-est-nsa",
+    datum: "2026-11-18",
+    titel: "ESt: Nichtselbständige Arbeit als eigenes Thema",
+    punkte: [
+      ["akte", "Alles zu § 19 EStG an einem Ort", "Arbeitnehmer und Arbeitslohn, steuerfreie Bezüge, Betriebsfeier, Lohnsteuer, Versorgungsbezüge und das Rechenschema – mit Schaubild.", "kompakt", "est-nsa"],
+      ["haken", "Neue Aufgaben", "Was ist Arbeitslohn, was steuerfrei? Wohin mit Lohnsteuer und Sozialversicherung? Und eine Gesamtrechnung mit Gehalt, Jobticket und Witwengeld."],
+      ["ziel", "Neuer Lernpfad-Block", "„Einkünfte aus § 19 berechnen“ direkt nach „Wer ist Arbeitnehmer?“."],
+    ],
+  },
+  {
     id: "2026-11-icon-rathaus",
     datum: "2026-11-17",
     titel: "Neues App-Icon",

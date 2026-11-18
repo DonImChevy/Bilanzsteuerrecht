@@ -124,6 +124,23 @@ export const BEISPIELE_EST = {
     },
   ],
 
+  "est-nsa": [
+    {
+      titel: "Gehalt, Feier und Pension",
+      sv: "Das Ehepaar Kurz wird 2026 zusammen veranlagt. (1) Ehemann Kai ist angestellter Vertriebsleiter: Monatsgehalt 4.500 €, Weihnachtsgeld 2.000 € (ohne Rechtsanspruch), Arbeitgeberanteil Sozialversicherung 10.300 €, einbehaltene Lohnsteuer 9.800 €. Bei der Sommerfeier, zu der alle Beschäftigten eingeladen waren, entfielen auf Kai und seine Frau zusammen 180 € (einzige Feier 2026). Werbungskosten 900 €. (2) Ehefrau Lena (64) ist seit 2020 pensionierte Beamtin; ihr Ruhegehalt betrug im Januar 2020 2.400 € und 2026 durchgehend 2.700 € monatlich.",
+      aufgabe: "Ermitteln Sie die Einkünfte aus nichtselbständiger Arbeit beider Ehegatten für 2026.",
+      loesung: [
+        "**(1) Kai:** Arbeitnehmer (§ 1 Abs. 1, 2 LStDV); Gehalt und Weihnachtsgeld sind Arbeitslohn, ein Rechtsanspruch ist nicht nötig (§ 19 Abs. 1 S. 1 Nr. 1, S. 2 EStG): 54.000 € + 2.000 € = 56.000 €.",
+        "Sommerfeier: Betriebsveranstaltung, der Anteil der Begleitperson wird Kai zugerechnet (§ 19 Abs. 1 S. 1 Nr. 1a S. 1, 5 EStG). 180 € − 110 € = **70 €** Arbeitslohn (§ 19 Abs. 1 S. 1 Nr. 1a S. 3 EStG) → 56.070 €.",
+        "Arbeitgeberanteil Sozialversicherung steuerfrei (§ 3 Nr. 62 EStG); Lohnsteuer mindert nichts (§ 12 Nr. 3 EStG), sie wird angerechnet (§ 36 Abs. 2 Nr. 2 a EStG).",
+        "Werbungskosten 900 € < Arbeitnehmer-Pauschbetrag 1.230 € (§ 9a S. 1 Nr. 1 a EStG) → Einkünfte **54.840 €**.",
+        "**(2) Lena:** Ruhegehalt = Versorgungsbezug (§ 19 Abs. 1 S. 1 Nr. 2, Abs. 2 S. 2 Nr. 1 a EStG). Einnahmen 12 × 2.700 € = 32.400 €.",
+        "Versorgungsbeginn 2020: 16,0 % von 12 × 2.400 € = 4.608 €, höchstens **1.200 €**, Zuschlag **360 €** (§ 19 Abs. 2 S. 3, 4 EStG); die Erhöhung führt nicht zur Neuberechnung (§ 19 Abs. 2 S. 9 EStG).",
+        "32.400 € − 1.200 € − 360 € − Pauschbetrag 102 € (§ 9a S. 1 Nr. 1 b EStG) = Einkünfte **30.738 €**.",
+      ],
+    },
+  ],
+
   "est-zufluss": [
     {
       titel: "Zahlungen um den Jahreswechsel",

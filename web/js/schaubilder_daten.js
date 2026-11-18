@@ -467,6 +467,17 @@ export const SCHAUBILDER = {
       { titel: "Sachbezug 51 € im Monat – Freigrenze überschritten", teile: [{ t: "51 € voll steuerpflichtig", wert: 51, f: "d" }], max: 60 },
       { titel: "Personalrabatt 1.500 € im Jahr – Freibetrag 1.080 € (§ 8 Abs. 3)", teile: [{ t: "1.080 € frei", wert: 1080, f: "b" }, { t: "420 € stpfl.", wert: 420, f: "d" }] }],
   }],
+  "est-nsa": [{
+    knopf: "Rechenweg § 19 EStG", titel: "Einkünfte aus nichtselbständiger Arbeit",
+    text: "Aktiver Arbeitslohn und Versorgungsbezüge werden getrennt gerechnet – jeder Teil mit eigenem Pauschbetrag – und erst am Ende addiert.",
+    art: "stufen", schritte: [
+      { t: "Ist die Person Arbeitnehmer?", sub: "schuldet ihre Arbeitskraft, weisungsgebunden (§ 1 Abs. 2 LStDV)", f: "n" },
+      { zweig: [
+        { titel: "Aktiver Arbeitslohn", f: "a", schritte: ["Bruttolohn + Weihnachtsgeld, Sachbezüge (§ 19 Abs. 1 S. 1 Nr. 1 EStG)", "− steuerfrei: Arbeitgeberanteil Sozialversicherung, Jobticket (§ 3 Nr. 62, 15 EStG)", "− Werbungskosten, mindestens 1.230 € (§ 9a S. 1 Nr. 1 a EStG)"] },
+        { titel: "Versorgungsbezüge", f: "e", schritte: ["Pension, Witwengeld (§ 19 Abs. 2 S. 2 EStG)", "− Versorgungsfreibetrag + Zuschlag nach Jahr des Beginns (§ 19 Abs. 2 S. 3 EStG)", "− Pauschbetrag 102 € (§ 9a S. 1 Nr. 1 b EStG)"] }] },
+      { t: "= Einkünfte aus § 19 EStG", sub: "Überschuss der Einnahmen über die Werbungskosten (§ 2 Abs. 2 S. 1 Nr. 2 EStG)", f: "c", ergebnis: 1 }],
+    merke: "Lohnsteuer und Arbeitnehmeranteil zur Sozialversicherung mindern den Bruttolohn **nicht** – die Lohnsteuer wird angerechnet, die Beiträge sind Sonderausgaben.",
+  }],
   "est-zufluss": [{
     knopf: "10-Tage-Regel am Jahreswechsel", titel: "Regelmäßig wiederkehrende Zahlungen",
     text: "Grundsätzlich zählt das Jahr des Zahlungsflusses. **Ausnahme:** Regelmäßig wiederkehrende Zahlungen, die innerhalb von 10 Tagen um den Jahreswechsel fällig und gezahlt werden, gehören in das Jahr, zu dem sie wirtschaftlich gehören (§ 11 Abs. 1 S. 2, Abs. 2 S. 2 EStG).",

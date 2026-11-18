@@ -150,7 +150,7 @@ const einkunftsartFall = F("est-einkunftsart-fall", "est-einkuenfte", "Zu welche
 ]);
 
 // Arbeitnehmer und Arbeitslohn (§§ 1, 2 LStDV) – Einstieg jeder Klausurlösung zu § 19 EStG
-const arbeitnehmer = A("est-arbeitnehmer", "est-einkuenfte",
+const arbeitnehmer = A("est-arbeitnehmer", "est-nsa",
   "Wann ist jemand Arbeitnehmer im Sinne des Einkommensteuerrechts, und was gehört zum Arbeitslohn?",
   "• Arbeitnehmer sind Personen, die im öffentlichen oder privaten Dienst angestellt oder beschäftigt sind oder waren und aus diesem oder einem früheren Dienstverhältnis Arbeitslohn beziehen (§ 1 Abs. 1 S. 1 LStDV); auch ihre Rechtsnachfolger, soweit sie Arbeitslohn aus dem früheren Dienstverhältnis des Rechtsvorgängers beziehen, z. B. die Witwe mit Witwengeld (§ 1 Abs. 1 S. 2 LStDV).\n• Ein Dienstverhältnis liegt vor, wenn der Beschäftigte dem Arbeitgeber seine Arbeitskraft schuldet: Er steht unter dessen Leitung oder ist in dessen geschäftlichen Organismus eingegliedert und weisungsgebunden (§ 1 Abs. 2 LStDV).\n• Abgrenzung zur Selbständigkeit nach dem Gesamtbild (vgl. H 19.0 LStH): feste Arbeitszeit, Urlaubsanspruch, Lohnfortzahlung im Krankheitsfall, Bezahlung nach Zeit statt nach Erfolg, kein Unternehmerrisiko und keine eigene Unternehmerinitiative.\n• Arbeitslohn sind alle Einnahmen, die dem Arbeitnehmer aus dem Dienstverhältnis oder einem früheren Dienstverhältnis zufließen – gleich unter welcher Bezeichnung und in welcher Form, also auch Sachbezüge (§ 2 Abs. 1 LStDV, § 19 Abs. 1 EStG); ausdrücklich auch Einnahmen aus einem früheren Dienstverhältnis wie Pensionen, Überstundenvergütungen und Lohnzuschläge (§ 2 Abs. 2 Nr. 2, 6, 7 LStDV).\n• Folge: Einkünfte aus nichtselbständiger Arbeit (§ 2 Abs. 1 S. 1 Nr. 4 i. V. m. § 19 EStG), ermittelt als Überschuss der Einnahmen über die Werbungskosten (§ 2 Abs. 2 S. 1 Nr. 2 EStG); die ESt wird durch Lohnsteuerabzug erhoben (§ 38 Abs. 1 EStG).\n• Kein Arbeitnehmer ist, wer im Rahmen seiner selbständigen gewerblichen oder beruflichen Tätigkeit Leistungen gegen Entgelt erbringt (§ 1 Abs. 3 LStDV).\n• Auch der angestellte Geschäftsführer einer GmbH ist Arbeitnehmer.",
   ["LStDV 1", "LStDV 2", "EStG 19 1", "EStG 2 1", "EStG 38 1"],
@@ -158,7 +158,7 @@ const arbeitnehmer = A("est-arbeitnehmer", "est-einkuenfte",
     ["Arbeitnehmer ist nur, wer einen schriftlichen Arbeitsvertrag hat.", "Pensionen gehören nicht zum Arbeitslohn, weil kein Dienstverhältnis mehr besteht.", "Wer ein Unternehmerrisiko trägt, ist typischerweise Arbeitnehmer.", "Arbeitslohn sind nur Geldzahlungen mit der Bezeichnung „Gehalt“."],
     "Welche Aussagen zum Arbeitnehmerbegriff und zum Arbeitslohn sind richtig?"));
 const AN_OPT = ["Arbeitnehmer – § 19 EStG", "Selbständige Arbeit – § 18 EStG", "Gewerbebetrieb – § 15 EStG"];
-const arbeitnehmerFall = F("est-arbeitnehmer-fall", "est-einkuenfte", "Ist die Person Arbeitnehmer?", AN_OPT, [
+const arbeitnehmerFall = F("est-arbeitnehmer-fall", "est-nsa", "Ist die Person Arbeitnehmer?", AN_OPT, [
   { text: "Donna ist angestellte Steuerberaterin in einer Kanzlei: feste Arbeitszeit, 30 Tage Urlaub, Gehalt monatlich.", richtig: 0, erkl: "Weisungsgebunden und in die Kanzlei eingegliedert → Dienstverhältnis (§ 1 Abs. 2 LStDV) → Arbeitnehmerin, Einkünfte aus § 19 Abs. 1 S. 1 Nr. 1 EStG.", normen: ["LStDV 1 2", "EStG 19 1"] },
   { text: "Arne ist angestellter Geschäftsführer einer IT-GmbH und erhält ein festes Gehalt.", richtig: 0, erkl: "Der angestellte GmbH-Geschäftsführer ist in das Unternehmen eingegliedert und weisungsgebunden → Arbeitnehmer (§ 1 Abs. 1, 2 LStDV), § 19 EStG.", normen: ["LStDV 1 2", "EStG 19 1"] },
   { text: "Birgit ist pensionierte Beamtin und erhält monatlich ihr Ruhegehalt.", richtig: 0, erkl: "Bezüge aus einem früheren Dienstverhältnis (§ 1 Abs. 1 S. 1, § 2 Abs. 2 Nr. 2 LStDV) → Arbeitnehmerin, § 19 Abs. 1 S. 1 Nr. 2 EStG (Versorgungsbezüge, § 19 Abs. 2 EStG).", normen: ["LStDV 2 2", "EStG 19 1", "EStG 19 2"] },
@@ -169,7 +169,7 @@ const arbeitnehmerFall = F("est-arbeitnehmer-fall", "est-einkuenfte", "Ist die P
   { text: "Lisa ist Werkstudentin bei einer Bank: 15 Stunden pro Woche nach Dienstplan, Stundenlohn.", richtig: 0, erkl: "Auch Aushilfen und Werkstudenten schulden ihre Arbeitskraft nach Weisung → Arbeitnehmerin (§ 1 Abs. 1, 2 LStDV), § 19 EStG.", normen: ["LStDV 1 2", "EStG 19 1"] },
 ]);
 
-const einkuenfteRechnen = R("est-einkuenfte-19", "est-einkuenfte", (r) => {
+const einkuenfteRechnen = R("est-einkuenfte-19", "est-nsa", (r) => {
   const lohn = r.betrag(28000, 70000, 500) / 100;
   const sonst = r.zahl(2, 30) * 50; // andere Werbungskosten
   const gew = r.muenze() ? r.zahl(12, 36) * 10 : 0;
@@ -366,17 +366,17 @@ const einnahmen = [
 ];
 
 // Versorgungsbezüge (§ 19 Abs. 2 EStG): Prozentsatz, Höchstbetrag und Zuschlag nach dem Jahr des Versorgungsbeginns
-const VERSORGUNG = { 2018: [19.2, 1440, 432], 2019: [17.6, 1320, 396], 2020: [16.0, 1200, 360], 2021: [15.2, 1140, 342], 2022: [14.4, 1080, 324],
+const VERSORGUNG = { 2013: [27.2, 2040, 612], 2014: [25.6, 1920, 576], 2015: [24.0, 1800, 540], 2016: [22.4, 1680, 504], 2017: [20.8, 1560, 468], 2018: [19.2, 1440, 432], 2019: [17.6, 1320, 396], 2020: [16.0, 1200, 360], 2021: [15.2, 1140, 342], 2022: [14.4, 1080, 324],
   2023: [14.0, 1050, 315], 2024: [13.6, 1020, 306], 2025: [13.2, 990, 297], 2026: [12.8, 960, 288] };
 const pz = (x) => String(x.toFixed(1)).replace(".", ",");
-const versorgung = A("est-versorgung", "est-einnahmen",
+const versorgung = A("est-versorgung", "est-nsa",
   "Ein pensionierter Beamter bezieht Ruhegehalt. Wie werden diese Bezüge besteuert, und welche Freibeträge stehen ihm zu?",
   "• Das Ruhegehalt ist Arbeitslohn aus einem früheren Dienstverhältnis → Einkünfte aus nichtselbständiger Arbeit (§ 19 Abs. 1 S. 1 Nr. 2 EStG); es ist ein Versorgungsbezug (§ 19 Abs. 2 S. 2 Nr. 1 a EStG).\n• Steuerfrei bleiben der Versorgungsfreibetrag (Prozentsatz der Bemessungsgrundlage, höchstens ein Höchstbetrag) und ein Zuschlag zum Versorgungsfreibetrag (§ 19 Abs. 2 S. 1 EStG).\n• Prozentsatz, Höchstbetrag und Zuschlag richten sich nach dem Jahr des Versorgungsbeginns (Tabelle in § 19 Abs. 2 S. 3 EStG) – z. B. Beginn 2026: 12,8 %, höchstens 960 €, Zuschlag 288 €.\n• Bemessungsgrundlage: das Zwölffache des Versorgungsbezugs für den ersten vollen Monat (§ 19 Abs. 2 S. 4 b EStG).\n• Die so berechneten Beträge gelten für die gesamte Laufzeit; regelmäßige Anpassungen (Erhöhungen) führen nicht zu einer Neuberechnung (§ 19 Abs. 2 S. 8, 9 EStG).\n• Für jeden vollen Kalendermonat ohne Versorgungsbezüge ermäßigen sich Freibetrag und Zuschlag um je ein Zwölftel (§ 19 Abs. 2 S. 12 EStG) – wichtig im Jahr des Beginns.\n• Werbungskosten-Pauschbetrag für Versorgungsbezüge: 102 € (§ 9a S. 1 Nr. 1 b EStG) statt des Arbeitnehmer-Pauschbetrags.",
   ["EStG 19 2", "EStG 9a"],
   M(["Das Ruhegehalt eines Beamten ist ein Versorgungsbezug im Sinne des § 19 Abs. 2 EStG.", "Prozentsatz und Höchstbetrag des Versorgungsfreibetrags richten sich nach dem Jahr des Versorgungsbeginns.", "Eine regelmäßige Erhöhung der Pension führt nicht zu einer Neuberechnung des Versorgungsfreibetrags.", "Für Versorgungsbezüge beträgt der Werbungskosten-Pauschbetrag 102 €."],
     ["Der Versorgungsfreibetrag wird jedes Jahr nach dem aktuellen Ruhegehalt neu berechnet.", "Für Versorgungsbezüge gilt der Arbeitnehmer-Pauschbetrag von 1.230 €.", "Maßgeblich ist immer der Prozentsatz des laufenden Veranlagungszeitraums.", "Ruhegehalt eines Beamten gehört zu den sonstigen Einkünften nach § 22 EStG."],
     "Welche Aussagen zur Besteuerung von Versorgungsbezügen sind richtig?"));
-const versorgungRechnen = R("est-versorgung-rechnen", "est-einnahmen", (r) => {
+const versorgungRechnen = R("est-versorgung-rechnen", "est-nsa", (r) => {
   if (r.zahl(0, 2) === 0) { // Versorgungsbeginn im Jahr 2026 – Zwölftelung
     const m = r.zahl(2, 10), mon = 13 - m, b = r.zahl(40, 70) * 50, [p, hb, zs] = VERSORGUNG[2026];
     const e = mon * b, vfb = Math.min(12 * b * p / 100, hb) * mon / 12, z = zs * mon / 12, eink = e - vfb - z - 102;
@@ -410,6 +410,56 @@ Wie hoch sind seine Einkünfte aus nichtselbständiger Arbeit 2026 (in €)?`,
 − Versorgungsfreibetrag ${eur(hb)} − Zuschlag ${eur(zs)} − Werbungskosten-Pauschbetrag 102 € (§ 9a S. 1 Nr. 1 b EStG)
 = ${eur(eink)}`,
     normen: ["EStG 19 2", "EStG 9a"],
+  };
+});
+
+// ======================================================================= Nichtselbständige Arbeit: Abzüge, Lohnbestandteile, Gesamtrechnung
+const nsaAbzuege = A("est-nsa-abzuege", "est-nsa",
+  "Arbeitnehmerin Pia erhält laut Lohnabrechnung einen Bruttolohn; ihr Arbeitgeber behält Lohnsteuer, Solidaritätszuschlag, Kirchensteuer und den Arbeitnehmeranteil zur Sozialversicherung ein und trägt zusätzlich den Arbeitgeberanteil. Wie sind diese Beträge einkommensteuerlich zu behandeln?",
+  "• Einnahmen sind der Bruttolohn: Auch die einbehaltenen Beträge sind Arbeitslohn, denn sie werden für Pia abgeführt (vgl. § 2 Abs. 1 LStDV, § 19 Abs. 1 S. 1 Nr. 1 EStG).\n• Lohnsteuer ist eine Erhebungsform der ESt (§ 38 Abs. 1 EStG): nicht abziehbar (§ 12 Nr. 3 EStG), aber bei der Veranlagung auf die ESt angerechnet (§ 36 Abs. 2 Nr. 2 a EStG). Für den Solidaritätszuschlag gilt § 12 Nr. 3 EStG ebenso.\n• Kirchensteuer: Sonderausgabe (§ 10 Abs. 1 Nr. 4 EStG).\n• Arbeitnehmeranteil zur Renten-, Kranken- und Pflegeversicherung: keine Werbungskosten, sondern Sonderausgaben (§ 10 Abs. 1 Nr. 2 a, Nr. 3 EStG).\n• Arbeitgeberanteil: zwar Arbeitslohn, aber steuerfrei (§ 3 Nr. 62 EStG) – er erscheint nicht in den Einnahmen.",
+  ["EStG 38 1", "EStG 12", "EStG 36 2", "EStG 10 1", "EStG 3"],
+  M(["Einbehaltene Lohnsteuer mindert die Einnahmen aus § 19 EStG nicht.", "Die Lohnsteuer wird bei der Veranlagung auf die Einkommensteuer angerechnet.", "Der Arbeitgeberanteil zur Sozialversicherung ist steuerfrei.", "Die Kirchensteuer ist als Sonderausgabe abziehbar."],
+    ["Die Lohnsteuer ist als Werbungskosten abziehbar.", "Der Arbeitnehmeranteil zur Rentenversicherung ist Werbungskosten.", "Einnahmen aus § 19 EStG sind der Nettolohn laut Abrechnung.", "Der Arbeitgeberanteil zur Sozialversicherung gehört zu den steuerpflichtigen Einnahmen."],
+    "Welche Aussagen zu den Abzügen auf der Lohnabrechnung sind richtig?"));
+
+const LOHN_OPT = ["Steuerpflichtiger Arbeitslohn", "Arbeitslohn, aber steuerfrei", "Kein Arbeitslohn bzw. außer Ansatz"];
+const nsaLohnFall = F("est-nsa-lohn-fall", "est-nsa", "Wie ist die Zuwendung einkommensteuerlich zu behandeln?", LOHN_OPT, [
+  { text: "Bürokaufmann Ben erhält im November ein Weihnachtsgeld von 1.200 €. Einen Anspruch darauf hat er nicht; der Arbeitgeber zahlt es freiwillig.", richtig: 0, erkl: "Gratifikation für die Beschäftigung → Arbeitslohn (§ 19 Abs. 1 S. 1 Nr. 1 EStG); gleichgültig, ob ein Rechtsanspruch besteht (§ 19 Abs. 1 S. 2 EStG). Als sonstiger Bezug im Jahr des Zuflusses (§ 38a Abs. 1 S. 3 EStG).", normen: ["EStG 19 1", "EStG 38a 1"] },
+  { text: "Die Arbeitgeberin von Carla trägt den gesetzlichen Arbeitgeberanteil zu ihrer Renten-, Kranken- und Pflegeversicherung.", richtig: 1, erkl: "Ausgabe für die Zukunftssicherung (§ 2 Abs. 2 Nr. 3 LStDV), aber steuerfrei, weil der Arbeitgeber gesetzlich dazu verpflichtet ist (§ 3 Nr. 62 EStG).", normen: ["LStDV 2 2", "EStG 3"] },
+  { text: "Zusätzlich zum Gehalt erstattet der Arbeitgeber Dennis monatlich die Kosten seiner Monatskarte für den Bus zur ersten Tätigkeitsstätte.", richtig: 1, erkl: "Zuschuss zusätzlich zum ohnehin geschuldeten Arbeitslohn für öffentliche Verkehrsmittel → steuerfrei (§ 3 Nr. 15 S. 1 EStG); er mindert aber die Entfernungspauschale (§ 3 Nr. 15 S. 3 EStG).", normen: ["EStG 3", "EStG 9 2"] },
+  { text: "Kellnerin Ela erhält von Gästen freiwillig Trinkgelder, zusätzlich zur Rechnung.", richtig: 1, erkl: "Trinkgelder von Dritten, freiwillig und ohne Rechtsanspruch → steuerfrei (§ 3 Nr. 51 EStG).", normen: ["EStG 3"] },
+  { text: "Zur Weihnachtsfeier sind alle Beschäftigten eingeladen. Die Firma wendet für Essen, Musik und Saal 90 € je Teilnehmer auf (einschließlich USt). Es ist die erste Feier des Jahres.", richtig: 2, erkl: "Betriebsveranstaltung (§ 19 Abs. 1 S. 1 Nr. 1a S. 1 EStG); bis 110 € je Teilnehmer gehören die Zuwendungen nicht zu den Einkünften, weil die Feier allen offensteht (§ 19 Abs. 1 S. 1 Nr. 1a S. 3, 4 EStG).", normen: ["EStG 19 1"] },
+  { text: "Beim Betriebsausflug, offen für alle Beschäftigten, entfallen auf Arbeitnehmer Frank 150 € (einschließlich USt). Es ist die zweite Veranstaltung des Jahres.", richtig: 0, erkl: "Betriebsveranstaltung (§ 19 Abs. 1 S. 1 Nr. 1a EStG): 110 € bleiben außer Ansatz („soweit“ = Freibetrag); die übersteigenden 40 € sind steuerpflichtiger Arbeitslohn (§ 19 Abs. 1 S. 1 Nr. 1a S. 3, 4 EStG).", normen: ["EStG 19 1"] },
+  { text: "Außendienstmitarbeiterin Gina bekommt vom Arbeitgeber die Hotel- und Fahrtkosten einer Dienstreise in nachgewiesener Höhe erstattet.", richtig: 1, erkl: "Reisekostenerstattung des Arbeitgebers bei beruflicher Auswärtstätigkeit → steuerfrei (§ 3 Nr. 16 EStG).", normen: ["EStG 3"] },
+  { text: "Hannes erhält zum 40. Geburtstag von seinem Arbeitgeber einen Blumenstrauß und ein Buch im Wert von zusammen 45 €.", richtig: 2, erkl: "Sachgeschenk zu einem persönlichen Ereignis bis 60 € = bloße Aufmerksamkeit, kein Arbeitslohn (R 19.6 Abs. 1 LStR). Geld wäre stets Arbeitslohn.", normen: ["LStDV 2 1"] },
+  { text: "Der angestellte Geschäftsführer Ingo erhält neben seinem Festgehalt eine Tantieme von 8.000 €, die sich nach dem Jahresgewinn der GmbH richtet.", richtig: 0, erkl: "Tantiemen sind ausdrücklich Arbeitslohn (§ 19 Abs. 1 S. 1 Nr. 1 EStG); als sonstiger Bezug im Jahr des Zuflusses (§ 38a Abs. 1 S. 3 EStG).", normen: ["EStG 19 1", "EStG 38a 1"] },
+]);
+
+const nsaGesamt = R("est-nsa-gesamt", "est-nsa", (r) => {
+  const mon = r.zahl(28, 46) * 100, wg = r.zahl(8, 16) * 100, lohn = 12 * mon + wg;
+  const z = r.zahl(40, 60), tage = r.zahl(200, 220), entf = r.zahl(15, 35), am = r.zahl(2, 12) * 50;
+  const ep = tage * entf * EP, wkIst = Math.max(0, ep - 12 * z) + am, wk = Math.max(wkIst, AN_PB);
+  const jahr = r.zahl(2013, 2020), [p, hb, zs] = VERSORGUNG[jahr], w = r.zahl(24, 40) * 50;
+  const vfb = Math.min(12 * w * p / 100, hb), aktiv = lohn - wk, versorgt = 12 * w - vfb - zs - 102;
+  const sv = Math.round(lohn * 0.19), lst = Math.round(lohn * r.zahl(10, 16) / 100);
+  return {
+    text: `Die Angestellte Rosa (58) erhält 2026 ein Monatsgehalt von ${eur(mon)} brutto und im November ein Weihnachtsgeld von ${eur(wg)}. Der Arbeitgeber trägt zusätzlich Arbeitgeberanteile zur Sozialversicherung von ${eur(sv)}; einbehalten wurde Lohnsteuer von ${eur(lst)}. Zusätzlich zum Gehalt erstattet ihr der Arbeitgeber die Monatskarte für den Bus von ${eur(z)} im Monat.
+Rosa fährt an ${tage} Tagen mit dem Bus zur ersten Tätigkeitsstätte (${entf} km); für Fachliteratur und Arbeitsmittel weist sie ${eur(am)} nach.
+Seit dem 01.01.2026 erhält sie außerdem Witwengeld von ${eur(w)} monatlich. Ihr verstorbener Mann war Beamter und seit ${jahr} im Ruhestand.
+
+Wie hoch sind Rosas Einkünfte aus nichtselbständiger Arbeit 2026 (in €)?`,
+    euro: aktiv + versorgt,
+    erklaerung: `Aktiver Arbeitslohn (§ 19 Abs. 1 S. 1 Nr. 1 EStG):
+  12 × ${eur(mon)} + Weihnachtsgeld ${eur(wg)} = ${eur(lohn)}
+  Arbeitgeberanteil Sozialversicherung steuerfrei (§ 3 Nr. 62 EStG), Busfahrkarte steuerfrei (§ 3 Nr. 15 S. 1 EStG); einbehaltene Lohnsteuer mindert nichts (§ 12 Nr. 3 EStG).
+  Entfernungspauschale ${tage} × ${entf} km × 0,38 € = ${eur(ep)} − steuerfreier Zuschuss 12 × ${eur(z)} (§ 3 Nr. 15 S. 3 EStG) = ${eur(Math.max(0, ep - 12 * z))}
+  + Arbeitsmittel ${eur(am)} = ${eur(wkIst)} → ${wkIst > AN_PB ? "über dem Arbeitnehmer-Pauschbetrag, tatsächliche Werbungskosten" : `Arbeitnehmer-Pauschbetrag ${eur(AN_PB)} ist höher (§ 9a S. 1 Nr. 1 a EStG)`}
+  ${eur(lohn)} − ${eur(wk)} = ${eur(aktiv)}
+Witwengeld = Versorgungsbezug (§ 19 Abs. 1 S. 1 Nr. 2 EStG, § 19 Abs. 2 S. 2 Nr. 1 a EStG). Es folgt der Pension des Mannes → Werte aus dessen Versorgungsbeginn ${jahr} (§ 19 Abs. 2 S. 7 EStG): ${pz(p)} %, höchstens ${eur(hb)}, Zuschlag ${eur(zs)}.
+  12 × ${eur(w)} = ${eur(12 * w)}; ${pz(p)} % = ${eur(12 * w * p / 100)} → Versorgungsfreibetrag ${eur(vfb)}
+  ${eur(12 * w)} − ${eur(vfb)} − Zuschlag ${eur(zs)} − Pauschbetrag 102 € (§ 9a S. 1 Nr. 1 b EStG) = ${eur(versorgt)}
+Einkünfte aus nichtselbständiger Arbeit: ${eur(aktiv)} + ${eur(versorgt)} = ${eur(aktiv + versorgt)}`,
+    normen: ["EStG 19 1", "EStG 19 2", "EStG 3", "EStG 9a"],
   };
 });
 
@@ -1032,7 +1082,7 @@ const fall3 = (() => {
 export const EST_AUFGABEN = [
   ...grundlagen, ...stpfl, stpflFall, ...einkuenfte, einkunftsartFall, arbeitnehmer, arbeitnehmerFall, einkuenfteRechnen, ...zve, zveRechnen,
   ...veranlagung, veranlagungFall, ...tarif, tarifGrund, tarifSplit, abschluss, fall1,
-  ...einnahmen, versorgung, versorgungRechnen, zuflussFall, uebungsleiterRechnen, ...ausgaben, aufwandFall, gemischtRechnen,
+  ...einnahmen, versorgung, versorgungRechnen, nsaAbzuege, nsaLohnFall, nsaGesamt, zuflussFall, uebungsleiterRechnen, ...ausgaben, aufwandFall, gemischtRechnen,
   ...zufluss, elfFall, lohnZufluss, lohnZuflussFall, vorauszahlungRechnen, fall2, ...wk, wkSumme,
   ...arbeitsmittel, arbeitsmittelFall, afaRechnen, gemischtAfa, ...homeoffice, homeofficeFall, homeofficeRechnen, arbeitszimmerRechnen,
   ...entfernung, epPkw, epOepnv, epGemischt, epJobticket, epWechsel, ...reisekosten, reiseFall, verpflegungRechnen, reiseRechnen, fortbildungRechnen,
