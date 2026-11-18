@@ -51,6 +51,7 @@ export const THEMEN = [
   { id: "est-zve", titel: "Zu versteuerndes Einkommen", unter: "Verlustausgleich, Sonderausgaben, außergewöhnliche Belastungen, Kinder · § 2 Abs. 3–5 EStG", icon: "Σ", fach: "est" },
   { id: "est-veranlagung", titel: "Veranlagung", unter: "Ehegattenwahlrecht, Zusammen- und Einzelveranlagung, Pflichtveranlagung · §§ 25, 26, 46 EStG", icon: "💍", fach: "est" },
   { id: "est-tarif", titel: "Tarif & festzusetzende ESt", unter: "Tarifzonen, Splittingverfahren, Progressionsvorbehalt, Anrechnung · §§ 32a, 32b, 36 EStG", icon: "📊", fach: "est" },
+  { id: "est-nsa", titel: "Nichtselbständige Arbeit", unter: "Arbeitnehmer, Arbeitslohn, Lohnsteuer, Versorgungsbezüge, Ermittlungsschema · § 19 EStG, §§ 1, 2 LStDV", icon: "👔", fach: "est" },
   { id: "est-einnahmen", titel: "Einnahmen & Steuerbefreiungen", unter: "Sachbezüge, Übungsleiter- und Ehrenamtspauschale, Versorgungsbezüge · §§ 3, 8, 19 Abs. 2 EStG", icon: "💶", fach: "est" },
   { id: "est-ausgaben", titel: "Nicht abziehbare Ausgaben", unter: "Kosten der Lebensführung, gemischte Aufwendungen, Berufskleidung · § 12 EStG", icon: "🚫", fach: "est" },
   { id: "est-zufluss", titel: "Zu- und Abfluss", unter: "Zufluss, Abfluss, regelmäßig wiederkehrende Zahlungen · § 11 EStG", icon: "📅", fach: "est" },
