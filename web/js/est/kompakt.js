@@ -140,8 +140,8 @@ export const KOMPAKT_EST = {
   },
 
   "est-nsa": {
-    satz: "Wer seine Arbeitskraft schuldet, ist Arbeitnehmer; alles, was er dafür bekommt, ist Arbeitslohn. Die Einkünfte sind der Überschuss der Einnahmen über die Werbungskosten, die ESt wird vorab als Lohnsteuer einbehalten (§ 19 Abs. 1 EStG, §§ 1, 2 LStDV, § 38 Abs. 1 EStG).",
-    zahlen: [["1.230 €", "Arbeitnehmer-Pauschbetrag (§ 9a S. 1 Nr. 1 a EStG)"], ["102 €", "Pauschbetrag für Versorgungsbezüge (§ 9a S. 1 Nr. 1 b EStG)"], ["960 €", "höchstens Versorgungsfreibetrag (12,8 %), dazu Zuschlag 288 € – Beginn 2026 (§ 19 Abs. 2 S. 3 EStG)"], ["110 €", "je Betriebsfeier und Teilnehmer, höchstens zwei Feiern im Jahr (§ 19 Abs. 1 S. 1 Nr. 1a EStG)"]],
+    satz: "Wer seine Arbeitskraft schuldet, ist Arbeitnehmer; alles, was er dafür bekommt, ist Arbeitslohn. Die Einkünfte sind der Überschuss der Einnahmen über die Werbungskosten, die ESt wird vorab als Lohnsteuer einbehalten (§ 1 Abs. 2 LStDV, § 2 Abs. 1 LStDV, § 2 Abs. 2 S. 1 Nr. 2 EStG, § 38 Abs. 1 EStG).",
+    zahlen: [["1.230 €", "Arbeitnehmer-Pauschbetrag (§ 9a S. 1 Nr. 1 a EStG)"], ["102 €", "Pauschbetrag für Versorgungsbezüge (§ 9a S. 1 Nr. 1 b EStG)"], ["12,8 % · 960 € + 288 €", "Versorgungsfreibetrag und Zuschlag bei Beginn 2026 (§ 19 Abs. 2 S. 3 EStG)"], ["110 €", "je Betriebsveranstaltung, höchstens zwei im Jahr (§ 19 Abs. 1 S. 1 Nr. 1a S. 3, 4 EStG)"], ["63 / 60 Jahre", "Altersgrenze für Versorgungsbezüge aus der Privatwirtschaft (§ 19 Abs. 2 S. 2 Nr. 2 EStG)"]],
     schema: [
       "Arbeitslohn aus dem aktiven Dienstverhältnis, brutto (§ 19 Abs. 1 S. 1 Nr. 1 EStG, § 2 Abs. 1 LStDV)",
       "− steuerfreie Bezüge (§ 3 Nr. 15, 16, 62 EStG)",

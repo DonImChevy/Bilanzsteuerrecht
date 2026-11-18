@@ -26,6 +26,9 @@ export const KOMPAKT = Object.fromEntries(Object.entries({ ...KOMPAKT_BSR, ...KO
 export const KLAUSURPLAN = { bsr: KLAUSUR_BSR, bbf: KLAUSUR_BBF, oer: KLAUSUR_OER, est: KLAUSUR_EST, ust: KLAUSUR_UST, ao: KLAUSUR_AO, pr: KLAUSUR_PR, bewr: KLAUSUR_BEWR };
 
 /** Alle Texte einer Zusammenfassung (für Suche und Lesezeit). */
+/** Großer Wert einer Zahlenkarte: Einheit und Trennzeichen bleiben an der Zahl („960 €“, „63 / 60“, „12,8 % · 960 €“). */
+const zahlWert = (w) => String(w).replace(/ (?=[€%·\/])/g, "\u00a0").replace(/\/ (?=\d)/g, "/\u00a0");
+
 export function kompaktText(k) {
   return [k.satz, ...(k.zahlen || []).flat(), ...(k.punkte || []), ...(k.schema || []), ...(k.fallen || []),
     ...(k.beispiele || []).flatMap((b) => [b.titel, b.sv, b.aufgabe || "", ...b.loesung])]
@@ -110,7 +113,7 @@ export function kompaktView(id, h) {
       <span class="hs-welle" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
       <span class="hs-text"><b>${an ? "Wird vorgelesen" : "Anhören"}</b><span>ca. ${info.min} Min. · ${info.profi ? `Sprecher ${info.stimme}` : "Gerätestimme, Normen ausgeschrieben"}</span></span></button>` : "";
   const kern = abdecken(`<p class="km-satz" data-hoer="satz">${kompaktInline(k.satz)}</p>
-      ${k.zahlen?.length ? `<div class="km-zahlen">${k.zahlen.map(([w, b], i) => `<div data-hoer="zahlen-${i}"><b>${h.abdecken?.an ? `<mark class="km km-wert">${esc(w)}</mark>` : esc(w)}</b><span>${h.abdecken?.an ? kompaktInline(b).replace(/<\/?mark[^>]*>/g, "") : kompaktInline(b)}</span></div>`).join("")}</div>` : ""}
+      ${k.zahlen?.length ? `<div class="km-zahlen">${k.zahlen.map(([w, b], i) => `<div data-hoer="zahlen-${i}"><b>${h.abdecken?.an ? `<mark class="km km-wert">${esc(zahlWert(w))}</mark>` : esc(zahlWert(w))}</b><span>${h.abdecken?.an ? kompaktInline(b).replace(/<\/?mark[^>]*>/g, "") : kompaktInline(b)}</span></div>`).join("")}</div>` : ""}
       ${abschnitt("km-schema", "Prüfungsschema", k.schema?.length ? `<ol class="km-schritte">${k.schema.map((s, i) => `<li data-hoer="schema-${i}">${kompaktInline(s)}</li>`).join("")}</ol>` : "")}
       ${abschnitt("km-kern", "Das Wichtigste", liste(k.punkte, "punkte"))}
       ${abschnitt("km-fallen", "Typische Fehler", liste(k.fallen, "fallen"))}`, h.abdecken);
