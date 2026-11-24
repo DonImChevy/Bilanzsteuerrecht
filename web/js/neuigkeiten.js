@@ -5,6 +5,15 @@
 
 export const NEUIGKEITEN = [
   {
+    id: "2026-11-paare-themen",
+    datum: "2026-11-24",
+    titel: "Paare finden: nur deine Themen",
+    punkte: [
+      ["karten", "Überblicke auswählen", "Tippe auf „Paare finden“ und wähle ein oder mehrere Themen – dann kommen nur deren Normen ins Spiel, z. B. nur Steuergeheimnis oder nur Verspätungszuschlag."],
+      ["haken", "Mehr AO-Paare", "Steuergeheimnis, Ermittlung, Verspätungszuschlag und Zwangsgeld jetzt Absatz für Absatz – von § 30 Abs. 4 AO bis § 152 Abs. 10 AO."],
+    ],
+  },
+  {
     id: "2026-11-est-nsa",
     datum: "2026-11-18",
     titel: "ESt: Nichtselbständige Arbeit als eigenes Thema",

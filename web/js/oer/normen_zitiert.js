@@ -859,6 +859,25 @@ export const NORMEN_ZITIERT = [
 },
 {
 "g": "AO",
+"nr": "99",
+"titel": "Betreten von Grundstücken und Räumen",
+"abs": [
+{
+"abs": "1",
+"text": "Die von der Finanzbehörde mit der Einnahme des Augenscheins betrauten Amtsträger und die nach den §§ 96 und 98 zugezogenen Sachverständigen sind berechtigt, Grundstücke, Räume, Schiffe, umschlossene Betriebsvorrichtungen und ähnliche Einrichtungen während der üblichen Geschäfts- und Arbeitszeit zu betreten, soweit dies erforderlich ist, um im Besteuerungsinteresse Feststellungen zu treffen. Die betroffenen Personen sollen angemessene Zeit vorher benachrichtigt werden. Wohnräume dürfen gegen den Willen des Inhabers nur zur Verhütung dringender Gefahren für die öffentliche Sicherheit und Ordnung betreten werden."
+},
+{
+"abs": "2",
+"text": "Maßnahmen nach Absatz 1 dürfen nicht zu dem Zweck angeordnet werden, nach unbekannten Gegenständen zu forschen."
+}
+],
+"faecher": [
+"ao"
+],
+"zitiert": true
+},
+{
+"g": "AO",
 "nr": "151",
 "titel": "Aufnahme der Steuererklärung an Amtsstelle",
 "abs": [
