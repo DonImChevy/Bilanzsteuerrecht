@@ -7,7 +7,7 @@ import { GESETZBUCH, imGesetzbuch, gesetzGeladen, ladeGesetz, sucheImGesetz, off
 import { alsMultipleChoice } from "./oer/mc.js";
 import { pruefdaten } from "./offen.js";
 import { PUNKTESAMMLER } from "./est/punkte.js";
-import { PAARE } from "./paare.js";
+import { PAARE, paareJeThema } from "./paare.js";
 import { gliederungView } from "./bilr/gliederung.js";
 import { r2View } from "./est/r2.js";
 import * as SB from "./schaubilder.js";
@@ -1570,7 +1570,7 @@ function tabLernen() {
   if (mkFaellig) heute += `<button class="kachel breit" data-a="meineLernen" data-v="faellig"><span class="k-icon">${ic("karten")}</span>
       <span class="grow"><b>${mkFaellig} ${mkFaellig === 1 ? "eigene Karteikarte" : "eigene Karteikarten"} fällig</b><div class="sub">Umdrehen, bewerten – dauert nur kurz</div></span><span class="rechts">${ic("pfeil")}</span></button>`;
   const kachel = (a, icon, titel, text, v = "") => `<button class="kachel" data-a="schnell" data-v="${a}" data-t="${v}"><span class="k-icon">${ic(icon)}</span><span class="k-text"><b>${titel}</b><span class="sub">${esc(text)}</span></span></button>`;
-  const paareKachel = PAARE[state.fach] ? `<div class="kachel-huelle"><button class="kachel" data-a="paareStart"><span class="k-icon">${ic("karten")}</span><span class="k-text"><b>Paare finden</b><span class="sub">Klausurnormen und ihre Bedeutung</span></span></button>
+  const paareKachel = PAARE[state.fach] ? `<div class="kachel-huelle"><button class="kachel" data-a="paareWahl"><span class="k-icon">${ic("karten")}</span><span class="k-text"><b>Paare finden</b><span class="sub">${esc(paarWahlText())}</span></span></button>
       <button class="kachel-zusatz" data-a="gesetzFarben" aria-label="Farben der Gesetzbücher einstellen" title="Farben der Gesetzbücher">${ic("einstellungen", "klein")}</button></div>` : "";
   const schnell = state.fach === "oer"
     ? kachel("qa", state.oerModus === "mc" ? "haken" : "stift", state.oerModus === "mc" ? "Multiple Choice" : "Frage – Antwort", "75 % der Klausur") +
@@ -2711,9 +2711,43 @@ function pfadAntwort(eingabe, el) {
   if (!ok) document.querySelector(".pf-frage")?.classList.add("wackeln");
 }
 
+// Themenwahl: je Modul die gewählten Überblicke (leer = alle), nur auf diesem Gerät (localStorage bsr.paareThemen)
+const paarThemenAlle = () => { try { return JSON.parse(lies("bsr.paareThemen", "{}")) || {}; } catch (_) { return {}; } };
+/** Paar-Indizes je Thema des aktuellen Moduls (Teil I/II beachtet), nur Themen mit mindestens einem Paar. */
+function paarThemen(fach = state.fach) {
+  const themen = themenImTeil(fach), je = paareJeThema(PAARE[fach] || [], themen, KOMPAKT);
+  return themen.map((t) => ({ t, idx: je[t.id].filter((i) => imTeil({ teil: PAARE[fach][i][2] }, teilVon(fach))) })).filter((x) => x.idx.length);
+}
+/** Gewählte Themen-IDs, die es (noch) gibt. */
+const gewaehlteThemen = (fach = state.fach) => { const da = new Set(paarThemen(fach).map((x) => x.t.id)); return (paarThemenAlle()[fach] || []).filter((id) => da.has(id)); };
+/** Paar-Indizes der aktuellen Wahl (keine Wahl = alle des Moduls bzw. Teils). */
+function paarIndizes(fach = state.fach, wahl = gewaehlteThemen(fach)) {
+  const alle = (PAARE[fach] || []).map((p, i) => i).filter((i) => imTeil({ teil: PAARE[fach][i][2] }, teilVon(fach)));
+  if (!wahl.length) return alle;
+  const set = new Set(paarThemen(fach).filter((x) => wahl.includes(x.t.id)).flatMap((x) => x.idx));
+  return alle.filter((i) => set.has(i));
+}
+function paarWahlText() {
+  const w = gewaehlteThemen();
+  if (!w.length) return "Klausurnormen und ihre Bedeutung";
+  return w.length === 1 ? `Nur: ${THEMA[w[0]]?.titel || ""}` : `${w.length} Themen gewählt`;
+}
+const PAAR_MINDEST = 4;
+function paareWahlView() {
+  const liste = paarThemen(), w = gewaehlteThemen(), n = paarIndizes().length, alle = !w.length;
+  const zeile = (v, titel, sub, anz, an, i) => `<button class="pw-zeile${an ? " an" : ""}" style="--i:${i}" data-a="paarThema" data-v="${v}" role="checkbox" aria-checked="${an}">
+      <span class="pw-haken" aria-hidden="true">${an ? ic("haken", "klein") : ""}</span><span class="grow"><b>${esc(titel)}</b>${sub ? `<span class="sub">${esc(sub)}</span>` : ""}</span><span class="pw-zahl">${anz}<small>${anz === 1 ? "Paar" : "Paare"}</small></span></button>`;
+  return `<div class="gruppe-fuss" style="margin:0 4px 12px">Nur die Normen aus den Überblicken, die du schon hattest – ein Thema oder mehrere.</div>
+    <div class="pw-liste">${zeile("", "Alle Themen", "Quer durch das Modul", paarIndizes(state.fach, []).length, alle, 0)}</div>
+    <div class="gruppe-titel" style="margin-top:16px">Nach Überblick</div>
+    <div class="pw-liste">${liste.map((x, i) => zeile(x.t.id, x.t.titel, "", x.idx.length, w.includes(x.t.id), i + 1)).join("")}</div>
+    <div class="pw-fuss"><button class="knopf" data-a="paareStart" ${n < PAAR_MINDEST ? "disabled" : ""}>${ic("karten")} Los geht's · ${Math.min(n, PAAR_ANZAHL)} Paare</button>
+      ${n < PAAR_MINDEST ? `<div class="sub" style="text-align:center;margin-top:6px">Wähle Themen mit zusammen mindestens ${PAAR_MINDEST} Paaren.</div>` : n > PAAR_ANZAHL ? `<div class="sub" style="text-align:center;margin-top:6px">${n} Paare im Topf – jede Runde zieht ${PAAR_ANZAHL} davon.</div>` : ""}</div>`;
+}
+
 function neuePaarRunde() {
-  const r = new Zufall();
-  const auswahl = r.mischen((PAARE[state.fach] || []).filter((p) => imTeil({ teil: p[2] }, teilVon(state.fach)))).slice(0, PAAR_ANZAHL).map(([norm, text], id) => ({ id, norm, text }));
+  const r = new Zufall(), topf = paarIndizes();
+  const auswahl = r.mischen(topf.length >= PAAR_MINDEST ? topf : paarIndizes(state.fach, [])).slice(0, PAAR_ANZAHL).map((i, id) => ({ id, norm: PAARE[state.fach][i][0], text: PAARE[state.fach][i][1] }));
   state.paare = { links: r.mischen(auswahl), rechts: r.mischen(auswahl), weg: [], leben: PAAR_LEBEN, serie: 0, wahl: null, start: Date.now(), ende: null, sperre: false, frisch: true };
 }
 // Gesetzesfarben: jede Norm trägt den „Buchrücken“ ihres Gesetzes (Verordnungen gemeinsam grau).
@@ -2753,6 +2787,7 @@ function paareView() {
         <p class="sub" style="font-size:15px">${geschafft ? `Mit ${p.leben} von ${PAAR_LEBEN} Leben übrig` : `${p.weg.length} von ${n} Paaren gefunden`} · ${Math.floor(sek / 60)}:${String(sek % 60).padStart(2, "0")} min</p>
         ${rest.length ? `<div class="paar-rest"><div class="sub">Diese Paare fehlten noch:</div>${rest.map((k) => `<div class="paar-rest-karte ${gesetzKlasse(normTeile(k.norm).g)}"><b>${esc(k.norm)}</b><span>${esc(k.text)}</span></div>`).join("")}</div>` : ""}
         <button class="knopf" data-a="paareStart" style="max-width:300px;margin:16px auto 6px">${ic("wiederholen")} Neue Runde</button>
+        <button class="link" data-a="paareWahl">Themen ändern</button>
         <button class="link" data-a="paareZu">Fertig</button></div></div></div>`;
   }
   const karte = (seite, k, i) => {
@@ -2944,6 +2979,9 @@ function sheetView() {
   } else if (sh.art === "duellEinladung") {
     titel = sh.d.g ? "Duell-Ergebnis" : "Herausforderung";
     inhalt = duellEinladungView(sh.d);
+  } else if (sh.art === "paareWahl") {
+    titel = "Paare finden";
+    inhalt = paareWahlView();
   } else if (sh.art === "gesetzFarben") {
     titel = "Gesetzesfarben";
     inhalt = gesetzFarbenView();
@@ -3919,7 +3957,13 @@ const AKTIONEN = {
     if (!wert.trim()) { toast("Bitte einen Betrag eingeben."); return; }
     pfadAntwort(wert, document.querySelector(".pf-zahl"));
   },
-  paareStart: () => { neuePaarRunde(); render(); state.paare.frisch = false; }, // Austeil-Animation nur beim ersten Zeichnen
+  paareStart: () => { state.sheet = null; neuePaarRunde(); render(); state.paare.frisch = false; }, // Austeil-Animation nur beim ersten Zeichnen
+  paareWahl: () => { state.paare = null; state.sheet = { art: "paareWahl" }; render(); },
+  paarThema: (v) => {
+    const alle = paarThemenAlle(), w = new Set(gewaehlteThemen());
+    if (!v) w.clear(); else if (w.has(v)) w.delete(v); else w.add(v);
+    alle[state.fach] = [...w]; schreib("bsr.paareThemen", JSON.stringify(alle)); render();
+  },
   paarWahl: (v) => paarWahl(v),
   paareZu: () => { state.paare = null; render(); },
   reset: () => {
